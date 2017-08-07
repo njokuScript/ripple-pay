@@ -1,10 +1,11 @@
 # ripplePay
 
-## Background
+## Backgrounds
+
 The future is now.  Year after year we hear stories about paper money becoming more and more obsolete.  Our currency markets have continued to follow this trend with electronic cryptocurrencies coming to rise over the past decade.  Cryptocurrencies change the way people, companies, and countries can exchange funds.
 
 ### Enter ripplePay.
-The world's first Ripple XRM cryptocurrency wallet.  Ripple has disrupted the conventional banking system, and will continue to reform and change the world with ripplePay.  What's in your crypto-wallet?
+The world's first Ripple XRP cryptocurrency wallet.  Ripple has disrupted the conventional banking system, and will continue to reform and change the world with ripplePay.  What's in your crypto-wallet?
 
 
 ripplePay is a revolutionary mobile app that will implement the following
@@ -80,25 +81,47 @@ About:
 
 ## Implementation Timeline
 
-  * Phase 1: Frontend & Backend User Authentication setup & Styling W10D7-W11D1 (2 Days)
+  * Phase 1: Frontend & Backend User Authentication setup & Styling 
+  W10D7-W11D1 (2 Days)
     * Build out frontend authentication and link to backend
-    * Stylize appropriately
+    * Fully functioning. Should be able to signup, login, and logout
+    * Signup will require valid e-mail and password
+    * Stylize appropriately to the point where auth is complete
 
-  * Phase 2: Ripple API, Establishment of wallet, Depositing of funds from exchange account W11D2-W11D4 (3 Days)
+  * Phase 2: Ripple Beginnings 
+  W11D2
     * Understanding Ripple API
-    * Building out frontend & backend for storing funds
-    * Test out funds between exchange account and app wallet ensuring that funds stay stored
-
-  * Phase 3: Requesting & Dispatching of Funds W11D5-W11D6 (2 Days)
-    * Algorithm for building out front & backend for requesting funds
+    * Connecting with the public ledger
+    * Establishing basic level communications between two test accounts
+  W11D3
+    * Establishment of profile page in App
+    * Proper buttons display (but aren't functioning) for sending and requeting funds
+    * User name and info is stylized and displayed
+    
+  * Phase 3: Requesting & Sending of Funds
+  W11D4
+    * Generating addresses based on test aaccounts
+    * Associated secret keys are able to properly ync with public addresses.
+    * Algorithm for requesting funds
+    * Users can request funds from another public address on the app (on the frontend)
+    * Allow time for bugs
+   W11D5 
+    * User requests are able to communicate with another user on the app
+    * Confirmation is displayed upon transaction going through in App
+    * Building out frontend (stylization of sending page and requesting page)
+   W11D6
+    * Run tests between two test accounts
+    * Test out funds between two accounts to ensure that app is successfully transferring.  
+    * Check public ledger for confirmation
+    * Allow time for bugs 
     * Users addresses are stored and secret keys are rendered in order to send funds
-    * Test out transferring of funds between two accounts
+
 
   * Phase 4: Tune-ups, Styling, and Creating Demo Web Page W11D7 (1 Day)
     * Set up github pages
     * Mock up wireframes for how the demo page will look
-    * Grab nice looking GIFs
-    * Stylize website
+    * Grab nice looking GIFs using Licecap to show the App in motion
+    * Stylize website and put finishing touches on app
 
 
 ## Technology
@@ -137,7 +160,7 @@ Work will be done as one unit.
 * Understood functions of app
 * Understood technologies we need to use
 * Established basic half-working authentication
-* Solved a 182 bugs
+* Solved 182 bugs
 * Coded
 * Built out basic skeleton of profile page
 
