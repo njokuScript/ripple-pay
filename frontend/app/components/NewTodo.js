@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/Octicons';
+// import Icon from 'react-native-vector-icons/Octicons';
 import {
   StyleSheet,
   Text,
@@ -54,7 +54,7 @@ var TodoList = React.createClass({
                 onChangeText={(newTodoText) => {
                   this.setState({newTodoText})
                 }}
-                placeholder="New To-Do Text"
+                placeholder="New Contact"
                 style={styles.input}/>
             </View>
           </ScrollView>
@@ -65,13 +65,13 @@ var TodoList = React.createClass({
       <View style={styles.container}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={this.onBack}>
-            <Icon name="chevron-left" size={20} color="white"/>
+            {/* <Icon name="chevron-left" size={20} color="white"/> */}
           </TouchableOpacity>
           <Text style={styles.title}>
-            New To-Do
+            New Contact
           </Text>
           <TouchableOpacity onPress={this.addNewTodo}>
-            <Icon name="check" size={20} color="white"/>
+            {/* <Icon name="check" size={20} color="white"/> */}
           </TouchableOpacity>
         </View>
         {renderScrollViewOrLoading()}
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2ecc71'
+    backgroundColor: '#709996'
   },
   title: {
     color: 'white',
@@ -101,11 +101,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     padding: 5,
-    paddingLeft: 10,
+    
     margin: 10,
     borderWidth: 2,
     borderRadius: 10,
-    borderColor: "#2ecc71"
+    borderColor: "#F2CFB1"
   },
   input: {
     height: 26

@@ -86,12 +86,12 @@ var Login = React.createClass({
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={this.onSignIn}>
               <Text style={styles.button}>
-                Sign In
+                $ign In
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onSignUp}>
               <Text style={styles.button}>
-                Sign Up
+                $ign Up
               </Text>
             </TouchableOpacity>
           </View>
@@ -108,24 +108,28 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 20,
-    backgroundColor: '#2ecc71'
+    backgroundColor: '#709996'
   },
   titleContainer: {
-    padding: 10
+    padding: 10,
+     
   },
   title: {
-    color: 'white',
+    color: '#F2CFB1',
     fontSize: 35,
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
+    padding: 20,
+    flex: 1,
+    justifyContent: 'space-around'
   },
   field: {
     borderRadius: 5,
     padding: 5,
     paddingLeft: 8,
-    margin: 7,
+    margin: 45,
     marginTop: 0,
-    backgroundColor: 'white'
+    backgroundColor: '#fff'
   },
   textInput: {
     height: 26
@@ -134,12 +138,18 @@ const styles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 1
   },
   button: {
     fontSize: 30,
-    color: 'white'
+    color: '#F2CFB1',
+
+    borderRadius: 5
   },
+  
+
   formError: {
     color: 'red'
   }

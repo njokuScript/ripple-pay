@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/Octicons';
+// import Icon from 'react-native-vector-icons/Octicons';
 import {
   StyleSheet,
   Text,
@@ -81,7 +81,7 @@ var TodoList = React.createClass({
             <Icon name="x" size={20} color="white"/>
           </TouchableOpacity>
           <Text style={styles.title}>
-            To-Do List
+            Contact List
           </Text>
           <TouchableOpacity onPress={this.addNewTodo}>
             <Icon name="plus" size={20} color="white"/>
@@ -115,10 +115,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#2ecc71'
+    backgroundColor: '#709996'
   },
   title: {
-    color: 'white',
+    color: '#F2CFB1',
     fontSize: 20
   },
   todoContainer: {
