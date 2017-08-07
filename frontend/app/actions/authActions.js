@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Keychain from 'react-native-keychain';
+import * as Keychain from 'react-native-keychain';
 
 import {SIGNIN_URL, SIGNUP_URL} from '../api';
 import {addAlert} from './alertsActions';
@@ -17,8 +17,8 @@ exports.loginUser = (email, password) => {
     }).catch((error) => {
       dispatch(addAlert("Could not log in."));
     });
-  }
-}
+  };
+};
 
 exports.signupUser = (email, password) => {
   return function(dispatch) {
