@@ -28,17 +28,18 @@ var TodoItem = connect()(React.createClass({
       if (!this.state.deleting) {
         return (
           <TouchableOpacity onPress={this.onDelete}>
-            <Icon name="x" size={15} color='#2ecc71'/>
+            {/* <Icon name="x" size={15} color='#2ecc71'/> */}
+            <Text>delete</Text>
           </TouchableOpacity>
-        )
+        );
       }
-    }
+    };
     return (
       <View style={styles.todoContainer}>
         <Text>{this.props.text}</Text>
         {renderDeleteButton()}
       </View>
-    )
+    );
   }
 }));
 
@@ -46,7 +47,7 @@ var TodoList = React.createClass({
   getInitialState() {
     return {
       refreshing: false
-    }
+    };
   },
   onLogout() {
     this.props.dispatch(setTodos([]));
@@ -78,13 +79,15 @@ var TodoList = React.createClass({
       <View style={styles.container}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={this.onLogout}>
-            <Icon name="x" size={20} color="white"/>
+             {/* <Icon name="x" size={20} color="white"/>  */}
+             <Text>logout</Text>
           </TouchableOpacity>
           <Text style={styles.title}>
             Contact List
           </Text>
           <TouchableOpacity onPress={this.addNewTodo}>
-            <Icon name="plus" size={20} color="white"/>
+             {/* <Icon name="plus" size={20} color="white"/>  */}
+             <Text>add</Text>
           </TouchableOpacity>
         </View>
         <ScrollView

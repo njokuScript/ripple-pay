@@ -66,12 +66,14 @@ var TodoList = React.createClass({
         <View style={styles.topBar}>
           <TouchableOpacity onPress={this.onBack}>
             {/* <Icon name="chevron-left" size={20} color="white"/> */}
+            <Text>back</Text>
           </TouchableOpacity>
           <Text style={styles.title}>
             New Contact
           </Text>
           <TouchableOpacity onPress={this.addNewTodo}>
             {/* <Icon name="check" size={20} color="white"/> */}
+            <Text>add</Text>
           </TouchableOpacity>
         </View>
         {renderScrollViewOrLoading()}
