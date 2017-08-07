@@ -5,14 +5,12 @@
 The future is now.  Year after year we hear stories about paper money becoming more and more obsolete.  Our currency markets have continued to follow this trend with electronic cryptocurrencies coming to rise over the past decade.  Cryptocurrencies change the way people, companies, and countries can exchange funds.
 
 ### Enter ripplePay.
-The world's first Ripple XRP cryptocurrency wallet.  Ripple has disrupted the conventional banking system, and will continue to reform and change the world with ripplePay.  What's in your crypto-wallet?
+The world's first Ripple XRP cryptocurrency mobile transferring system.  Ripple has disrupted the conventional banking system, and will continue to reform and change the world with ripplePay.  What's in your crypto-wallet?
 
 
 ripplePay is a revolutionary mobile app that will implement the following
 ## Features
 * Users can signup and login to their accounts
-* Users are able to deposit their Ripple funds into the app where they are stored and displayed
-* Users are able to withdraw their Ripple funds from the app and into their respective exchange market accounts
 * Users can request Ripple funds from other wallets
 * Users can receive Ripple funds from other wallets
 * Users can search for other users
@@ -28,11 +26,6 @@ Login:
 Home:
 ![alt text](https://user-images.githubusercontent.com/11024247/29013765-1a1a7e44-7afa-11e7-8638-fa1f48640d00.png "Home Page")
 
-Deposit:
-![alt text](https://user-images.githubusercontent.com/11024247/29013754-04bf5272-7afa-11e7-9ab8-5aa23f6a1864.png "Deposit Page")
-
-Withdraw:
-![alt text](https://user-images.githubusercontent.com/11024247/29013762-135ba254-7afa-11e7-8cb8-573368c3a87a.png "Withdraw Page")
 
 Request:
 ![alt text](https://user-images.githubusercontent.com/11024247/29013770-24d8c782-7afa-11e7-92cf-cc2169ed5b5f.png "Request Page")
@@ -46,9 +39,9 @@ About:
 
 ## Product Design
 * Users are guided to a Login/Signup page
-* Home page displays the users information, account balance, and navigation options
-* Deposit allows for users to request a monetary amount to be drawn from the users' exchange market account
-* Withdraw is the inverse action that deposits users' funds into their exchange market account
+* Home page displays the users information and navigation options
+* Request allows for users to request a monetary amount to be drawn from another user's account
+* Send is the inverse action that sends users funds into their account
 * Search page has functionality to be able to search for users within application
 * About page displays app details and company profile
 
@@ -60,23 +53,17 @@ About:
 
   3. A production README, replacing this README
 
-  4. Profile-Wallet page displaying user account information
+  4. Search functionality to allow searching of other users
 
-  5. Search functionality to allow searching of other users
+  5. Ability to Request Ripple funds from other users
 
-  6. Ability to Request Ripple funds from other users
+  6. Exchanges properly display in respective accounts
 
-  7. Exchanges properly display in respective accounts
+  7. Sending Ripple fund capability
 
-  8. Sending Ripple fund capability
+  8. Proper CSS Styling
 
-  9. Deposit ripples using Ripple API
-
-  10. Withdraw ripples using Ripple API
-
-  11. Proper CSS Styling
-
-  12. Demo Web Page
+  9. Demo Web Page
 
 
 ## Implementation Timeline
