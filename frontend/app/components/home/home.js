@@ -19,43 +19,32 @@ class Home extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Hi, user</Text>
-        <View style={styles.navContainer}>
-        <TouchableOpacity onPress={this.onLogout}>
-          <View> 
-              <Text style={styles.logout}>logout</Text>
-          </View>
-        </TouchableOpacity>
-        </View>
         <View style={styles.profileContainer}>
-          <Text style={styles.userDisplay}>
-            Good Evening, Mr. Millionaire
-          </Text>
           <Text style={styles.xrpDisplay}>
-            Current XRP: 872,520
+            872,520 XRP
           </Text>    
         </View>  
         <View style={styles.xrpOptionsContainer}>
-          <TouchableOpacity onPress={this.sendXrp}>
+          {/* <TouchableOpacity onPress={this.sendXrp}>
           <Text style={styles.xrpOption}>
-            SEND XRP
+            send
           </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.requestXrp}>
             <Text style={styles.xrpOption}>
-              REQUEST XRP
+              request
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.withdrawXrp}>
-            <Text style={styles.xrpOption}>
-              WITHDRAW XRP
-            </Text>
-          </TouchableOpacity>  
+          </TouchableOpacity>  */}
           <TouchableOpacity onPress={this.depositXrp}>
             <Text style={styles.xrpOption}>
-              DEPOSIT XRP
+              deposit
             </Text>  
           </TouchableOpacity>
+          <View style={styles.navContainer}>
+            <TouchableOpacity onPress={this.onLogout}>
+              <Text>logout</Text>
+            </TouchableOpacity>
+          </View>
         </View>  
       </View>
     );
@@ -70,33 +59,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#335B7B',
   },
-  navContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  logout: {
-    fontFamily: 'Copperplate',
-    color: '#F2cFB1',
-    right: 120,
-    top: 30,
-    fontSize: 22,
-  },
-profileContainer: {
+  profileContainer: {
   flex: 1,
   alignItems: 'center',
   justifyContent: 'center',
 },
   userDisplay: {
-    color: '#F2cFB1',
+    color: 'white',
     fontFamily: 'Kohinoor Bangla',
     fontSize: 25,
     margin: 8,
   },
   xrpDisplay: {
-    color: '#F2cFB1', 
+    color: 'white', 
     fontFamily: 'Kohinoor Bangla',
-    fontSize: 25,
-    margin: 8,  
+    fontSize: 25, 
   },
   xrpOptionsContainer: {
     flex: 1,
@@ -106,20 +83,18 @@ profileContainer: {
     alignSelf: 'auto',
   },
   xrpOption: {
-    fontFamily: 'Copperplate',
+    fontFamily: 'Kohinoor Bangla',
     fontSize: 22,
-    color: '#C29436',
+    color: 'white',
     margin: 15,
     borderRadius: 4,
     borderWidth: 1.9,
-    borderColor: '#F2cFB1',
+    borderColor: 'white',
     padding: 9,
     flex: 1,
     shadowOpacity: 0.4,
     textAlign: 'center',
-    
   }
 });
-
 
 export default Home;

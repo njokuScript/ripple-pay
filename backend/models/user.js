@@ -16,7 +16,20 @@ var userSchema = new Schema({
   },
   password: {
     type: String
-  }
+  },
+  accountBalance: {
+    type: Number
+  }, 
+  destinationTag: {
+    type: Number
+  },
+  transactionHistory: [{
+    date: Date,
+    type: String,
+    amount: Number
+  }],
+
+
 });
 
 userSchema.pre('save', function(next) {
