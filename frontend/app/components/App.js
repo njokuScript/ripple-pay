@@ -15,7 +15,7 @@ import AlertContainer from './alerts/AlertContainer';
 
 var App = React.createClass({
   getInitialState() {
-    return {}
+    return {};
   },
   render() {
     var renderMainView = () => {

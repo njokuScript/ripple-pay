@@ -7,25 +7,15 @@ import {
   NavigatorIOS
 } from 'react-native';
 
-// import {unauthUser} from '../actions';
-// onLogout: function() {
-//   this.props.dispatch(unauthUser);
-// },
-// <TouchableOpacity onPress={this.onLogout}>
-//   <Text>
-//     Logout
-//   </Text>
-// </TouchableOpacity>
-
-import TodoList from './TodoList';
+import HomeContainer from './home/homeContainer';
 
 var Main = React.createClass({
   render() {
     return (
       <NavigatorIOS
         initialRoute={{
-          component: TodoList,
-          title: 'Todo List',
+          component: HomeContainer,
+          title: 'HomeContainer',
           navigationBarHidden: true
         }}
         style={{flex: 1}}/>
