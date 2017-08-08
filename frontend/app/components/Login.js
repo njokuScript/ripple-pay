@@ -62,7 +62,7 @@ var Login = React.createClass({
         <View style={styles.container}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              RipplePay
+              ripplePay
             </Text>
           </View>
           <View style={styles.field}>
@@ -86,12 +86,12 @@ var Login = React.createClass({
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={this.onSignIn}>
               <Text style={styles.button}>
-                $ign In
+                login
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onSignUp}>
               <Text style={styles.button}>
-                $ign Up
+                sign up
               </Text>
             </TouchableOpacity>
           </View>
@@ -108,12 +108,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 20,
-    backgroundColor: '#709996'
+    backgroundColor: '#335B7B',
   },
+
   titleContainer: {
-    padding: 10,
-     
+    padding: 10,     
+    alignItems: 'center',
+    
   },
+
   title: {
     color: '#F2CFB1',
     fontSize: 35,
@@ -121,35 +124,45 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 20,
     flex: 1,
-    justifyContent: 'space-around'
+    top: 60,
+    fontFamily: 'Apple SD Gothic Neo'
+    
   },
+
   field: {
     borderRadius: 5,
     padding: 5,
     paddingLeft: 8,
     margin: 45,
     marginTop: 0,
+    top: 80,
     backgroundColor: '#fff'
   },
+
   textInput: {
-    height: 26
+    height: 26,
+    fontFamily: 'Apple SD Gothic Neo'
   },
+
   buttonContainer: {
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
-    borderColor: 'black',
-    borderRadius: 1
+    top: 100
   },
   button: {
     fontSize: 30,
     color: '#F2CFB1',
-
-    borderRadius: 5
+    fontFamily: 'Apple SD Gothic Neo',
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowOffset: {    width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    // shadowColor: '#000',
+    padding: 7
   },
-  
-
   formError: {
     color: 'red'
   }
