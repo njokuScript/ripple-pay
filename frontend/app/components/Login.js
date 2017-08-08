@@ -148,17 +148,23 @@ const styles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 100
+    top: 100,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.9,
+    
+    
+    shadowRadius: 1,
+
   },
   button: {
     fontSize: 30,
     color: '#F2CFB1',
-    fontFamily: 'Apple SD Gothic Neo',
+    fontFamily: 'Copperplate',
     borderWidth: 1,
     borderRadius: 6,
     borderColor: '#ddd',
     borderBottomWidth: 0,
-    shadowOffset: {    width: 0, height: 2 },
+  
     shadowOpacity: 0.3,
     // shadowColor: '#000',
     padding: 7
