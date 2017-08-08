@@ -82,7 +82,7 @@ About:
     * Establishing basic level communications between two test accounts
   W11D3
     * Establishment of profile page in App
-    * Proper buttons display (but aren't functioning) for sending and requeting funds
+    * Proper button display (but aren't functioning) for sending and requeting funds
     * User name and info is stylized and displayed
     
   * Phase 3: Requesting & Sending of Funds
