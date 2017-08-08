@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-
+import Send from './send';
 
 const mapStateToProps = () => ({
 

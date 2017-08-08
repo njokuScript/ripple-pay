@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  View, Text, StyleSheet, TouchableOpacity
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions
  } from 'react-native';
 
 import { unauthUser } from '../../actions';
@@ -18,33 +18,21 @@ class Home extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.mainContainer}>
+        <View style={styles.nav}>
+          <Image style={{width: 30, height: 30}} source={require('./deposit.png')} />
+          <Image style={{ width: 30, height: 30 }} source={require('./sendRequest.png')} />
+        </View>
         <View style={styles.profileContainer}>
           <Text style={styles.xrpDisplay}>
             872,520 XRP
           </Text>    
-        </View>  
-        <View style={styles.xrpOptionsContainer}>
-          {/* <TouchableOpacity onPress={this.sendXrp}>
-          <Text style={styles.xrpOption}>
-            send
-          </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.requestXrp}>
-            <Text style={styles.xrpOption}>
-              request
-            </Text>
-          </TouchableOpacity>  */}
-          <TouchableOpacity onPress={this.depositXrp}>
-            <Text style={styles.xrpOption}>
-              deposit
-            </Text>  
-          </TouchableOpacity>
+        </View> 
+         {/* temp logout button for develpment */}
           <View style={styles.navContainer}>
             <TouchableOpacity onPress={this.onLogout}>
               <Text>logout</Text>
             </TouchableOpacity>
-          </View>
         </View>  
       </View>
     );
@@ -52,48 +40,29 @@ class Home extends React.Component {
 }
 
 // define your styles
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  mainContainer: {
+    flex: 1/4,
     backgroundColor: '#335B7B',
+  },
+  image: {
+    resizeMode: 'contain'
+  },
+  nav: {
+    flex: 1/16,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 20
   },
   profileContainer: {
   flex: 1,
-  alignItems: 'center',
-  justifyContent: 'center',
+  alignItems: 'center'
 },
-  userDisplay: {
-    color: 'white',
-    fontFamily: 'Kohinoor Bangla',
-    fontSize: 25,
-    margin: 8,
-  },
   xrpDisplay: {
     color: 'white', 
     fontFamily: 'Kohinoor Bangla',
-    fontSize: 25, 
-  },
-  xrpOptionsContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    bottom: 50,
-    alignSelf: 'auto',
-  },
-  xrpOption: {
-    fontFamily: 'Kohinoor Bangla',
-    fontSize: 22,
-    color: 'white',
-    margin: 15,
-    borderRadius: 4,
-    borderWidth: 1.9,
-    borderColor: 'white',
-    padding: 9,
-    flex: 1,
-    shadowOpacity: 0.4,
-    textAlign: 'center',
+    fontSize: 25
   }
 });
 
