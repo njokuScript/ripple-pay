@@ -13,6 +13,8 @@ class Home extends React.Component {
     this.onLogout = this.onLogout.bind(this);
   }
 
+  
+
   onLogout() {
     this.props.unauthUser();
   }
