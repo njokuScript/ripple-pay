@@ -3,7 +3,8 @@ import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Image, Dimensions
  } from 'react-native';
-
+import Search from '../search/search';
+import Wallet from '../wallet/wallet';
 import { unauthUser } from '../../actions';
 
 class Home extends React.Component {
@@ -11,6 +12,8 @@ class Home extends React.Component {
     super(props);
     this.onLogout = this.onLogout.bind(this);
   }
+
+  
 
   onLogout() {
     this.props.unauthUser();
@@ -20,12 +23,33 @@ class Home extends React.Component {
     this.props.requestTransactions(this.props.user); 
   }
 
+
+  navSearch() {
+    this.props.navigator.push({
+      title: 'Search',
+      component: Search
+    })
+  }
+
+  navWallet() {
+    this.props.navigator.push({
+      title: 'Wallet',
+      component: Wallet
+    })
+  }
+
+
   render() {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.nav}>
-          <Image style={{width: 30, height: 30}} source={require('./deposit.png')} />
-          <Image style={{ width: 30, height: 30 }} source={require('./sendRequest.png')} />
+          <TouchableOpacity onPress={this.navWallet.bind(this)}>
+            <Image style={{width: 30, height: 30}} source={require('./deposit.png')} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.navSearch.bind(this)}>
+            <Image
+              style={{ width: 30, height: 30 }} source={require('./sendRequest.png')} />
+          </TouchableOpacity>
         </View>
         <View style={styles.profileContainer}>
           <Text style={styles.xrpDisplay}>
@@ -42,7 +66,7 @@ class Home extends React.Component {
             <TouchableOpacity onPress={this.onLogout}>
               <Text>logout</Text>
             </TouchableOpacity>
-        </View>  
+         </View>
       </View>
     );
   }
@@ -69,7 +93,7 @@ const styles = StyleSheet.create({
   alignItems: 'center'
 },
   xrpDisplay: {
-    color: 'white', 
+    color: 'white',
     fontFamily: 'Kohinoor Bangla',
     fontSize: 25
   }
