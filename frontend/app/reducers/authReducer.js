@@ -14,9 +14,6 @@ module.exports = (state=defaultState, action) => {
     case 'UNAUTH_USER':
       return merge({}, {user_id: undefined});
     case 'RECEIVED_TRANSACTIONS':
-      console.log('+++++++++++++++++++++++++++++++++');
-      console.log(action);
-      console.log('+++++++++++++++++++++++++++++++++');
       return merge({}, state, {transactions: action.data.transactions, balance: action.data.balance});
     default:
       return state;

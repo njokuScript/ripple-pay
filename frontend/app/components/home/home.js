@@ -1,19 +1,22 @@
 import React from 'react';
-
-import {
-  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions
- } from 'react-native';
-import Search from '../search/search';
+import SearchContainer from '../search/search';
 import Wallet from '../wallet/wallet';
 import { unauthUser } from '../../actions';
+import {
+    View, 
+    Text, 
+    StyleSheet, 
+    TouchableOpacity, 
+    Image, 
+    Dimensions, 
+    NavigatorIOS
+  } from 'react-native';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.onLogout = this.onLogout.bind(this);
   }
-
-  
 
   onLogout() {
     this.props.unauthUser();
@@ -23,19 +26,20 @@ class Home extends React.Component {
     this.props.requestTransactions(this.props.user); 
   }
 
-
   navSearch() {
+    //  <SearchContainer /> ;
     this.props.navigator.push({
+      component: SearchContainer,
       title: 'Search',
-      component: Search
-    })
+      navigationBarHidden: true
+    });
   }
 
   navWallet() {
     this.props.navigator.push({
       title: 'Wallet',
       component: Wallet
-    })
+    });
   }
 
 
