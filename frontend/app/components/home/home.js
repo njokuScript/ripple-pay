@@ -19,6 +19,11 @@ class Home extends React.Component {
     this.props.unauthUser();
   }
 
+  componentWillMount() {
+    this.props.requestTransactions(this.props.user); 
+  }
+
+
   navSearch() {
     this.props.navigator.push({
       title: 'Search',
@@ -40,23 +45,28 @@ class Home extends React.Component {
         <View style={styles.nav}>
           <TouchableOpacity onPress={this.navWallet.bind(this)}>
             <Image style={{width: 30, height: 30}} source={require('./deposit.png')} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.navSearch.bind(this)}>
-          <Image
-            style={{ width: 30, height: 30 }} source={require('./sendRequest.png')} />
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.navSearch.bind(this)}>
+            <Image
+              style={{ width: 30, height: 30 }} source={require('./sendRequest.png')} />
+          </TouchableOpacity>
         </View>
         <View style={styles.profileContainer}>
           <Text style={styles.xrpDisplay}>
-            872,520 XRP
-          </Text>
-        </View>
+            {this.props.balance} XRP
+          </Text>    
+        </View> 
+        <View style={styles.transactions}>
+          <Text style={styles.xrpDisplay}>
+            {this.props.transactions || []}
+          </Text>    
+        </View> 
          {/* temp logout button for develpment */}
           <View style={styles.navContainer}>
             <TouchableOpacity onPress={this.onLogout}>
               <Text>logout</Text>
             </TouchableOpacity>
-        </View>
+         </View>
       </View>
     );
   }

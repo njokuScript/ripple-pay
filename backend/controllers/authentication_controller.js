@@ -31,8 +31,17 @@ exports.signup = function(req, res, next) {
       password: password
     });
     user.save(function(err) {
-      if (err) { return next(err) }
+      if (err) { return next(err); }
       res.json({user_id: user._id, token: tokenForUser(user)});
     });
   });
-}
+};
+
+exports.getTransactions = function (req, res, next) {
+  console.log(userObject);
+  let userId = req.body.user.user_id;
+  let userObject = User.findOne({id: userId});
+  let totalTransactions = userObject.transactions;
+  let totalBalance = userObject.balance;
+  res.send({ transactions: totalTransactions, balance: totalBalance});
+};

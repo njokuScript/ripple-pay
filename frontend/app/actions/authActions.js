@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
-import {SIGNIN_URL, SIGNUP_URL} from '../api';
-import {addAlert} from './alertsActions';
+import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL } from '../api';
+import { addAlert } from './alertsActions';
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
@@ -36,13 +36,34 @@ exports.signupUser = (email, password) => {
   };
 };
 
+exports.requestTransactions = (user) => {
+  return function(dispatch) {
+    return axios.get(TRANSACTIONS_URL, {user}).then((response) => {
+      console.log('++++++++++++++++++++++++++');
+      console.log(user);
+      console.log(response);
+      console.log('++++++++++++++++++++++++++');
+      dispatch(receivedTransactions(response.data));
+    }).catch((error) => {
+      dispatch(addAlert("no transaction history"));
+    });
+  };
+};
+
 authUser = (user_id) => {
   return {
     type: 'AUTH_USER',
     user_id
-  }
-}
+  };
+};
+
+let receivedTransactions = (data) => {
+  return {
+    type: 'RECEIVED_TRANSACTIONS',
+    data
+  };
+};
 
 exports.unauthUser = {
   type: 'UNAUTH_USER'
-}
+};

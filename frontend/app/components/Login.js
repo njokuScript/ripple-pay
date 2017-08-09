@@ -14,7 +14,7 @@ var Login = React.createClass({
   getInitialState: function() {
     return {
       loading: false
-    }
+    };
   },
   onSignIn: function() {
     var {dispatch, fields: {email, password}} = this.props;
@@ -45,9 +45,9 @@ var Login = React.createClass({
       if (field.touched && field.error) {
         return (
           <Text style={styles.formError}>{field.error}</Text>
-        )
+        );
       }
-    }
+    };
 
     if (this.state.loading) {
       return (
@@ -56,7 +56,7 @@ var Login = React.createClass({
             Loading...
           </Text>
         </View>
-      )
+      );
     } else {
       return (
         <View style={styles.container}>
