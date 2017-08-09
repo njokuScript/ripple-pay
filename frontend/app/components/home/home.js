@@ -16,6 +16,10 @@ class Home extends React.Component {
     this.props.unauthUser();
   }
 
+  componentWillMount() {
+    this.props.requestTransactions(this.props.user); 
+  }
+
   render() {
     return (
       <View style={styles.mainContainer}>
@@ -25,7 +29,12 @@ class Home extends React.Component {
         </View>
         <View style={styles.profileContainer}>
           <Text style={styles.xrpDisplay}>
-            872,520 XRP
+            {this.props.balance} XRP
+          </Text>    
+        </View> 
+        <View style={styles.transactions}>
+          <Text style={styles.xrpDisplay}>
+            {this.props.transactions || []}
           </Text>    
         </View> 
          {/* temp logout button for develpment */}
