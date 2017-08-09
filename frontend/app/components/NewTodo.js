@@ -52,7 +52,7 @@ var TodoList = React.createClass({
             <View style={styles.inputContainer}>
               <TextInput
                 onChangeText={(newTodoText) => {
-                  this.setState({newTodoText})
+                  this.setState({newTodoText});
                 }}
                 placeholder="New Contact"
                 style={styles.input}/>

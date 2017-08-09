@@ -28,14 +28,14 @@ var App = React.createClass({
           <Login />
         );
       }
-    }
+    };
     return (
       <View style={{flex: 1}}>
         <StatusBar barStyle="light-content"/>
         {renderMainView()}
         <AlertContainer/>
       </View>
-    )
+    );
   }
 });
 
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
 
 var mapStateToProps = (state) => {
   return {
-    user_id: state.auth.user_id
-  }
-}
+    user_id: state.user.user_id
+  };
+};
 
 module.exports = connect(mapStateToProps)(App);

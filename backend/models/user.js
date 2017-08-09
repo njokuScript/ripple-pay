@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt-nodejs');
 
 var validateEmail = (email) => {
   return (/\S+@\S+\.\S+/).test(email);
-}
+};
 
 var userSchema = new Schema({
   email: {
@@ -17,28 +17,27 @@ var userSchema = new Schema({
   password: {
     type: String
   },
-  accountBalance: {
-    type: Number
+  balance: {
+    type: Number,
+    default: 10
   }, 
-  destinationTag: {
-    type: Number
+  destinationTag: { 
+    type: Number,
+    default: 0
   },
-  transactionHistory: [{
+  transactions: [{
     date: Date,
-    type: String,
-    amount: Number
-  }],
-
-
+    amount: Number,
+  }]
 });
 
 userSchema.pre('save', function(next) {
   var user = this;
   if (user.isNew || user.isModified('password')) {
     bcrypt.genSalt(10, function(err, salt) {
-      if (err) { return next(err) }
+      if (err) { return next(err); }
       bcrypt.hash(user.password, salt, null, function(err, hash) {
-        if (err) { return next(err) }
+        if (err) { return next(err); }
         user.password = hash;
         next();
       });
@@ -50,9 +49,9 @@ userSchema.pre('save', function(next) {
 
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-    if (err) { return callback(err) }
+    if (err) { return callback(err); }
     callback(null, isMatch);
   });
-}
+};
 
 module.exports = mongoose.model('user', userSchema);

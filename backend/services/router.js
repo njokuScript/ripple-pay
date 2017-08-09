@@ -8,14 +8,15 @@ var requireLogin = passport.authenticate('local', {session: false});
 var router = require('express').Router();
 
 
-// Auth Routes
+// Auth Routes`
 // -----------------------------------------------------------------------------
 router.route('/signup')
   .post(AuthenticationController.signup);
 router.route('/signin')
   .post([requireLogin, AuthenticationController.signin]);
-
-
+// router.route('/transactions')
+//   .get(AuthenticationController.getTransactions);
+router.get('/transactions', AuthenticationController.getTransactions);
 // xxx Routes
 // -----------------------------------------------------------------------------
 // router.route('/protected')
