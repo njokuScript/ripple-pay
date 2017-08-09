@@ -39,13 +39,9 @@ exports.signupUser = (email, password) => {
 exports.requestTransactions = (user) => {
   return function(dispatch) {
     return axios.get(TRANSACTIONS_URL, {user}).then((response) => {
-      console.log('++++++++++++++++++++++++++');
-      console.log(user);
-      console.log(response);
-      console.log('++++++++++++++++++++++++++');
       dispatch(receivedTransactions(response.data));
     }).catch((error) => {
-      dispatch(addAlert("no transaction history"));
+      
     });
   };
 };
