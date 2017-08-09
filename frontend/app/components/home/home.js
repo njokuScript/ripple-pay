@@ -39,7 +39,7 @@ class Home extends React.Component {
           <TouchableOpacity onPress={this.navWallet.bind(this)}>
             <Image style={{width: 30, height: 30}} source={require('./deposit.png')} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.navSearch}>
+        <TouchableOpacity onPress={this.navSearch.bind(this)}>
           <Image
             style={{ width: 30, height: 30 }} source={require('./sendRequest.png')} />
         </TouchableOpacity>

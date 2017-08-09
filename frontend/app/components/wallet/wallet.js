@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, text, StyleSheet, TouchableOpacity, Image, Dimensions
+  View, Text, StyleSheet, TouchableOpacity, Image, Dimensions
 } from 'react-native';
 
 class Wallet extends React.Component {

@@ -25,7 +25,9 @@ class Search extends React.Component {
 
  const {width, height} = Dimensions.get('window');
  const styles=StyleSheet.create({
-
+   searchBarContainer: {
+     backgroundColor: '#335B7B',
+   }
  });
 
  export default Search;
