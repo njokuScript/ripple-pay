@@ -31,11 +31,6 @@ class Home extends React.Component {
   }
 
   navSearch() {
-  componentWillMount() {
-    this.props.requestTransactions(this.props.user); 
-  }
-
-  navSearch() {
     this.props.navigator.push({
       component: SearchContainer,
       title: 'Search',

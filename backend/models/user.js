@@ -20,6 +20,7 @@ var userSchema = new Schema({
   balance: {
     type: Number,
     default: 10,
+  },
   destinationTag: { 
     type: Number,
     default: 0
