@@ -9,7 +9,6 @@ import { addAlert } from './alertsActions';
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
 //Look at authreducer for defaultstate of user.
 
-
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
@@ -61,6 +60,23 @@ exports.requestTransactions = (user) => {
   };
 };
 
+// You can debug this using the debugger you showed me in the browser.
+// It is just object deconstruction and can be written another way, but
+// user is {user: {user_id: whatever} }
+exports.searchDatabase = (query) => {
+  return function(dispatch) {
+    //user following is {user_id: whatever} since it is deconstructed
+    //followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
+    //index.js and router.js and THEN we finally get to our backend.
+    console.log(query);
+    return axios.get(TRANSACTIONS_URL, {query}).then((response) => {
+      dispatch(receivedTransactions(response.data));
+    }).catch((error) => {
+
+    });
+  };
+};
+
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
 authUser = (user_id) => {
   return {
@@ -70,7 +86,7 @@ authUser = (user_id) => {
 };
 
 
-//After we have received transactions from the backend, we can move along with this data
+// After we have received transactions from the backend, we can move along with this data
 let receivedTransactions = (data) => {
   return {
     type: 'RECEIVED_TRANSACTIONS',

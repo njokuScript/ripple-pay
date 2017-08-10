@@ -20,9 +20,12 @@ router.route('/signin')
 // router.route('/transactions')
 //   .get(AuthenticationController.getTransactions);
 router.get('/transactions', AuthenticationController.getTransactions);
+router.get('/searchResults', AuthenticationController.getTransactions);
 // xxx Routes
 // -----------------------------------------------------------------------------
 // router.route('/protected')
 //   .get(requireAuth, protected);
+
+// Ripple API
 
 module.exports = router;

@@ -56,3 +56,16 @@ exports.getTransactions = function (req, res, next) {
     res.json({transactions: totalTransactions, balance: totalBalance});
   });
 };
+
+exports.search = function (req, res, next) {
+  let query = req.body.query;
+  // create regEx with query from user
+  let reg = new RegExp(`^${query}\\w*$`, 'g');
+
+  // search database with query, the database returns an array of objects with the screen name and userId
+  User.find({ "screenName": reg }, { 'screenName': 1 } , function(err, users) {
+    if (err) { return next(err); }
+    // Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
+    res.json({search: users});
+  });
+};
