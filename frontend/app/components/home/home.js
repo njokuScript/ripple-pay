@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchContainer from '../search/search';
-import Wallet from '../wallet/wallet';
+import WalletContainer from '../wallet/walletContainer';
 import { unauthUser } from '../../actions';
 import {
     View, 
@@ -27,7 +27,6 @@ class Home extends React.Component {
   }
 
   navSearch() {
-    //  <SearchContainer /> ;
     this.props.navigator.push({
       component: SearchContainer,
       title: 'Search',
@@ -38,7 +37,8 @@ class Home extends React.Component {
   navWallet() {
     this.props.navigator.push({
       title: 'Wallet',
-      component: Wallet
+      component: WalletContainer,
+      navigationBarHidden: true
     });
   }
 
