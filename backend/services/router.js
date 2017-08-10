@@ -1,3 +1,6 @@
+//We can use our URL's to the backend and then make promises that will start controller actions.
+//Go to authenticationController next.
+
 const passport = require('passport');
 
 const AuthenticationController = require('../controllers/authentication_controller');

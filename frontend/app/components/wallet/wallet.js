@@ -7,8 +7,8 @@ import {
   Image, 
   Dimensions
 } from 'react-native';
-
 import Icon from 'react-native-vector-icons/Octicons';
+
 class Wallet extends React.Component {
   constructor(props) {
     super(props);
@@ -23,7 +23,7 @@ class Wallet extends React.Component {
       <View style={styles.container}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={this.backToHome.bind(this)}>
-            <Icon name="chevron-left" size={20} color="white"> </Icon>
+            <Icon name="chevron-left" size={20} color="white"></Icon>
           </TouchableOpacity>
           <Text style={styles.title}>
             Deposit

@@ -1,3 +1,5 @@
+//This is where everything begins when the server nodemon is started up. All the routes have v1 for this reason.
+
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
