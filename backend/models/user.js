@@ -20,14 +20,15 @@ var userSchema = new Schema({
   balance: {
     type: Number,
     default: 10
-  }, 
-  destinationTag: { 
+  },
+  destinationTag: {
     type: Number,
     default: 0
   },
   transactions: [{
     date: Date,
     amount: Number,
+    // default: [{Date, 10}]
   }]
 });
 

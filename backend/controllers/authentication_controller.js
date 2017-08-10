@@ -10,11 +10,14 @@ function tokenForUser(user) {
   }, config.secret);
 }
 
+//req.body is the object that is sent from the frontend. from the authactions.
+
 exports.signin = function(req, res, next) {
   var user = req.user;
   res.send({token: tokenForUser(user), user_id: user._id});
 };
 
+//req.body is {email: whatever, password: whatever}
 exports.signup = function(req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
@@ -37,11 +40,18 @@ exports.signup = function(req, res, next) {
   });
 };
 
+//User.findOne will return a promise and that promise takes the existingUser as a an Object that we can use to get
+//the user's transactions and balance through the database. I realized this by looking at the code above.
+
 exports.getTransactions = function (req, res, next) {
-  console.log(userObject);
-  let userId = req.body.user.user_id;
-  let userObject = User.findOne({id: userId});
-  let totalTransactions = userObject.transactions;
-  let totalBalance = userObject.balance;
-  res.send({ transactions: totalTransactions, balance: totalBalance});
+  let userId = req.body.user_id;
+  User.findOne({id: userId}, function(err, existingUser) {
+    if (err) { return next(err) }
+    let totalTransactions = existingUser.transactions;
+    let totalBalance = existingUser.balance;
+
+    //Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
+
+    res.json({transactions: totalTransactions, balance: totalBalance});
+  });
 };

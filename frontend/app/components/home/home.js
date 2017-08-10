@@ -3,12 +3,12 @@ import SearchContainer from '../search/search';
 import Wallet from '../wallet/wallet';
 import { unauthUser } from '../../actions';
 import {
-    View, 
-    Text, 
-    StyleSheet, 
-    TouchableOpacity, 
-    Image, 
-    Dimensions, 
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Image,
+    Dimensions,
     NavigatorIOS
   } from 'react-native';
 
@@ -22,8 +22,11 @@ class Home extends React.Component {
     this.props.unauthUser();
   }
 
-  componentWillMount() {
-    this.props.requestTransactions(this.props.user); 
+  //After the component has mounted with 0 for balance and and [] for transactions, we go to the database
+  //with this thunk action creator to make sure this is indeed the same or if there are transactions or a balance or if not.
+
+  componentDidMount() {
+    this.props.requestTransactions(this.props.user);
   }
 
   navSearch() {
@@ -58,13 +61,13 @@ class Home extends React.Component {
         <View style={styles.profileContainer}>
           <Text style={styles.xrpDisplay}>
             {this.props.balance} XRP
-          </Text>    
-        </View> 
+          </Text>
+        </View>
         <View style={styles.transactions}>
           <Text style={styles.xrpDisplay}>
             {this.props.transactions || []}
-          </Text>    
-        </View> 
+          </Text>
+        </View>
          {/* temp logout button for develpment */}
           <View style={styles.navContainer}>
             <TouchableOpacity onPress={this.onLogout}>
