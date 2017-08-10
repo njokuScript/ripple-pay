@@ -6,6 +6,10 @@ var validateEmail = (email) => {
   return (/\S+@\S+\.\S+/).test(email);
 };
 
+var validateScreenName = (screenName) => {
+  return (/^[a-zA-Z][0-9a-zA-Z]+$/).test(screenName);
+};
+
 var userSchema = new Schema({
   email: {
     type: String,
@@ -16,6 +20,13 @@ var userSchema = new Schema({
   },
   password: {
     type: String
+  },
+  screenName: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    required: 'Screen name is required',
+    validate: [validateScreenName, 'Please enter a valid screen name (no symbols)']
   },
   balance: {
     type: Number,
