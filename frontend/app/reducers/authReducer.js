@@ -17,14 +17,11 @@ var defaultState = {
 module.exports = (state=defaultState, action) => {
   Object.freeze(state);
   switch(action.type) {
-    //
     case 'AUTH_USER':
       return merge({}, {user_id: action.user_id});
-
       //Make the user_id undefined after logout.
     case 'UNAUTH_USER':
       return merge({}, {user_id: undefined});
-
       //We have action.data.stuff here because we have passed in 'data' from the received_transactions normal/non-thunk action of the
       //authactions.
       //action.data.transactions is an array of all the transactions and the other is the balance.

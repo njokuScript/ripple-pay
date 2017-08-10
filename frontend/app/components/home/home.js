@@ -1,14 +1,14 @@
 import React from 'react';
 import SearchContainer from '../search/search';
-import Wallet from '../wallet/wallet';
+import WalletContainer from '../wallet/walletContainer';
 import { unauthUser } from '../../actions';
 import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    Dimensions,
+    View, 
+    Text, 
+    StyleSheet, 
+    TouchableOpacity, 
+    Image, 
+    Dimensions, 
     NavigatorIOS
   } from 'react-native';
 
@@ -22,6 +22,7 @@ class Home extends React.Component {
     this.props.unauthUser();
   }
 
+
   //After the component has mounted with 0 for balance and and [] for transactions, we go to the database
   //with this thunk action creator to make sure this is indeed the same or if there are transactions or a balance or if not.
 
@@ -30,7 +31,11 @@ class Home extends React.Component {
   }
 
   navSearch() {
-    //  <SearchContainer /> ;
+  componentWillMount() {
+    this.props.requestTransactions(this.props.user); 
+  }
+
+  navSearch() {
     this.props.navigator.push({
       component: SearchContainer,
       title: 'Search',
@@ -41,10 +46,10 @@ class Home extends React.Component {
   navWallet() {
     this.props.navigator.push({
       title: 'Wallet',
-      component: Wallet
+      component: WalletContainer,
+      navigationBarHidden: true
     });
   }
-
 
   render() {
     return (
