@@ -21,17 +21,19 @@ exports.signin = function(req, res, next) {
 exports.signup = function(req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
-  if (!email || !password) {
-    return res.status(422).json({error: "You must provide an email and password"});
+  let screenName = req.body.screenName;
+  if (!email || !password || !screenName) {
+    return res.status(422).json({error: "You must provide an email, password & screen name"});
   }
 
-  // Check if user already exists, send error if they do
+  //Check if user already exists, send error if they do
   User.findOne({email: email}, function(err, existingUser) {
     if (err) { return next(err) }
     if (existingUser) {return res.status(422).json({error: "Email taken"})}
     var user = new User({
       email: email,
-      password: password
+      password: password,
+      screenName: screenName
     });
     user.save(function(err) {
       if (err) { return next(err); }
@@ -40,8 +42,8 @@ exports.signup = function(req, res, next) {
   });
 };
 
-//User.findOne will return a promise and that promise takes the existingUser as a an Object that we can use to get
-//the user's transactions and balance through the database. I realized this by looking at the code above.
+// User.findOne will return a promise and that promise takes the existingUser as a an Object that we can use to get
+// the user's transactions and balance through the database. I realized this by looking at the code above.
 
 exports.getTransactions = function (req, res, next) {
   let userId = req.body.user_id;
@@ -51,7 +53,6 @@ exports.getTransactions = function (req, res, next) {
     let totalBalance = existingUser.balance;
 
     //Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
-
     res.json({transactions: totalTransactions, balance: totalBalance});
   });
 };

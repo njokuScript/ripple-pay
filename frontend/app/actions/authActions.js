@@ -26,9 +26,10 @@ exports.loginUser = (email, password) => {
   };
 };
 
-exports.signupUser = (email, password) => {
+exports.signupUser = (email, password, screenName) => {
+  console.log(screenName);
   return function(dispatch) {
-    return axios.post(SIGNUP_URL, {email, password}).then((response) => {
+    return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
       var {user_id, token} = response.data;
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
@@ -42,7 +43,6 @@ exports.signupUser = (email, password) => {
   };
 };
 
-
 //You can debug this using the debugger you showed me in the browser.
 //It is just object deconstruction and can be written another way, but
 //user is {user: {user_id: whatever} }
@@ -52,7 +52,7 @@ exports.requestTransactions = (user) => {
     //user following is {user_id: whatever} since it is deconstructed
     //followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     //index.js and router.js and THEN we finally get to our backend.
-
+    console.log(user);
     return axios.get(TRANSACTIONS_URL, {user}).then((response) => {
       dispatch(receivedTransactions(response.data));
     }).catch((error) => {
@@ -61,8 +61,7 @@ exports.requestTransactions = (user) => {
   };
 };
 
-
-//Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
+// Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
 authUser = (user_id) => {
   return {
     type: 'AUTH_USER',
