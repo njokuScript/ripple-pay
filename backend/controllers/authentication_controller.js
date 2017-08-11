@@ -45,6 +45,10 @@ exports.signup = function(req, res, next) {
 // User.findOne will return a promise and that promise takes the existingUser as a an Object that we can use to get
 // the user's transactions and balance through the database. I realized this by looking at the code above.
 
+//I'm gonna add the ripple api calls to this page so we can get stuff we want from ripple
+
+There will be a call to get my transactions from Ripple and then a call to the operational address w/destination tag that we gave to this user
+
 exports.getTransactions = function (req, res, next) {
   let userId = req.body.user_id;
   User.findOne({id: userId}, function(err, existingUser) {
