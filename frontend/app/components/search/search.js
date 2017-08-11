@@ -12,14 +12,37 @@ import Icon from 'react-native-vector-icons/Octicons';
 class Search extends React.Component {
   constructor(props) {
     super(props);
-  }
-
-  search(query) {
-    // search database and render display results
+    console.log(this.props);
+    this.requestUsers = this.props.requestUsers.bind(this);
+    this.displayResults = this.displayResults.bind(this);
+    this.state = {
+      query: ""
+    };
   }
 
   displayResults(){
+    // i am trying to make it not print .map undefined, but when i do this it never updates the state
+    // with the search results
+    // i am using length === 0 as the test case because this is the deafault state
+    if (this.props.users.length === 0) {
+      return;
+    } else {
+    // our state shape is weird, this is where the results populate
+    // this.props.users.data.search, believe me, i saw them print to the app
+    const selectedUsers = this.props.users.data.search.map((user, idx) => {
+      return (
+        <View style={styles.resultItem} key={idx}>
+          <Text style={styles.title}>{user}</Text>
+        </View>
+      );
+    });
 
+    return (
+      <View style={styles.resultContainer}>
+        {selectedUsers}
+      </View>
+    );
+    }
   }
 
   backToHome() {
@@ -42,15 +65,19 @@ class Search extends React.Component {
              need better understanding of flex-box  */}
        </Text>
       </View>
-            {/* need to figure out how to do instant lookup
-                once we have search implemented  */}
       <View style={styles.inputContainer}>
         <TextInput
           onChangeText={(query) => { 
-
+            this.setState({query: query});
+            this.requestUsers(this.state.query);
           }}
           placeholder="Enter Username"
           style={styles.input} />
+      </View>
+      <View style={styles.resultsContainer}>
+        {/* i made a conditional in this results to try to print the results only when they are in the state,
+            not working, but close i think  */}
+        {this.displayResults()}
       </View>
      </View>
    );
@@ -89,6 +116,12 @@ class Search extends React.Component {
     input: {
       height: 26,
       backgroundColor: 'white'
+    },
+    resultItem: {
+      flex: 1
+    },
+    resultContainer: {
+      flex: 1
     }
  });
 

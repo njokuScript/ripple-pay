@@ -11,6 +11,7 @@ import { merge } from 'lodash';
 var defaultState = {
   user_id: undefined,
   transactions: [],
+  users: [],
   balance: 0
 };
 
@@ -23,10 +24,12 @@ module.exports = (state=defaultState, action) => {
     case 'UNAUTH_USER':
       return merge({}, {user_id: undefined});
       //We have action.data.stuff here because we have passed in 'data' from the received_transactions normal/non-thunk action of the
-      //authactions.
+      //authActions.
       //action.data.transactions is an array of all the transactions and the other is the balance.
     case 'RECEIVED_TRANSACTIONS':
       return merge({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+    case 'RECEIVED_USERS':
+      return merge({}, state, {users: action.users});
     default:
       return state;
   }

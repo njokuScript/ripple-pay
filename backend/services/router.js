@@ -1,5 +1,5 @@
-//We can use our URL's to the backend and then make promises that will start controller actions.
-//Go to authenticationController next.
+// We can use our URL's to the backend and then make promises that will start controller actions.
+// Go to authenticationController next.
 
 const passport = require('passport');
 
@@ -20,7 +20,8 @@ router.route('/signin')
 // router.route('/transactions')
 //   .get(AuthenticationController.getTransactions);
 router.get('/transactions', AuthenticationController.getTransactions);
-router.get('/searchResults', AuthenticationController.getTransactions);
+router.get('/search', AuthenticationController.search);
+
 // xxx Routes
 // -----------------------------------------------------------------------------
 // router.route('/protected')
