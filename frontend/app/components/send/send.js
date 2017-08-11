@@ -1,8 +1,7 @@
 import React from 'react';
 import HomeContainer from '../home/homeContainer';
+import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
-import SendContainer from '../send/send';
-import { reduxForm } from 'redux-form';
 
 import { View,
   Text,
@@ -11,74 +10,64 @@ import { View,
   Image,
   Dimensions,
   TextInput } from 'react-native';
-  import Tabs from 'react-native-tabs';
+import Tabs from 'react-native-tabs';
 
-import Icon from 'react-native-vector-icons/Octicons';
-class Search extends React.Component {
+
+class Send extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {page: 'source'};
+    this.state = {page: 'stream'};
   }
 
-  search(query) {
-    // search database and render display results
-  }
+navHome() {
+  this.props.navigator.push({
+    title: 'Home',
+    component: HomeContainer,
+    navigationBarHidden: true
+  });
+}
 
-  displayResults(){
+navSearch() {
+  this.props.navigator.push({
+    title: 'Search',
+    component: SearchContainer,
+    navigationBarHidden: true
+  });
+}
 
-  }
+navWallet() {
+  this.props.navigator.push({
+    title: 'Wallet',
+    component: WalletContainer,
+    navigationBarHidden: true
+  });
+}
 
-  navHome() {
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navWallet() {
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSend() {
-    this.props.navigator.push({
-      title: 'Send',
-      component: SendContainer,
-      navigationBarHidden: true
-    });
-  }
   render()
  {
    return (
      <View style={styles.mainContainer}>
        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
            selectedStyle={{color:'red'}} onSelect={el=>this.setState({page:el.props.name})}>
-         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}><Text>Cloud</Text></TouchableOpacity>
-         <Text>Source</Text>
+         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}><Text>Cloud</Text></TouchableOpacity><TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+         <Text>Source</Text></TouchableOpacity>
            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
              <Text>Pool</Text>
            </TouchableOpacity>
-         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}><Text>Stream</Text></TouchableOpacity>
+         <Text name="Stream">Stream</Text>
 
      </Tabs>
-     <View style={styles.inputContainer}>
-
-     </View>
      <Text style={styles.welcome}>
-         Source - Search for your Ripple contacts
+        Stream - Send your Ripple
      </Text>
      <Text style={styles.instructions}>
          Selected page: {this.state.page}
      </Text>
-     <View style={styles.navContainer}>
-       <TouchableOpacity onPress={this.onLogout}>
-         <Text>logout</Text>
-       </TouchableOpacity>
-     </View>
+     <View>
+         <TouchableOpacity onPress={this.onLogout}>
+           <Text>logout</Text>
+         </TouchableOpacity>
+      </View>
      </View>
 
    );
@@ -88,8 +77,8 @@ class Search extends React.Component {
  const styles=StyleSheet.create({
    mainContainer: {
       flex: 1,
-      // justifyContent: 'center',
-      // alignItems: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
       backgroundColor: '#335B7B',
     },
    welcome: {
@@ -116,11 +105,11 @@ class Search extends React.Component {
       backgroundColor: 'white'
     },
     instructions: {
-     textAlign: 'center',
-     color: '#333333',
-     marginBottom: 5,
-     fontSize: 15
-   }
+      textAlign: 'center',
+      color: '#333333',
+      marginBottom: 5,
+      fontSize: 15
+    }
  });
 
- export default Search;
+ export default Send;
