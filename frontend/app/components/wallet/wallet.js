@@ -40,34 +40,34 @@ class Wallet extends React.Component {
       component: SendContainer,
       title: 'Send',
       navigationBarHidden: true
-    })
+    });
   }
-
-
 
   render()
   {
     return (
       <View style={styles.mainContainer}>
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-            selectedStyle={{color:'red'}} onSelect={el=>this.setState({page:el.props.name})}>
-          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}><Text>Cloud</Text></TouchableOpacity>
-          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}><Text>Source</Text></TouchableOpacity>
-              <Text>Pool</Text>
-          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}><Text>Strean</Text></TouchableOpacity>
-
+             onSelect={el=>this.setState({page:el.props.name})}>
+          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+            <Text>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+            <Text>Search</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text>Deposit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+            <Text>Send</Text>
+          </TouchableOpacity>
       </Tabs>
-        <Text style={styles.welcome}>
+         <Text style={styles.welcome}>
             Pool - Store your Ripple
         </Text>
         <Text style={styles.instructions}>
             Selected page: {this.state.page}
-        </Text>
-        <View style={styles.navContainer}>
-          <TouchableOpacity onPress={this.onLogout}>
-            <Text>logout</Text>
-          </TouchableOpacity>
-       </View>
+        </Text> 
       </View>
     );
   }

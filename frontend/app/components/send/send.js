@@ -48,28 +48,32 @@ navWallet() {
    return (
      <View style={styles.mainContainer}>
        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-           selectedStyle={{color:'red'}} onSelect={el=>this.setState({page:el.props.name})}>
-         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}><Text>Cloud</Text></TouchableOpacity><TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-         <Text>Source</Text></TouchableOpacity>
-           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-             <Text>Pool</Text>
-           </TouchableOpacity>
-         <Text name="Stream">Stream</Text>
+           onSelect={el=>this.setState({page:el.props.name})}>
 
-     </Tabs>
-     <Text style={styles.welcome}>
-        Stream - Send your Ripple
-     </Text>
-     <Text style={styles.instructions}>
-         Selected page: {this.state.page}
-     </Text>
-     <View>
-         <TouchableOpacity onPress={this.onLogout}>
-           <Text>logout</Text>
+         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+           <Text>Home</Text>
+        </TouchableOpacity>
+
+          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+          <Text>Search</Text>
          </TouchableOpacity>
-      </View>
-     </View>
 
+           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+             <Text>Deposit</Text>
+           </TouchableOpacity>
+
+           <TouchableOpacity>
+              <Text>Send</Text>
+          </TouchableOpacity>
+     </Tabs>
+
+      <Text style={styles.welcome}>
+        Stream - Send your Ripple
+     </Text> 
+      <Text style={styles.instructions}>
+         Selected page: {this.state.page}
+     </Text> 
+     </View>
    );
  }}
 

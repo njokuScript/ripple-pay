@@ -62,16 +62,20 @@ class Home extends React.Component {
     return (
       <View style={styles.mainContainer}>
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-            selectedStyle={{color:'red'}} onSelect={el=>this.setState({page:el.props.name})}>
-          <Text>Cloud</Text>
-          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} ><Text>Source</Text></TouchableOpacity>
+             onSelect={el=>this.setState({page:el.props.name})}>
+          <TouchableOpacity>
+              <Text>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
+            <Text>Search</Text></TouchableOpacity>
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Pool</Text>
+              <Text>Deposit</Text>
             </TouchableOpacity>
-          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}><Text>Stream</Text></TouchableOpacity>
-
+          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+            <Text>Send</Text>
+            </TouchableOpacity>
       </Tabs>
-        <Text style={styles.welcome}>
+        {/* <Text style={styles.welcome}>
             Welcome to Ripple Pay
         </Text>
         <Text style={styles.instructions}>
@@ -79,7 +83,7 @@ class Home extends React.Component {
         </Text>
         <Text style={styles.instructions}>
             Selected page: {this.state.page}
-        </Text>
+        </Text> */}
         <View style={styles.navContainer}>
           <TouchableOpacity onPress={this.onLogout}>
             <Text>logout</Text>
@@ -106,7 +110,6 @@ const styles = StyleSheet.create({
    },
    instructions: {
      textAlign: 'center',
-     color: '#333333',
      marginBottom: 5,
      fontSize: 15
    },

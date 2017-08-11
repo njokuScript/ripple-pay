@@ -55,30 +55,30 @@ class Search extends React.Component {
  {
    return (
      <View style={styles.mainContainer}>
-       <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-           selectedStyle={{color:'red'}} onSelect={el=>this.setState({page:el.props.name})}>
-         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}><Text>Cloud</Text></TouchableOpacity>
-         <Text>Source</Text>
-           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-             <Text>Pool</Text>
-           </TouchableOpacity>
-         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}><Text>Stream</Text></TouchableOpacity>
-
+      <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+           onSelect={el=>this.setState({page:el.props.name})}>
+        <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+          <Text>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+         <Text>Search</Text>
+        </TouchableOpacity>
+          <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+            <Text>Deposit</Text>
+          </TouchableOpacity>
+        <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+          <Text>Send</Text>
+      </TouchableOpacity>
      </Tabs>
-     <View style={styles.inputContainer}>
 
+     <View style={styles.inputContainer}>
      </View>
-     <Text style={styles.welcome}>
+      <Text style={styles.welcome}>
          Source - Search for your Ripple contacts
      </Text>
      <Text style={styles.instructions}>
          Selected page: {this.state.page}
-     </Text>
-     <View style={styles.navContainer}>
-       <TouchableOpacity onPress={this.onLogout}>
-         <Text>logout</Text>
-       </TouchableOpacity>
-     </View>
+     </Text> 
      </View>
 
    );
@@ -88,8 +88,6 @@ class Search extends React.Component {
  const styles=StyleSheet.create({
    mainContainer: {
       flex: 1,
-      // justifyContent: 'center',
-      // alignItems: 'center',
       backgroundColor: '#335B7B',
     },
    welcome: {
