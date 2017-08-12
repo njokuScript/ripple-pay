@@ -11,6 +11,7 @@ import { View,
   Dimensions,
   TextInput } from 'react-native';
 import Tabs from 'react-native-tabs';
+import Button from 'react-native-buttons';
 
 
 class Send extends React.Component {
@@ -43,10 +44,24 @@ navWallet() {
   });
 }
 
+sendRipple() {
+  return;
+}
+
+requestRipple() {
+  return;
+}
+
+
+
   render()
  {
    return (
      <View style={styles.mainContainer}>
+       <View style={styles.buttonContainer}>
+         <Button style={styles.button} onPress={this.sendRipple.bind(this)}>Send</Button>
+         <Button style={styles.button} onPress={this.requestRipple.bind(this)}>Request</Button>
+       </View>
        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
            onSelect={el=>this.setState({page:el.props.name})}>
 
@@ -69,10 +84,10 @@ navWallet() {
 
       <Text style={styles.welcome}>
         Stream - Send your Ripple
-     </Text> 
+     </Text>
       <Text style={styles.instructions}>
          Selected page: {this.state.page}
-     </Text> 
+     </Text>
      </View>
    );
  }}
@@ -84,6 +99,20 @@ navWallet() {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#335B7B',
+    },
+    buttonContainer: { //Needs proper flexing from jon
+
+      flexDirection: 'row',
+      // margin: 8
+    },
+    button: {
+
+      justifyContent: 'space-around',
+      padding: 14,
+      margin: 7,
+      backgroundColor: '#E8C25E',
+      borderRadius: 6,
+
     },
    welcome: {
      fontSize: 20,

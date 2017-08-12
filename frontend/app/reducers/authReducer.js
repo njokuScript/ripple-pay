@@ -11,22 +11,26 @@ import { merge } from 'lodash';
 var defaultState = {
   user_id: undefined,
   transactions: [],
+  users: [],
   balance: 0
 };
 
+//We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
 module.exports = (state=defaultState, action) => {
   Object.freeze(state);
   switch(action.type) {
     case 'AUTH_USER':
-      return merge({}, {user_id: action.user_id});
+      return merge({}, state, {user_id: action.user_id});
       //Make the user_id undefined after logout.
     case 'UNAUTH_USER':
       return merge({}, {user_id: undefined});
       //We have action.data.stuff here because we have passed in 'data' from the received_transactions normal/non-thunk action of the
-      //authactions.
+      //authActions.
       //action.data.transactions is an array of all the transactions and the other is the balance.
     case 'RECEIVED_TRANSACTIONS':
       return merge({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+    case 'RECEIVED_USERS':
+      return Object.assign({}, state, {users: action.users.data.search});
     default:
       return state;
   }

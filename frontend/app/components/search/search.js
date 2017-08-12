@@ -17,15 +17,29 @@ import Icon from 'react-native-vector-icons/Octicons';
 class Search extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {page: 'source'};
+    this.requestUsers = this.props.requestUsers.bind(this);
+    this.makeUsers = this.makeUsers.bind(this);
+    this.state = {
+      query: "",
+      page: 'source'
+    };
   }
 
-  search(query) {
-    // search database and render display results
-  }
+  // componentWillReceiveProps(newProps){
+  //   console.log(this.props.users.data.search);
+  //   console.log(newProps.users.data.search);
+  //   if ( this.props.users.data.search !== newProps.users.data.search )
+  //   {
+  //     this.setState({ results: newProps.users.data.search });
+  //   }
+  // }
 
-  displayResults(){
-
+  componentDidUpdate(prevProps,prevState){
+    // console.log("I updated")
+    if ( prevState.query !== this.state.query )
+    {
+      this.requestUsers(this.state.query)
+    }
   }
 
   navHome() {
@@ -43,6 +57,7 @@ class Search extends React.Component {
       navigationBarHidden: true
     });
   }
+  //You can store a constant as stuff that is not wrapped in jsx tags
 
   navSend() {
     this.props.navigator.push({
@@ -51,8 +66,28 @@ class Search extends React.Component {
       navigationBarHidden: true
     });
   }
-  render()
- {
+  makeUsers(){
+    let theUsers;
+    if ( this.props.users )
+    {
+      theUsers = this.props.users.map((user, idx) => {
+        return (
+          <View style={styles.resultItem} key={idx}>
+            <Text style={styles.title}>{user}</Text>
+          </View>
+        );
+      });
+      return theUsers;
+    }
+    else
+    {
+      return
+    }
+  }
+
+  render() {
+    // const theUsers =
+    // console.log(theUsers, "Iam here in render");
    return (
      <View style={styles.mainContainer}>
       <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
@@ -72,6 +107,31 @@ class Search extends React.Component {
      </Tabs>
 
      <View style={styles.inputContainer}>
+       <Text style={styles.title}>
+          Search
+       </Text>
+       <Text>
+         {/* not sure how to make content align properly without this.
+             need better understanding of flex-box  */}
+       </Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          value={this.state.query}
+          onChangeText={
+            (query) => {
+              this.setState({query: query});
+            }
+          }
+          autoFocus={true}
+          placeholder="Enter Username"
+          style={styles.input} />
+      </View>
+      <View style={styles.resultsContainer}>
+        {/* i made a conditional in this results to try to print the results only when they are in the state,
+            not working, but close i think  */}
+        {this.makeUsers()}
+      </View>
      </View>
       <Text style={styles.welcome}>
          Source - Search for your Ripple contacts
@@ -118,7 +178,13 @@ class Search extends React.Component {
      color: '#333333',
      marginBottom: 5,
      fontSize: 15
-   }
+   },
+    resultItem: {
+      flex: 1
+    },
+    resultContainer: {
+      flex: 1
+    }
  });
 
  export default Search;
