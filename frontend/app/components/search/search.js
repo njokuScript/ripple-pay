@@ -1,56 +1,98 @@
 import React from 'react';
 import { reduxForm } from 'redux-form';
 
-import { View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Image, 
+import { View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
   Dimensions,
   TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 class Search extends React.Component {
   constructor(props) {
     super(props);
+    this.requestUsers = this.props.requestUsers.bind(this);
+    this.makeUsers = this.makeUsers.bind(this);
+    this.state = {
+      query: "",
+    };
   }
 
-  search(query) {
-    // search database and render display results
-  }
+  // componentWillReceiveProps(newProps){
+  //   console.log(this.props.users.data.search);
+  //   console.log(newProps.users.data.search);
+  //   if ( this.props.users.data.search !== newProps.users.data.search )
+  //   {
+  //     this.setState({ results: newProps.users.data.search });
+  //   }
+  // }
 
-  displayResults(){
-
+  componentDidUpdate(prevProps,prevState){
+    // console.log("I updated")
+    if ( prevState.query !== this.state.query )
+    {
+      this.requestUsers(this.state.query)
+    }
   }
 
   backToHome() {
     this.props.navigator.pop();
   }
+  //You can store a constant as stuff that is not wrapped in jsx tags
 
-  render()
- {
+  makeUsers(){
+    let theUsers;
+    if ( this.props.users )
+    {
+      theUsers = this.props.users.map((user, idx) => {
+        return (
+          <View style={styles.resultItem} key={idx}>
+            <Text style={styles.title}>{user}</Text>
+          </View>
+        );
+      });
+      return theUsers;
+    }
+    else
+    {
+      return
+    }
+  }
+
+  render() {
+    // const theUsers =
+    // console.log(theUsers, "Iam here in render");
    return (
      <View style={styles.container}>
       <View style={styles.topBar}>
         <TouchableOpacity onPress={this.backToHome.bind(this)}>
           <Icon name="chevron-left" size={20} color="white"> </Icon>
         </TouchableOpacity>
-       <Text style={styles.title}> 
+       <Text style={styles.title}>
           Search
        </Text>
-       <Text> 
+       <Text>
          {/* not sure how to make content align properly without this.
              need better understanding of flex-box  */}
        </Text>
       </View>
-            {/* need to figure out how to do instant lookup
-                once we have search implemented  */}
       <View style={styles.inputContainer}>
         <TextInput
-          onChangeText={(query) => { 
-
-          }}
+          value={this.state.query}
+          onChangeText={
+            (query) => {
+              this.setState({query: query});
+            }
+          }
+          autoFocus={true}
           placeholder="Enter Username"
           style={styles.input} />
+      </View>
+      <View style={styles.resultsContainer}>
+        {/* i made a conditional in this results to try to print the results only when they are in the state,
+            not working, but close i think  */}
+        {this.makeUsers()}
       </View>
      </View>
    );
@@ -89,6 +131,12 @@ class Search extends React.Component {
     input: {
       height: 26,
       backgroundColor: 'white'
+    },
+    resultItem: {
+      flex: 1
+    },
+    resultContainer: {
+      flex: 1
     }
  });
 
