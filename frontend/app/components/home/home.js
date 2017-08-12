@@ -25,9 +25,8 @@ class Home extends React.Component {
     this.props.unauthUser();
   }
 
-
-  //After the component has mounted with 0 for balance and and [] for transactions, we go to the database
-  //with this thunk action creator to make sure this is indeed the same or if there are transactions or a balance or if not.
+  // After the component has mounted with 0 for balance and [] for transactions, we go to the database
+  // with this thunk action creator to make sure this is indeed the same or if there are transactions or a balance or if not.
 
   componentDidMount() {
     this.props.requestTransactions(this.props.user);

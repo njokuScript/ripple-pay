@@ -10,14 +10,21 @@ import {
 
 import {loginUser, signupUser, addAlert} from '../actions';
 
-var Login = React.createClass({
-  getInitialState: function() {
-    return {
-      loading: false
+class Login extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      loading: false,
+      enteringSite: false
     };
-  },
-  onSignIn: function() {
-    var {dispatch, fields: {email, password}} = this.props;
+    this.onSignIn = this.onSignIn.bind(this);
+    this.onSignUp = this.onSignUp.bind(this);
+    this.renderScreenName = this.renderScreenName.bind(this);
+    this.enterSite = this.enterSite.bind(this);
+  }
+
+  onSignIn() {
+    let {dispatch, fields: {email, password}} = this.props;
     this.setState({
       loading: true
     });
@@ -26,22 +33,50 @@ var Login = React.createClass({
         loading: false
       });
     });
-  },
-  onSignUp: function() {
-    var {dispatch, fields: {email, password}} = this.props;
+  }
+
+  onSignUp() {
+    let {dispatch, fields: {email, password, screenName}} = this.props;
     this.setState({
       loading: true
     });
-    dispatch(signupUser(email.value, password.value)).then(() => {
+    dispatch(signupUser(email.value, password.value, screenName.value)).then(() => {
       this.setState({
         loading: false
       });
     });
-  },
-  render() {
-    var {fields: {email, password}} = this.props;
+  }
 
-    var renderError = (field) => {
+  enterSite() {
+    if (!this.state.enteringSite) {
+      this.setState({enteringSite: true});
+    } else {
+      return this.onSignUp();
+    }
+  }
+
+  renderScreenName(screenName, renderError) {
+    if (this.state.enteringSite) {
+      return (
+      <View style={styles.field}>
+        <TextInput
+          {...screenName}
+          placeholder="Screen Name"
+          style={styles.textInput} />
+        <View>
+          {renderError(screenName)}
+        </View>
+      </View>
+      );
+    } else {
+      return;
+    }
+  }
+
+  render() {
+    let {fields: {email, password, screenName}} = this.props;
+
+    let renderError = (field) => {
       if (field.touched && field.error) {
         return (
           <Text style={styles.formError}>{field.error}</Text>
@@ -83,24 +118,25 @@ var Login = React.createClass({
             {renderError(password)}
             </View>
           </View>
+          {this.renderScreenName(screenName, renderError)}
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={this.onSignIn}>
               <Text style={styles.button}>
                 login
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={this.onSignUp}>
+            <TouchableOpacity onPress={this.enterSite}>
               <Text style={styles.button}>
                 sign up
-              </Text>
+             </Text>
             </TouchableOpacity>
           </View>
         </View>
       );
     }
-
   }
-});
+}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -114,7 +150,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     padding: 10,     
     alignItems: 'center',
-    
   },
 
   title: {
@@ -125,8 +160,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     top: 60,
-    fontFamily: 'Apple SD Gothic Neo'
-    
+    fontFamily: 'Kohinoor Bangla'
   },
 
   field: {
@@ -141,32 +175,24 @@ const styles = StyleSheet.create({
 
   textInput: {
     height: 26,
-    fontFamily: 'Apple SD Gothic Neo'
+    fontFamily: 'Kohinoor Bangla'
   },
 
   buttonContainer: {
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 100,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.9,
-    
-    
-    shadowRadius: 1,
-
+    top: 100
   },
   button: {
     fontSize: 30,
     color: '#F2CFB1',
-    fontFamily: 'Copperplate',
+    fontFamily: 'Kohinoor Bangla',
     borderWidth: 1,
     borderRadius: 6,
     borderColor: '#ddd',
     borderBottomWidth: 0,
-  
     shadowOpacity: 0.3,
-    // shadowColor: '#000',
     padding: 7
   },
   formError: {
@@ -174,19 +200,22 @@ const styles = StyleSheet.create({
   }
 });
 
-var validate = (formProps) => {
-  var errors = {};
+let validate = (formProps) => {
+  let errors = {};
   if (!formProps.email) {
     errors.email = "Please enter an email.";
   }
   if (!formProps.password) {
     errors.password = "Please enter a password.";
   }
+  if (!formProps.screenName) {
+    errors.screenName = "Please enter a screen name.";
+  }
   return errors;
 };
 
 module.exports = reduxForm({
   form: 'login',
-  fields: ['email', 'password'],
+  fields: ['email', 'password', 'screenName'],
   validate: validate
 }, null, null)(Login);

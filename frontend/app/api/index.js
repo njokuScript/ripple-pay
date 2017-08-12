@@ -6,4 +6,5 @@ var API_URL = 'http://localhost:3000/v1';
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
+exports.SEARCH_USERS_URL = `${API_URL}/search`;
 
