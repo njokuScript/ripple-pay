@@ -1,4 +1,7 @@
 import React from 'react';
+import HomeContainer from '../home/homeContainer';
+import WalletContainer from '../wallet/walletContainer';
+import SendContainer from '../send/send';
 import { reduxForm } from 'redux-form';
 
 import { View,
@@ -8,6 +11,8 @@ import { View,
   Image,
   Dimensions,
   TextInput } from 'react-native';
+  import Tabs from 'react-native-tabs';
+
 import Icon from 'react-native-vector-icons/Octicons';
 class Search extends React.Component {
   constructor(props) {
@@ -16,6 +21,7 @@ class Search extends React.Component {
     this.makeUsers = this.makeUsers.bind(this);
     this.state = {
       query: "",
+      page: 'source'
     };
   }
 
@@ -36,11 +42,30 @@ class Search extends React.Component {
     }
   }
 
-  backToHome() {
-    this.props.navigator.pop();
+  navHome() {
+    this.props.navigator.push({
+      title: 'Home',
+      component: HomeContainer,
+      navigationBarHidden: true
+    });
+  }
+
+  navWallet() {
+    this.props.navigator.push({
+      title: 'Wallet',
+      component: WalletContainer,
+      navigationBarHidden: true
+    });
   }
   //You can store a constant as stuff that is not wrapped in jsx tags
 
+  navSend() {
+    this.props.navigator.push({
+      title: 'Send',
+      component: SendContainer,
+      navigationBarHidden: true
+    });
+  }
   makeUsers(){
     let theUsers;
     if ( this.props.users )
@@ -64,11 +89,24 @@ class Search extends React.Component {
     // const theUsers =
     // console.log(theUsers, "Iam here in render");
    return (
-     <View style={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={this.backToHome.bind(this)}>
-          <Icon name="chevron-left" size={20} color="white"> </Icon>
+     <View style={styles.mainContainer}>
+      <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+           onSelect={el=>this.setState({page:el.props.name})}>
+        <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+          <Text>Home</Text>
         </TouchableOpacity>
+        <TouchableOpacity>
+         <Text>Search</Text>
+        </TouchableOpacity>
+          <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+            <Text>Deposit</Text>
+          </TouchableOpacity>
+        <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+          <Text>Send</Text>
+      </TouchableOpacity>
+     </Tabs>
+
+     <View style={styles.inputContainer}>
        <Text style={styles.title}>
           Search
        </Text>
@@ -95,25 +133,28 @@ class Search extends React.Component {
         {this.makeUsers()}
       </View>
      </View>
+      <Text style={styles.welcome}>
+         Source - Search for your Ripple contacts
+     </Text>
+     <Text style={styles.instructions}>
+         Selected page: {this.state.page}
+     </Text> 
+     </View>
+
    );
  }}
 
  const {width, height} = Dimensions.get('window');
  const styles=StyleSheet.create({
-   container: {
-     flex: 1,
-     justifyContent: 'flex-start',
-     alignItems: 'stretch',
-     backgroundColor: '#335B7B'
-   },
-    topBar: {
-      padding: 12,
-      paddingTop:28,
-      paddingBottom: 8,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center'
+   mainContainer: {
+      flex: 1,
+      backgroundColor: '#335B7B',
     },
+   welcome: {
+     fontSize: 20,
+     textAlign: 'center',
+     margin: 10,
+   },
     title: {
       color: 'white',
       fontSize: 20,
@@ -132,6 +173,12 @@ class Search extends React.Component {
       height: 26,
       backgroundColor: 'white'
     },
+    instructions: {
+     textAlign: 'center',
+     color: '#333333',
+     marginBottom: 5,
+     fontSize: 15
+   },
     resultItem: {
       flex: 1
     },
