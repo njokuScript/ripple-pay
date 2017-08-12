@@ -8,7 +8,6 @@ const mapStateToProps = ({user}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  // updateFilter: (query) => dispatch(updateFilter(query))
   requestUsers: (query) => dispatch(requestUsers(query))
 });
 

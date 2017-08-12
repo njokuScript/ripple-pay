@@ -64,6 +64,10 @@ exports.getTransactions = function (req, res, next) {
 
 exports.search = function (req, res, next) {
   let item = req.query;
+
+  //Dont add strings together, concatenate them since adding together adds 1byte of memory per string character - dev
+
+  // let reg = new RegExp(`^${item}\\w*$`, 'i')
   console.log(req.query);
   console.log('+++++++++++++');
   // you can see the correct query print to the server console, however
@@ -71,18 +75,19 @@ exports.search = function (req, res, next) {
   // so i did this cuz i didn't know how to get the key
   Object.keys(item)[0];
   let key = Object.keys(item)[0];
+  let reg = new RegExp(`^${item[key]}\\w*$` , 'i');
 
   // this is how we make the regex work
-  let reg = new RegExp('^' + item[key] + '\\w*$' , 'i');
   // you can see the correct regex print to the server console
   console.log(reg);
   console.log('+++++++++++++');
   User.find({ "screenName": reg } , function(err, users) {
     if (err) { return next(err); }
+    console.log(users);;
     // Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
     res.json({search: users.map((user) => {
       console.log("Username: ",user.screenName);
-      return user.screenName;    
+      return user.screenName;
     }).sort()});
   });
 };
