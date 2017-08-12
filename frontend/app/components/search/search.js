@@ -90,57 +90,39 @@ class Search extends React.Component {
     // console.log(theUsers, "Iam here in render");
    return (
      <View style={styles.mainContainer}>
-      <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-           onSelect={el=>this.setState({page:el.props.name})}>
-        <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-          <Text>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-         <Text>Search</Text>
-        </TouchableOpacity>
-          <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text>Deposit</Text>
+        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+             onSelect={el=>this.setState({page:el.props.name})}>
+          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+            <Text>Home</Text>
           </TouchableOpacity>
-        <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-          <Text>Send</Text>
-      </TouchableOpacity>
-     </Tabs>
-
-     <View style={styles.inputContainer}>
-       <Text style={styles.title}>
-          Search
-       </Text>
-       <Text>
-         {/* not sure how to make content align properly without this.
-             need better understanding of flex-box  */}
-       </Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          value={this.state.query}
-          onChangeText={
-            (query) => {
-              this.setState({query: query});
+          <TouchableOpacity>
+           <Text>Search</Text>
+          </TouchableOpacity>
+            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+              <Text>Deposit</Text>
+            </TouchableOpacity>
+          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+            <Text>Send</Text>
+        </TouchableOpacity>
+       </Tabs>
+        <View style={styles.inputContainer}>
+          <TextInput
+            value={this.state.query}
+            onChangeText={
+              (query) => {
+                this.setState({query: query});
+              }
             }
-          }
-          autoFocus={true}
-          placeholder="Enter Username"
-          style={styles.input} />
-      </View>
-      <View style={styles.resultsContainer}>
-        {/* i made a conditional in this results to try to print the results only when they are in the state,
-            not working, but close i think  */}
-        {this.makeUsers()}
-      </View>
+            autoFocus={true}
+            placeholder="Enter Username"
+            style={styles.input} />
+        </View>
+        <View style={styles.resultsContainer}>
+          {/* i made a conditional in this results to try to print the results only when they are in the state,
+              not working, but close i think  */}
+          {this.makeUsers()}
+        </View>
      </View>
-      <Text style={styles.welcome}>
-         Source - Search for your Ripple contacts
-     </Text>
-     <Text style={styles.instructions}>
-         Selected page: {this.state.page}
-     </Text> 
-     </View>
-
    );
  }}
 

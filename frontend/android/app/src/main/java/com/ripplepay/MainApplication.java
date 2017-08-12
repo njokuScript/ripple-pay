@@ -1,4 +1,4 @@
-package com.todolistauth;
+package com.ripplepay;
 
 import android.app.Application;
 import android.util.Log;
