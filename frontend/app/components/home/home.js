@@ -90,16 +90,21 @@ class Home extends React.Component {
           </View>
         </View>
         <View>
-            <View style={styles.balanceContainer}>
-              <Text style={styles.balance}>
-                  {this.props.balance} XRP
-              </Text>
-            </View>
+          <View style={styles.balanceContainer}>
+            <Text style={styles.balance}>
+              Ʀ{this.props.balance}
+            </Text>
+          </View>
+            <TouchableOpacity onPress={this.onLogout}>
+              <Text>logout</Text>
+            </TouchableOpacity>
         </View>
+
           <View style={styles.transactionsContainer}>
               {this.displayTransactions()}
           </View>
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+
+        <Tabs style={styles.tabs} selected={this.state.page}
             onSelect={el=>this.setState({page:el.props.name})}>
         <TouchableOpacity>
             <Text>Home</Text>
@@ -125,7 +130,7 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      flexDirection: 'column',
-     backgroundColor: 'white'
+     backgroundColor: '#B7B9E1'
    },
   topContainer: {
     alignItems: 'center',
@@ -140,39 +145,61 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 25,
     color: 'white',
-    fontSize: 15
+    fontSize: 15,
+    fontFamily: 'Kohinoor Bangla'
   },
   balanceContainer: {
     flex: 1,
     marginTop: 10,
-    width: 350,
+    width: 355,
+    height: 50,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#335B7B',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 1
     },
     shadowRadius: 3,
-    shadowOpacity: 1.0
+    shadowOpacity: .5,
+    marginLeft: 10,
+    borderRadius: 5
   },
    balance: {
      flex: 1,
      textAlign: 'center',
      fontSize: 25,
-     color: 'black',
+     color: 'white',
+     paddingTop: 10,
+     fontFamily: 'Kohinoor Bangla'
    },
     transactionsContainer: {
       flex: 1,
-      borderTopWidth: 1,
-      borderColor: 'white',
       marginTop: 25,
       paddingTop: 10,
-      paddingLeft: 10
+      width: 355,
+      marginLeft: 10,
+      marginBottom: 70,
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: 1
+      },
+      shadowRadius: 3,
+      shadowOpacity: .5,
+      borderRadius: 5,
+      backgroundColor: '#335B7B'
     },
     transactions: {
       flex: 1,
-      color: 'white'
+      color: 'white',
+      fontFamily: 'Kohinoor Bangla',
+      marginLeft: 10
+    },
+    tabs: {
+      backgroundColor: 'white',
+      borderTopWidth: .5,
+      position: 'absolute'
     }
 });
 
