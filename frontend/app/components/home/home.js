@@ -95,6 +95,9 @@ class Home extends React.Component {
               Ʀ{this.props.balance}
             </Text>
           </View>
+            <TouchableOpacity onPress={this.onLogout}>
+              <Text>logout</Text>
+            </TouchableOpacity>
         </View>
 
           <View style={styles.transactionsContainer}>
