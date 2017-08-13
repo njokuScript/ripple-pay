@@ -19,7 +19,6 @@ exports.signin = function(req, res) {
 
 // req.body is {email: whatever, password: whatever}
 exports.signup = function(req, res) {
-  console.log(req.body)
   var email = req.body.email;
   var password = req.body.password;
   let screenName = req.body.screenName;
@@ -69,11 +68,9 @@ exports.getTransactions = function (req, res, next) {
 exports.search = function (req, res, next) {
   let item = req.query;
 
-  //Dont add strings together, concatenate them since adding together adds 1byte of memory per string character - dev
+  // Dont add strings together, concatenate them since adding together adds 1byte of memory per string character - dev
 
   // let reg = new RegExp(`^${item}\\w*$`, 'i')
-  console.log(req.query);
-  console.log('+++++++++++++');
   // you can see the correct query print to the server console, however
   // if you look at it in the console, it is a key value pair like this: {'0': 'user input'}
   // so i did this cuz i didn't know how to get the key
@@ -83,14 +80,10 @@ exports.search = function (req, res, next) {
 
   // this is how we make the regex work
   // you can see the correct regex print to the server console
-  console.log(reg);
-  console.log('+++++++++++++');
   User.find({ "screenName": reg } , function(err, users) {
     if (err) { return next(err); }
-    console.log(users);;
     // Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
     res.json({search: users.map((user) => {
-      console.log("Username: ",user.screenName);
       return user.screenName;
     }).sort()});
   });

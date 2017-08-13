@@ -35,10 +35,9 @@ class Search extends React.Component {
   // }
 
   componentDidUpdate(prevProps,prevState){
-    // console.log("I updated")
     if ( prevState.query !== this.state.query )
     {
-      this.requestUsers(this.state.query)
+      this.requestUsers(this.state.query);
     }
   }
 
@@ -66,6 +65,7 @@ class Search extends React.Component {
       navigationBarHidden: true
     });
   }
+
   makeUsers(){
     let theUsers;
     if ( this.props.users )
@@ -81,7 +81,7 @@ class Search extends React.Component {
     }
     else
     {
-      return
+      return;
     }
   }
 
@@ -105,22 +105,24 @@ class Search extends React.Component {
             <Text>Send</Text>
         </TouchableOpacity>
        </Tabs>
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={this.state.query}
-            onChangeText={
-              (query) => {
-                this.setState({query: query});
+       <View style={styles.searchContainer}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={this.state.query}
+              onChangeText={
+                (query) => {
+                  this.setState({query: query});
+                }
               }
-            }
-            autoFocus={true}
-            placeholder="Enter Username"
-            style={styles.input} />
-        </View>
-        <View style={styles.resultsContainer}>
-          {/* i made a conditional in this results to try to print the results only when they are in the state,
-              not working, but close i think  */}
-          {this.makeUsers()}
+              autoFocus={true}
+              placeholder="Enter Username"
+              style={styles.input} />
+          </View>
+          <View style={styles.resultsContainer}>
+            {/* i made a conditional in this results to try to print the results only when they are in the state,
+                not working, but close i think  */}
+            {this.makeUsers()}
+          </View>
         </View>
      </View>
    );
@@ -146,6 +148,7 @@ class Search extends React.Component {
     inputContainer: {
       padding: 5,
       margin: 10,
+      marginTop: 30,
       borderWidth: 2,
       borderRadius: 10,
       borderColor: "white",
@@ -165,7 +168,8 @@ class Search extends React.Component {
       flex: 1
     },
     resultContainer: {
-      flex: 1
+      flex: 1,
+      margin: 30
     }
  });
 
