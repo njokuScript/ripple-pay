@@ -81,7 +81,9 @@ class Wallet extends React.Component {
   }
 
   nineDigit() {
-    return;
+    this.setState(
+
+    )
   }
 
   zeroDigit() {
@@ -104,8 +106,9 @@ class Wallet extends React.Component {
       <View style={styles.mainContainer}>
         <View style={styles.keypadContainer}>
           <TextField
-            label='Amount to deposit'
-            
+
+            placeholder="Enter Deposit"
+            suffix="XRP"
             editable='true'
             value={amount}
             textColor="#E3305D"
