@@ -14,6 +14,8 @@ mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use('/v1', router);
+
+// app.use()
 // app.disable('etag');
 
 var PORT = process.env.PORT || 3000;

@@ -1,4 +1,4 @@
-// API to interact with Ripples API
+// API to interact with Rippled Server
 
 class Rippled {
   constructor(){
@@ -126,7 +126,7 @@ class Rippled {
     // not for production use, just use what is in the console.log
     // The following will get the balance change per each transaction.
     balanceChange(address, idx) {
-      this.api.getTransactions(address).then((info) => console.log(info[1].outcome.balanceChanges[address][idx].value)).catch(error => {
+      this.api.getTransactions(address).then((info) => console.log(info[idx].outcome.balanceChanges[address][idx].value)).catch(error => {
         console.log("Error", error);
       });
     }

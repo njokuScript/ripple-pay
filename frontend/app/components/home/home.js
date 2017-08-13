@@ -3,6 +3,7 @@ import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import SendContainer from '../send/sendContainer';
 import { unauthUser } from '../../actions';
+import Icon from 'react-native-vector-icons/Octicons';
 import Tabs from 'react-native-tabs';
 import {
     View,
@@ -30,19 +31,19 @@ class Home extends React.Component {
     if (!this.props.transactions.length === 0) {
       const transactions = this.props.transactions.map(function(transaction, idx) {
         return (
-          <Text style={styles.transactions}key={idx}>{transaction}</Text>
+          <Text style={styles.transactionFont} key={idx}>{transaction}</Text>
         );
       });
 
       return (
-        <View>
+        <View style={styles.transactionContainer}>
           {transactions}
         </View>
       );
     } else {
       return (
-        <View>
-          <Text style={styles.transactions}>no transactions</Text>
+        <View style={styles.transaction}>
+          <Text style={styles.transactionFont}>no transactions</Text>
         </View>
       );
     }
@@ -83,21 +84,24 @@ class Home extends React.Component {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-          <View style={styles.logoContainer}>
-            <Text style={styles.logo}>
-              ripplePay
-            </Text>
+          <View style={styles.container}>
+            <View style={styles.logoContainer}>
+              <Text style={styles.logo}>
+                balance and transactions
+              </Text>
+            </View>
           </View>
-        </View>
-        <View>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balance}>
-              Ʀ{this.props.balance}
-            </Text>
-          </View>
-            <TouchableOpacity onPress={this.onLogout}>
-              <Text>logout</Text>
-            </TouchableOpacity>
+
+
+            <View style={styles.balanceContainer}>
+              <Text style={styles.balance}>
+                Ʀ{this.props.balance}
+              </Text>
+            </View>
+              {/* <TouchableOpacity onPress={this.onLogout}>
+                <Text>logout</Text>
+              </TouchableOpacity> */}
+
         </View>
 
           <View style={styles.transactionsContainer}>
@@ -107,15 +111,16 @@ class Home extends React.Component {
         <Tabs style={styles.tabs} selected={this.state.page}
             onSelect={el=>this.setState({page:el.props.name})}>
         <TouchableOpacity>
-            <Text>Home</Text>
+          <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'home'}></Icon></Text>
         </TouchableOpacity>
         <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
-          <Text>Search</Text></TouchableOpacity>
+            <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'search'}></Icon></Text>
+            </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text>Deposit</Text>
+            <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'cloud-download'}></Icon></Text>
           </TouchableOpacity>
         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-          <Text>Send</Text>
+            <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'cloud-upload'}></Icon></Text>
           </TouchableOpacity>
         </Tabs> 
       </View>
@@ -130,16 +135,23 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      flexDirection: 'column',
-     backgroundColor: '#B7B9E1'
+     backgroundColor: '#335B7B'
    },
   topContainer: {
     alignItems: 'center',
-    backgroundColor: '#335B7B'
+    backgroundColor: '#335B7B',
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1
+    // },
+    // shadowRadius: 3,
+    // shadowOpacity: .5,
   },
   logoContainer: {
     flex: 1,
     paddingBottom: 10,
-    backgroundColor: '#335B7B'
+    backgroundColor: '#335B7B',
   },
   logo: {
     textAlign: 'center',
@@ -148,58 +160,42 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Kohinoor Bangla'
   },
-  balanceContainer: {
-    flex: 1,
-    marginTop: 10,
-    width: 355,
-    height: 50,
-    alignItems: 'center',
-    backgroundColor: '#335B7B',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 1
-    },
-    shadowRadius: 3,
-    shadowOpacity: .5,
-    marginLeft: 10,
-    borderRadius: 5
-  },
    balance: {
      flex: 1,
      textAlign: 'center',
-     fontSize: 25,
+     fontSize: 40,
      color: 'white',
-     paddingTop: 10,
      fontFamily: 'Kohinoor Bangla'
    },
     transactionsContainer: {
       flex: 1,
-      marginTop: 25,
-      paddingTop: 10,
-      width: 355,
-      marginLeft: 10,
-      marginBottom: 70,
-      shadowColor: '#000000',
-      shadowOffset: {
-        width: 0,
-        height: 1
-      },
-      shadowRadius: 3,
-      shadowOpacity: .5,
-      borderRadius: 5,
-      backgroundColor: '#335B7B'
+      // marginTop: 20,
+      backgroundColor: 'white'
     },
     transactions: {
       flex: 1,
+      fontFamily: 'Kohinoor Bangla',
+    },
+    transaction: {
+      padding: 2,
+      paddingLeft: 15,
+      paddingTop: 15,
+      paddingBottom: 15,
+      borderBottomWidth: 1,
+      borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+    },
+    tabFont: {
       color: 'white',
       fontFamily: 'Kohinoor Bangla',
-      marginLeft: 10
     },
     tabs: {
-      backgroundColor: 'white',
-      borderTopWidth: .5,
-      position: 'absolute'
+      backgroundColor: '#335B7B',
+      borderColor: '#d3d3d3',
+      position: 'absolute',
+      paddingTop: 15,
+      paddingBottom: 10,
+      height: 75
     }
 });
 
