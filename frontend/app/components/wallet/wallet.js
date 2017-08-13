@@ -102,24 +102,24 @@ class Wallet extends React.Component {
       <View style={styles.mainContainer}>
         <View style={styles.keypadContainer}>
           <View style={styles.keypadRow1}>
-            <Button>1</Button>
-            <Button>2</Button>
-            <Button>3</Button>
+            <Button onPress={this.oneDigit.bind(this)}>1</Button>
+            <Button onPress={this.oneDigit.bind(this)}>2</Button>
+            <Button onPress={this.oneDigit.bind(this)}>3</Button>
           </View>
           <View style={styles.keypadRow2}>
-            <Button>4</Button>
-            <Button>5</Button>
-            <Button>6</Button>
+            <Button onPress={this.oneDigit.bind(this)}>4</Button>
+            <Button onPress={this.oneDigit.bind(this)}>5</Button>
+            <Button onPress={this.oneDigit.bind(this)}>6</Button>
           </View>
           <View style={styles.keypadRow3}>
-            <Button>7</Button>
-            <Button>8</Button>
-            <Button>9</Button>
+            <Button onPress={this.oneDigit.bind(this)}>7</Button>
+            <Button onPress={this.oneDigit.bind(this)}>8</Button>
+            <Button onPress={this.oneDigit.bind(this)}>9</Button>
           </View>
           <View style={styles.keypadRow4}>
-            <Button>Enter</Button>
-            <Button>0</Button>
-            <Button>Delete</Button>
+            <Button onPress={this.oneDigit.bind(this)}>Enter</Button>
+            <Button onPress={this.oneDigit.bind(this)}>0</Button>
+            <Button onPress={this.oneDigit.bind(this)}>Delete</Button>
           </View>
         </View>
 
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
      backgroundColor: '#335B7B',
    },
    keypadContainer: {
-    
+
      flexDirection: 'column',
    },
    keypadRow1: {
