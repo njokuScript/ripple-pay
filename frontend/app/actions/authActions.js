@@ -16,10 +16,10 @@ exports.loginUser = (email, password) => {
         .then(function() {
           dispatch(authUser(user_id));
         }).catch((error) => {
-          dispatch(addAlert("Could not log in."));
+          dispatch(addAlert("Could not log in. keychain"));
         });
     }).catch((error) => {
-      dispatch(addAlert("Could not log in."));
+      dispatch(addAlert("Could not log in. axios"));
     });
   };
 };
