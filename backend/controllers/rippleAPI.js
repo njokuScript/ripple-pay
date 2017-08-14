@@ -1,8 +1,8 @@
 // API to interact with Rippled Server
+const { RippleAPI } = require('ripple-lib');
 
 class Rippled {
   constructor(){
-    const { RippleAPI } = require('ripple-lib');
       this.api = new RippleAPI({
         server: 'wss://s2.ripple.com' // Public rippled server hosted by Ripple, Inc.
       });
@@ -23,13 +23,13 @@ class Rippled {
     }
 
     getSuccessfulTransactions(address) {
-      this.api.getTransactions(address, {excludeFailures: true, types: ["payment"]}).then((info) => console.log(info).catch(error => {
-        console.log("Error", error);
-      }));
+      this.api.getTransactions(address, {excludeFailures: true, types: ["payment"]});
     }
 
     getAllTransactions(address) {
-      this.api.getTransactions(address).then((info) => console.log(info)).catch(error => {
+      this.api.getTransactions(address).then((info) => console.log(info.map((s) => {
+        return s.specification.destination;
+      }))).catch(error => {
         console.log("Error", error);
       });
     }
@@ -126,7 +126,7 @@ class Rippled {
     // not for production use, just use what is in the console.log
     // The following will get the balance change per each transaction.
     balanceChange(address, idx) {
-      this.api.getTransactions(address).then((info) => console.log(info[idx].outcome.balanceChanges[address][idx].value)).catch(error => {
+      this.api.getTransactions(address).then((info) => console.log(info[idx].outcome.balanceChanges[address][0].value)).catch(error => {
         console.log("Error", error);
       });
     }
@@ -137,11 +137,12 @@ class Rippled {
 }
 
 let server = new Rippled();
-// server.connect().then(() => server.signAndSend("r9bxkP88S17EudmfbgdZsegEaaM76pHiW6","rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY","ss9N6t4MSiHi269VNv5G9QVhY51RA",20));
+// server.connect().then(() => server.signAndSend("r9bxkP88S17EudmfbgdZsegEaaM76pHiW6", "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "ss9N6t4MSiHi269VNv5G9QVhY51RA", 1, 4294967294));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
-server.connect().then(() => server.getBalances("raa6pjF59F5DrFLcpbTVskjSVGnbWTYMXL"));
+server.connect().then(() => server.getAllTransactions("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
+// server.connect().then(() => server.getBalances("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
 
-
+module.exports = Rippled;
 
 
 // module.exports = (address) => {

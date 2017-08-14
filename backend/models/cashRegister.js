@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const fillRegisters = require('../controllers/rippleAPI');
+// const fillRegisters = require('../controllers/rippleAPI');
 // const bodyParser = require('body-parser');
 // var app = express();
 
@@ -51,7 +51,7 @@ cashRegisterSchema.pre('save', function (next) {
 });
 
 // addresses.slice(0,5).forEach((addr) => fillRegisters(addr.address));
-fillRegisters();
+// fillRegisters();
 // make registers and put in db
 // addresses.forEach((a) => {
 //   let Register = mongoose.model('cashRegister', cashRegisterSchema);
