@@ -37,9 +37,10 @@ var userSchema = new Schema({
     default: 0
   },
   transactions: [{
+    txnId: String,
     date: Date,
     amount: Number,
-    otherParty: String,
+    otherParty: String
   }],
   lastTransactionId: {
     type: String,

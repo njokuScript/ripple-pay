@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchContainer from '../search/searchContainer';
-import WalletContainer from '../wallet/walletContainer';
+import Wallet from '../wallet/wallet';
 import SendContainer from '../send/sendContainer';
 import { unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Octicons';
@@ -66,7 +66,7 @@ class Home extends React.Component {
   navWallet() {
     this.props.navigator.push({
       title: 'Wallet',
-      component: WalletContainer,
+      component: Wallet,
       navigationBarHidden: true
     });
   }
