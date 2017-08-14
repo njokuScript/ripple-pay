@@ -1,29 +1,29 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const getBalance = require('../controllers/rippleAPI');
-var app = express();
-
-var router = require('../services/router');
-
-mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
-
-app.use(morgan('combined'));
-app.use(bodyParser.json());
-app.use('/v1', router);
-// app.disable('etag');
-
-var PORT = process.env.PORT || 3000;
-var HOST = process.env.HOST || '127.0.0.1';
-
-console.log('Listening on', HOST, PORT);
-app.listen(PORT, HOST);
-
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const { bank } = require('../controllers/addresses');
-mongoose.Promise = global.Promise;
+
+// const getBalance = require('../controllers/rippleAPI');
+// var app = express();
+
+// var router = require('../services/router');
+
+// mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
+
+// app.use(morgan('combined'));
+// app.use(bodyParser.json());
+// app.use('/v1', router);
+// // app.disable('etag');
+
+// var PORT = process.env.PORT || 3000;
+// var HOST = process.env.HOST || '127.0.0.1';
+
+// console.log('Listening on', HOST, PORT);
+// app.listen(PORT, HOST);
+// mongoose.Promise = global.Promise;
+
 
 let vault = new Schema({
   address: {
@@ -63,7 +63,9 @@ vault.pre('save', function (next) {
 // });
 
 //Do this to connect our database to the ripple server
-mongoose.model('vault', vault).findOne({ address: 'r9bxkP88S17EudmfbgdZsegEaaM76pHiW6'}).then((v) => {
-  console.log(v, 'test');
-  console.log(getBalance(v.address));
-});
+// mongoose.model('vault', vault).findOne({ address: 'r9bxkP88S17EudmfbgdZsegEaaM76pHiW6'}).then((v) => {
+//   console.log(v, 'test');
+//   console.log(getBalance(v.address));
+// });
+
+module.exports = mongoose.model('vault', vault);

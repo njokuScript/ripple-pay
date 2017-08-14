@@ -3,7 +3,6 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { RippleAPI } = require('ripple-lib');
 
 var app = express();
 
@@ -14,6 +13,8 @@ mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use('/v1', router);
+
+// app.use()
 // app.disable('etag');
 
 var PORT = process.env.PORT || 3000;

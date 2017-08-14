@@ -57,19 +57,6 @@ exports.signup = function(req, res) {
 //Very dumb - req.query refers to the 'params' that I passed in from auth actions
 //Also dumb - req.query.user has returns a JSON string so I had to parse it to an object
 
-//This finally works now.
-exports.getTransactions = function (req, res, next) {
-  let userId = JSON.parse(req.query.user).user_id;
-  //You need to specifically have _id NOT id - dumb
-  User.findOne({_id: userId}, function(err, existingUser) {
-    if (err) { return next(err); }
-    let totalTransactions = existingUser.transactions;
-    let totalBalance = existingUser.balance;
-    //Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
-    res.json({transactions: totalTransactions, balance: totalBalance});
-  });
-};
-
 exports.search = function (req, res, next) {
   let item = req.query;
 

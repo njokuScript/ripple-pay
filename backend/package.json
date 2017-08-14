@@ -9,6 +9,7 @@
   "author": "ripplePay Systems Incorporated",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.5.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
@@ -19,7 +20,11 @@
     "passport": "^0.3.2",
     "passport-jwt": "^2.1.0",
     "passport-local": "^1.0.0",
+<<<<<<< HEAD
     "ripple-lib": "^0.17.7",
+=======
+    "promise-map-series": "^0.2.3",
+>>>>>>> bf73a26f98580589d26be7cd6688def24c9e031d
     "uuid": "^2.0.2"
   },
   "repository": {
