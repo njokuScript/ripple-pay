@@ -5,6 +5,7 @@ class Rippled {
     const { RippleAPI } = require('ripple-lib');
       this.api = new RippleAPI({
         server: 'wss://s2.ripple.com' // Public rippled server hosted by Ripple, Inc.
+        //Need to change this to a private one later.
       });
       this.api.on('error', (errorCode, errorMessage) => {
         console.log(errorCode + ': ' + errorMessage);
@@ -99,7 +100,7 @@ class Rippled {
           console.log("Error", error);
         });
     }
-    
+
     // current fee that ripple charges
     getFee() {
       this.api.getFee().then((info) => console.log(info));
