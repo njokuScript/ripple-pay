@@ -4,6 +4,7 @@
 const passport = require('passport');
 
 const AuthenticationController = require('../controllers/authentication_controller');
+const BankController = require('../controllers/banks_controller');
 const passportService = require('./passport');
 
 var requireAuth = passport.authenticate('jwt', {session: false});
@@ -19,7 +20,7 @@ router.route('/signin')
   .post([requireLogin, AuthenticationController.signin]);
 // router.route('/transactions')
 //   .get(AuthenticationController.getTransactions);
-router.get('/transactions', AuthenticationController.getTransactions);
+router.get('/transactions', BankController.getTransactions);
 router.get('/search', AuthenticationController.search);
 
 // xxx Routes
