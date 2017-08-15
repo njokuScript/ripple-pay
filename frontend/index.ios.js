@@ -11,7 +11,7 @@ import App from './app/components/App';
 
 import {configureStore} from './app/store';
 
-class todoListAuth extends Component {
+class ripplePay extends Component {
   render() {
     return (
       <Provider store={configureStore()}>
@@ -21,4 +21,4 @@ class todoListAuth extends Component {
   }
 }
 
-AppRegistry.registerComponent('todoListAuth', () => todoListAuth);
+AppRegistry.registerComponent('ripplePay', () => ripplePay);

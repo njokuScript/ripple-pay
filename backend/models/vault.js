@@ -68,4 +68,4 @@ vault.pre('save', function (next) {
 //   console.log(getBalance(v.address));
 // });
 
-module.exports = mongoose.model('vault', vault);
+// module.exports = mongoose.model('vault', vault);

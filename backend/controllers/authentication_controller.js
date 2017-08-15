@@ -18,7 +18,8 @@ exports.signin = function(req, res) {
 };
 
 // req.body is {email: whatever, password: whatever}
-exports.signup = function(req, res) {
+exports.signup = function(req, res, next) {
+  console.log(req.body)
   var email = req.body.email;
   var password = req.body.password;
   let screenName = req.body.screenName;

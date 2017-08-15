@@ -28,7 +28,7 @@ module.exports = (state=defaultState, action) => {
       //authActions.
       //action.data.transactions is an array of all the transactions and the other is the balance.
     case 'RECEIVED_TRANSACTIONS':
-      return merge({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+      return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
     case 'RECEIVED_USERS':
       return Object.assign({}, state, {users: action.users.data.search});
     default:
