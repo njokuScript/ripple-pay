@@ -14,8 +14,9 @@ exports.loginUser = (email, password) => {
       var {user_id, token} = response.data;
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
-          dispatch(authUser(user_id));
-        }).catch((error) => {
+          dispatch(authUser(user_id))
+        })
+      .catch((error) => {
           dispatch(addAlert("Could not log in. keychain"));
         });
     }).catch((error) => {
@@ -28,12 +29,13 @@ exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
     return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
       var {user_id, token} = response.data;
-      Keychain.setGenericPassword(user_id, token)
-        .then(function() {
+      // Keychain.setGenericPassword(user_id, token)
+      //   .then(function() {
           dispatch(authUser(user_id));
-        }).catch((error) => {
-          dispatch(addAlert("Could not log in."));
-        });
+        // })
+        // .catch((error) => {
+        //   dispatch(addAlert("Could not log in."));
+        // });
     }).catch((error) => {
       dispatch(addAlert("Could not sign up."));
     });
