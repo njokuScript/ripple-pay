@@ -1,8 +1,9 @@
 import React from 'react';
 import SearchContainer from '../search/searchContainer';
-import WalletContainer from '../wallet/walletContainer';
+import Wallet from '../wallet/wallet';
 import SendContainer from '../send/sendContainer';
 import { unauthUser } from '../../actions';
+// import Icon from 'react-native-vector-icons/Octicons';
 import Tabs from 'react-native-tabs';
 import {
     View,
@@ -25,24 +26,30 @@ class Home extends React.Component {
   onLogout() {
     this.props.unauthUser();
   }
-
+  //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
-    if (!this.props.transactions.length === 0) {
-      const transactions = this.props.transactions.map(function(transaction, idx) {
+    if (this.props.transactions.length > 0) {
+      console.log(this.props.transactions);
+      //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
+      const transactions = this.props.transactions.map((transaction, idx) => {
         return (
-          <Text style={styles.transactions}key={idx}>{transaction}</Text>
+          <View style={styles.transaction} key={idx}>
+            <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
+            <Text style={styles.transactionFont}>{transaction.date}</Text>
+            <Text style={styles.transactionFont}>{transaction.amount}</Text>
+          </View>
         );
       });
 
       return (
-        <View>
+        <View style={styles.transactionContainer}>
           {transactions}
         </View>
       );
     } else {
       return (
-        <View>
-          <Text style={styles.transactions}>no transactions</Text>
+        <View style={styles.transaction}>
+          <Text style={styles.transactionFont}>no transactions</Text>
         </View>
       );
     }
@@ -63,9 +70,11 @@ class Home extends React.Component {
   }
 
   navWallet() {
+    this.props.requestTransactions(this.props.user);
+    this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.props.navigator.push({
       title: 'Wallet',
-      component: WalletContainer,
+      component: Wallet,
       navigationBarHidden: true
     });
   }
@@ -83,36 +92,45 @@ class Home extends React.Component {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-          <View style={styles.logoContainer}>
-            <Text style={styles.logo}>
-              ripplePay
-            </Text>
-          </View>
-        </View>
-        <View>
-            <View style={styles.balanceContainer}>
-              <Text style={styles.balance}>
-                  {this.props.balance} XRP
+          <View style={styles.container}>
+            <View style={styles.logoContainer}>
+              <Text style={styles.logo}>
+                balance and transactions
               </Text>
             </View>
+          </View>
+
+
+            <View style={styles.balanceContainer}>
+              <Text style={styles.balance}>
+                Ʀ{this.props.balance}
+              </Text>
+            </View>
+              <TouchableOpacity onPress={this.onLogout}>
+                <Text>logout</Text>
+              </TouchableOpacity>
+
         </View>
+
           <View style={styles.transactionsContainer}>
               {this.displayTransactions()}
           </View>
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+
+        <Tabs style={styles.tabs} selected={this.state.page}
             onSelect={el=>this.setState({page:el.props.name})}>
         <TouchableOpacity>
-            <Text>Home</Text>
+          <Text style={styles.tabFont}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
-          <Text>Search</Text></TouchableOpacity>
+            <Text style={styles.tabFont}>Search</Text>
+            </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text>Deposit</Text>
+            <Text style={styles.tabFont}>Deposit</Text>
           </TouchableOpacity>
         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-          <Text>Send</Text>
+            <Text style={styles.tabFont}>Send</Text>
           </TouchableOpacity>
-        </Tabs> 
+        </Tabs>
       </View>
     );
   }
@@ -125,54 +143,67 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      flexDirection: 'column',
-     backgroundColor: 'white'
+     backgroundColor: '#335B7B'
    },
   topContainer: {
     alignItems: 'center',
-    backgroundColor: '#335B7B'
+    backgroundColor: '#335B7B',
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1
+    // },
+    // shadowRadius: 3,
+    // shadowOpacity: .5,
   },
   logoContainer: {
     flex: 1,
     paddingBottom: 10,
-    backgroundColor: '#335B7B'
+    backgroundColor: '#335B7B',
   },
   logo: {
     textAlign: 'center',
     marginTop: 25,
     color: 'white',
-    fontSize: 15
-  },
-  balanceContainer: {
-    flex: 1,
-    marginTop: 10,
-    width: 350,
-    alignItems: 'center',
-    backgroundColor: 'white',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowRadius: 3,
-    shadowOpacity: 1.0
+    fontSize: 15,
+    fontFamily: 'Kohinoor Bangla'
   },
    balance: {
      flex: 1,
      textAlign: 'center',
-     fontSize: 25,
-     color: 'black',
+     fontSize: 40,
+     color: 'white',
+     fontFamily: 'Kohinoor Bangla'
    },
     transactionsContainer: {
       flex: 1,
-      borderTopWidth: 1,
-      borderColor: 'white',
-      marginTop: 25,
-      paddingTop: 10,
-      paddingLeft: 10
+      // marginTop: 20,
+      backgroundColor: 'white'
     },
     transactions: {
       flex: 1,
-      color: 'white'
+      fontFamily: 'Kohinoor Bangla',
+    },
+    transaction: {
+      padding: 2,
+      paddingLeft: 15,
+      paddingTop: 15,
+      paddingBottom: 15,
+      borderBottomWidth: 1,
+      borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+    },
+    tabFont: {
+      color: 'white',
+      fontFamily: 'Kohinoor Bangla',
+    },
+    tabs: {
+      backgroundColor: '#335B7B',
+      borderColor: '#d3d3d3',
+      position: 'absolute',
+      paddingTop: 15,
+      paddingBottom: 10,
+      height: 75
     }
 });
 

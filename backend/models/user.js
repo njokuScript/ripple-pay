@@ -30,16 +30,26 @@ var userSchema = new Schema({
   },
   balance: {
     type: Number,
-    default: 10,
+    default: 0,
   },
   destinationTag: { 
     type: Number,
     default: 0
   },
   transactions: [{
+    txnId: String,
     date: Date,
     amount: Number,
-  }]
+    otherParty: String
+  }],
+  lastTransactionId: {
+    type: String,
+    default: ''
+  },
+  cashRegister: {
+    type: String,
+    default: ''
+  }
 });
 
 userSchema.pre('save', function(next) {

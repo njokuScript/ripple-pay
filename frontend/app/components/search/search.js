@@ -35,14 +35,17 @@ class Search extends React.Component {
   // }
 
   componentDidUpdate(prevProps,prevState){
-    // console.log("I updated")
     if ( prevState.query !== this.state.query )
     {
-      this.requestUsers(this.state.query)
+      this.requestUsers(this.state.query);
     }
   }
 
+  //I set the query to an empty string so that when this comes back it is an empty string we are searching for since none of the components
+  //are unmounting with navigatorIOS. They just stay mounted.
   navHome() {
+    this.props.requestTransactions(this.props.user);
+    this.setState({query: ""});
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
@@ -51,6 +54,9 @@ class Search extends React.Component {
   }
 
   navWallet() {
+    this.props.requestTransactions(this.props.user);
+    this.props.requestAddressAndDesTag(this.props.user.user_id);
+    this.setState({query: ""});
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
@@ -60,12 +66,14 @@ class Search extends React.Component {
   //You can store a constant as stuff that is not wrapped in jsx tags
 
   navSend() {
+    this.setState({query: ""});
     this.props.navigator.push({
       title: 'Send',
       component: SendContainer,
       navigationBarHidden: true
     });
   }
+
   makeUsers(){
     let theUsers;
     if ( this.props.users )
@@ -81,7 +89,7 @@ class Search extends React.Component {
     }
     else
     {
-      return
+      return;
     }
   }
 
@@ -105,22 +113,24 @@ class Search extends React.Component {
             <Text>Send</Text>
         </TouchableOpacity>
        </Tabs>
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={this.state.query}
-            onChangeText={
-              (query) => {
-                this.setState({query: query});
+       <View style={styles.searchContainer}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={this.state.query}
+              onChangeText={
+                (query) => {
+                  this.setState({query: query});
+                }
               }
-            }
-            autoFocus={true}
-            placeholder="Enter Username"
-            style={styles.input} />
-        </View>
-        <View style={styles.resultsContainer}>
-          {/* i made a conditional in this results to try to print the results only when they are in the state,
-              not working, but close i think  */}
-          {this.makeUsers()}
+              autoFocus={true}
+              placeholder="Enter Username"
+              style={styles.input} />
+          </View>
+          <View style={styles.resultsContainer}>
+            {/* i made a conditional in this results to try to print the results only when they are in the state,
+                not working, but close i think  */}
+            {this.makeUsers()}
+          </View>
         </View>
      </View>
    );
@@ -146,6 +156,7 @@ class Search extends React.Component {
     inputContainer: {
       padding: 5,
       margin: 10,
+      marginTop: 30,
       borderWidth: 2,
       borderRadius: 10,
       borderColor: "white",
@@ -165,7 +176,8 @@ class Search extends React.Component {
       flex: 1
     },
     resultContainer: {
-      flex: 1
+      flex: 1,
+      margin: 30
     }
  });
 

@@ -23,7 +23,12 @@ class Wallet extends React.Component {
     this.state = {page: "pool", amount: ""};
   }
 
+  // componentDidMount(){
+  //   this.props.requestAddressAndDesTag(this.props.user);
+  // }
+
   navHome() {
+    this.props.requestTransactions(this.props.user);
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
@@ -104,6 +109,10 @@ class Wallet extends React.Component {
     let { amount } = this.state;
     return (
       <View style={styles.mainContainer}>
+        <Text style={styles.title}>{this.props.cashRegister}</Text>
+        <Text style={styles.title}>{this.props.destinationTag}</Text>
+      </View>
+      <View style={styles.mainContainer}>
         <View style={styles.keypadContainer}>
           <TextField
 
@@ -160,9 +169,7 @@ class Wallet extends React.Component {
         <Text style={styles.instructions}>
             Selected page: {this.state.page}
         </Text>
-      </View>
-    );
-  }
+ )
 }
 
 const { width, height } = Dimensions.get('window');
