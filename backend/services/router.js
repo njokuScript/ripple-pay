@@ -20,6 +20,7 @@ router.route('/signin')
   .post([requireLogin, AuthenticationController.signin]);
 // router.route('/transactions')
 //   .get(AuthenticationController.getTransactions);
+router.post('/send', BankController.sendMoney);
 router.get('/addrs', BankController.generateRegisterAndDesTag);
 router.get('/transactions', BankController.getTransactions);
 router.get('/search', AuthenticationController.search);

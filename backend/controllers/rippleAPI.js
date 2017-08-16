@@ -22,11 +22,11 @@ class Rippled {
     }
 
     getBalance(address) {
-      this.api.getBalances(address).then((info) => console.log(info[0].value));
+      this.api.getBalances(address).then((info) => console.log(info));
     }
 
     getSuccessfulTransactions(address) {
-      this.api.getTransactions(address, {excludeFailures: true, types: ["payment"]}).then((info) => console.log(info.map((tx) => tx.specification.destination)));
+      this.api.getTransactions(address, {excludeFailures: true, types: ["payment"]}).then((info) => info.map((i) => console.log(i.specification)));
     }
 
     getAllTransactions(address) {
@@ -37,12 +37,13 @@ class Rippled {
       });
     }
 
-    thePayment(fromAddress, toAddress, desTag, value){
+    thePayment(fromAddress, toAddress, desTag, sourceTag, value){
       let payment;
       if (desTag) {
         payment = {
           "source": {
             "address": fromAddress,
+            "tag": sourceTag,
             "maxAmount": {
               "value": `${value}`,
               "currency": "XRP"
@@ -61,6 +62,7 @@ class Rippled {
         payment = {
         "source": {
           "address": toAddress,
+          "tag": sourceTag,
           "maxAmount": {
             "value": `${value}`,
             "currency": "XRP"
@@ -72,14 +74,14 @@ class Rippled {
             "value": `${value}`,
             "currency": "XRP"
         }
-    }
-  };
       }
+    };
+    }
       return payment;
     }
 
-    signAndSend(fromAddress, toAddress, secret, value, desTag=false) {
-      let payment = this.thePayment(fromAddress, toAddress, desTag, value);
+    signAndSend(fromAddress, toAddress, secret, value, sourceTag, desTag = false) {
+      let payment = this.thePayment(fromAddress, toAddress, desTag, sourceTag, value);
 
       this.api.preparePayment(fromAddress, payment).then((orderinfo) => {
         console.log(orderinfo);
@@ -140,7 +142,7 @@ class Rippled {
 }
 
 // let server = new Rippled();
-// server.connect().then(() => server.signAndSend("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "shm8TtYiTHiHn7FaqFjZgYQTqkFP6", 25, 1466900933));
+// server.connect().then(() => server.signAndSend("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "shm8TtYiTHiHn7FaqFjZgYQTqkFP6", 3, 1234, 1466900933));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
 // server.connect().then(() => server.getSuccessfulTransactions("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
 // server.connect().then(() => server.getBalance("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
