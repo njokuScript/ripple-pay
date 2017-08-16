@@ -12,7 +12,7 @@ import {
   View
 } from 'react-native';
 
-class todoList extends Component {
+class ripplePay extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('todoList', () => todoList);
+AppRegistry.registerComponent('ripplePay', () => ripplePay);
