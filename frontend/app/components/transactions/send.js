@@ -13,7 +13,7 @@ class Send extends Component {
   //   this.props.requestAddressAndDesTag(this.props.user.user_id);
   //   this.props.navigator.push({
   //     title: 'Wallet',
-  //     component: Wallet,
+  //     component: WalletContainer,
   //     navigationBarHidden: true
   //   });
   // }
