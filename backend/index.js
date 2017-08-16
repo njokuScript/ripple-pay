@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use('/v1', router);
 
 // app.use()
-// app.disable('etag');
+app.disable('etag');
 
 var PORT = process.env.PORT || 3000;
 var HOST = process.env.HOST || '127.0.0.1';
