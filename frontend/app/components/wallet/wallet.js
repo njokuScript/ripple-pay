@@ -22,7 +22,12 @@ class Wallet extends React.Component {
     this.state = {page: "pool"};
   }
 
+  // componentDidMount(){
+  //   this.props.requestAddressAndDesTag(this.props.user);
+  // }
+
   navHome() {
+    this.props.requestTransactions(this.props.user);
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
@@ -95,61 +100,70 @@ class Wallet extends React.Component {
     return;
   }
 
-
-  render()
-  {
+  render(){
+    console.log(this.props.cashRegister);
     return (
       <View style={styles.mainContainer}>
-        <View style={styles.keypadContainer}>
-          <View style={styles.keypadRow1}>
-            <Button>1</Button>
-            <Button>2</Button>
-            <Button>3</Button>
-          </View>
-          <View style={styles.keypadRow2}>
-            <Button>4</Button>
-            <Button>5</Button>
-            <Button>6</Button>
-          </View>
-          <View style={styles.keypadRow3}>
-            <Button>7</Button>
-            <Button>8</Button>
-            <Button>9</Button>
-          </View>
-          <View style={styles.keypadRow4}>
-            <Button>Enter</Button>
-            <Button>0</Button>
-            <Button>Delete</Button>
-          </View>
-        </View>
-
-
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-             onSelect={el=>this.setState({page:el.props.name})}>
-          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-            <Text>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-            <Text>Search</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Deposit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-            <Text>Send</Text>
-          </TouchableOpacity>
-      </Tabs>
-
-
-         <Text style={styles.welcome}>
-            Pool - Store your Ripple
-        </Text>
-        <Text style={styles.instructions}>
-            Selected page: {this.state.page}
-        </Text>
+        <Text style={styles.title}>{this.props.cashRegister}</Text>
+        <Text style={styles.title}>{this.props.destinationTag}</Text>
       </View>
-    );
+    )
   }
+  //I commented this out because this page we only need to give the user a deposit address and a destination Tag, that's it.
+  // render()
+  // {
+  //   return (
+  //     <View style={styles.mainContainer}>
+  //       <View style={styles.keypadContainer}>
+  //         <View style={styles.keypadRow1}>
+  //           <Button>1</Button>
+  //           <Button>2</Button>
+  //           <Button>3</Button>
+  //         </View>
+  //         <View style={styles.keypadRow2}>
+  //           <Button>4</Button>
+  //           <Button>5</Button>
+  //           <Button>6</Button>
+  //         </View>
+  //         <View style={styles.keypadRow3}>
+  //           <Button>7</Button>
+  //           <Button>8</Button>
+  //           <Button>9</Button>
+  //         </View>
+  //         <View style={styles.keypadRow4}>
+  //           <Button>Enter</Button>
+  //           <Button>0</Button>
+  //           <Button>Delete</Button>
+  //         </View>
+  //       </View>
+  //
+  //
+  //       <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+  //            onSelect={el=>this.setState({page:el.props.name})}>
+  //         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+  //           <Text>Home</Text>
+  //         </TouchableOpacity>
+  //         <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+  //           <Text>Search</Text>
+  //         </TouchableOpacity>
+  //         <TouchableOpacity>
+  //           <Text>Deposit</Text>
+  //         </TouchableOpacity>
+  //         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+  //           <Text>Send</Text>
+  //         </TouchableOpacity>
+  //       </Tabs>
+  //
+  //
+  //        <Text style={styles.welcome}>
+  //           Pool - Store your Ripple
+  //       </Text>
+  //       <Text style={styles.instructions}>
+  //           Selected page: {this.state.page}
+  //       </Text>
+  //     </View>
+  //   );
+  // }
 }
 
 const { width, height } = Dimensions.get('window');
@@ -161,7 +175,7 @@ const styles = StyleSheet.create({
      backgroundColor: '#335B7B',
    },
    keypadContainer: {
-    
+
      flexDirection: 'column',
    },
    keypadRow1: {

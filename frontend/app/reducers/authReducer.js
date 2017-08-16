@@ -12,7 +12,9 @@ var defaultState = {
   user_id: undefined,
   transactions: [],
   users: [],
-  balance: 0
+  balance: 0,
+  cashRegister: undefined,
+  destinationTag: undefined
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -28,9 +30,11 @@ module.exports = (state=defaultState, action) => {
       //authActions.
       //action.data.transactions is an array of all the transactions and the other is the balance.
     case 'RECEIVED_TRANSACTIONS':
-      return merge({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+      return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
     case 'RECEIVED_USERS':
       return Object.assign({}, state, {users: action.users.data.search});
+    case 'RECEIVED_ADDR_DESTAG':
+      return Object.assign({}, state, {cashRegister: action.data.cashRegister, destinationTag: action.data.destinationTag});
     default:
       return state;
   }

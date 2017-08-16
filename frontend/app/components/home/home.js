@@ -3,7 +3,7 @@ import SearchContainer from '../search/searchContainer';
 import Wallet from '../wallet/wallet';
 import SendContainer from '../send/sendContainer';
 import { unauthUser } from '../../actions';
-import Icon from 'react-native-vector-icons/Octicons';
+// import Icon from 'react-native-vector-icons/Octicons';
 import Tabs from 'react-native-tabs';
 import {
     View,
@@ -26,12 +26,18 @@ class Home extends React.Component {
   onLogout() {
     this.props.unauthUser();
   }
-
+  //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
-    if (!this.props.transactions.length === 0) {
-      const transactions = this.props.transactions.map(function(transaction, idx) {
+    if (this.props.transactions.length > 0) {
+      console.log(this.props.transactions);
+      //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
+      const transactions = this.props.transactions.map((transaction, idx) => {
         return (
-          <Text style={styles.transactionFont} key={idx}>{transaction}</Text>
+          <View style={styles.transaction} key={idx}>
+            <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
+            <Text style={styles.transactionFont}>{transaction.date}</Text>
+            <Text style={styles.transactionFont}>{transaction.amount}</Text>
+          </View>
         );
       });
 
@@ -64,6 +70,7 @@ class Home extends React.Component {
   }
 
   navWallet() {
+    this.props.requestTransactions(this.props.user).then(()=> this.props.requestAddressAndDesTag(this.props.user.user_id));
     this.props.navigator.push({
       title: 'Wallet',
       component: Wallet,
@@ -111,18 +118,18 @@ class Home extends React.Component {
         <Tabs style={styles.tabs} selected={this.state.page}
             onSelect={el=>this.setState({page:el.props.name})}>
         <TouchableOpacity>
-          <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'home'}></Icon></Text>
+          <Text style={styles.tabFont}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
-            <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'search'}></Icon></Text>
+            <Text style={styles.tabFont}>Search</Text>
             </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'cloud-download'}></Icon></Text>
+            <Text style={styles.tabFont}>Deposit</Text>
           </TouchableOpacity>
         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-            <Text style={styles.tabFont}><Icon width={'50'} height={'50'} name={'cloud-upload'}></Icon></Text>
+            <Text style={styles.tabFont}>Send</Text>
           </TouchableOpacity>
-        </Tabs> 
+        </Tabs>
       </View>
     );
   }
