@@ -21,22 +21,12 @@ class Wallet extends React.Component {
     super(props);
     this.state = {
       page: "pool",
-      cashRegister: this.props.cashRegister,
-      destinationTag: this.props.destinationTag
     };
-    console.log(this.props);
   }
 
   // componentDidMount(){
   //   this.props.requestAddressAndDesTag(this.props.user);
   // }
-  componentWillReceiveProps(newProps){
-    console.log('jldfjlkas')
-    if ( this.props.destinationTag !== newProps.destinationTag )
-    {
-      this.setState({cashRegister: this.props.cashRegister, destinationTag: this.props.destinationTag})
-    }
-  }
 
   navHome() {
     this.props.requestTransactions(this.props.user);
@@ -115,8 +105,8 @@ class Wallet extends React.Component {
   render(){
     return (
       <View style={styles.mainContainer}>
-        <Text style={styles.title}>{this.state.cashRegister}</Text>
-        <Text style={styles.title}>{this.state.destinationTag}</Text>
+        <Text style={styles.title}>{this.props.cashRegister}</Text>
+        <Text style={styles.title}>{this.props.destinationTag}</Text>
           <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
                 onSelect={el=>this.setState({page:el.props.name})}>
                 <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
