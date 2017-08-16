@@ -21,8 +21,8 @@ class Rippled {
 
     }
 
-    getBalances(address) {
-      this.api.getBalances(address).then((info) => console.log(info));
+    getBalance(address) {
+      this.api.getBalances(address).then((info) => console.log(info[0].value));
     }
 
     getSuccessfulTransactions(address) {
@@ -140,9 +140,9 @@ class Rippled {
 }
 
 // let server = new Rippled();
-// server.connect().then(() => server.signAndSend("r9bxkP88S17EudmfbgdZsegEaaM76pHiW6", "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "ss9N6t4MSiHi269VNv5G9QVhY51RA", 7, 4294967294));
+// server.connect().then(() => server.signAndSend("r9bxkP88S17EudmfbgdZsegEaaM76pHiW6", "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "ss9N6t4MSiHi269VNv5G9QVhY51RA", 2, 4294967294));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
 // server.connect().then(() => server.getSuccessfulTransactions("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
-// server.connect().then(() => server.getBalances("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
+// server.connect().then(() => server.getBalance("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
 
 module.exports = Rippled;

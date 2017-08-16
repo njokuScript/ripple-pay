@@ -30,6 +30,7 @@ class Home extends React.Component {
   displayTransactions() {
     if (this.props.transactions.length > 0) {
       console.log(this.props.transactions);
+      //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
       const transactions = this.props.transactions.map((transaction, idx) => {
         return (
           <View style={styles.transaction} key={idx}>
@@ -69,6 +70,7 @@ class Home extends React.Component {
   }
 
   navWallet() {
+    this.props.requestTransactions(this.props.user).then(()=> this.props.requestAddressAndDesTag(this.props.user.user_id));
     this.props.navigator.push({
       title: 'Wallet',
       component: Wallet,
