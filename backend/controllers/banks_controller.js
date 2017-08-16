@@ -46,12 +46,12 @@ exports.generateRegisterAndDesTag = function(req, res, next){
             minAddr = addresses[n].address;
           }
           recurse(n + 1);
-        })
-      }
+        });
+      };
       recurse().then(()=> {});
-    })
-  })
-}
+    });
+  });
+};
 
 //The users balance changes AND the cash register's balance changes so we can know how much we have in each register for testing.
 exports.getTransactions = function (req, res, next) {

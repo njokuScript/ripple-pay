@@ -1,2 +1,4 @@
 node_modules/
 controllers/addresses.js
+ios/
+.DS_Store

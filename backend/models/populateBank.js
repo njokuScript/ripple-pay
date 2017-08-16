@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const { addresses, bank } = require('../controllers/addresses');
 const async = require('async');
-// mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 // const bodyParser = require('body-parser');
 // var app = express();
 
@@ -83,28 +83,28 @@ cashRegisterSchema.pre('save', function (next) {
 // CLEAR YOUR MODELS AND RUN THIS AND YOU WILL HAVE ALL REGISTER AND BANK WITH UPDATED BALANCE VALUES.
 // const Rippled = require('../controllers/rippleAPI');
 // let server = new Rippled();
-// // server.getBalance(addresses[0].address);
+// server.getBalance(addresses[0].address);
 // server.connect().then(()=>{
-//   let recurse = function(n = 0){
-//
-//     //This is a recursive function that will help to save all of the balances of our cash Registers.
-//     //5 is the length of the number of cash registers we have so when this increases, just increase it.
-//     if ( n === 5 )
-//     {
-//       return;
-//     }
-//     server.api.getBalances(addresses[n].address).then((info) => {
-//       let Register = mongoose.model('cashRegister', cashRegisterSchema);
-//       let addon = addresses[n];
-//       addon.balance = info[0].value;
-//       let myCashRegister = new Register(addon);
-//       myCashRegister.save(function (err) {
-//         if (err) { console.log('did not work'); }
-//         return recurse(n + 1);
-//       });
-//     })
-//   }
-//   recurse();
+  // let recurse = function(n = 0){
+
+    //This is a recursive function that will help to save all of the balances of our cash Registers.
+    //5 is the length of the number of cash registers we have so when this increases, just increase it.
+  //   if ( n === 5 )
+  //   {
+  //     return;
+  //   }
+  //   server.api.getBalances(addresses[n].address).then((info) => {
+  //     let Register = mongoose.model('cashRegister', cashRegisterSchema);
+  //     let addon = addresses[n];
+  //     addon.balance = info[0].value;
+  //     let myCashRegister = new Register(addon);
+  //     myCashRegister.save(function (err) {
+  //       if (err) { console.log('did not work'); }
+  //       return recurse(n + 1);
+  //     });
+  //   })
+  // }
+  // recurse();
 //   server.api.getBalances(bank.address).then((info) => {
 //     bank.balance = info[0].value;
 //     let Vault = mongoose.model('vault', vault);
