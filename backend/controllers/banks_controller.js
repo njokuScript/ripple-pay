@@ -9,6 +9,7 @@ const {addresses} = require('./addresses');
 
 //This function will get the most empty cash register and let the user fill this cash register.
 exports.generateRegisterAndDesTag = function(req, res, next){
+  let adds = addresses.slice(0,5);
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
   let x = req.query;
@@ -20,10 +21,17 @@ exports.generateRegisterAndDesTag = function(req, res, next){
       let minBal = undefined;
       let minAddr;
       let newBal;
-      let recurse = function(n = 0){
-        if ( n === 5 )
-        {
-          console.log(minAddr);
+      async.mapSeries(adds, function(addr, cb){
+        server.api.getBalances(addr.address).then((info) => {
+          if(minBal === undefined || parseFloat(info[0].value) < minBal ){
+            minBal = parseFloat(info[0].value);
+            minAddr = addr.address;
+            // console.log(minAddr, "fdjk;afl");
+          }
+          cb(null, addr);
+        })
+      }, function(error, resp){
+          // console.log(minAddr, "youiouo");
           let dest = parseInt(Math.floor(Math.random()*4294967294));
           let changedUser = {
             cashRegister: minAddr,
@@ -35,23 +43,52 @@ exports.generateRegisterAndDesTag = function(req, res, next){
               cashRegister: minAddr,
               destinationTag: dest
             });
-            return;
           });
-          return;
-        }
-        console.log(addresses[n].address);
-        server.api.getBalances(addresses[n].address).then((info) => {
-          if(minBal === undefined || parseInt(info[0].value) < minBal ){
-            minBal = parseInt(info[0].value);
-            minAddr = addresses[n].address;
-          }
-          recurse(n + 1);
-        });
-      };
-      recurse().then(()=> {});
-    });
-  });
-};
+        })
+      })
+    })
+  }
+
+
+
+
+
+
+
+
+//       let traverseBals = function(n = 0){
+//         if ( n === 5 )
+//         {
+//           console.log(minAddr);
+//           let dest = parseInt(Math.floor(Math.random()*4294967294));
+//           let changedUser = {
+//             cashRegister: minAddr,
+//             destinationTag: dest
+//           };
+//           User.update({_id: existingUser._id}, changedUser, function (err) {
+//             if (err) { return next(err); }
+//             res.json({
+//               cashRegister: minAddr,
+//               destinationTag: dest
+//             });
+//             return;
+//           });
+//           return;
+//         }
+//         console.log(addresses[n].address);
+//         server.api.getBalances(addresses[n].address).then((info) => {
+//           if(minBal === undefined || parseInt(info[0].value) < minBal ){
+//             minBal = parseInt(info[0].value);
+//             minAddr = addresses[n].address;
+//           }
+//           recurse(n + 1);
+//         })
+//       }
+//       recurse().then(()=> {});
+//     })
+//   })
+// }
+
 
 //The users balance changes AND the cash register's balance changes so we can know how much we have in each register for testing.
 exports.getTransactions = function (req, res, next) {
@@ -125,17 +162,13 @@ exports.getTransactions = function (req, res, next) {
                   return [setLastTransBool, stopIterBool];
                 };
                 // map over transactions asynchronously
+                let setLastTransBool = true;
+                let stopIterBool = false;
                 async.mapSeries(txnInfo, function (currTxn, cb) {
+                  [setLastTransBool, stopIterBool] = manipulateTransactions(currTxn, setLastTransBool, stopIterBool);
                   cb(null, currTxn);
                 }, function(error, resp) {
-                  //for loops don't work asynchronously
-                  let setLastTransBool = true;
-                  let stopIterBool = false;
-                  // get all transactions that relate to specific destination tag
-                    resp.forEach(function(txn) {
-                      [setLastTransBool, stopIterBool] = manipulateTransactions(txn, setLastTransBool, stopIterBool);
-                      console.log([setLastTransBool, stopIterBool]);
-                    });
+
                   });
                   // console.log(changedUser);
                   // console.log('++++++++++++++++++++');
