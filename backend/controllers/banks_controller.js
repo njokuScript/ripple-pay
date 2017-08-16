@@ -3,13 +3,49 @@ const User = require('../models/user');
 const CashRegister = require('../models/populateBank');
 const async = require('async');
 const {addresses} = require('./addresses');
+const bcrypt = require('bcrypt-nodejs');
 
 //I am going to need {params: {user}} to be passed from the authactions.
 //FUNCTION: this will find the most empty cash register and will make a base32 destTag to assign to the user.
 
 //This function will get the most empty cash register and let the user fill this cash register.
+
+//fromAddress and sourceTag will be required from the frontend for the transaction to go through
+//CashRegister and DesTag of the User will be both of these things.
+exports.sendMoney = function(req, res, next){
+  const Rippled = require('./rippleAPI');
+  let server = new Rippled();
+  let {amount, fromAddress, toAddress, sourceTag, toDesTag} = req.body;
+  server.connect().then(() => {
+    const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
+    CashRegister.findOne({address: fromAddress}, function(err, register){
+      if (err) { return next(err); }
+      //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
+      //I'm not sure if this is the proper usage of bcrypt, I am taking an address from another file and then I'm checking if that
+      //password checks out with the bcrypt hashed password stored in our database
+      bcrypt.compare(addresses[fromAddress], register.secret, function (err, res) {
+        if ( res === true )
+        {
+          server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
+            console.log(orderinfo);
+            let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
+            let signedTransact = jstring.signedTransaction;
+            server.api.submit(signedTransact).then((result) => console.log(result));
+            // I believe that using res.json will help to resolve everything and will end it
+            res.json({});
+          }).catch(error => console.log(error));
+        }
+        else
+        {
+          res.json({});
+        }
+      });
+    })
+  })
+}
+
 exports.generateRegisterAndDesTag = function(req, res, next){
-  let adds = addresses.slice(0,5);
+  let adds = Object.keys(addresses).slice(0,5);
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
   let x = req.query;
@@ -21,17 +57,18 @@ exports.generateRegisterAndDesTag = function(req, res, next){
       let minBal = undefined;
       let minAddr;
       let newBal;
+
+      //Use Object.keys of the addresses to get the addresses we want to use
       async.mapSeries(adds, function(addr, cb){
-        server.api.getBalances(addr.address).then((info) => {
+        server.api.getBalances(addr).then((info) => {
           if(minBal === undefined || parseFloat(info[0].value) < minBal ){
             minBal = parseFloat(info[0].value);
-            minAddr = addr.address;
-            // console.log(minAddr, "fdjk;afl");
+            minAddr = addr;
           }
           cb(null, addr);
         })
       }, function(error, resp){
-          // console.log(minAddr, "youiouo");
+        //You need a better way to handle these destination tags.
           let dest = parseInt(Math.floor(Math.random()*4294967294));
           let changedUser = {
             cashRegister: minAddr,
@@ -122,7 +159,10 @@ exports.getTransactions = function (req, res, next) {
                   // get other party address
                   // let counterParty;
                   // get last transaction id
-                  if (currTxn.specification.destination.tag === existingUser.destinationTag) {
+
+                  //I AM DOING THIS TEMPORARILY AND THE USER WILL HAVE MULTIPLE DESTINATION TAGS AND I WILL USE THE LAST ONE FOR CHECKING THE SOURCE TAG
+                  //ALSO WILL CHECK IF ANY OF HIS DESTINATION TAGS WERE USED.
+                  if ([currTxn.specification.destination.tag, currTxn.specification.source.tag].includes(existingUser.destinationTag)) {
                     if ( setLastTransBool )
                     {
                       changedUser.lastTransactionId = currTxn.id;

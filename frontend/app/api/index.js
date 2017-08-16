@@ -8,3 +8,4 @@ exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.SEARCH_USERS_URL = `${API_URL}/search`;
+exports.SEND_URL = `${API_URL}/send`
