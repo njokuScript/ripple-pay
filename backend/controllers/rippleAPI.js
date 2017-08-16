@@ -61,7 +61,7 @@ class Rippled {
       } else {
         payment = {
         "source": {
-          "address": toAddress,
+          "address": fromAddress,
           "tag": sourceTag,
           "maxAmount": {
             "value": `${value}`,
@@ -69,7 +69,7 @@ class Rippled {
           }
         },
         "destination": {
-          "address": fromAddress,
+          "address": toAddress,
           "amount": {
             "value": `${value}`,
             "currency": "XRP"

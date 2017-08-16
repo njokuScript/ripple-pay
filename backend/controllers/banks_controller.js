@@ -21,6 +21,8 @@ exports.sendMoney = function(req, res, next){
     CashRegister.findOne({address: fromAddress}, function(err, register){
       if (err) { return next(err); }
       //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
+      //I'm not sure if this is the proper usage of bcrypt, I am taking an address from another file and then I'm checking if that
+      //password checks out with the bcrypt hashed password stored in our database
       bcrypt.compare(addresses[fromAddress], register.secret, function (err, res) {
         if ( res === true )
         {

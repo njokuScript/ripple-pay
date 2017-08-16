@@ -10,6 +10,9 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
+import Tabs from 'react-native-tabs';
+import Button from 'react-native-buttons';
+import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
 class Send extends Component {
@@ -138,6 +141,20 @@ class Send extends Component {
             </Text>
           </TouchableOpacity>
         </View>
+        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
+            <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+              <Text>Home</Text>
+            </TouchableOpacity>
+            <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+              <Text>Search</Text>
+            </TouchableOpacity>
+            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+              <Text>Deposit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text>Send</Text>
+            </TouchableOpacity>
+       </Tabs>
       </View>
     );
   }
@@ -145,6 +162,12 @@ class Send extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
+  mainContainer: {
+     flex: 1,
+     justifyContent: 'center',
+     alignItems: 'center',
+     backgroundColor: '#335B7B',
+   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -188,7 +211,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 100
+    top: 60
   },
   button: {
     fontSize: 30,

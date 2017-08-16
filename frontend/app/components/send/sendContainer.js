@@ -5,7 +5,8 @@ import { addAlert } from '../../actions/alertsActions'
 
 const mapStateToProps = ({user}) => ({
   fromAddress: user.cashRegister,
-  sourceTag: user.destinationTag
+  sourceTag: user.destinationTag,
+  user: user
 });
 
 const mapDispatchToProps = dispatch => ({
