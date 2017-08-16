@@ -1,6 +1,6 @@
 import React from 'react';
 import SearchContainer from '../search/searchContainer';
-import Wallet from '../wallet/wallet';
+import WalletContainer from '../wallet/walletContainer';
 import SendContainer from '../send/sendContainer';
 import { unauthUser } from '../../actions';
 // import Icon from 'react-native-vector-icons/Octicons';
@@ -74,7 +74,7 @@ class Home extends React.Component {
     this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.props.navigator.push({
       title: 'Wallet',
-      component: Wallet,
+      component: WalletContainer,
       navigationBarHidden: true
     });
   }

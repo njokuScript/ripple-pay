@@ -19,7 +19,9 @@ import Icon from 'react-native-vector-icons/Octicons';
 class Wallet extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {page: "pool"};
+    this.state = {
+      page: "pool",
+    };
   }
 
   // componentDidMount(){
@@ -101,11 +103,25 @@ class Wallet extends React.Component {
   }
 
   render(){
-    console.log(this.props.cashRegister);
     return (
       <View style={styles.mainContainer}>
         <Text style={styles.title}>{this.props.cashRegister}</Text>
         <Text style={styles.title}>{this.props.destinationTag}</Text>
+          <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+                onSelect={el=>this.setState({page:el.props.name})}>
+                <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+                  <Text>Home</Text>
+                </TouchableOpacity>
+                <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+                  <Text>Search</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text>Deposit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
+                  <Text>Send</Text>
+                </TouchableOpacity>
+          </Tabs>
       </View>
     );
   }

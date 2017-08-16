@@ -49,13 +49,6 @@ exports.generateRegisterAndDesTag = function(req, res, next){
     })
   }
 
-
-
-
-
-
-
-
 //       let traverseBals = function(n = 0){
 //         if ( n === 5 )
 //         {
