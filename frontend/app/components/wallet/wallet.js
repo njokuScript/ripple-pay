@@ -21,6 +21,8 @@ class Wallet extends React.Component {
     super(props);
     this.state = {
       page: "pool",
+      address: undefined,
+      destTag: undefined
     };
   }
 

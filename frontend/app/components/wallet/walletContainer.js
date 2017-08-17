@@ -1,6 +1,6 @@
 import{ connect } from 'react-redux';
 import Wallet from './wallet';
-import { requestTransactions } from '../../actions/authActions';
+import { requestTransactions, requestAddressAndDesTag } from '../../actions/authActions';
 
 
 const mapStateToProps = ({user}) => ({
@@ -10,7 +10,8 @@ const mapStateToProps = ({user}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestTransactions: (user) => dispatch(requestTransactions(user))
+  requestTransactions: (user) => dispatch(requestTransactions(user)),
+  requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user))
 });
 
 export default connect(
