@@ -2,7 +2,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
-import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDRDEST_URL } from '../api';
+import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDRDEST_URL, SEND_URL } from '../api';
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
@@ -38,6 +38,17 @@ exports.signupUser = (email, password, screenName) => {
         // });
     }).catch((error) => {
       dispatch(addAlert("Could not sign up."));
+    });
+  };
+};
+
+exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
+  return function(dispatch) {
+    return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag}).then((response) => {
+
+
+    }).catch((error) => {
+      dispatch(addAlert("Could Not Send."));
     });
   };
 };
@@ -83,6 +94,8 @@ exports.requestAddressAndDesTag = (user_id) => {
     });
   };
 }
+
+
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
 authUser = (user_id) => {

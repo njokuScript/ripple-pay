@@ -84,7 +84,7 @@ class Home extends React.Component {
       navigationBarHidden: true
     });
   }
-
+//THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
   render()
   {
     return (
@@ -97,17 +97,14 @@ class Home extends React.Component {
               </Text>
             </View>
           </View>
-
-
-            <View style={styles.balanceContainer}>
-              <Text style={styles.balance}>
-                Ʀ{this.props.balance}
-              </Text>
-            </View>
-              <TouchableOpacity onPress={this.onLogout}>
-                <Text>logout</Text>
-              </TouchableOpacity>
-
+          <View style={styles.balanceContainer}>
+            <Text style={styles.balance}>
+              Ʀ{this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={this.onLogout}>
+            <Text>logout</Text>
+          </TouchableOpacity>
         </View>
 
           <View style={styles.transactionsContainer}>
