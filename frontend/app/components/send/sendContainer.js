@@ -12,8 +12,8 @@ const mapStateToProps = ({user}) => ({
 const mapDispatchToProps = dispatch => ({
   requestTransactions: (user) => dispatch(requestTransactions(user)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
-  signAndSend: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
-    signAndSend(amount, fromAddress, toAddress, sourceTag, toDesTag)
+  signAndSend: (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => dispatch(
+    signAndSend(amount, fromAddress, toAddress, sourceTag, toDesTag, userId)
   ),
   addAlert: (message) => dispatch(addAlert(message))
 });

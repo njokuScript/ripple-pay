@@ -42,11 +42,37 @@ exports.signupUser = (email, password, screenName) => {
   };
 };
 
-exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
+exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => {
+  console.log(userId);
   return function(dispatch) {
-    return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag}).then((response) => {
-
-
+    return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag, userId}).then((response) => {
+      var {message} = response.data;
+      console.log(message);
+      let respMessage;
+      if ( message === "tesSUCCESS" )
+      {
+        respMessage = "Payment was Successful";
+      }
+      else if (message === "terQUEUED")
+      {
+        respMessage = "Payment placed in Queue";
+      }
+      else if (message === "Balance Insufficient")
+      {
+        respMessage = "Balance Insufficient";
+      }
+      else if (message === "Someone's Trying to Get into Your Wallet")
+      {
+        respMessage = "Someone's Trying to Get into Your Wallet";
+      }
+      else if (message === "Refill and Send Successful"){
+        respMessage = "Refill and Send Successful";
+      }
+      else
+      {
+        respMessage = "Payment Unsuccessful";
+      }
+      dispatch(addAlert(respMessage));
     }).catch((error) => {
       dispatch(addAlert("Could Not Send."));
     });

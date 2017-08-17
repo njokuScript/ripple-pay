@@ -128,7 +128,8 @@ cashRegisterSchema.pre('save', function (next) {
 //   })
 // })
 
-module.exports = mongoose.model('cashRegister', cashRegisterSchema);
+exports.CashRegister = mongoose.model('cashRegister', cashRegisterSchema);
+exports.Bank = mongoose.model('vault', vault);
 // console.log(allbalances);
 // addresses.forEach((a) => {
 //   let m = a;

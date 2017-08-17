@@ -1,8 +1,9 @@
 // const bank = require('../models/vault');
 const User = require('../models/user');
-const CashRegister = require('../models/populateBank');
+const {CashRegister} = require('../models/populateBank');
+const {Bank} = require('../models/populateBank');
 const async = require('async');
-const {addresses} = require('./addresses');
+const {addresses, bank} = require('./addresses');
 const bcrypt = require('bcrypt-nodejs');
 
 //I am going to need {params: {user}} to be passed from the authactions.
@@ -12,34 +13,87 @@ const bcrypt = require('bcrypt-nodejs');
 
 //fromAddress and sourceTag will be required from the frontend for the transaction to go through
 //CashRegister and DesTag of the User will be both of these things.
+
+
+
+
+
 exports.sendMoney = function(req, res, next){
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let {amount, fromAddress, toAddress, sourceTag, toDesTag} = req.body;
-  server.connect().then(() => {
-    const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
-    CashRegister.findOne({address: fromAddress}, function(err, register){
-      if (err) { return next(err); }
-      //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
-      //I'm not sure if this is the proper usage of bcrypt, I am taking an address from another file and then I'm checking if that
-      //password checks out with the bcrypt hashed password stored in our database
-      bcrypt.compare(addresses[fromAddress], register.secret, function (err, res) {
-        if ( res === true )
-        {
-          server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
-            console.log(orderinfo);
-            let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
-            let signedTransact = jstring.signedTransaction;
-            server.api.submit(signedTransact).then((result) => console.log(result));
-            // I believe that using res.json will help to resolve everything and will end it
-            res.json({});
-          }).catch(error => console.log(error));
-        }
-        else
-        {
-          res.json({});
-        }
-      });
+  let {amount, fromAddress, toAddress, sourceTag, toDesTag, userId} = req.body;
+  let bankAddress = Object.keys(bank)[0];
+
+  Bank.findOne({address: bankAddress}, function(err, existingBank){
+    //Change the refill value from 5 to whatever you need later. May be a prob with the null for the sourceTag
+    //The sourceTag is temporarily just made 0 but this can be changed later. It doesn't matter what the bank's source tag is.
+    User.findOne({_id: userId}, function(err, existingUser){
+      if ( amount > existingUser.balance )
+      {
+        res.json({message: "Balance Insufficient"});
+        return;
+      }
+      server.connect().then(() => {
+        const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
+        CashRegister.findOne({address: fromAddress}, function(err, register){
+          if (err) { return next(err); }
+          //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
+          //I'm not sure if this is the proper usage of bcrypt, I am taking an address from another file and then I'm checking if that
+          //password checks out with the bcrypt hashed password stored in our database
+          bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
+            if ( respondence === true )
+            {
+              server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
+                console.log(orderinfo);
+                let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
+                let signedTransact = jstring.signedTransaction;
+                server.api.submit(signedTransact).then((result) => {
+                  console.log(result);
+                  if ( result.resultCode === "tecUNFUNDED_PAYMENT" )
+                  {
+                    let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
+                    bcrypt.compare(bank[bankAddress], existingBank.secret, function (errors, respondent){
+                      if ( respondent === true )
+                      {
+                        server.api.preparePayment(bankAddress, thePay).then((theOrderInfo) =>{
+                          console.log(theOrderInfo);
+                          let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
+                          let theSignedTransact = theJstring.signedTransaction;
+                          server.api.submit(theSignedTransact).then((resultance) => {
+                            console.log(resultance);
+                            bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
+                              if ( respondence === true )
+                              {
+                                server.api.preparePayment(fromAddress, myPayment).then((ordersinfo)=>{
+                                  console.log(ordersinfo);
+                                  let ajstring = server.api.sign(ordersinfo.txJSON, addresses[fromAddress]);
+                                  let asignedTransact = ajstring.signedTransaction;
+                                  server.api.submit(asignedTransact).then((resultss) => {
+                                    console.log(resultss);
+                                    res.json({message: resultss.resultCode})
+                                  })
+                                })
+                              }
+                            })
+                          })
+                          }).catch((err) => console.log(err))
+                        }
+                      })
+                    }
+                    else{
+                      res.json({message: result.resultCode});
+                    }
+                }).catch(message => res.json({message: "Error In submitting transaction"}));
+                // I believe that using res.json will help to resolve everything and will end it
+              })
+            }
+            else
+            {
+              res.json({message: "Someone's Trying to Get into Your Wallet"});
+            }
+          });
+        })
+      })
     })
   })
 }
@@ -71,6 +125,7 @@ exports.generateRegisterAndDesTag = function(req, res, next){
       }, function(error, resp){
         //You need a better way to handle these destination tags.
           let dest = parseInt(Math.floor(Math.random()*4294967294));
+          //I dunno if the sort will work if there are more cash registers
           allbals = allbals.sort();
           let newregister = allbals[Math.floor(allbals.length/2)][1];
           let changedUser = {

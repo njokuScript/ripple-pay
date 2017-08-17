@@ -58,13 +58,13 @@ class Send extends Component {
   sendPayment(){
     if ( !this.props.fromAddress && !this.props.sourceTag)
     {
-      this.props.addAlert("Please Get an Address and Destination Tag")
+      this.props.addAlert("Please press deposit first")
     }
     else if(!this.props.fromAddress){
-      this.props.addAlert("Please Get an Address")
+      this.props.addAlert("Please press deposit to get an address")
     }
     else if(!this.props.sourceTag){
-      this.props.addAlert("Please Get a Destination Tag")
+      this.props.addAlert("Please press deposit to get an dTag")
     }
     else{
       let array = Object.keys(this.state);
@@ -78,8 +78,7 @@ class Send extends Component {
         }
       }
       let {toDesTag, toAddress, amount} = this.state;
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
-      this.props.addAlert("Payment Was Sent!!");
+      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id);
     }
   }
 
