@@ -54,30 +54,33 @@ exports.generateRegisterAndDesTag = function(req, res, next){
   User.findOne({ _id: userId }, function (err, existingUser) {
     if (err) { return next(err);}
     server.connect().then(() => {
-      let minBal = undefined;
+      let allbals = [];
       let minAddr;
       let newBal;
 
       //Use Object.keys of the addresses to get the addresses we want to use
+      //I am getting the middle balance cash register and using it.
       async.mapSeries(adds, function(addr, cb){
         server.api.getBalances(addr).then((info) => {
-          if(minBal === undefined || parseFloat(info[0].value) < minBal ){
-            minBal = parseFloat(info[0].value);
-            minAddr = addr;
-          }
+          // if(minBal === undefined || parseFloat(info[0].value) < minBal ){
+            allbals.push([parseFloat(info[0].value), addr]);
+            // minAddr = addr;
+          // }
           cb(null, addr);
         })
       }, function(error, resp){
         //You need a better way to handle these destination tags.
           let dest = parseInt(Math.floor(Math.random()*4294967294));
+          allbals = allbals.sort();
+          let newregister = allbals[Math.floor(allbals.length/2)][1];
           let changedUser = {
-            cashRegister: minAddr,
+            cashRegister: newregister,
             destinationTag: dest
           };
           User.update({_id: existingUser._id}, changedUser, function (err) {
             if (err) { return next(err); }
             res.json({
-              cashRegister: minAddr,
+              cashRegister: newregister,
               destinationTag: dest
             });
           });
