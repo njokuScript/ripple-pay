@@ -107,7 +107,7 @@ class Search extends React.Component {
            <Text>Search</Text>
           </TouchableOpacity>
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Deposit</Text>
+              <Text>Wallets</Text>
             </TouchableOpacity>
           <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
             <Text>Send</Text>

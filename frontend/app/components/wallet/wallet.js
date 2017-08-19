@@ -21,6 +21,7 @@ class Wallet extends React.Component {
     super(props);
     this.state = {
       page: "pool",
+      disabled: false
     };
     this.generate = this.generate.bind(this);
     this.remove = this.remove.bind(this);
@@ -66,12 +67,15 @@ class Wallet extends React.Component {
     }
   }
 
+  //We have to disable the button so they can't generate more than 5 desTags
+
   generate(){
     let alltheWallets = this.props.wallets;
     if ( alltheWallets.length === 0 )
     {
+      this.setState({disabled: true});
       this.props.requestTransactions(this.props.user);
-      this.props.requestAddressAndDesTag(this.props.user.user_id);
+      this.props.requestAddressAndDesTag(this.props.user.user_id)
     }
     else if(alltheWallets.length > 0 && alltheWallets.length < 5)
     {
@@ -83,53 +87,13 @@ class Wallet extends React.Component {
     }
   }
 
-  oneDigit() {
-    return;
+  componentDidUpdate(prevProps){
+    if ( prevProps.wallets.length === 0 && this.props.wallets.length === 1 )
+    {
+      this.setState({disabled: false})
+    }
   }
 
-  twoDigit() {
-    return;
-  }
-
-  threeDigit() {
-    return;
-  }
-
-  fourDigit() {
-    return;
-  }
-
-  fiveDigit() {
-    return;
-  }
-
-  sixDigit() {
-    return;
-  }
-
-  sevenDigit() {
-    return;
-  }
-
-  eightDigit() {
-    return;
-  }
-
-  nineDigit() {
-    return;
-  }
-
-  zeroDigit() {
-    return;
-  }
-
-  enterButton() {
-    return;
-  }
-
-  backSpace() {
-    return;
-  }
 
   displayWallets() {
     if (this.props.wallets.length > 0) {
@@ -159,9 +123,9 @@ class Wallet extends React.Component {
   // <Text style={styles.title}>{this.props.cashRegister}</Text>
   // <Text style={styles.title}>{this.props.destinationTag}</Text>
 
-
   render()
   {
+    let disabled = this.state.disabled;
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
@@ -174,7 +138,7 @@ class Wallet extends React.Component {
           </View>
           <View style={styles.balanceContainer}>
           </View>
-          <TouchableOpacity onPress={this.generate}>
+          <TouchableOpacity disabled={disabled} onPress={this.generate}>
             <Text>generate wallet</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.remove}>
@@ -275,6 +239,53 @@ const styles = StyleSheet.create({
       height: 75
     }
 });
+// oneDigit() {
+//   return;
+// }
+//
+// twoDigit() {
+//   return;
+// }
+//
+// threeDigit() {
+//   return;
+// }
+//
+// fourDigit() {
+//   return;
+// }
+//
+// fiveDigit() {
+//   return;
+// }
+//
+// sixDigit() {
+//   return;
+// }
+//
+// sevenDigit() {
+//   return;
+// }
+//
+// eightDigit() {
+//   return;
+// }
+//
+// nineDigit() {
+//   return;
+// }
+//
+// zeroDigit() {
+//   return;
+// }
+//
+// enterButton() {
+//   return;
+// }
+//
+// backSpace() {
+//   return;
+// }
 
 
 

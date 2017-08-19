@@ -149,7 +149,7 @@ class Send extends Component {
               <Text>Search</Text>
             </TouchableOpacity>
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Deposit</Text>
+              <Text>Wallets</Text>
             </TouchableOpacity>
             <TouchableOpacity>
               <Text>Send</Text>

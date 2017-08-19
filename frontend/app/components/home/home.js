@@ -122,7 +122,7 @@ class Home extends React.Component {
             <Text style={styles.tabFont}>Search</Text>
             </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text style={styles.tabFont}>Deposit</Text>
+            <Text style={styles.tabFont}>Wallets</Text>
           </TouchableOpacity>
         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
             <Text style={styles.tabFont}>Send</Text>
