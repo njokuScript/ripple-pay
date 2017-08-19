@@ -21,6 +21,7 @@ class Wallet extends React.Component {
     super(props);
     this.state = {
       page: "pool",
+      wallets: []
     };
   }
 
@@ -29,7 +30,7 @@ class Wallet extends React.Component {
   // }
 
   navHome() {
-    this.props.requestTransactions(this.props.user);
+    // this.props.requestTransactions(this.props.user);
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
@@ -53,6 +54,9 @@ class Wallet extends React.Component {
     });
   }
 
+  generate(){
+
+  }
 
   oneDigit() {
     return;
@@ -107,6 +111,13 @@ class Wallet extends React.Component {
       <View style={styles.mainContainer}>
         <Text style={styles.title}>{this.props.cashRegister}</Text>
         <Text style={styles.title}>{this.props.destinationTag}</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={this.generate}>
+              <Text style={styles.button}>
+                Generate Address/DesTAg
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
                 onSelect={el=>this.setState({page:el.props.name})}>
                 <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
@@ -222,6 +233,23 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
     fontSize: 15
+  },
+  buttonContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    top: 60
+  },
+  button: {
+    fontSize: 30,
+    color: '#F2CFB1',
+    fontFamily: 'Kohinoor Bangla',
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: '#ddd',
+    borderBottomWidth: 0,
+    shadowOpacity: 0.3,
+    padding: 7
   }
 });
 

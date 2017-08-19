@@ -15,9 +15,6 @@ const bcrypt = require('bcrypt-nodejs');
 //CashRegister and DesTag of the User will be both of these things.
 
 
-
-
-
 exports.sendMoney = function(req, res, next){
   const Rippled = require('./rippleAPI');
   let server = new Rippled();

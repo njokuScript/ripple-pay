@@ -29,8 +29,8 @@ class Send extends Component {
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   navWallet() {
-    this.props.requestTransactions(this.props.user);
-    this.props.requestAddressAndDesTag(this.props.user.user_id);
+    // this.props.requestTransactions(this.props.user);
+    // this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
@@ -45,9 +45,10 @@ class Send extends Component {
       navigationBarHidden: true
     });
   }
+  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
 
   navHome() {
-    this.props.requestTransactions(this.props.user);
+    // this.props.requestTransactions(this.props.user);
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
