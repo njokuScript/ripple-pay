@@ -59,7 +59,8 @@ class Wallet extends React.Component {
   remove(){
     if ( this.props.wallets.length > 0 )
     {
-      this.props.delWallet(this.props.user.user_id, this.props.wallets[0]);
+      this.setState({disabled: true});
+      this.props.requestTransactions(this.props.user).then(() => this.props.delWallet(this.props.user.user_id, this.props.wallets[0])).then(()=> this.setState({disabled: false}));
     }
     else
     {
@@ -74,23 +75,16 @@ class Wallet extends React.Component {
     if ( alltheWallets.length === 0 )
     {
       this.setState({disabled: true});
-      this.props.requestTransactions(this.props.user);
-      this.props.requestAddressAndDesTag(this.props.user.user_id)
+      this.props.requestAddressAndDesTag(this.props.user.user_id).then(()=> this.setState({disabled: false}));
     }
     else if(alltheWallets.length > 0 && alltheWallets.length < 5)
     {
-      this.props.requestOnlyDesTag(this.props.user.user_id);
+      this.setState({disabled: true});
+      this.props.requestOnlyDesTag(this.props.user.user_id).then(()=> this.setState({disabled: false}));
     }
     else
     {
       return;
-    }
-  }
-
-  componentDidUpdate(prevProps){
-    if ( prevProps.wallets.length === 0 && this.props.wallets.length === 1 )
-    {
-      this.setState({disabled: false})
     }
   }
 
@@ -123,6 +117,8 @@ class Wallet extends React.Component {
   // <Text style={styles.title}>{this.props.cashRegister}</Text>
   // <Text style={styles.title}>{this.props.destinationTag}</Text>
 
+  //I am removing wallets form earliest to latest. We can change this to just the one we click on later if we desire.
+
   render()
   {
     let disabled = this.state.disabled;
@@ -139,17 +135,16 @@ class Wallet extends React.Component {
           <View style={styles.balanceContainer}>
           </View>
           <TouchableOpacity disabled={disabled} onPress={this.generate}>
-            <Text>generate wallet</Text>
+            <Text style={disabled ? styles.redd : styles.greenn}>generate new wallet</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.remove}>
-            <Text>delete wallet</Text>
+          <TouchableOpacity disabled={disabled} onPress={this.remove}>
+            <Text style={disabled ? styles.redd : styles.greenn}>remove old wallet</Text>
           </TouchableOpacity>
         </View>
 
           <View style={styles.walletsContainer}>
               {this.displayWallets()}
           </View>
-
           <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
               onSelect={el=>this.setState({page:el.props.name})}>
              <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
@@ -177,6 +172,14 @@ const styles = StyleSheet.create({
      justifyContent: 'center',
      flexDirection: 'column',
      backgroundColor: '#335B7B'
+   },
+   redd: {
+     color: 'red',
+     fontSize: 20
+   },
+   greenn: {
+     color: 'green',
+     fontSize: 20
    },
   topContainer: {
     alignItems: 'center',
