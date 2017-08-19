@@ -14,6 +14,26 @@ const bcrypt = require('bcrypt-nodejs');
 //fromAddress and sourceTag will be required from the frontend for the transaction to go through
 //CashRegister and DesTag of the User will be both of these things.
 
+exports.receiveOnlyDesTag = function(req, res, next){
+  let {user_id} = req.body;
+  let newTag = parseInt(Math.floor(Math.random()*4294967294));
+  User.update({_id: user_id}, {$push: {wallets: newTag}}, function(err){
+    if (err){return next(err);}
+    res.json({
+      destinationTag: newTag
+    });
+  })
+}
+exports.deleteWallet = function(req, res, next){
+  let {user_id, desTag} = req.body;
+  User.update({_id: user_id}, {$pull: {wallets: desTag}}, function(err){
+    if (err){return next(err);}
+    res.json({
+      
+    });
+  })
+}
+
 
 exports.sendMoney = function(req, res, next){
   const Rippled = require('./rippleAPI');
@@ -100,7 +120,7 @@ exports.generateRegisterAndDesTag = function(req, res, next){
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
   let x = req.query;
-  let userId = x[Object.keys(x)[0]]
+  let userId = x[Object.keys(x)[0]];
   //remember the value is going to be a string
   User.findOne({ _id: userId }, function (err, existingUser) {
     if (err) { return next(err);}
@@ -125,11 +145,11 @@ exports.generateRegisterAndDesTag = function(req, res, next){
           //I dunno if the sort will work if there are more cash registers
           allbals = allbals.sort();
           let newregister = allbals[Math.floor(allbals.length/2)][1];
-          let changedUser = {
-            cashRegister: newregister,
-            destinationTag: dest
-          };
-          User.update({_id: existingUser._id}, changedUser, function (err) {
+          // let changedUser = {
+          //   cashRegister: newregister,
+          //   destinationTag: dest
+          // };
+          User.update({_id: existingUser._id}, {$push: {wallets: dest}, $set: {cashRegister: newregister}}, function (err) {
             if (err) { return next(err); }
             res.json({
               cashRegister: newregister,
@@ -141,38 +161,15 @@ exports.generateRegisterAndDesTag = function(req, res, next){
     })
   }
 
-//       let traverseBals = function(n = 0){
-//         if ( n === 5 )
-//         {
-//           console.log(minAddr);
-//           let dest = parseInt(Math.floor(Math.random()*4294967294));
-//           let changedUser = {
-//             cashRegister: minAddr,
-//             destinationTag: dest
-//           };
-//           User.update({_id: existingUser._id}, changedUser, function (err) {
-//             if (err) { return next(err); }
-//             res.json({
-//               cashRegister: minAddr,
-//               destinationTag: dest
-//             });
-//             return;
-//           });
-//           return;
-//         }
-//         console.log(addresses[n].address);
-//         server.api.getBalances(addresses[n].address).then((info) => {
-//           if(minBal === undefined || parseInt(info[0].value) < minBal ){
-//             minBal = parseInt(info[0].value);
-//             minAddr = addresses[n].address;
-//           }
-//           recurse(n + 1);
-//         })
-//       }
-//       recurse().then(()=> {});
-//     })
-//   })
-// }
+  exports.receiveAllWallets = function(req, res, next){
+    let x = req.query;
+    let userId = x[Object.keys(x)[0]]
+    User.findOne({ _id: userId }, function (err, existingUser) {
+      if (err) { return next(err); }
+      res.json({wallets: existingUser.wallets});
+    })
+  }
+
 
 //The users balance changes AND the cash register's balance changes so we can know how much we have in each register for testing.
 exports.getTransactions = function (req, res, next) {
@@ -208,6 +205,7 @@ exports.getTransactions = function (req, res, next) {
                   lastTransactionId: null
                 };
 
+                let allWallets = existingUser.wallets;
 
                 const manipulateTransactions = function(currTxn, setLastTransBool, stopIterBool) {
                   // let currTxn = txnInfo[i];
@@ -217,7 +215,7 @@ exports.getTransactions = function (req, res, next) {
 
                   //I AM DOING THIS TEMPORARILY AND THE USER WILL HAVE MULTIPLE DESTINATION TAGS AND I WILL USE THE LAST ONE FOR CHECKING THE SOURCE TAG
                   //ALSO WILL CHECK IF ANY OF HIS DESTINATION TAGS WERE USED.
-                  if ([currTxn.specification.destination.tag, currTxn.specification.source.tag].includes(existingUser.destinationTag)) {
+                  if(allWallets.includes(currTxn.specification.destination.tag) || allWallets.includes(currTxn.specification.source.tag)) {
                     if ( setLastTransBool )
                     {
                       changedUser.lastTransactionId = currTxn.id;
@@ -255,17 +253,16 @@ exports.getTransactions = function (req, res, next) {
                   [setLastTransBool, stopIterBool] = manipulateTransactions(currTxn, setLastTransBool, stopIterBool);
                   cb(null, currTxn);
                 }, function(error, resp) {
-
-                  });
-                  // console.log(changedUser);
-                  // console.log('++++++++++++++++++++');
                   User.update({_id: existingUser._id}, changedUser, function (err) {
                     if (err) { return next(err); }
                     res.json({
                       transactions: existingUser.transactions,
                       balance: existingUser.balance
                     });
+                  });
                 });
+                  // console.log(changedUser);
+                  // console.log('++++++++++++++++++++');
               });
           })
         })

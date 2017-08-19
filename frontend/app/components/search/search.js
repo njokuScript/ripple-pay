@@ -54,8 +54,8 @@ class Search extends React.Component {
   }
 
   navWallet() {
-    this.props.requestTransactions(this.props.user);
-    this.props.requestAddressAndDesTag(this.props.user.user_id);
+    // this.props.requestTransactions(this.props.user);
+    // this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.setState({query: ""});
     this.props.navigator.push({
       title: 'Wallet',

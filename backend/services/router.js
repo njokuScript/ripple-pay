@@ -24,6 +24,9 @@ router.post('/send', BankController.sendMoney);
 router.get('/addrs', BankController.generateRegisterAndDesTag);
 router.get('/transactions', BankController.getTransactions);
 router.get('/search', AuthenticationController.search);
+router.get('/wallets', BankController.receiveAllWallets);
+router.post('/dest', BankController.receiveOnlyDesTag);
+router.post('/delwallet', BankController.deleteWallet);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

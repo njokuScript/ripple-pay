@@ -5,7 +5,7 @@ import { addAlert } from '../../actions/alertsActions'
 
 const mapStateToProps = ({user}) => ({
   fromAddress: user.cashRegister,
-  sourceTag: user.destinationTag,
+  sourceTag: user.wallets.length > 0 ? user.wallets[user.wallets.length - 1] : undefined,
   user: user
 });
 

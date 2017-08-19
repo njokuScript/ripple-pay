@@ -32,10 +32,7 @@ var userSchema = new Schema({
     type: Number,
     default: 0,
   },
-  destinationTag: { 
-    type: Number,
-    default: 0
-  },
+  wallets: [],
   transactions: [{
     txnId: String,
     date: Date,
