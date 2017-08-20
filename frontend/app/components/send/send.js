@@ -22,7 +22,8 @@ class Send extends Component {
     this.state = {
       toAddress: "",
       toDesTag: undefined,
-      amount: ""
+      amount: "",
+      disabled: false
     }
   }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
@@ -73,7 +74,8 @@ class Send extends Component {
         }
       }
       let {toDesTag, toAddress, amount} = this.state;
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id);
+      this.setState({disabled: true});
+      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id).then(()=> this.setState({disabled: false}));
     }
   }
 
@@ -129,8 +131,8 @@ class Send extends Component {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this.sendPayment}>
-            <Text style={styles.button}>
+          <TouchableOpacity disabled={this.state.disabled} onPress={this.sendPayment}>
+            <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
               Send Payment
             </Text>
           </TouchableOpacity>
@@ -207,13 +209,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     top: 60
   },
-  button: {
+  greenbutton: {
     fontSize: 30,
-    color: '#F2CFB1',
+    color: 'green',
     fontFamily: 'Kohinoor Bangla',
     borderWidth: 1,
     borderRadius: 6,
-    borderColor: '#ddd',
+    borderColor: 'green',
+    borderBottomWidth: 0,
+    shadowOpacity: 0.3,
+    padding: 7
+  },
+  redbutton: {
+    fontSize: 30,
+    color: 'red',
+    fontFamily: 'Kohinoor Bangla',
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: 'red',
     borderBottomWidth: 0,
     shadowOpacity: 0.3,
     padding: 7

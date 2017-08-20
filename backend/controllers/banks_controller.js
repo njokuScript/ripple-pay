@@ -70,6 +70,11 @@ exports.inBankSend = function(req, res, next){
   console.log(sender_id, receiver_id, amount);
   User.findOne({_id: sender_id}, function(errorOne, sender){
     if ( errorOne){return next(errorOne);}
+    if ( amount > sender.balance )
+    {
+      res.json({message: "Balance Insufficient"});
+      return;
+    }
     User.findOne({_id: receiver_id}, function(errorTwo, receiver){
       if ( errorTwo){return next(errorTwo);}
       if ( sender && receiver )

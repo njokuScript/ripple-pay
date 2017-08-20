@@ -75,16 +75,21 @@ class Search extends React.Component {
     });
   }
 
+//Disregard where your id is equal to the user id that comes back.
   makeUsers(){
     let theUsers;
     if ( this.props.users )
     {
-      theUsers = this.props.users.sort((a,b) => a.screenName - b.screenName).map((user, idx) => {
-        return (
-          <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName)}} style={styles.resultItem} key={idx}>
-            <Text style={styles.title}>{user.screenName}</Text>
-          </TouchableOpacity>
-        );
+      theUsers = this.props.users.sort((a,b) => a.screenName - b.screenName)
+      .map((user, idx) => {
+        if ( user._id !== this.props.user.user_id )
+        {
+          return (
+            <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName)}} style={styles.resultItem} key={idx}>
+              <Text style={styles.title}>{user.screenName}</Text>
+            </TouchableOpacity>
+          );
+        }
       });
       return theUsers;
     }

@@ -22,7 +22,8 @@ class BankSend extends Component {
     this.sendPayment = this.sendPayment.bind(this);
     this.state = {
       amount: "",
-      page: ""
+      page: "",
+      disabled: false
     }
   }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
@@ -65,7 +66,8 @@ class BankSend extends Component {
   }
 
   sendPayment(){
-    this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount));
+    this.setState({disabled: true});
+    this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(()=> this.setState({disabled: false}));
   }
 
   render() {
@@ -91,8 +93,8 @@ class BankSend extends Component {
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this.sendPayment}>
-            <Text style={styles.button}>
+          <TouchableOpacity disabled={this.state.disabled} onPress={this.sendPayment}>
+            <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
               Send Payment
             </Text>
           </TouchableOpacity>
@@ -169,13 +171,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     top: 60
   },
-  button: {
+  greenbutton: {
     fontSize: 30,
-    color: '#F2CFB1',
+    color: 'green',
     fontFamily: 'Kohinoor Bangla',
     borderWidth: 1,
     borderRadius: 6,
-    borderColor: '#ddd',
+    borderColor: 'green',
+    borderBottomWidth: 0,
+    shadowOpacity: 0.3,
+    padding: 7
+  },
+  redbutton: {
+    fontSize: 30,
+    color: 'red',
+    fontFamily: 'Kohinoor Bangla',
+    borderWidth: 1,
+    borderRadius: 6,
+    borderColor: 'red',
     borderBottomWidth: 0,
     shadowOpacity: 0.3,
     padding: 7
