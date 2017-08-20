@@ -34,6 +34,7 @@ mongoose.connection.once('connected', () => {
 const Rippled = require('../controllers/rippleAPI');
 let server = new Rippled();
 let adds = Object.keys(addresses);
+
 // server.getBalance(addresses[0].address);
 server.connect().then(()=>{
   let recurse = function(n = 0){

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
-import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDRDEST_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
+import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
@@ -83,6 +83,8 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, user
 //You can debug this using the debugger you showed me in the browser.
 //It is just object deconstruction and can be written another way, but
 //user is {user: {user_id: whatever} }
+//I'M PASSING THE ENTIRE USER IN HERE EVEN THOUGH IT MAY SEEM COUNTERINTUITIVE BECAUSE I'LL HAVE TO COMBINE
+//THEM LATER WITH THE IN-BANK TRANSACTIONS.
 exports.requestTransactions = (user) => {
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
@@ -107,13 +109,13 @@ exports.requestUsers = (item) => {
   };
 };
 
-exports.requestAddressAndDesTag = (user_id) => {
+exports.requestAddress = (user_id) => {
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     // index.js and router.js and THEN we finally get to our backend.
-    return axios.get(ADDRDEST_URL, { params: user_id } ).then((response) => {
-      dispatch(receivedAddrDesTag(response.data));
+    return axios.get(ADDR_URL, { params: user_id } ).then((response) => {
+      dispatch(receivedAddress(response.data));
     }).catch((error) => {
     });
   };
@@ -129,23 +131,23 @@ exports.requestAllWallets = (user_id) => {
     });
   };
 }
-exports.requestOnlyDesTag = (user_id) => {
+exports.requestOnlyDesTag = (user_id, cashRegister) => {
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     // index.js and router.js and THEN we finally get to our backend.
-    return axios.post(DEST_URL, { user_id } ).then((response) => {
+    return axios.post(DEST_URL, { user_id, cashRegister } ).then((response) => {
       dispatch(receivedDesTag(response.data));
     }).catch((error) => {
     });
   };
 }
-exports.delWallet = (user_id, desTag) => {
+exports.delWallet = (user_id, desTag, cashRegister) => {
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     // index.js and router.js and THEN we finally get to our backend.
-    return axios.post(DEL_WALLET_URL, { user_id, desTag } ).then((response) => {
+    return axios.post(DEL_WALLET_URL, { user_id, desTag, cashRegister } ).then((response) => {
       dispatch(deltheWallet(response.data));
     }).catch((error) => {
     });
@@ -181,9 +183,9 @@ let receivedDesTag = (data) => {
   };
 };
 
-let receivedAddrDesTag = (data) => {
+let receivedAddress = (data) => {
   return {
-    type: 'RECEIVED_ADDR_DESTAG',
+    type: 'RECEIVED_ADDRESS',
     data
   };
 };

@@ -2,6 +2,7 @@
 const User = require('../models/user');
 const {CashRegister} = require('../models/populateBank');
 const {Bank} = require('../models/populateBank');
+const {UsedWallet} = require('../models/populateBank');
 const async = require('async');
 const {addresses, bank} = require('./addresses');
 const bcrypt = require('bcrypt-nodejs');
@@ -14,23 +15,70 @@ const bcrypt = require('bcrypt-nodejs');
 //fromAddress and sourceTag will be required from the frontend for the transaction to go through
 //CashRegister and DesTag of the User will be both of these things.
 
+//I am going to check all the wallets and see if I find a address + desTag combo
+//and if I do, I will make a recursive call and restart.
+//Since there is a very low chance of a coincide, this shouldn't have to recurse at all
+//or more than once ever.
+//NOT SURE IF THIS IS THREADSAFE, akshay.
+
 exports.receiveOnlyDesTag = function(req, res, next){
-  let {user_id} = req.body;
-  let newTag = parseInt(Math.floor(Math.random()*4294967294));
-  User.update({_id: user_id}, {$push: {wallets: newTag}}, function(err){
-    if (err){return next(err);}
-    res.json({
-      destinationTag: newTag
-    });
-  })
+  let {user_id, cashRegister} = req.body;
+  let newTag;
+  let findthis;
+  // let testBool = true;
+  let recurse = function(){
+    // if ( testBool )
+    // {
+    //   newTag = 3633108510;
+    //   testBool = false;
+    // }
+    // else
+    // {
+    newTag = parseInt(Math.floor(Math.random()*4294967294));
+    // }
+    findthis = `${cashRegister}${newTag}`;
+    UsedWallet.findOne({wallet: findthis}, function(err, existingWallet){
+      if (err){return next(err);}
+      if ( existingWallet )
+      {
+        // console.log("same address and dest tag not allowed");
+        recurse();
+      }
+      else
+      {
+        let theNewWallet = new UsedWallet({wallet: findthis});
+        theNewWallet.save(function(err){
+          if ( err )
+          {
+            return next(err);
+          }
+          User.update({_id: user_id}, {$push: {wallets: newTag}}, function(err){
+            if (err){return next(err);}
+            res.json({
+              destinationTag: newTag
+            });
+          })
+        })
+      }
+    })
+  }
+  recurse();
 }
+
+//I'm storing a used wallet as cashRegister + desTag without adding Strings which is expensive
+//intrapolation is better.
 exports.deleteWallet = function(req, res, next){
-  let {user_id, desTag} = req.body;
+  let {user_id, desTag, cashRegister} = req.body;
+  let findthiswallet = `${cashRegister}${desTag}`;
   User.update({_id: user_id}, {$pull: {wallets: desTag}}, function(err){
     if (err){return next(err);}
-    res.json({
-      
-    });
+    //NOT SURE HOW FINDONE AND REMOVE WORKS
+    UsedWallet.findOneAndRemove({wallet: findthiswallet}, function(err){
+      if ( err ){return next(err);}
+      res.json({
+
+      });
+    })
   })
 }
 
@@ -115,7 +163,7 @@ exports.sendMoney = function(req, res, next){
   })
 }
 
-exports.generateRegisterAndDesTag = function(req, res, next){
+exports.generateRegister = function(req, res, next){
   let adds = Object.keys(addresses).slice(0,5);
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
@@ -128,7 +176,6 @@ exports.generateRegisterAndDesTag = function(req, res, next){
       let allbals = [];
       let minAddr;
       let newBal;
-
       //Use Object.keys of the addresses to get the addresses we want to use
       //I am getting the middle balance cash register and using it.
       async.mapSeries(adds, function(addr, cb){
@@ -141,19 +188,13 @@ exports.generateRegisterAndDesTag = function(req, res, next){
         })
       }, function(error, resp){
         //You need a better way to handle these destination tags.
-          let dest = parseInt(Math.floor(Math.random()*4294967294));
           //I dunno if the sort will work if there are more cash registers
           allbals = allbals.sort();
           let newregister = allbals[Math.floor(allbals.length/2)][1];
-          // let changedUser = {
-          //   cashRegister: newregister,
-          //   destinationTag: dest
-          // };
-          User.update({_id: existingUser._id}, {$push: {wallets: dest}, $set: {cashRegister: newregister}}, function (err) {
+          User.update({_id: existingUser._id}, {cashRegister: newregister}, function (err) {
             if (err) { return next(err); }
             res.json({
-              cashRegister: newregister,
-              destinationTag: dest
+              cashRegister: newregister
             });
           });
         })

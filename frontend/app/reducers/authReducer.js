@@ -43,8 +43,8 @@ module.exports = (state=defaultState, action) => {
       let walls = state.wallets.slice(0);
       walls.push(action.data.destinationTag);
       return Object.assign({}, state, {wallets: walls});
-    case 'RECEIVED_ADDR_DESTAG':
-      return Object.assign({}, state, {cashRegister: action.data.cashRegister, wallets: [action.data.destinationTag]});
+    case 'RECEIVED_ADDRESS':
+      return Object.assign({}, state, {cashRegister: action.data.cashRegister});
     default:
       return state;
   }

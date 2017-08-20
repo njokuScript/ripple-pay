@@ -60,7 +60,7 @@ class Wallet extends React.Component {
     if ( this.props.wallets.length > 0 )
     {
       this.setState({disabled: true});
-      this.props.requestTransactions(this.props.user).then(() => this.props.delWallet(this.props.user.user_id, this.props.wallets[0])).then(()=> this.setState({disabled: false}));
+      this.props.requestTransactions(this.props.user).then(() => this.props.delWallet(this.props.user.user_id, this.props.wallets[0], this.props.cashRegister)).then(()=> this.setState({disabled: false}));
     }
     else
     {
@@ -72,15 +72,20 @@ class Wallet extends React.Component {
 
   generate(){
     let alltheWallets = this.props.wallets;
-    if ( alltheWallets.length === 0 )
+    if ( alltheWallets.length >= 0 && alltheWallets.length < 5 )
     {
       this.setState({disabled: true});
-      this.props.requestAddressAndDesTag(this.props.user.user_id).then(()=> this.setState({disabled: false}));
-    }
-    else if(alltheWallets.length > 0 && alltheWallets.length < 5)
-    {
-      this.setState({disabled: true});
-      this.props.requestOnlyDesTag(this.props.user.user_id).then(()=> this.setState({disabled: false}));
+      if ( alltheWallets.length === 0 )
+      {
+        this.props.requestAddress(this.props.user.user_id)
+        .then(()=> this.props.requestOnlyDesTag(this.props.user.user_id, this.props.cashRegister))
+        .then(()=> this.setState({disabled: false}));
+      }
+      else
+      {
+        this.props.requestOnlyDesTag(this.props.user.user_id, this.props.cashRegister)
+        .then(()=> this.setState({disabled: false}));
+      }
     }
     else
     {
@@ -99,7 +104,6 @@ class Wallet extends React.Component {
           </View>
         );
       });
-      console.log(allWallets);
       return (
         <View style={styles.walletsContainer}>
           <Text>{this.props.cashRegister}</Text>
