@@ -144,12 +144,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 20,
-    backgroundColor: '#335B7B',
+    backgroundColor: 'black',
   },
 
   titleContainer: {
-    padding: 10,     
+    padding: 10,
     alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 4,
   },
 
   title: {
