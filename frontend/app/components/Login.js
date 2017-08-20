@@ -150,11 +150,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     padding: 10,
     alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: '#ddd',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
+    
   },
 
   title: {
