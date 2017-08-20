@@ -57,15 +57,9 @@ class Send extends Component {
   }
 
   sendPayment(){
-    if ( !this.props.fromAddress && !this.props.sourceTag)
+    if ( !this.props.fromAddress || !this.props.sourceTag)
     {
-      this.props.addAlert("Please press deposit first")
-    }
-    else if(!this.props.fromAddress){
-      this.props.addAlert("Please press deposit to get an address")
-    }
-    else if(!this.props.sourceTag){
-      this.props.addAlert("Please press deposit to get an dTag")
+      this.props.addAlert("Please get a wallet first")
     }
     else{
       let array = Object.keys(this.state);

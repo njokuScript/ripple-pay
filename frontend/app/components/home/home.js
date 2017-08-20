@@ -32,11 +32,13 @@ class Home extends React.Component {
       console.log(this.props.transactions);
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
       const transactions = this.props.transactions.map((transaction, idx) => {
+        let ndate = new Date(transaction.date);
+        ndate = ndate.toString();
         return (
           <View style={styles.transaction} key={idx}>
             <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
-            <Text style={styles.transactionFont}>{transaction.date}</Text>
-            <Text style={styles.transactionFont}>{transaction.amount}</Text>
+            <Text style={styles.transactionFont}>{ndate}</Text>
+            <Text style={styles.transactionFont}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}</Text>
           </View>
         );
       });

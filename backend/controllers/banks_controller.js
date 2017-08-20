@@ -230,7 +230,6 @@ exports.getTransactions = function (req, res, next) {
           let cashreg = {
             balance: newbalance
           }
-          console.log(cashreg)
           CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, cashreg, {upsert: false}, function(err){
             if ( err )
             {
@@ -253,7 +252,6 @@ exports.getTransactions = function (req, res, next) {
                   // get other party address
                   // let counterParty;
                   // get last transaction id
-
                   //I AM DOING THIS TEMPORARILY AND THE USER WILL HAVE MULTIPLE DESTINATION TAGS AND I WILL USE THE LAST ONE FOR CHECKING THE SOURCE TAG
                   //ALSO WILL CHECK IF ANY OF HIS DESTINATION TAGS WERE USED.
                   if(allWallets.includes(currTxn.specification.destination.tag) || allWallets.includes(currTxn.specification.source.tag)) {
@@ -270,14 +268,13 @@ exports.getTransactions = function (req, res, next) {
                       Object.keys(currTxn.outcome.balanceChanges).forEach((addr) => {
                         if (userAddress !== addr) {
                           counterParty = addr;
-                          console.log(counterParty);
                           return;
                         }
                       });
                       let balanceChange = currTxn.outcome.balanceChanges[userAddress][0].value;
                       changedUser.balance += parseFloat(balanceChange);
                       let newTxn = {
-                        date: currTxn.outcome.timestamp,
+                        date: new Date(currTxn.outcome.timestamp),
                         amount: balanceChange,
                         txnId: currTxn.id,
                         otherParty: counterParty
@@ -294,6 +291,11 @@ exports.getTransactions = function (req, res, next) {
                   [setLastTransBool, stopIterBool] = manipulateTransactions(currTxn, setLastTransBool, stopIterBool);
                   cb(null, currTxn);
                 }, function(error, resp) {
+                  let ndate;
+                  let mdate;
+                  changedUser.transactions = changedUser.transactions.sort((a,b)=>{
+                    return b.date.getTime() - a.date.getTime();
+                  })
                   User.update({_id: existingUser._id}, changedUser, function (err) {
                     if (err) { return next(err); }
                     res.json({

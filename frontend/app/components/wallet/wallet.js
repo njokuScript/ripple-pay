@@ -142,7 +142,7 @@ class Wallet extends React.Component {
             <Text style={disabled ? styles.redd : styles.greenn}>generate new wallet</Text>
           </TouchableOpacity>
           <TouchableOpacity disabled={disabled} onPress={this.remove}>
-            <Text style={disabled ? styles.redd : styles.greenn}>remove old wallet</Text>
+            <Text style={disabled ? styles.redd : styles.greenn}>remove oldest wallet</Text>
           </TouchableOpacity>
         </View>
 
