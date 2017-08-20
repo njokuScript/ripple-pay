@@ -2,7 +2,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
-import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
+import { SIGNIN_URL, SIGNUP_URL, BANK_SEND_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
@@ -44,11 +44,9 @@ exports.signupUser = (email, password, screenName) => {
 };
 
 exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => {
-  console.log(userId);
   return function(dispatch) {
     return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag, userId}).then((response) => {
       var {message} = response.data;
-      console.log(message);
       let respMessage;
       if ( message === "tesSUCCESS" )
       {
@@ -79,6 +77,15 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, user
     });
   };
 };
+
+exports.sendInBank = (sender_id, receiver_id, amount) => {
+  return function(dispatch){
+    return axios.post(BANK_SEND_URL, {sender_id, receiver_id, amount}).then((response)=>{
+      var {message} = response.data;
+      dispatch(addAlert(message));
+    })
+  }
+}
 
 //You can debug this using the debugger you showed me in the browser.
 //It is just object deconstruction and can be written another way, but
@@ -156,6 +163,7 @@ exports.delWallet = (user_id, desTag, cashRegister) => {
 
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
+
 authUser = (user_id) => {
   return {
     type: 'AUTH_USER',

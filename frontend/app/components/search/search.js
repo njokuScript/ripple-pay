@@ -2,6 +2,7 @@ import React from 'react';
 import HomeContainer from '../home/homeContainer';
 import WalletContainer from '../wallet/walletContainer';
 import SendContainer from '../send/send';
+import BankSendContainer from '../banksend/banksendContainer';
 import { reduxForm } from 'redux-form';
 
 import { View,
@@ -19,20 +20,12 @@ class Search extends React.Component {
     super(props);
     this.requestUsers = this.props.requestUsers.bind(this);
     this.makeUsers = this.makeUsers.bind(this);
+    this.navBankSend = this.navBankSend.bind(this);
     this.state = {
       query: "",
       page: 'source'
     };
   }
-
-  // componentWillReceiveProps(newProps){
-  //   console.log(this.props.users.data.search);
-  //   console.log(newProps.users.data.search);
-  //   if ( this.props.users.data.search !== newProps.users.data.search )
-  //   {
-  //     this.setState({ results: newProps.users.data.search });
-  //   }
-  // }
 
   componentDidUpdate(prevProps,prevState){
     if ( prevState.query !== this.state.query )
@@ -53,9 +46,17 @@ class Search extends React.Component {
     });
   }
 
+  navBankSend(receiver_id, otherUser) {
+    this.setState({query: ""});
+    this.props.navigator.push({
+      title: 'BankSend',
+      component: BankSendContainer,
+      navigationBarHidden: true,
+      passProps: {receiver_id: receiver_id, otherUser: otherUser}
+    });
+  }
+
   navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.setState({query: ""});
     this.props.navigator.push({
       title: 'Wallet',
@@ -78,11 +79,11 @@ class Search extends React.Component {
     let theUsers;
     if ( this.props.users )
     {
-      theUsers = this.props.users.map((user, idx) => {
+      theUsers = this.props.users.sort((a,b) => a.screenName - b.screenName).map((user, idx) => {
         return (
-          <View style={styles.resultItem} key={idx}>
-            <Text style={styles.title}>{user}</Text>
-          </View>
+          <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName)}} style={styles.resultItem} key={idx}>
+            <Text style={styles.title}>{user.screenName}</Text>
+          </TouchableOpacity>
         );
       });
       return theUsers;

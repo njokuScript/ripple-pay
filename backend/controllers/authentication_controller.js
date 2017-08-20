@@ -71,8 +71,6 @@ exports.search = function (req, res, next) {
   User.find({ "screenName": reg } , function(err, users) {
     if (err) { return next(err); }
     // Our response is a JSON object. The next file to look at is the AuthActions where we follow up on our initial promise.
-    res.json({search: users.map((user) => {
-      return user.screenName;
-    }).sort()});
+    res.json({search: users});
   });
 };

@@ -27,6 +27,7 @@ router.get('/search', AuthenticationController.search);
 router.get('/wallets', BankController.receiveAllWallets);
 router.post('/dest', BankController.receiveOnlyDesTag);
 router.post('/delwallet', BankController.deleteWallet);
+router.post('/banksend', BankController.inBankSend);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

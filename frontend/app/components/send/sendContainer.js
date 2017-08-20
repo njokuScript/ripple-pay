@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import Send from './send';
 import { signAndSend, requestTransactions, requestAddressAndDesTag } from '../../actions/authActions';
-import { addAlert } from '../../actions/alertsActions'
+import { addAlert } from '../../actions/alertsActions';
 
 const mapStateToProps = ({user}) => ({
   fromAddress: user.cashRegister,

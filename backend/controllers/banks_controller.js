@@ -65,6 +65,50 @@ exports.receiveOnlyDesTag = function(req, res, next){
   recurse();
 }
 
+exports.inBankSend = function(req, res, next){
+  let {sender_id, receiver_id, amount} = req.body;
+  console.log(sender_id, receiver_id, amount);
+  User.findOne({_id: sender_id}, function(errorOne, sender){
+    if ( errorOne){return next(errorOne);}
+    User.findOne({_id: receiver_id}, function(errorTwo, receiver){
+      if ( errorTwo){return next(errorTwo);}
+      if ( sender && receiver )
+      {
+        let trTime = new Date;
+        let senderBal = {
+          balance: sender.balance - amount
+        }
+        let senderTransaction = {
+          date: trTime,
+          amount: -amount,
+          otherParty: receiver.screenName
+        }
+        let receiverBal = {
+          balance: receiver.balance + amount
+        }
+        let receiverTransaction = {
+          date: trTime,
+          amount: amount,
+          otherParty: sender.screenName
+        }
+        User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}, function(err){
+          if(err){return next(err);}
+          User.update({_id: receiver_id}, {$set: receiverBal, $push: {transactions: receiverTransaction}}, function(err){
+            if(err){return next(err);}
+            res.json({message: "Payment was Successful"});
+          })
+        })
+      }
+      else
+      {
+        res.json({message: "Payment Unsuccessful"});
+      }
+    })
+  })
+}
+
+
+
 //I'm storing a used wallet as cashRegister + desTag without adding Strings which is expensive
 //intrapolation is better.
 exports.deleteWallet = function(req, res, next){

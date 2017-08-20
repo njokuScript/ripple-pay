@@ -12,3 +12,4 @@ exports.SEND_URL = `${API_URL}/send`;
 exports.WALLETS_URL = `${API_URL}/wallets`;
 exports.DEST_URL = `${API_URL}/dest`;
 exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
+exports.BANK_SEND_URL = `${API_URL}/banksend`;
