@@ -138,6 +138,12 @@ class Send extends Component {
             </Text>
           </TouchableOpacity>
         </View>
+        <Text style={styles.redtext}>
+          Transaction Fee: 0.02 XRP
+        </Text>
+        <Text style={styles.redtext}>
+          Warning: You will be charged a fee if you send to other party and they require a destination tag or if you send less than 20 ripple to a new wallet
+        </Text>
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
             <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
               <Text>Home</Text>
@@ -169,12 +175,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 20,
+    paddingTop: 0,
     backgroundColor: '#335B7B',
   },
 
   titleContainer: {
-    padding: 10,
+    padding: 0,
     alignItems: 'center',
   },
 
@@ -195,7 +201,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     margin: 45,
     marginTop: 0,
-    top: 80,
+    top: 40,
     backgroundColor: '#fff'
   },
 
@@ -205,10 +211,15 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    padding: 20,
+    padding: 0,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 60
+    top: 30
+  },
+  redtext: {
+    color: 'red',
+    fontSize: 15,
+    marginTop: 40
   },
   greenbutton: {
     fontSize: 30,

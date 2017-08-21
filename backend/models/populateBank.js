@@ -36,6 +36,21 @@ let usedWalletSchema = new Schema ({
   }
 })
 
+let moneySchema = new Schema ({
+  cost: {
+    type: Number,
+    default: 0
+  },
+  revenue: {
+    type: Number,
+    default: 0
+  },
+  profit: {
+    type: Number,
+    default: 0
+  }
+})
+
 vault.pre('save', function (next) {
   var register = this;
   if (register.isNew || register.isModified('password')) {
@@ -75,3 +90,4 @@ cashRegisterSchema.pre('save', function (next) {
 exports.CashRegister = mongoose.model('cashRegister', cashRegisterSchema);
 exports.Bank = mongoose.model('vault', vault);
 exports.UsedWallet = mongoose.model('usedWallet', usedWalletSchema );
+exports.Money = mongoose.model('money', moneySchema);

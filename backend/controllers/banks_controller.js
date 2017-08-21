@@ -3,6 +3,7 @@ const User = require('../models/user');
 const {CashRegister} = require('../models/populateBank');
 const {Bank} = require('../models/populateBank');
 const {UsedWallet} = require('../models/populateBank');
+const {Money} = require('../models/populateBank');
 const async = require('async');
 const {addresses, bank} = require('./addresses');
 const bcrypt = require('bcrypt-nodejs');
@@ -178,10 +179,15 @@ exports.sendMoney = function(req, res, next){
                                   let ajstring = server.api.sign(ordersinfo.txJSON, addresses[fromAddress]);
                                   let asignedTransact = ajstring.signedTransaction;
                                   server.connect().then(()=>{
-
-                                    server.api.submit(asignedTransact).then((resultss) => {
-                                      console.log(resultss);
-                                      res.json({message: resultss.resultCode})
+                                    server.api.getFee().then((fee)=>{
+                                      numFee = parseFloat(fee);
+                                      Money.updateMany({}, {$inc: {cost: numFee}, $inc: {revenue: 0.02}, $inc: {profit: 0.02 - numFee}}, function(err){
+                                        if(err){return next(err);}
+                                        server.api.submit(asignedTransact).then((resultss) => {
+                                          console.log(resultss);
+                                          res.json({message: resultss.resultCode})
+                                        })
+                                      })
                                     })
                                   })
                                 })
@@ -207,10 +213,16 @@ exports.sendMoney = function(req, res, next){
                       let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
                       let signedTransact = jstring.signedTransaction;
                       server.connect().then(()=>{
-                        server.api.submit(signedTransact).then((result) => {
-                          console.log(result);
-                          res.json({message: result.resultCode});
-                        }).catch(message => res.json({message: "Error In submitting transaction"}));
+                        server.api.getFee().then((theFee)=>{
+                          let numberFee = parseFloat(theFee);
+                          Money.update({}, {$inc: {cost: numberFee, revenue: 0.02, profit: 0.02 - numberFee}}, function(err){
+                            if(err){return next(err);}
+                            server.api.submit(signedTransact).then((result) => {
+                              console.log(result);
+                              res.json({message: result.resultCode});
+                            }).catch(message => res.json({message: "Error In submitting transaction"}));
+                          })
+                        })
                         // I believe that using res.json will help to resolve everything and will end it
                       })
                     })
@@ -340,8 +352,12 @@ exports.getTransactions = function (req, res, next) {
                           return;
                         }
                       });
-                      let balanceChange = currTxn.outcome.balanceChanges[userAddress][0].value;
-                      changedUser.balance += parseFloat(balanceChange);
+                      let balanceChange = parseFloat(currTxn.outcome.balanceChanges[userAddress][0].value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]);
+                      if ( balanceChange < 0 )
+                      {
+                        balanceChange -= 0.02;
+                      }
+                      changedUser.balance += balanceChange;
                       let newTxn = {
                         date: new Date(currTxn.outcome.timestamp),
                         amount: balanceChange,

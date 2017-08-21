@@ -7,6 +7,7 @@ const { addresses, bank } = require('../controllers/addresses');
 const async = require('async');
 const {CashRegister} = require('./populateBank');
 const {Bank} = require('./populateBank');
+const {Money} = require('./populateBank');
 
 mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
@@ -73,4 +74,9 @@ server.connect().then(()=>{
       if (err) { console.log('did not work'); }
     });
   })
+})
+
+let cash = new Money;
+cash.save(function(err){
+  
 })
