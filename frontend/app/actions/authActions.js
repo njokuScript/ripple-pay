@@ -56,6 +56,14 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, user
       {
         respMessage = "Payment placed in Queue";
       }
+      else if (message === "tecNO_DST_INSUF_XRP")
+      {
+        respMessage = "Must send at least 20 ripple to this address";
+      }
+      else if (message === "tecDST_TAG_NEEDED")
+      {
+        respMessage = "Sending address requires a destination tag";
+      }
       else if (message === "Balance Insufficient")
       {
         respMessage = "Balance Insufficient";

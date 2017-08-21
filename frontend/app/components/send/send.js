@@ -15,6 +15,7 @@ import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
+//I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
 class Send extends Component {
   constructor(props){
     super(props);

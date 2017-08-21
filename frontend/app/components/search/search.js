@@ -86,7 +86,7 @@ class Search extends React.Component {
         {
           return (
             <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName)}} style={styles.resultItem} key={idx}>
-              <Text style={styles.title}>{user.screenName}</Text>
+              <Text style={styles.title}>    {user.screenName} - Click to Send</Text>
             </TouchableOpacity>
           );
         }
@@ -179,7 +179,7 @@ class Search extends React.Component {
      fontSize: 15
    },
     resultItem: {
-      flex: 1
+      flex: 1,
     },
     resultContainer: {
       flex: 1,

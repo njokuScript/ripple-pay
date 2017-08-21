@@ -154,51 +154,69 @@ exports.sendMoney = function(req, res, next){
           //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
           //I'm not sure if this is the proper usage of bcrypt, I am taking an address from another file and then I'm checking if that
           //password checks out with the bcrypt hashed password stored in our database
+
+          //I believe that his bcrypt.compare function is taking the secret key on a remote computer(atom) and not sending it in through any
+          //server
+          //I DON'T KNOW IF THERE IS ANY POINT OF STORING THE SECRET KEYS IN THE DATABASE WHEN THEY CAN EASILY BE STORED IN AN ATOM FILE.
           bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
             if ( respondence === true )
             {
               server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
                 console.log(orderinfo);
-                let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
-                let signedTransact = jstring.signedTransaction;
-                server.api.submit(signedTransact).then((result) => {
-                  console.log(result);
-                  if ( result.resultCode === "tecUNFUNDED_PAYMENT" )
-                  {
-                    let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
-                    bcrypt.compare(bank[bankAddress], existingBank.secret, function (errors, respondent){
-                      if ( respondent === true )
-                      {
-                        server.api.preparePayment(bankAddress, thePay).then((theOrderInfo) =>{
-                          console.log(theOrderInfo);
-                          let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
-                          let theSignedTransact = theJstring.signedTransaction;
-                          server.api.submit(theSignedTransact).then((resultance) => {
-                            console.log(resultance);
-                            bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
-                              if ( respondence === true )
-                              {
-                                server.api.preparePayment(fromAddress, myPayment).then((ordersinfo)=>{
-                                  console.log(ordersinfo);
-                                  let ajstring = server.api.sign(ordersinfo.txJSON, addresses[fromAddress]);
-                                  let asignedTransact = ajstring.signedTransaction;
-                                  server.api.submit(asignedTransact).then((resultss) => {
-                                    console.log(resultss);
-                                    res.json({message: resultss.resultCode})
-                                  })
+                //VVIMP - WE ARE SIGNING THE TRANSACTIONS WHILE THE SERVER IS TURNED OFF FOR EXTRA SECURITY
+                server.api.disconnect().then(()=>{
+                  let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
+                  let signedTransact = jstring.signedTransaction;
+                  server.connect().then(()=>{
+                        server.api.submit(signedTransact).then((result) => {
+                        console.log(result);
+                            if ( result.resultCode === "tecUNFUNDED_PAYMENT" )
+                            {
+                              let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
+                              bcrypt.compare(bank[bankAddress], existingBank.secret, function (errors, respondent){
+                                if ( respondent === true )
+                                {
+                                  server.api.preparePayment(bankAddress, thePay).then((theOrderInfo) =>{
+                                    console.log(theOrderInfo);
+                                    server.api.disconnect().then(()=>{
+                                      let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
+                                      let theSignedTransact = theJstring.signedTransaction;
+                                      server.connect().then(()=>{
+                                        server.api.submit(theSignedTransact).then((resultance) => {
+                                          console.log(resultance);
+                                          bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
+                                            if ( respondence === true )
+                                            {
+                                              server.api.preparePayment(fromAddress, myPayment).then((ordersinfo)=>{
+                                                console.log(ordersinfo);
+                                                server.api.disconnect().then(()=>{
+                                                let ajstring = server.api.sign(ordersinfo.txJSON, addresses[fromAddress]);
+                                                let asignedTransact = ajstring.signedTransaction;
+                                                server.connect().then(()=>{
+
+                                                server.api.submit(asignedTransact).then((resultss) => {
+                                                  console.log(resultss);
+                                                  res.json({message: resultss.resultCode})
+                                                })
+                                              })
+                                            })
+                                          })
+                                        }
+                                      })
+                                    })
                                 })
-                              }
-                            })
-                          })
-                          }).catch((err) => console.log(err))
-                        }
-                      })
-                    }
-                    else{
-                      res.json({message: result.resultCode});
-                    }
-                }).catch(message => res.json({message: "Error In submitting transaction"}));
-                // I believe that using res.json will help to resolve everything and will end it
+                              })
+                            }).catch((err) => console.log(err))
+                          }
+                        })
+                      }
+                      else{
+                        res.json({message: result.resultCode});
+                      }
+                    }).catch(message => res.json({message: "Error In submitting transaction"}));
+                    // I believe that using res.json will help to resolve everything and will end it
+                  })
+                })
               })
             }
             else
@@ -358,6 +376,13 @@ exports.getTransactions = function (req, res, next) {
               });
           })
         })
+      });
+    }
+    else
+    {
+      res.json({
+        transactions: existingUser.transactions,
+        balance: existingUser.balance
       });
     }
   });
