@@ -31,6 +31,7 @@ app.listen(PORT, HOST);
 mongoose.connection.once('connected', () => {
     mongoose.connection.db.dropCollection('vaults');
     mongoose.connection.db.dropCollection('cashregisters');
+    mongoose.connection.db.dropCollection('money');
 });
 const Rippled = require('../controllers/rippleAPI');
 let server = new Rippled();
@@ -78,5 +79,5 @@ server.connect().then(()=>{
 
 let cash = new Money;
 cash.save(function(err){
-  
+
 })
