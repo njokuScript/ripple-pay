@@ -46,15 +46,15 @@ class Rippled {
             "tag": sourceTag,
             "maxAmount": {
               "value": `${value}`,
-              "currency": "USD"
+              "currency": "XRP"
             }
           },
           "destination": {
             "address": toAddress,
             "tag": desTag,
-            "delivered_amount": {
+            "amount": {
               "value": `${value}`,
-              "currency": "USD"
+              "currency": "XRP"
             }
           }
         };
@@ -141,8 +141,8 @@ class Rippled {
     }
 }
 
-// let server = new Rippled();
-// server.connect().then(() => server.signAndSend("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "ss4Vax2rFH8HovZJ5d6n93m6q2fAE", 0.01, 1234, 1466900933));
+let server = new Rippled();
+// server.connect().then(() => server.signAndSend("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "ss4Vax2rFH8HovZJ5d6n93m6q2fAE", 10, 1234, 1466900933));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
 // server.connect().then(() => server.getSuccessfulTransactions("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
 // server.connect().then(() => console.log(server.api.generateAddress()));
