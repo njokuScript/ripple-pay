@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import { unauthUser } from '../actions/authActions';
 import {
   StyleSheet,
   Text,
@@ -54,5 +55,10 @@ var mapStateToProps = (state) => {
     user_id: state.user.user_id
   };
 };
+var mapDispatchToProps = (dispatch) => {
+  return {
+    unauthUser: () => dispatch(unauthUser)
+  };
+};
 
-module.exports = connect(mapStateToProps)(App);
+module.exports = connect(mapStateToProps, mapDispatchToProps)(App);
