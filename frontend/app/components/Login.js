@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    color: '#F2CFB1',
+    color: 'white',
     fontSize: 35,
     marginTop: 20,
     marginBottom: 20,
@@ -186,11 +186,11 @@ const styles = StyleSheet.create({
   },
   button: {
     fontSize: 30,
-    color: '#F2CFB1',
+    color: 'white',
     fontFamily: 'Kohinoor Bangla',
     borderWidth: 1,
     borderRadius: 6,
-    borderColor: '#ddd',
+    borderColor: 'white',
     borderBottomWidth: 0,
     shadowOpacity: 0.3,
     padding: 7

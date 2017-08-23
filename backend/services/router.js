@@ -28,6 +28,7 @@ router.get('/wallets', BankController.receiveAllWallets);
 router.post('/dest', BankController.receiveOnlyDesTag);
 router.post('/delwallet', BankController.deleteWallet);
 router.post('/banksend', BankController.inBankSend);
+router.get('/old', BankController.findOldAddress);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

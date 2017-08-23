@@ -244,6 +244,14 @@ exports.sendMoney = function(req, res, next){
   })
 }
 
+exports.findOldAddress = function( req, res, next){
+  let x = req.query;
+  let userId = x[Object.keys(x)[0]];
+  User.findOne({_id: userId}, function(err, existingUser){
+    res.json({cashRegister: existingUser.cashRegister});
+  });
+};
+
 exports.generateRegister = function(req, res, next){
   let adds = Object.keys(addresses).slice(0,5);
   const Rippled = require('./rippleAPI');

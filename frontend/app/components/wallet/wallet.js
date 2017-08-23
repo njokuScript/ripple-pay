@@ -21,18 +21,15 @@ class Wallet extends React.Component {
     super(props);
     this.state = {
       page: "pool",
-<<<<<<< HEAD
       address: undefined,
       destTag: undefined
-=======
-      disabled: false
->>>>>>> 24208bcd9818efe824280d5678a71b3880016a5a
     };
     this.generate = this.generate.bind(this);
     this.remove = this.remove.bind(this);
   }
 
   componentDidMount(){
+    this.props.requestOldAddress(this.props.user.user_id);
     this.props.requestAllWallets(this.props.user.user_id);
   }
 
@@ -100,7 +97,7 @@ class Wallet extends React.Component {
 
 
   displayWallets() {
-    if (this.props.wallets.length > 0) {
+    if (this.props.wallets && this.props.wallets.length > 0) {
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the wallets.
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (
@@ -179,12 +176,6 @@ const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
      justifyContent: 'center',
-<<<<<<< HEAD
-     alignItems: 'center',
-     backgroundColor: '#335B7B',
-   },
-   keypadContainer: {
-=======
      flexDirection: 'column',
      backgroundColor: '#335B7B'
    },
@@ -392,7 +383,6 @@ const styles = StyleSheet.create({
   //   );
   // }
 // }
->>>>>>> 24208bcd9818efe824280d5678a71b3880016a5a
 
 // const { width, height } = Dimensions.get('window');
 // const styles = StyleSheet.create({

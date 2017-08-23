@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
 // import {configureStore} from '../store';
 //KINDA HCKY BUT I'M IMPORTING THE ENTIRE STORE.
 import theStore from '../../index.ios.js';
-import { SIGNIN_URL, SIGNUP_URL, BANK_SEND_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
+import { SIGNIN_URL, SIGNUP_URL, BANK_SEND_URL, TRANSACTIONS_URL, OLDADDR_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
@@ -36,6 +36,15 @@ exports.loginUser = (email, password) => {
     });
   };
 };
+
+exports.requestOldAddress = (user_id) => {
+  return function (dispatch) {
+    return axios.get(OLDADDR_URL, { params: user_id }).then((response) => {
+      dispatch(receivedOldAddress(response.data));
+    }).catch((error) => {
+    });
+  };
+}
 
 
 exports.signupUser = (email, password, screenName) => {
@@ -223,6 +232,12 @@ let receivedDesTag = (data) => {
 let receivedAddress = (data) => {
   return {
     type: 'RECEIVED_ADDRESS',
+    data
+  };
+};
+let receivedOldAddress = (data) => {
+  return {
+    type: 'RECEIVED_OLD_ADDRESS',
     data
   };
 };
