@@ -146,6 +146,6 @@ class Rippled {
 // server.connect().then(() => server.signAndSend("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "shm8TtYiTHiHn7FaqFjZgYQTqkFP6", 3, 1234, 1466900933));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
 // server.connect().then(() => server.getSuccessfulTransactions("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
-// server.connect().then(() => server.getBalance("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
+// server.connect().then(() => console.log(server.api.generateAddress()));
 
 module.exports = Rippled;

@@ -21,9 +21,13 @@ router.route('/signin')
 // router.route('/transactions')
 //   .get(AuthenticationController.getTransactions);
 router.post('/send', BankController.sendMoney);
-router.get('/addrs', BankController.generateRegisterAndDesTag);
+router.get('/addrs', BankController.generateRegister);
 router.get('/transactions', BankController.getTransactions);
 router.get('/search', AuthenticationController.search);
+router.get('/wallets', BankController.receiveAllWallets);
+router.post('/dest', BankController.receiveOnlyDesTag);
+router.post('/delwallet', BankController.deleteWallet);
+router.post('/banksend', BankController.inBankSend);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

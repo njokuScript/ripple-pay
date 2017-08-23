@@ -2,6 +2,7 @@ import React from 'react';
 import HomeContainer from '../home/homeContainer';
 import WalletContainer from '../wallet/walletContainer';
 import SendContainer from '../send/send';
+import BankSendContainer from '../banksend/banksendContainer';
 import { reduxForm } from 'redux-form';
 
 import { View,
@@ -19,20 +20,12 @@ class Search extends React.Component {
     super(props);
     this.requestUsers = this.props.requestUsers.bind(this);
     this.makeUsers = this.makeUsers.bind(this);
+    this.navBankSend = this.navBankSend.bind(this);
     this.state = {
       query: "",
       page: 'source'
     };
   }
-
-  // componentWillReceiveProps(newProps){
-  //   console.log(this.props.users.data.search);
-  //   console.log(newProps.users.data.search);
-  //   if ( this.props.users.data.search !== newProps.users.data.search )
-  //   {
-  //     this.setState({ results: newProps.users.data.search });
-  //   }
-  // }
 
   componentDidUpdate(prevProps,prevState){
     if ( prevState.query !== this.state.query )
@@ -49,6 +42,16 @@ class Search extends React.Component {
       title: 'Home',
       component: HomeContainer,
       navigationBarHidden: true
+    });
+  }
+
+  navBankSend(receiver_id, otherUser) {
+    this.setState({query: ""});
+    this.props.navigator.push({
+      title: 'BankSend',
+      component: BankSendContainer,
+      navigationBarHidden: true,
+      passProps: {receiver_id: receiver_id, otherUser: otherUser}
     });
   }
 
@@ -71,16 +74,21 @@ class Search extends React.Component {
     });
   }
 
+//Disregard where your id is equal to the user id that comes back.
   makeUsers(){
     let theUsers;
     if ( this.props.users )
     {
-      theUsers = this.props.users.map((user, idx) => {
-        return (
-          <View style={styles.resultItem} key={idx}>
-            <Text style={styles.title}>{user}</Text>
-          </View>
-        );
+      theUsers = this.props.users.sort((a,b) => a.screenName - b.screenName)
+      .map((user, idx) => {
+        if ( user._id !== this.props.user.user_id )
+        {
+          return (
+            <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName)}} style={styles.resultItem} key={idx}>
+              <Text style={styles.title}>    {user.screenName} - Click to Send</Text>
+            </TouchableOpacity>
+          );
+        }
       });
       return theUsers;
     }
@@ -104,7 +112,7 @@ class Search extends React.Component {
            <Text>Search</Text>
           </TouchableOpacity>
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Deposit</Text>
+              <Text>Wallets</Text>
             </TouchableOpacity>
           <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
             <Text>Send</Text>
@@ -170,7 +178,7 @@ class Search extends React.Component {
      fontSize: 15
    },
     resultItem: {
-      flex: 1
+      flex: 1,
     },
     resultContainer: {
       flex: 1,

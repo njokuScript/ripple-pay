@@ -11,10 +11,11 @@ import App from './app/components/App';
 
 import {configureStore} from './app/store';
 
+let theStore = configureStore();
 class ripplePay extends Component {
   render() {
     return (
-      <Provider store={configureStore()}>
+      <Provider store={theStore}>
         <App />
       </Provider>
     );
@@ -22,3 +23,5 @@ class ripplePay extends Component {
 }
 
 AppRegistry.registerComponent('ripplePay', () => ripplePay);
+
+export default theStore;

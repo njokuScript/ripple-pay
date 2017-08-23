@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
+import SendContainer from '../send/sendContainer'
 import {
   StyleSheet,
   Text,
@@ -15,15 +16,15 @@ import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
+
 //I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
-class Send extends Component {
+class BankSend extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
     this.state = {
-      toAddress: "",
-      toDesTag: undefined,
       amount: "",
+      page: "",
       disabled: false
     }
   }
@@ -36,6 +37,14 @@ class Send extends Component {
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
+      navigationBarHidden: true
+    });
+  }
+
+  navSend() {
+    this.props.navigator.push({
+      title: "Send",
+      component: SendContainer,
       navigationBarHidden: true
     });
   }
@@ -59,25 +68,8 @@ class Send extends Component {
   }
 
   sendPayment(){
-    if ( !this.props.fromAddress || !this.props.sourceTag)
-    {
-      this.props.addAlert("Please get a wallet first")
-    }
-    else{
-      let array = Object.keys(this.state);
-      for (let i = 0; i < array.length; i++)
-      //there does not need to be a destination tag
-      {
-        if ( this.state[array[i]] === "" && array[i] !== "toDesTag")
-        {
-          this.props.addAlert("Please Try Again");
-          return;
-        }
-      }
-      let {toDesTag, toAddress, amount} = this.state;
-      this.setState({disabled: true});
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id).then(()=> this.setState({disabled: false}));
-    }
+    this.setState({disabled: true});
+    this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(()=> this.setState({disabled: false}));
   }
 
   render() {
@@ -85,37 +77,8 @@ class Send extends Component {
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            Send Your Ripple
+            Sending to {this.props.otherUser}
           </Text>
-        </View>
-        <View style={styles.field}>
-          <TextInput
-            placeholder="Destination Address"
-            onChangeText={
-              (toAddr) => {
-                this.setState({toAddress: toAddr});
-              }
-            }
-            autoFocus={true}
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            style={styles.textInput}/>
-          <View>
-          </View>
-        </View>
-        <View style={styles.field}>
-          <TextInput
-            placeholder="Destination Tag - optional"
-            onChangeText={
-              (des) => {
-                this.setState({toDesTag: des});
-              }
-            }
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            style={styles.textInput}/>
-          <View>
-          </View>
         </View>
         <View style={styles.field}>
           <TextInput
@@ -138,12 +101,6 @@ class Send extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.redtext}>
-          Transaction Fee: 0.02 XRP
-        </Text>
-        <Text style={styles.redtext}>
-          Warning: You will be charged a fee if you send to other party and they require a destination tag or if you send less than 20 ripple to a new wallet
-        </Text>
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
             <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
               <Text>Home</Text>
@@ -154,7 +111,7 @@ class Send extends Component {
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
               <Text>Wallets</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
               <Text>Send</Text>
             </TouchableOpacity>
        </Tabs>
@@ -175,12 +132,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 0,
+    paddingTop: 20,
     backgroundColor: '#335B7B',
   },
 
   titleContainer: {
-    padding: 0,
+    padding: 10,
     alignItems: 'center',
   },
 
@@ -201,7 +158,7 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     margin: 45,
     marginTop: 0,
-    top: 40,
+    top: 80,
     backgroundColor: '#fff'
   },
 
@@ -211,15 +168,10 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    padding: 0,
+    padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 30
-  },
-  redtext: {
-    color: 'red',
-    fontSize: 15,
-    marginTop: 40
+    top: 60
   },
   greenbutton: {
     fontSize: 30,
@@ -249,4 +201,158 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Send;
+export default BankSend;
+
+
+
+
+
+
+// import React from 'react';
+// import HomeContainer from '../home/homeContainer';
+// import SearchContainer from '../search/searchContainer';
+// import WalletContainer from '../wallet/walletContainer';
+//
+// import { View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   Image,
+//   Dimensions,
+//   TextInput } from 'react-native';
+// import Tabs from 'react-native-tabs';
+// import Button from 'react-native-buttons';
+//
+//
+// class Send extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {page: 'stream'};
+//   }
+//
+// navHome() {
+//   this.props.navigator.push({
+//     title: 'Home',
+//     component: HomeContainer,
+//     navigationBarHidden: true
+//   });
+// }
+//
+// navSearch() {
+//   this.props.navigator.push({
+//     title: 'Search',
+//     component: SearchContainer,
+//     navigationBarHidden: true
+//   });
+// }
+//
+// navWallet() {
+//   this.props.navigator.push({
+//     title: 'Wallet',
+//     component: WalletContainer,
+//     navigationBarHidden: true
+//   });
+// }
+//
+// sendRipple() {
+//   return;
+// }
+//
+// requestRipple() {
+//   return;
+// }
+//
+//
+//
+//   render()
+//  {
+//    return (
+//      <View style={styles.mainContainer}>
+//        <View style={styles.buttonContainer}>
+//          <Button style={styles.button} onPress={this.sendRipple.bind(this)}>Send</Button>
+//          <Button style={styles.button} onPress={this.requestRipple.bind(this)}>Request</Button>
+//        </View>
+//        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+//            onSelect={el=>this.setState({page:el.props.name})}>
+//
+//          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
+//            <Text>Home</Text>
+//         </TouchableOpacity>
+//
+//           <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
+//           <Text>Search</Text>
+//          </TouchableOpacity>
+//
+//            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+//              <Text>Deposit</Text>
+//            </TouchableOpacity>
+//
+//            <TouchableOpacity>
+//               <Text>Send</Text>
+//           </TouchableOpacity>
+//      </Tabs>
+//
+//       <Text style={styles.welcome}>
+//         Stream - Send your Ripple
+//      </Text>
+//       <Text style={styles.instructions}>
+//          Selected page: {this.state.page}
+//      </Text>
+//      </View>
+//    );
+//  }}
+//
+//  const {width, height} = Dimensions.get('window');
+//  const styles=StyleSheet.create({
+//    mainContainer: {
+//       flex: 1,
+//       justifyContent: 'center',
+//       alignItems: 'center',
+//       backgroundColor: '#335B7B',
+//     },
+//     buttonContainer: { //Needs proper flexing from jon
+//
+//       flexDirection: 'row',
+//       // margin: 8
+//     },
+//     button: {
+//
+//       justifyContent: 'space-around',
+//       padding: 14,
+//       margin: 7,
+//       backgroundColor: '#E8C25E',
+//       borderRadius: 6,
+//
+//     },
+//    welcome: {
+//      fontSize: 20,
+//      textAlign: 'center',
+//      margin: 10,
+//    },
+//     title: {
+//       color: 'white',
+//       fontSize: 20,
+//       justifyContent: 'center',
+//       fontFamily: 'Kohinoor Bangla',
+//     },
+//     inputContainer: {
+//       padding: 5,
+//       margin: 10,
+//       borderWidth: 2,
+//       borderRadius: 10,
+//       borderColor: "white",
+//       backgroundColor: 'white'
+//     },
+//     input: {
+//       height: 26,
+//       backgroundColor: 'white'
+//     },
+//     instructions: {
+//       textAlign: 'center',
+//       color: '#333333',
+//       marginBottom: 5,
+//       fontSize: 15
+//     }
+//  });
+//
+//  export default Send;

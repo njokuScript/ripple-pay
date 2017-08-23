@@ -29,14 +29,15 @@ class Home extends React.Component {
   //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
     if (this.props.transactions.length > 0) {
-      console.log(this.props.transactions);
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
+      let ndate;
       const transactions = this.props.transactions.map((transaction, idx) => {
+        ndate = new Date(transaction.date)
         return (
           <View style={styles.transaction} key={idx}>
             <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
-            <Text style={styles.transactionFont}>{transaction.date}</Text>
-            <Text style={styles.transactionFont}>{transaction.amount}</Text>
+            <Text style={styles.transactionFont}>{ndate.toString()}</Text>
+            <Text style={styles.transactionFont}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}</Text>
           </View>
         );
       });
@@ -120,7 +121,7 @@ class Home extends React.Component {
             <Text style={styles.tabFont}>Search</Text>
             </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text style={styles.tabFont}>Deposit</Text>
+            <Text style={styles.tabFont}>Wallets</Text>
           </TouchableOpacity>
         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
             <Text style={styles.tabFont}>Send</Text>

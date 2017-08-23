@@ -3,9 +3,13 @@
 
 var API_URL = 'http://localhost:3000/v1';
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
-exports.ADDRDEST_URL = `${API_URL}/addrs`;
+exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.SEARCH_USERS_URL = `${API_URL}/search`;
-exports.SEND_URL = `${API_URL}/send`
+exports.SEND_URL = `${API_URL}/send`;
+exports.WALLETS_URL = `${API_URL}/wallets`;
+exports.DEST_URL = `${API_URL}/dest`;
+exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
+exports.BANK_SEND_URL = `${API_URL}/banksend`;
