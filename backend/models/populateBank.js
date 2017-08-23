@@ -5,13 +5,9 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
 const { addresses, bank } = require('../controllers/addresses');
 const async = require('async');
-<<<<<<< HEAD
-mongoose.Promise = global.Promise;
-=======
-
 //UNCOMMENT THIS WHEN TRYING TO POPULATE THE BANK
 // mongoose.Promise = global.Promise;
->>>>>>> 6cae96c2040803bd3c2b3bf058007a020b8a82a3
+
 // const bodyParser = require('body-parser');
 // var app = express();
 //
