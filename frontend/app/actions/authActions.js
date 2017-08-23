@@ -1,12 +1,23 @@
 //We made our user actions and auth actions all the same, remember this.
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
-
-import { SIGNIN_URL, SIGNUP_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDRDEST_URL, SEND_URL } from '../api';
+// import {configureStore} from '../store';
+//KINDA HCKY BUT I'M IMPORTING THE ENTIRE STORE.
+import theStore from '../../index.ios.js';
+import { SIGNIN_URL, SIGNUP_URL, BANK_SEND_URL, TRANSACTIONS_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
 //Look at authreducer for defaultstate of user.
+//Log the user out after 7 minutes of inactivity.
+var timer;
+function finishAndBeginTimer() {
+  window.clearTimeout(timer);
+  timer = window.setTimeout(function(){
+    theStore.dispatch(thisunauthUser);
+    theStore.dispatch(addAlert("Session Timed Out Due to Inactivity"));
+  },420000);
+}
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
@@ -15,6 +26,7 @@ exports.loginUser = (email, password) => {
       // Keychain.setGenericPassword(user_id, token)
       //   .then(function() {
           dispatch(authUser(user_id))
+          finishAndBeginTimer();
         // })
       // .catch((error) => {
       //     dispatch(addAlert("Could not log in. keychain"));
@@ -25,6 +37,7 @@ exports.loginUser = (email, password) => {
   };
 };
 
+
 exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
     return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
@@ -32,6 +45,7 @@ exports.signupUser = (email, password, screenName) => {
       // Keychain.setGenericPassword(user_id, token)
       //   .then(function() {
           dispatch(authUser(user_id));
+          finishAndBeginTimer();
         // })
         // .catch((error) => {
         //   dispatch(addAlert("Could not log in."));
@@ -42,21 +56,67 @@ exports.signupUser = (email, password, screenName) => {
   };
 };
 
-exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
+exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => {
+  finishAndBeginTimer();
   return function(dispatch) {
-    return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag}).then((response) => {
-
-
+    return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag, userId}).then((response) => {
+      var {message} = response.data;
+      let respMessage;
+      if ( message === "tesSUCCESS" )
+      {
+        respMessage = "Payment was Successful";
+      }
+      else if (message === "terQUEUED")
+      {
+        respMessage = "Payment placed in Queue";
+      }
+      else if (message === "tecNO_DST_INSUF_XRP")
+      {
+        respMessage = "Must send at least 20 ripple to this address";
+      }
+      else if (message === "tecDST_TAG_NEEDED")
+      {
+        respMessage = "Sending address requires a destination tag";
+      }
+      else if (message === "Balance Insufficient")
+      {
+        respMessage = "Balance Insufficient";
+      }
+      else if (message === "Someone's Trying to Get into Your Wallet")
+      {
+        respMessage = "Someone's Trying to Get into Your Wallet";
+      }
+      else if (message === "Refill and Send Successful"){
+        respMessage = "Refill and Send Successful";
+      }
+      else
+      {
+        respMessage = "Payment Unsuccessful";
+      }
+      dispatch(addAlert(respMessage));
     }).catch((error) => {
       dispatch(addAlert("Could Not Send."));
     });
   };
 };
 
+exports.sendInBank = (sender_id, receiver_id, amount) => {
+  finishAndBeginTimer();
+  return function(dispatch){
+    return axios.post(BANK_SEND_URL, {sender_id, receiver_id, amount}).then((response)=>{
+      var {message} = response.data;
+      dispatch(addAlert(message));
+    })
+  }
+}
+
 //You can debug this using the debugger you showed me in the browser.
 //It is just object deconstruction and can be written another way, but
 //user is {user: {user_id: whatever} }
+//I'M PASSING THE ENTIRE USER IN HERE EVEN THOUGH IT MAY SEEM COUNTERINTUITIVE BECAUSE I'LL HAVE TO COMBINE
+//THEM LATER WITH THE IN-BANK TRANSACTIONS.
 exports.requestTransactions = (user) => {
+  finishAndBeginTimer();
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
@@ -80,24 +140,59 @@ exports.requestUsers = (item) => {
   };
 };
 
-exports.requestAddressAndDesTag = (user_id) => {
-  console.log("i'm out");
+exports.requestAddress = (user_id) => {
+  finishAndBeginTimer();
   return function(dispatch) {
-    console.log("i'm in");
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     // index.js and router.js and THEN we finally get to our backend.
-    return axios.get(ADDRDEST_URL, { params: user_id } ).then((response) => {
-      console.log('im complete');
-      dispatch(receivedAddrDesTag(response.data));
+    return axios.get(ADDR_URL, { params: user_id } ).then((response) => {
+      dispatch(receivedAddress(response.data));
+    }).catch((error) => {
+    });
+  };
+}
+exports.requestAllWallets = (user_id) => {
+  finishAndBeginTimer();
+  return function(dispatch) {
+    // user following is {user_id: whatever} since it is deconstructed
+    // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
+    // index.js and router.js and THEN we finally get to our backend.
+    return axios.get(WALLETS_URL, { params: user_id } ).then((response) => {
+      dispatch(receivedWallets(response.data));
+    }).catch((error) => {
+    });
+  };
+}
+exports.requestOnlyDesTag = (user_id, cashRegister) => {
+  finishAndBeginTimer();
+  return function(dispatch) {
+    // user following is {user_id: whatever} since it is deconstructed
+    // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
+    // index.js and router.js and THEN we finally get to our backend.
+    return axios.post(DEST_URL, { user_id, cashRegister } ).then((response) => {
+      dispatch(receivedDesTag(response.data));
+    }).catch((error) => {
+    });
+  };
+}
+exports.delWallet = (user_id, desTag, cashRegister) => {
+  finishAndBeginTimer();
+  return function(dispatch) {
+    // user following is {user_id: whatever} since it is deconstructed
+    // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
+    // index.js and router.js and THEN we finally get to our backend.
+    return axios.post(DEL_WALLET_URL, { user_id, desTag, cashRegister } ).then((response) => {
+      dispatch(deltheWallet(response.data));
     }).catch((error) => {
     });
   };
 }
 
-
+//Set timedlogout of the sessin to 5 minutes.
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
+
 authUser = (user_id) => {
   return {
     type: 'AUTH_USER',
@@ -105,9 +200,29 @@ authUser = (user_id) => {
   };
 };
 
-let receivedAddrDesTag = (data) => {
+deltheWallet = (data) => {
   return {
-    type: 'RECEIVED_ADDR_DESTAG',
+    type: 'DEL_WALLET',
+    data
+  }
+}
+
+let receivedWallets = (data) => {
+  return {
+    type: 'RECEIVED_WALLETS',
+    data
+  };
+};
+let receivedDesTag = (data) => {
+  return {
+    type: 'RECEIVED_DESTAG',
+    data
+  };
+};
+
+let receivedAddress = (data) => {
+  return {
+    type: 'RECEIVED_ADDRESS',
     data
   };
 };
@@ -129,5 +244,9 @@ let receivedUsers = (users) => {
 };
 
 exports.unauthUser = {
+  type: 'UNAUTH_USER'
+};
+
+let thisunauthUser = {
   type: 'UNAUTH_USER'
 };
