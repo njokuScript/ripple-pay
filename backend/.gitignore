@@ -1,2 +1,3 @@
 node_modules/
 controllers/addresses.js
+controllers/ripplePay.pem

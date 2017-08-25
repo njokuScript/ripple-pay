@@ -5,7 +5,7 @@ const { addresses, bank } = require('../controllers/addresses');
 class Rippled {
   constructor(){
       this.api = new RippleAPI({
-        server: 'wss://s2.ripple.com' // Public rippled server hosted by Ripple, Inc.
+        server: 'wss://s2.ripple.com/' // Public rippled server hosted by Ripple, Inc.
         //Need to change this to a private one later.
       });
       this.api.on('error', (errorCode, errorMessage) => {
@@ -37,7 +37,7 @@ class Rippled {
       });
     }
 
-    thePayment(fromAddress, toAddress, desTag, sourceTag, value){
+    thePayment(fromAddress, toAddress, desTag, sourceTag, value, paths){
       let payment;
       if (desTag) {
         payment = {
@@ -47,6 +47,7 @@ class Rippled {
             "maxAmount": {
               "value": `${value}`,
               "currency": "XRP"
+              // "counterparty": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"
             }
           },
           "destination": {
@@ -55,17 +56,20 @@ class Rippled {
             "amount": {
               "value": `${value}`,
               "currency": "XRP"
+              // "counterparty": "rf9BijoEDGyeNoT6VfSdt7D3ogZQVE49nL"
             }
-          }
+          },
+          // "paths": paths
         };
       } else {
         payment = {
         "source": {
           "address": fromAddress,
-          "tag": sourceTag,
+          // "tag": sourceTag,
           "maxAmount": {
             "value": `${value}`,
             "currency": "XRP"
+            // "counterparty": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"
           }
         },
         "destination": {
@@ -73,20 +77,23 @@ class Rippled {
           "amount": {
             "value": `${value}`,
             "currency": "XRP"
+            // "counterparty": "rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"
         }
-      }
+      },
+      "paths": paths
     };
     }
       return payment;
     }
 
-    signAndSend(fromAddress, toAddress, secret, value, sourceTag, desTag = false) {
-      let payment = this.thePayment(fromAddress, toAddress, desTag, sourceTag, value);
-
+    signAndSend(fromAddress, toAddress, secret, value, paths, sourceTag, desTag = false) {
+      let payment = this.thePayment(fromAddress, toAddress, desTag, sourceTag, value, paths);
+      // console.log(paths);
       this.api.preparePayment(fromAddress, payment).then((orderinfo) => {
         console.log(orderinfo);
         let jstring = this.api.sign(orderinfo.txJSON, secret);
         let signedTransact = jstring.signedTransaction;
+        console.log(signedTransact);
         this.api.submit(signedTransact).then((result) => console.log(result));
       }).catch(error => console.log(error));
     }
@@ -140,11 +147,108 @@ class Rippled {
       return this.api.connect();
     }
 }
+const maddress = 'rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi';
+const trustline = {
+  "currency": "BTC",
+  "counterparty": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+  "limit": "100",
+  "qualityIn": 0.91,
+  "qualityOut": 0.87,
+  "ripplingDisabled": true,
+  "frozen": false,
+  "memos": [
+    {
+      "type": "test",
+      "format": "plain/text",
+      "data": "texted data"
+    }
+  ]
+};
+const order ={
+  "direction": "buy",
+  "quantity": {
+    "currency": "USD",
+    "counterparty": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+    "value": "1"
+  },
+  "totalPrice": {
+    "currency": "XRP",
+    "value": "6",
+  },
+  "passive": true,
+  "fillOrKill": true
+};
 
+const pathfind = {
+  "source": {
+    "address": "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"
+  },
+  "destination": {
+    "address": "rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY",
+    "amount": {
+      "currency": "BTC",
+      // "counterparty": "rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL",
+      "value": "0.0002"
+    }
+  }
+};
+
+const orderbook = {
+  "base": {
+    "currency": "XRP"
+    // "counterparty": "rhotcWYdfn6qxhVMbPKGDF3XCKqwXar5J4"
+  },
+  "counter": {
+    "currency": "USD",
+    "counterparty": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"
+  }
+};
 let server = new Rippled();
-// server.connect().then(() => server.signAndSend("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "ss4Vax2rFH8HovZJ5d6n93m6q2fAE", 10, 1234, 1466900933));
+// server.connect().then(()=> server.api.getPaths(pathfind)
+// .then((info)=> {
+//   console.log(info);
+//   server.signAndSend("rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY", "raa6pjF59F5DrFLcpbTVskjSVGnbWTYMXL", "saBH8JM8jcqreXBdMTzGKmx1DEn1j", 1, info[2].paths)
+// }))
+// server.connect().then(()=>server.api.getTransactions("raa6pjF59F5DrFLcpbTVskjSVGnbWTYMXL").then((info)=> console.log(info[0].outcome.balanceChanges)))
+// server.connect().then(()=>server.api.getBalances("rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY").then((info)=> console.log(info)))
+
+
+// server.connect().then(()=> server.api.getOrderbook("rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",orderbook).then((info)=>console.log(info.asks.map((x)=>x.state))))
+
+
+// server.connect().then(()=> {server.api.prepareOrder("raa6pjF59F5DrFLcpbTVskjSVGnbWTYMXL", order).then((orderinfo) => {
+//   console.log(orderinfo);
+//   let jstring = server.api.sign(orderinfo.txJSON, "shqobezegmzjGnW6KotmhKXxT1ezb");
+//   let signedTransact = jstring.signedTransaction;
+//   console.log(signedTransact);
+//   server.api.submit(signedTransact).then((result) => console.log(result));
+// })}).catch(error => console.log(error));
+
+// server.connect().then(()=> {server.api.prepareOrderCancellation("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", {orderSequence: 78}).then((orderinfo) => {
+//   console.log(orderinfo);
+//   let jstring = server.api.sign(orderinfo.txJSON, "ss4Vax2rFH8HovZJ5d6n93m6q2fAE");
+//   let signedTransact = jstring.signedTransaction;
+//   console.log(signedTransact);
+//   server.api.submit(signedTransact).then((result) => console.log(result));
+// })}).catch(error => console.log(error));
+
+// server.connect().then(()=> {server.api.prepareTrustline("rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY", trustline).then((orderinfo) => {
+//   console.log(orderinfo);
+//   let jstring = server.api.sign(orderinfo.txJSON, "saBH8JM8jcqreXBdMTzGKmx1DEn1j");
+//   let signedTransact = jstring.signedTransaction;
+//   console.log(signedTransact);
+//   server.api.submit(signedTransact).then((result) => console.log(result));
+// })}).catch(error => console.log(error));
+
+// server.connect().then(() => server.signAndSend("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "rwfGzgd4bUStS9gA5xUhCmg1J86TMtmGMo", "shm8TtYiTHiHn7FaqFjZgYQTqkFP6", 1, "", 1234, 50586997));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
-// server.connect().then(() => server.getSuccessfulTransactions("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi"));
+// server.connect().then(()=> server.api.getOrders("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883").then((info)=>console.log(info)))
+// server.connect().then(() => server.api.getOrderbook("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883",orderbook).then((info)=>console.log(info.asks[0].specification)));
 // server.connect().then(() => console.log(server.api.generateAddress()));
 
 module.exports = Rippled;
+
+
+// paths: '[[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"XRP"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"JPY","issuer":"r94s8px6kSw1uZ1MV98dhSRTvc6VMPoPcN"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}]]' } ]
+// [[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"XRP"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"JPY","issuer":"r94s8px6kSw1uZ1MV98dhSRTvc6VMPoPcN"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}]]
+// { txJSON: '{"TransactionType":"Payment","Account":"raa6pjF59F5DrFLcpbTVskjSVGnbWTYMXL","Destination":"rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY","Amount":{"currency":"BTC","issuer":"rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY","value":"0.00020"},"Flags":2147483648,"SendMax":"5000000","Paths":[[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"XRP"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}],[{"account":"rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"},{"currency":"JPY","issuer":"r94s8px6kSw1uZ1MV98dhSRTvc6VMPoPcN"},{"currency":"BTC","issuer":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"},{"account":"rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"}]],"LastLedgerSequence":32226760,"Fee":"12","Sequence":200}',
