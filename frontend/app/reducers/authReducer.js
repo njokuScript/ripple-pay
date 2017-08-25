@@ -45,6 +45,8 @@ module.exports = (state=defaultState, action) => {
       return Object.assign({}, state, {wallets: walls});
     case 'RECEIVED_ADDRESS':
       return Object.assign({}, state, {cashRegister: action.data.cashRegister});
+    case 'RECEIVED_OLD_ADDRESS':
+      return Object.assign({}, state, { cashRegister: action.data.cashRegister }); 
     default:
       return state;
   }

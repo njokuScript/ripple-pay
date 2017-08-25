@@ -37,7 +37,6 @@ class Search extends React.Component {
   //I set the query to an empty string so that when this comes back it is an empty string we are searching for since none of the components
   //are unmounting with navigatorIOS. They just stay mounted.
   navHome() {
-    // this.props.requestTransactions(this.props.user);
     this.setState({query: ""});
     this.props.navigator.push({
       title: 'Home',

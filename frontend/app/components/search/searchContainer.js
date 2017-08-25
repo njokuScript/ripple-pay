@@ -2,8 +2,6 @@ import { connect } from 'react-redux';
 import Search from './search';
 import {updateFilter} from '../../actions/filterActions';
 import {requestUsers} from '../../actions/authActions';
-import { requestTransactions, requestAddressAndDesTag } from '../../actions/authActions';
-
 
 const mapStateToProps = ({user}) => ({
   users: user.users,
@@ -11,9 +9,7 @@ const mapStateToProps = ({user}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestUsers: (query) => dispatch(requestUsers(query)),
-  requestTransactions: (user) => dispatch(requestTransactions(user)),
-  requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user))
+  requestUsers: (query) => dispatch(requestUsers(query))
 });
 
 export default connect(

@@ -244,6 +244,14 @@ exports.sendMoney = function(req, res, next){
   })
 }
 
+exports.findOldAddress = function( req, res, next){
+  let x = req.query;
+  let userId = x[Object.keys(x)[0]];
+  User.findOne({_id: userId}, function(err, existingUser){
+    res.json({cashRegister: existingUser.cashRegister});
+  });
+};
+
 exports.generateRegister = function(req, res, next){
   let adds = Object.keys(addresses).slice(0,5);
   const Rippled = require('./rippleAPI');
@@ -293,12 +301,13 @@ exports.generateRegister = function(req, res, next){
   }
 
 
+
 //The users balance changes AND the cash register's balance changes so we can know how much we have in each register for testing.
 exports.getTransactions = function (req, res, next) {
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
   let x = req.query;
-  let userId = x[Object.keys(x)[0]]
+  let userId = x[Object.keys(x)[0]];
   // You need to specifically have _id NOT id - dumb
   // console.log(Rippled);
   User.findOne({ _id: userId }, function (err, existingUser) {

@@ -147,6 +147,7 @@ class Rippled {
       return this.api.connect();
     }
 }
+<<<<<<< HEAD
 const maddress = 'rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi';
 const trustline = {
   "currency": "BTC",
@@ -241,6 +242,10 @@ let server = new Rippled();
 // })}).catch(error => console.log(error));
 
 // server.connect().then(() => server.signAndSend("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "rwfGzgd4bUStS9gA5xUhCmg1J86TMtmGMo", "shm8TtYiTHiHn7FaqFjZgYQTqkFP6", 1, "", 1234, 50586997));
+
+
+// let server = new Rippled();
+// server.connect().then(() => server.signAndSend("rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi", "r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883", "shm8TtYiTHiHn7FaqFjZgYQTqkFP6", 3, 1234, 1466900933));
 // let address = "r9bxkP88S17EudmfbgdZsegEaaM76pHiW6";
 // server.connect().then(()=> server.api.getOrders("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883").then((info)=>console.log(info)))
 // server.connect().then(() => server.api.getOrderbook("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883",orderbook).then((info)=>console.log(info.asks[0].specification)));

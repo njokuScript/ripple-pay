@@ -71,8 +71,6 @@ class Home extends React.Component {
   }
 
   navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
