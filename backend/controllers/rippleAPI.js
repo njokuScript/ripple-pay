@@ -147,7 +147,6 @@ class Rippled {
       return this.api.connect();
     }
 }
-<<<<<<< HEAD
 const maddress = 'rs1DXnp8LiKzFWER8JrDkMA7xBxQy1KrWi';
 const trustline = {
   "currency": "BTC",

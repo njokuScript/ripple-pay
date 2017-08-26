@@ -8,7 +8,8 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
@@ -24,15 +25,14 @@ class Send extends Component {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
-      disabled: false
+      disabled: false,
     }
   }
+
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
@@ -47,7 +47,7 @@ class Send extends Component {
       navigationBarHidden: true
     });
   }
-  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
+  //I am not required to do request coins here because this will happen automatically from componentDidMount in home.js
 
   navHome() {
     // this.props.requestTransactions(this.props.user);
@@ -77,6 +77,17 @@ class Send extends Component {
       let {toDesTag, toAddress, amount} = this.state;
       this.setState({disabled: true});
       this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id).then(()=> this.setState({disabled: false}));
+    }
+  }
+
+  componentDidUpdate(oldProps, oldState){
+    let alltheCoins = this.props.shape.coins;
+    if ( alltheCoins && this.state.getRates )
+    {
+      Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
+        this.props.requestRate(coin);
+      })
+      this.finishAndBeginExchange();
     }
   }
 

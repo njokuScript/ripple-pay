@@ -1,7 +1,7 @@
 import React from 'react';
 import HomeContainer from '../home/homeContainer';
 import SearchContainer from '../search/searchContainer';
-import SendContainer from '../send/sendContainer';
+import ExchangeContainer from '../exchange/exchangeContainer';
 import {
   View,
   Text,
@@ -50,10 +50,10 @@ class Wallet extends React.Component {
     });
   }
 
-  navSend() {
+  navExchange() {
     this.props.navigator.push({
-      component: SendContainer,
-      title: 'Send',
+      component: ExchangeContainer,
+      title: 'Exchange',
       navigationBarHidden: true
     });
   }
@@ -162,8 +162,8 @@ class Wallet extends React.Component {
              <TouchableOpacity>
                <Text>Wallets</Text>
              </TouchableOpacity>
-             <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-               <Text>Send</Text>
+             <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
+               <Text>Exchange</Text>
              </TouchableOpacity>
           </Tabs>
       </View>
