@@ -19,3 +19,4 @@ exports.OLDADDR_URL = `${API_URL}/old`;
 
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
 exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
+exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;

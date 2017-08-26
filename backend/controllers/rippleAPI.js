@@ -47,7 +47,6 @@ class Rippled {
             "maxAmount": {
               "value": `${value}`,
               "currency": "XRP"
-              // "counterparty": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"
             }
           },
           "destination": {
@@ -56,20 +55,17 @@ class Rippled {
             "amount": {
               "value": `${value}`,
               "currency": "XRP"
-              // "counterparty": "rf9BijoEDGyeNoT6VfSdt7D3ogZQVE49nL"
             }
           },
-          // "paths": paths
         };
       } else {
         payment = {
         "source": {
           "address": fromAddress,
-          // "tag": sourceTag,
+          "tag": sourceTag,
           "maxAmount": {
             "value": `${value}`,
             "currency": "XRP"
-            // "counterparty": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"
           }
         },
         "destination": {
@@ -77,7 +73,6 @@ class Rippled {
           "amount": {
             "value": `${value}`,
             "currency": "XRP"
-            // "counterparty": "rchGBxcD1A1C2tdxF6papQYZ8kjRKMYcL"
         }
       },
       "paths": paths
@@ -90,10 +85,8 @@ class Rippled {
       let payment = this.thePayment(fromAddress, toAddress, desTag, sourceTag, value, paths);
       // console.log(paths);
       this.api.preparePayment(fromAddress, payment).then((orderinfo) => {
-        console.log(orderinfo);
         let jstring = this.api.sign(orderinfo.txJSON, secret);
         let signedTransact = jstring.signedTransaction;
-        console.log(signedTransact);
         this.api.submit(signedTransact).then((result) => console.log(result));
       }).catch(error => console.log(error));
     }
@@ -203,7 +196,7 @@ const orderbook = {
     "counterparty": "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"
   }
 };
-let server = new Rippled();
+// let server = new Rippled();
 // server.connect().then(()=> server.api.getPaths(pathfind)
 // .then((info)=> {
 //   console.log(info);

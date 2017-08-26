@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
-import Send from './send';
+import SendRipple from './sendRipple';
 import { signAndSend, requestTransactions } from '../../actions/authActions';
 import { addAlert } from '../../actions/alertsActions';
 
-const mapStateToProps = ({user, shape}) => ({
+const mapStateToProps = ({ user }) => ({
   fromAddress: user.cashRegister,
   sourceTag: user.wallets.length > 0 ? user.wallets[user.wallets.length - 1] : undefined,
   user: user
@@ -20,4 +20,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Send);
+)(SendRipple);

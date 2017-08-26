@@ -10,7 +10,8 @@ import { merge } from 'lodash';
 
 var defaultState = {
   coins: undefined,
-  rates: {}
+  rates: {},
+  market: {}
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -22,6 +23,8 @@ module.exports = (state=defaultState, action) => {
       //Make the user_id undefined after logout.
     case 'RECEIVED_RATE':
       return merge({}, state, {rates: {[action.coin]: action.data.rate}})
+    case 'MARKET_INFO':
+      return merge({}, state, {market: action.data})
     default:
       return state;
   }

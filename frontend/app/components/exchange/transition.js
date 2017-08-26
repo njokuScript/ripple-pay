@@ -4,7 +4,6 @@ import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
-import transitionContainer from './transitionContainer';
 import {
   StyleSheet,
   Text,
@@ -24,25 +23,16 @@ class Exchange extends Component {
     super(props);
     this.state = {
       direction: true,
-      getRates: true,
+      fromAmount: "",
+      toAmount: "",
+      address: ""
     }
-    this.allCoins = this.allCoins.bind(this);
-    this.finishAndBeginExchange = this.finishAndBeginExchange.bind(this);
-    this.timer = undefined;
-    this.navTransition = this.navTransition.bind(this);
+    this.toThisAmount = "";
+    this.fromThisAmount = "";
   }
 
   componentDidMount(){
-    this.props.requestAllCoins();
-  }
-
-  finishAndBeginExchange() {
-    let that = this;
-    this.setState({getRates: false});
-    window.clearTimeout(this.timer);
-    this.timer = window.setTimeout(function(){
-      that.setState({getRates: true})
-    },20000);
+    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin)
   }
 
   // componentWillUnmount(){
@@ -79,135 +69,87 @@ class Exchange extends Component {
     });
   }
 
-  navSendRipple() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      title: 'SendRipple',
-      component: sendRippleContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navTransition(coin, dir) {
-    window.clearTimeout(this.timer);
-    let toCoin;
-    let fromCoin;
-    if ( dir === 'send' )
-    {
-      toCoin = coin;
-      fromCoin = 'XRP';
-    }
-    else
-    {
-      fromCoin = coin;
-      toCoin = 'XRP';
-    }
-    this.props.navigator.push({
-      title: 'Transition',
-      component: transitionContainer,
-      navigationBarHidden: true,
-      passProps: {toCoin: toCoin, fromCoin: fromCoin}
-    });
-  }
-
   componentDidUpdate(oldProps, oldState){
-    let alltheCoins = this.props.shape.coins;
-    if ( alltheCoins && this.state.getRates )
+    if ( oldState.fromAmount !== this.state.fromAmount )
     {
-      Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
-        this.props.requestRate(coin);
-      })
-      this.finishAndBeginExchange();
+      let x = this.state.fromAmount === "" ? "" : parseFloat(this.state.fromAmount) * this.props.shape.market.rate
+      this.setState({toAmount: x.toString()});
+    }
+    else if (oldState.toAmount !== this.state.toAmount)
+    {
+      let y = this.state.toAmount === "" ? "" : (parseFloat(this.state.toAmount) / this.props.shape.market.rate)
+      this.setState({fromAmount: y.toString()});
     }
   }
 
 //Maybe give these the indexes that they are suppose to have.
-  allCoins() {
-    const myCoins = this.props.shape.coins;
-    let theCoins;
-    let line;
-    let showCoins = [];
-    if ( myCoins )
-    {
-      Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && cn !== "NXT").forEach((coin, idx) => {
-        if ( coin === "XRP" )
-        {
-          showCoins.unshift(
-            <View style={styles.coin} key={idx}>
-              <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-                <Image
-                  style={{width: 50, height: 50}}
-                  source={{uri: myCoins[coin].image}}
-                />
-              <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>Send</Text>
-              <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
-            </View>
-          )
-          return;
-        }
-        if ( this.state.direction )
-        {
-          line = `${this.props.shape.rates[coin]}   XRP/${myCoins[coin].symbol}`
-        }
-        else
-        {
-          line = `${1/this.props.shape.rates[coin]}   ${myCoins[coin].symbol}/XRP`
-        }
-        if ( coin === "ETH" )
-        {
-          showCoins.splice(1,0, (
-            <View style={styles.coin} key={idx}>
-              <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-              <Text style={styles.coinFont}>{line}</Text>
-                <Image
-                  style={{width: 50, height: 50}}
-                  source={{uri: myCoins[coin].image}}
-                />
-              <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
-              <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
-            </View>
-          ));
-          return;
-        }
-        showCoins.push(
-          <View style={styles.coin} key={idx}>
-            <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-            <Text style={styles.coinFont}>{line}</Text>
-              <Image
-                style={{width: 50, height: 50}}
-                source={{uri: myCoins[coin].image}}
-              />
-              <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
-              <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
-          </View>
-        );
-      });
-    }
-    else
-    {
-      showCoins = (
-        <View></View>
-      )
-    }
-    return (
-      <ScrollView style={styles.coinsContainer}>
-        {showCoins}
-      </ScrollView>
-    );
-  }
-
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            Exchange
+            From {this.props.fromCoin}
           </Text>
+        </View>
+        <View style={styles.field}>
+          <TextInput
+            placeholder="From Amount"
+            onChangeText={
+              (amt) => {
+                this.setState({fromAmount: amt});
+              }
+            }
+            autoCorrect={false}
+            value={this.state.fromAmount}
+            autoCapitalize={'none'}
+            style={styles.textInput}/>
+          <View>
+          </View>
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            To {this.props.toCoin}
+          </Text>
+        </View>
+        <View style={styles.field}>
+          <TextInput
+            placeholder="To Amount"
+            onChangeText={
+              (amt) => {
+                this.setState({toAmount: amt});
+              }
+            }
+            value={this.state.toAmount}
+            autoCorrect={false}
+            autoCapitalize={'none'}
+            style={styles.textInput}/>
+          <View>
+          </View>
+        </View>
+        <View style={styles.field}>
+          <TextInput
+            placeholder={this.props.toCoin === "XRP" ? "Return Address -- Recommended" : "Send To Address"}
+            onChangeText={
+              (addr) => {
+                this.setState({address: addr});
+              }
+            }
+            value={this.state.address}
+            autoCorrect={false}
+            autoCapitalize={'none'}
+            style={styles.textInput}/>
+          <View>
+          </View>
         </View>
         <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
           <Text>Change Directions</Text>
         </TouchableOpacity>
-        {this.allCoins()}
+        <View>
+          <Text>Rate: {this.props.shape.market.rate}</Text>
+          <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+          <Text>Send Minimum: {this.props.shape.market.minimum}</Text>
+          <Text>Send Maximum: {this.props.shape.market.maxLimit}</Text>
+        </View>
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
           <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
             <Text>Home</Text>
@@ -247,6 +189,10 @@ const styles = StyleSheet.create({
     borderColor: '#d3d3d3',
     backgroundColor: 'white',
   },
+  textInput: {
+    height: 26,
+    fontFamily: 'Kohinoor Bangla'
+  },
   mainContainer: {
      flex: 1,
      justifyContent: 'center',
@@ -259,6 +205,15 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingTop: 0,
     backgroundColor: '#335B7B'
+  },
+  field: {
+    borderRadius: 5,
+    padding: 5,
+    paddingLeft: 8,
+    margin: 45,
+    marginTop: 0,
+    top: 40,
+    backgroundColor: '#fff'
   },
   titleContainer: {
     padding: 0,

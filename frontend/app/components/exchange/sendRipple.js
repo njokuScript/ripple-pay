@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
 //I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
-class Send extends Component {
+class SendRipple extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
@@ -77,17 +77,6 @@ class Send extends Component {
       let {toDesTag, toAddress, amount} = this.state;
       this.setState({disabled: true});
       this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id).then(()=> this.setState({disabled: false}));
-    }
-  }
-
-  componentDidUpdate(oldProps, oldState){
-    let alltheCoins = this.props.shape.coins;
-    if ( alltheCoins && this.state.getRates )
-    {
-      Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
-        this.props.requestRate(coin);
-      })
-      this.finishAndBeginExchange();
     }
   }
 
@@ -260,4 +249,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Send;
+export default SendRipple;
