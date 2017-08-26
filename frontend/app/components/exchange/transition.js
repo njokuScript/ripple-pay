@@ -4,6 +4,7 @@ import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
+import sendAmountContainer from './sendAmountContainer';
 import {
   StyleSheet,
   Text,
@@ -18,21 +19,26 @@ import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
-class Exchange extends Component {
+class Transition extends Component {
   constructor(props){
     super(props);
     this.state = {
       direction: true,
       fromAmount: "",
       toAmount: "",
+      editFromAmount: false,
+      editToAmount: false,
       address: ""
     }
+    this.navSendAmount = this.navSendAmount.bind(this);
     this.toThisAmount = "";
     this.fromThisAmount = "";
+    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw"
   }
 
   componentDidMount(){
-    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin)
+    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
+    this.props.requestAllWallets(this.props.user.user_id);
   }
 
   // componentWillUnmount(){
@@ -43,7 +49,6 @@ class Exchange extends Component {
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
   navWallet() {
-    window.clearTimeout(this.timer);
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
@@ -52,7 +57,6 @@ class Exchange extends Component {
   }
 
   navSearch() {
-    window.clearTimeout(this.timer);
     this.props.navigator.push({
       component: SearchContainer,
       title: 'Search',
@@ -61,7 +65,6 @@ class Exchange extends Component {
   }
 
   navHome() {
-    window.clearTimeout(this.timer);
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
@@ -69,16 +72,68 @@ class Exchange extends Component {
     });
   }
 
-  componentDidUpdate(oldProps, oldState){
-    if ( oldState.fromAmount !== this.state.fromAmount )
+  navSendAmount() {
+    if ( this.state.fromAmount > this.props.shape.market.maxLimit )
     {
-      let x = this.state.fromAmount === "" ? "" : parseFloat(this.state.fromAmount) * this.props.shape.market.rate
-      this.setState({toAmount: x.toString()});
+      this.props.addAlert(`Please ${this.action} less than the maximum allowed`);
+      return;
     }
-    else if (oldState.toAmount !== this.state.toAmount)
+    else if (this.state.fromAmount < this.props.shape.market.minimum){
+      this.props.addAlert(`Please ${this.action} more than the minimum allowed`);
+      return;
+    }
+    if ( this.action === "deposit" )
     {
-      let y = this.state.toAmount === "" ? "" : (parseFloat(this.state.toAmount) / this.props.shape.market.rate)
-      this.setState({fromAmount: y.toString()});
+      this.returnAddress = this.state.address;
+      if ( this.props.user.wallets.length > 0 )
+      {
+        this.withdrawalAddress = this.props.user.cashRegister;
+        this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
+      }
+      else
+      {
+        this.props.addAlert("Please Get a Wallet First");
+        return;
+      }
+    }
+    else
+    {
+      this.withdrawalAddress = this.state.address;
+      if ( this.props.user.wallets.length > 0 )
+      {
+        this.returnAddress = this.props.user.cashRegister;
+        // this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
+      }
+      else
+      {
+        this.props.addAlert("Please Get a Wallet First");
+        return;
+      }
+    }
+    this.props.navigator.push({
+      title: 'SendAmount',
+      component: sendAmountContainer,
+      navigationBarHidden: true,
+      passProps: {withdrawal: this.withdrawalAddress,
+                 returnAddress: this.returnAddress,
+                 destTag: this.theDestTag,
+                 fromCoin: this.props.fromCoin,
+                 toCoin: this.props.toCoin,
+                 amount: this.state.toAmount,
+                 action: this.action}
+    });
+  }
+
+  componentDidUpdate(oldProps, oldState){
+    if ( this.state.editToAmount  )
+    {
+      let x = this.state.fromAmount === "" ? "" : parseFloat(this.state.fromAmount) * this.props.shape.market.rate;
+      this.setState({toAmount: x.toString(), editFromAmount: false, editToAmount: false});
+    }
+    else if ( this.state.editFromAmount )
+    {
+      let y = this.state.toAmount === "" ? "" : (parseFloat(this.state.toAmount) / this.props.shape.market.rate);
+      this.setState({fromAmount: y.toString(), editFromAmount: false, editToAmount: false});
     }
   }
 
@@ -96,7 +151,7 @@ class Exchange extends Component {
             placeholder="From Amount"
             onChangeText={
               (amt) => {
-                this.setState({fromAmount: amt});
+                this.setState({fromAmount: amt, editFromAmount: false, editToAmount: true});
               }
             }
             autoCorrect={false}
@@ -116,7 +171,7 @@ class Exchange extends Component {
             placeholder="To Amount"
             onChangeText={
               (amt) => {
-                this.setState({toAmount: amt});
+                this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
               }
             }
             value={this.state.toAmount}
@@ -128,7 +183,7 @@ class Exchange extends Component {
         </View>
         <View style={styles.field}>
           <TextInput
-            placeholder={this.props.toCoin === "XRP" ? "Return Address -- Recommended" : "Send To Address"}
+            placeholder={this.action === "deposit" ? "Return Address -- Recommended" : "Send To Address"}
             onChangeText={
               (addr) => {
                 this.setState({address: addr});
@@ -145,10 +200,17 @@ class Exchange extends Component {
           <Text>Change Directions</Text>
         </TouchableOpacity>
         <View>
-          <Text>Rate: {this.props.shape.market.rate}</Text>
+          <Text>Rate: {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
           <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-          <Text>Send Minimum: {this.props.shape.market.minimum}</Text>
-          <Text>Send Maximum: {this.props.shape.market.maxLimit}</Text>
+          <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
+          <Text>Send Maximum: {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={() => this.navSendAmount()}>
+            <Text style={styles.button}>
+              {this.action}
+            </Text>
+          </TouchableOpacity>
         </View>
         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
           <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
@@ -225,7 +287,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     marginTop: 20,
     marginBottom: 20,
-    padding: 20,
+    padding: 0,
     flex: 1,
     top: 10,
     fontFamily: 'Kohinoor Bangla'
@@ -242,7 +304,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Kohinoor Bangla',
     borderWidth: 1,
     borderRadius: 6,
-    borderColor: 'green',
+    // borderColor: 'green',
     borderBottomWidth: 0,
     shadowOpacity: 0.3,
     padding: 7
@@ -265,4 +327,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Exchange;
+export default Transition;
