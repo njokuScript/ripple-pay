@@ -28,7 +28,8 @@ class Transition extends Component {
       toAmount: "",
       editFromAmount: false,
       editToAmount: false,
-      address: ""
+      address: "",
+      quoted: true
     }
     this.navSendAmount = this.navSendAmount.bind(this);
     this.toThisAmount = "";
@@ -38,6 +39,7 @@ class Transition extends Component {
 
   componentDidMount(){
     this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
+    this.props.requestOldAddress(this.props.user.user_id);
     this.props.requestAllWallets(this.props.user.user_id);
   }
 
@@ -85,7 +87,7 @@ class Transition extends Component {
     if ( this.action === "deposit" )
     {
       this.returnAddress = this.state.address;
-      if ( this.props.user.wallets.length > 0 )
+      if ( this.props.user.wallets.length > 0 && this.props.user.cashRegister )
       {
         this.withdrawalAddress = this.props.user.cashRegister;
         this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
@@ -99,10 +101,10 @@ class Transition extends Component {
     else
     {
       this.withdrawalAddress = this.state.address;
-      if ( this.props.user.wallets.length > 0 )
+      if ( this.props.user.wallets.length > 0 && this.props.user.cashRegister)
       {
         this.returnAddress = this.props.user.cashRegister;
-        // this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
+        this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
       }
       else
       {
@@ -114,13 +116,18 @@ class Transition extends Component {
       title: 'SendAmount',
       component: sendAmountContainer,
       navigationBarHidden: true,
-      passProps: {withdrawal: this.withdrawalAddress,
+      passProps: {
+                 withdrawal: this.withdrawalAddress,
                  returnAddress: this.returnAddress,
                  destTag: this.theDestTag,
                  fromCoin: this.props.fromCoin,
                  toCoin: this.props.toCoin,
                  amount: this.state.toAmount,
-                 action: this.action}
+                 fromAmount: this.state.fromAmount,
+                 action: this.action,
+                 userId: this.props.user.user_id,
+                 quoted: this.state.quoted
+               }
     });
   }
 
@@ -146,6 +153,9 @@ class Transition extends Component {
             From {this.props.fromCoin}
           </Text>
         </View>
+        <TouchableOpacity onPress={() => this.setState({quoted: !this.state.quoted})}>
+          <Text>{this.state.quoted ? "Quoted - Exact Amount" : "Quick - Approximate"}</Text>
+        </TouchableOpacity>
         <View style={styles.field}>
           <TextInput
             placeholder="From Amount"
@@ -196,17 +206,14 @@ class Transition extends Component {
           <View>
           </View>
         </View>
-        <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-          <Text>Change Directions</Text>
-        </TouchableOpacity>
         <View>
           <Text>Rate: {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-          <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+          <Text>Shapeshifter Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
           <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
           <Text>Send Maximum: {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => this.navSendAmount()}>
+          <TouchableOpacity onPress={this.navSendAmount}>
             <Text style={styles.button}>
               {this.action}
             </Text>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { COINS_URL, RATE_URL, MARKET_URL, SEND_AMOUNT_URL } from '../api';
+import { COINS_URL, RATE_URL, MARKET_URL, SEND_AMOUNT_URL, SHAPER_URL } from '../api';
 
 // const axios = require('axios');
 // const { COINS_URL } = require('../api');
@@ -33,8 +33,14 @@ exports.requestMarketInfo = (coin1, coin2) => {
 exports.sendAmount = (amount, withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
     return axios.post(SEND_AMOUNT_URL, {amount, withdrawal, pair, returnAddress, destTag}).then((response)=>{
-      console.log(response.data);
       dispatch(receivedSendAmount(response.data));
+    })
+  }
+}
+exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
+  return function(dispatch){
+    return axios.post(SHAPER_URL, { withdrawal, pair, returnAddress, destTag}).then((response)=>{
+      dispatch(receivedShapeshift(response.data));
     })
   }
 }
@@ -50,6 +56,12 @@ receivedCoins = (data) => {
 receivedSendAmount = (data) => {
   return {
     type: 'RECEIVED_SEND_AMOUNT',
+    data
+  }
+}
+receivedShapeshift = (data) => {
+  return {
+    type: 'RECEIVED_SHAPESHIFT',
     data
   }
 }

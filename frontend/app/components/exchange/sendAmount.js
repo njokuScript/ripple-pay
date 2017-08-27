@@ -26,17 +26,27 @@ class SendAmount extends Component {
       direction: true,
       fromAmount: "",
       toAmount: "",
-      address: ""
+      address: "",
+      pushed: false
     }
     this.toThisAmount = "";
     this.fromThisAmount = "";
-    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw"
+    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
+    this.renderButton = this.renderButton.bind(this);
+    this.sendPayment = this.sendPayment.bind(this);
   }
 
   componentDidMount(){
-    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin)
-    let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`
-    this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag)
+    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
+    let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
+    if ( this.props.quoted )
+    {
+      this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+    }
+    else
+    {
+      this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+    }
   }
 
   // componentWillUnmount(){
@@ -70,6 +80,36 @@ class SendAmount extends Component {
     });
   }
 
+  renderButton(){
+    if ( this.props.action === 'withdraw' && this.state.pushed === false )
+    {
+      return(
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={this.sendPayment}>
+            <Text>
+              Withdraw
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }
+
+  sendPayment(){
+    this.setState({pushed: true});
+    let depositString = this.props.shape.sendamount.deposit;
+    let toDesTag = depositString.match(/\?dt=(\d+)/)[1];
+    let toAddress = depositString.match(/\w+/)[0];
+    let total = this.props.quoted ? this.props.shape.sendamount.despositAmount : this.props.fromAmount;
+    this.props.signAndSend (
+      parseFloat(total),
+      this.props.returnAddress,
+      toAddress,
+      parseInt(this.props.destTag),
+      parseInt(toDesTag),
+      this.props.userId
+    );
+  }
 
 
 //Maybe give these the indexes that they are suppose to have.
@@ -84,16 +124,15 @@ class SendAmount extends Component {
           <View>
             <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
             <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-            <Text>Send Maximum: {this.props.shape.sendamount.success.maxLimit} {this.props.fromCoin}</Text>
-            <Text>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.success.deposit}</Text>
+            <Text>Send Maximum: {this.props.quoted ? this.props.shape.sendamount.maxLimit : this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+            <Text>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.deposit}</Text>
             <Text>{this.props.toCoin} Withdraw Address: {this.props.withdrawal}</Text>
-            <Text>Deposit Amount: {this.props.shape.sendamount.success.depositAmount} {this.props.fromCoin}</Text>
+            <Text>Deposit Amount: {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
             <Text>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
-            <Text>Quoted Rate: {this.props.shape.sendamount.success.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-            <Text>Send Maximum: {this.props.shape.market.maxLimit}</Text>
-            <Text>XRP Dest Tag: {this.props.shape.sendamount.success.xrpDestTag}</Text>
+            <Text>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+            <Text>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
           </View>
-
+          {this.renderButton()}
           <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
             <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
               <Text>Home</Text>

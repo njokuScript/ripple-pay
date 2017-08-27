@@ -20,4 +20,5 @@ exports.OLDADDR_URL = `${API_URL}/old`;
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
 exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
 exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
-exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`
+exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
+exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;

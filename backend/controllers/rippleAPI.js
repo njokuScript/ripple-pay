@@ -37,7 +37,7 @@ class Rippled {
       });
     }
 
-    thePayment(fromAddress, toAddress, desTag, sourceTag, value, paths){
+    thePayment(fromAddress, toAddress, desTag, sourceTag, value){
       let payment;
       if (desTag) {
         payment = {
@@ -56,28 +56,27 @@ class Rippled {
               "value": `${value}`,
               "currency": "XRP"
             }
-          },
+          }
         };
       } else {
         payment = {
-        "source": {
-          "address": fromAddress,
-          "tag": sourceTag,
-          "maxAmount": {
-            "value": `${value}`,
-            "currency": "XRP"
+          "source": {
+            "address": fromAddress,
+            "tag": sourceTag,
+            "maxAmount": {
+              "value": `${value}`,
+              "currency": "XRP"
+            }
+          },
+          "destination": {
+            "address": toAddress,
+            "amount": {
+              "value": `${value}`,
+              "currency": "XRP"
+            }
           }
-        },
-        "destination": {
-          "address": toAddress,
-          "amount": {
-            "value": `${value}`,
-            "currency": "XRP"
         }
-      },
-      "paths": paths
-    };
-    }
+      }
       return payment;
     }
 
