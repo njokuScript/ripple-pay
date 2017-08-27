@@ -27,20 +27,33 @@ class SendAmount extends Component {
       fromAmount: "",
       toAmount: "",
       address: "",
-      pushed: false
+      pushed: false,
+      time: 600000
     }
     this.toThisAmount = "";
     this.fromThisAmount = "";
     this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
     this.renderButton = this.renderButton.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
+    this.navHome = this.navHome.bind(this);
   }
 
+
+
   componentDidMount(){
+    let that = this;
     this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
     let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
     if ( this.props.quoted )
     {
+      this.timer = window.setInterval(function(){
+        if ( that.state.time === 1000 )
+        {
+          that.navHome();
+        }
+        console.log("hello");
+        that.setState({time: that.state.time - 1000})
+      },1000);
       this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
     }
     else
@@ -57,6 +70,7 @@ class SendAmount extends Component {
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
   navWallet() {
+    clearInterval(this.timer);
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
@@ -65,6 +79,7 @@ class SendAmount extends Component {
   }
 
   navSearch() {
+    clearInterval(this.timer);
     this.props.navigator.push({
       component: SearchContainer,
       title: 'Search',
@@ -73,6 +88,7 @@ class SendAmount extends Component {
   }
 
   navHome() {
+    clearInterval(this.timer);
     this.props.navigator.push({
       title: 'Home',
       component: HomeContainer,
@@ -118,7 +134,7 @@ class SendAmount extends Component {
         <View style={styles.container}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin}
+              {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
             </Text>
           </View>
           <View>
@@ -131,6 +147,7 @@ class SendAmount extends Component {
             <Text>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
             <Text>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
             <Text>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
+            <Text>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
           </View>
           {this.renderButton()}
           <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
