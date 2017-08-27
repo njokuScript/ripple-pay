@@ -1,7 +1,7 @@
 import React from 'react';
 import HomeContainer from '../home/homeContainer';
 import WalletContainer from '../wallet/walletContainer';
-import SendContainer from '../send/send';
+import ExchangeContainer from '../exchange/exchangeContainer';
 import BankSendContainer from '../banksend/banksendContainer';
 import { reduxForm } from 'redux-form';
 
@@ -65,11 +65,11 @@ class Search extends React.Component {
   }
   //You can store a constant as stuff that is not wrapped in jsx tags
 
-  navSend() {
+  navExchange() {
     this.setState({query: ""});
     this.props.navigator.push({
-      title: 'Send',
-      component: SendContainer,
+      title: 'Exchange',
+      component: ExchangeContainer,
       navigationBarHidden: true
     });
   }
@@ -114,8 +114,8 @@ class Search extends React.Component {
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
               <Text>Wallets</Text>
             </TouchableOpacity>
-          <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-            <Text>Send</Text>
+          <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
+            <Text>Exchange</Text>
         </TouchableOpacity>
        </Tabs>
        <View style={styles.searchContainer}>

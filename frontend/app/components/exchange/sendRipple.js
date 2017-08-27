@@ -8,7 +8,8 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
@@ -16,7 +17,7 @@ import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
 //I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
-class Send extends Component {
+class SendRipple extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
@@ -24,15 +25,14 @@ class Send extends Component {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
-      disabled: false
+      disabled: false,
     }
   }
+
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
     this.props.navigator.push({
       title: 'Wallet',
       component: WalletContainer,
@@ -47,7 +47,7 @@ class Send extends Component {
       navigationBarHidden: true
     });
   }
-  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
+  //I am not required to do request coins here because this will happen automatically from componentDidMount in home.js
 
   navHome() {
     // this.props.requestTransactions(this.props.user);
@@ -249,4 +249,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Send;
+export default SendRipple;

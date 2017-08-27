@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
-import SendContainer from '../send/sendContainer'
+import ExchangeContainer from '../exchange/exchangeContainer'
 import {
   StyleSheet,
   Text,
@@ -41,10 +41,10 @@ class BankSend extends Component {
     });
   }
 
-  navSend() {
+  navExchange() {
     this.props.navigator.push({
-      title: "Send",
-      component: SendContainer,
+      title: "Exchange",
+      component: ExchangeContainer,
       navigationBarHidden: true
     });
   }
@@ -111,8 +111,8 @@ class BankSend extends Component {
             <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
               <Text>Wallets</Text>
             </TouchableOpacity>
-            <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-              <Text>Send</Text>
+            <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
+              <Text>Exchange</Text>
             </TouchableOpacity>
        </Tabs>
       </View>
