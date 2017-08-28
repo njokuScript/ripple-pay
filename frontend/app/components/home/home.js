@@ -13,8 +13,7 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    NavigatorIOS,
-    ScrollView
+    NavigatorIOS
   } from 'react-native';
 
 class Home extends React.Component {
