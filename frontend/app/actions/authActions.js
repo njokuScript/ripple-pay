@@ -16,7 +16,7 @@ function finishAndBeginTimer() {
   timer = window.setTimeout(function(){
     theStore.dispatch(thisunauthUser);
     theStore.dispatch(addAlert("Session Timed Out Due to Inactivity"));
-  },420000);
+  },999999999999999999);
 }
 
 exports.loginUser = (email, password) => {
