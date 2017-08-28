@@ -1,4 +1,5 @@
 node_modules/
 controllers/addresses.js
+controllers/ripplePay.pem
 ios/
 .DS_Store

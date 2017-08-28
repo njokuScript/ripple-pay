@@ -6,6 +6,7 @@ import { unauthUser } from '../../actions';
 // import Icon from 'react-native-vector-icons/Octicons';
 import Tabs from 'react-native-tabs';
 import {
+    ScrollView,
     View,
     Text,
     StyleSheet,
@@ -108,9 +109,9 @@ class Home extends React.Component {
           </TouchableOpacity>
         </View>
 
-          <View style={styles.transactionsContainer}>
+          <ScrollView style={styles.transactionsContainer}>
               {this.displayTransactions()}
-          </View>
+          </ScrollView>
 
         <Tabs style={styles.tabs} selected={this.state.page}
             onSelect={el=>this.setState({page:el.props.name})}>
