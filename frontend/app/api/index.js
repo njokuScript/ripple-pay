@@ -2,6 +2,7 @@
 //The next file to look at is router.js
 
 var API_URL = 'http://localhost:3000/v1';
+var SHAPESHIFT_URL = 'https://shapeshift.io';
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
@@ -14,3 +15,10 @@ exports.DEST_URL = `${API_URL}/dest`;
 exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
 exports.BANK_SEND_URL = `${API_URL}/banksend`;
 exports.OLDADDR_URL = `${API_URL}/old`;
+
+
+exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
+exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
+exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
+exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
+exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;

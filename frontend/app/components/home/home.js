@@ -1,7 +1,7 @@
 import React from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
-import SendContainer from '../send/sendContainer';
+import ExchangeContainer from '../exchange/exchangeContainer';
 import { unauthUser } from '../../actions';
 // import Icon from 'react-native-vector-icons/Octicons';
 import Tabs from 'react-native-tabs';
@@ -13,7 +13,8 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    NavigatorIOS
+    NavigatorIOS,
+    ScrollView
   } from 'react-native';
 
 class Home extends React.Component {
@@ -79,10 +80,10 @@ class Home extends React.Component {
     });
   }
 
-  navSend() {
+  navExchange() {
     this.props.navigator.push({
-      title: "Send",
-      component: SendContainer,
+      title: "Exchange",
+      component: ExchangeContainer,
       navigationBarHidden: true
     });
   }
@@ -124,8 +125,8 @@ class Home extends React.Component {
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
             <Text style={styles.tabFont}>Wallets</Text>
           </TouchableOpacity>
-        <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-            <Text style={styles.tabFont}>Send</Text>
+        <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
+            <Text style={styles.tabFont}>Exchange</Text>
           </TouchableOpacity>
         </Tabs>
       </View>
