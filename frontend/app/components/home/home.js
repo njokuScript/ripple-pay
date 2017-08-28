@@ -13,8 +13,7 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    NavigatorIOS,
-    ScrollView
+    NavigatorIOS
   } from 'react-native';
 
 class Home extends React.Component {
@@ -34,7 +33,7 @@ class Home extends React.Component {
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
       let ndate;
       const transactions = this.props.transactions.map((transaction, idx) => {
-        ndate = new Date(transaction.date)
+        ndate = new Date(transaction.date);
         return (
           <View style={styles.transaction} key={idx}>
             <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
@@ -87,7 +86,7 @@ class Home extends React.Component {
       navigationBarHidden: true
     });
   }
-//THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
+// THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
   render()
   {
     return (
@@ -114,18 +113,17 @@ class Home extends React.Component {
               {this.displayTransactions()}
           </ScrollView>
 
-        <Tabs style={styles.tabs} selected={this.state.page}
-            onSelect={el=>this.setState({page:el.props.name})}>
-        <TouchableOpacity>
-          <Text style={styles.tabFont}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
-            <Text style={styles.tabFont}>Search</Text>
-            </TouchableOpacity>
+        <Tabs style={styles.tabs} selected={this.state.page} onSelect={el=>this.setState({page:el.props.name})}>
+          <TouchableOpacity>
+            <Text style={styles.tabFont}>Home</Text>
+          </TouchableOpacity>
+          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
+              <Text style={styles.tabFont}>Search</Text>
+              </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
             <Text style={styles.tabFont}>Wallets</Text>
           </TouchableOpacity>
-        <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
+          <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
             <Text style={styles.tabFont}>Exchange</Text>
           </TouchableOpacity>
         </Tabs>

@@ -8,18 +8,17 @@ import {
   StatusBar
 } from 'react-native';
 
-// import {} from '../actions';
-
 import Login from './Login';
 import Main from './Main';
 import AlertContainer from './alerts/AlertContainer';
 
-var App = React.createClass({
-  getInitialState() {
-    return {};
-  },
+export default class App extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
   render() {
-    var renderMainView = () => {
+    let renderMainView = () => {
       if (this.props.user_id) {
         return (
           <Main />
@@ -31,14 +30,14 @@ var App = React.createClass({
       }
     };
     return (
-      <View style={{flex: 1}}>
-        <StatusBar barStyle="light-content"/>
+      <View style={{ flex: 1 }}>
+        <StatusBar barStyle="light-content" />
         {renderMainView()}
-        <AlertContainer/>
+        <AlertContainer />
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -50,12 +49,12 @@ const styles = StyleSheet.create({
   },
 });
 
-var mapStateToProps = (state) => {
+let mapStateToProps = (state) => {
   return {
     user_id: state.user.user_id
   };
 };
-var mapDispatchToProps = (dispatch) => {
+let mapDispatchToProps = (dispatch) => {
   return {
     unauthUser: () => dispatch(unauthUser)
   };

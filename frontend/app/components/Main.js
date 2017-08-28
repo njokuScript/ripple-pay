@@ -9,7 +9,7 @@ import {
 
 import HomeContainer from './home/homeContainer';
 
-var Main = React.createClass({
+export default class Main extends React.Component {
   render() {
     return (
       <NavigatorIOS
@@ -18,9 +18,9 @@ var Main = React.createClass({
           title: 'HomeContainer',
           navigationBarHidden: true
         }}
-        style={{flex: 1}}/>
+        style={{ flex: 1 }}
+      />
     );
   }
-});
+}
 
-module.exports = Main;

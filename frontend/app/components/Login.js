@@ -23,16 +23,24 @@ class Login extends React.Component {
     this.enterSite = this.enterSite.bind(this);
   }
 
+  componentWillUnmount() {
+    this.setState({
+      loading: false
+    });
+  }
+  
+  componentDidMount() {
+    this.setState({
+      loading: false
+    });
+  }
+
   onSignIn() {
     let {dispatch, fields: {email, password}} = this.props;
     this.setState({
       loading: true
     });
-    dispatch(loginUser(email.value, password.value)).then(() => {
-      this.setState({
-        loading: false
-      });
-    });
+    dispatch(loginUser(email.value, password.value));
   }
 
   onSignUp() {

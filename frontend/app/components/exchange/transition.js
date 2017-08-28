@@ -30,11 +30,11 @@ class Transition extends Component {
       editToAmount: false,
       address: "",
       quoted: true
-    }
+    };
     this.navSendAmount = this.navSendAmount.bind(this);
     this.toThisAmount = "";
     this.fromThisAmount = "";
-    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw"
+    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
   }
 
   componentDidMount(){
