@@ -11,7 +11,7 @@ import { addAlert } from './alertsActions';
 //Look at authreducer for defaultstate of user.
 //Log the user out after 7 minutes of inactivity.
 var timer;
-function finishAndBeginTimer() {
+finishAndBeginTimer = ()=> {
   window.clearTimeout(timer);
   timer = window.setTimeout(function(){
     theStore.dispatch(thisunauthUser);

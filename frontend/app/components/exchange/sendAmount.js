@@ -51,7 +51,6 @@ class SendAmount extends Component {
         {
           that.navHome();
         }
-        console.log("hello");
         that.setState({time: that.state.time - 1000})
       },1000);
       this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
