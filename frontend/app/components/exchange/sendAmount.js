@@ -51,7 +51,6 @@ class SendAmount extends Component {
         {
           that.navHome();
         }
-        console.log("hello");
         that.setState({time: that.state.time - 1000})
       },1000);
       this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
@@ -117,14 +116,21 @@ class SendAmount extends Component {
     let toDesTag = depositString.match(/\?dt=(\d+)/)[1];
     let toAddress = depositString.match(/\w+/)[0];
     let total = this.props.quoted ? this.props.shape.sendamount.despositAmount : this.props.fromAmount;
-    this.props.signAndSend (
-      parseFloat(total),
-      this.props.returnAddress,
-      toAddress,
-      parseInt(this.props.destTag),
-      parseInt(toDesTag),
-      this.props.userId
-    );
+    if ( total && toDesTag && toAddress )
+    {
+      this.props.signAndSend (
+        parseFloat(total),
+        this.props.returnAddress,
+        toAddress,
+        parseInt(this.props.destTag),
+        parseInt(toDesTag),
+        this.props.userId
+      );
+    }
+    else
+    {
+      this.props.addAlert("There was an error in the transaction");
+    }
   }
 
 

@@ -150,6 +150,7 @@ exports.sendMoney = function(req, res, next){
       }
       server.connect().then(() => {
         const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
+        console.log(myPayment);
         CashRegister.findOne({address: fromAddress}, function(err, register){
           if (err) { return next(err); }
           //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
