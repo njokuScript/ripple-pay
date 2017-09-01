@@ -115,7 +115,15 @@ class SendAmount extends Component {
     let depositString = this.props.shape.sendamount.deposit;
     let toDesTag = depositString.match(/\?dt=(\d+)/)[1];
     let toAddress = depositString.match(/\w+/)[0];
-    let total = this.props.quoted ? this.props.shape.sendamount.despositAmount : this.props.fromAmount;
+    let total;
+    if ( this.props.quoted )
+    {
+      total = this.props.shape.sendamount.depositAmount;
+    }
+    else
+    {
+      total = this.props.fromAmount;
+    }
     if ( total && toDesTag && toAddress )
     {
       this.props.signAndSend (
