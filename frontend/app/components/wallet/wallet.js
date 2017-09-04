@@ -162,7 +162,7 @@ class Wallet extends React.Component {
                <Text>Search</Text>
              </TouchableOpacity>
              <TouchableOpacity>
-               {myIcon}
+               <Text>Wallets</Text>
              </TouchableOpacity>
              <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
                <Text>Exchange</Text>
