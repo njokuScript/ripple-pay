@@ -105,13 +105,18 @@ class Wallet extends React.Component {
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (
           <View style={styles.wallet} key={idx}>
-            <Text style={styles.walletFont}>Destination Tag: {wallet}</Text>
+            <Text style={styles.walletFont}>{wallet}</Text>
           </View>
         );
       });
       return (
         <View style={styles.walletsContainer}>
+          <View style={styles.walletAddress}>
           <Text>Wallet Address: {this.props.cashRegister}</Text>
+          </View>
+          <View style={styles.destTag}>
+          <Text>Destination Tags:</Text>
+          </View>
           {allWallets}
         </View>
       );
@@ -246,8 +251,19 @@ const styles = StyleSheet.create({
     walletsContainer: {
       flex: 1,
       // marginTop: 20,
-      justifyContent: 'space-between',
-      backgroundColor: 'purple'
+      // justifyContent: 'space-between',
+      flexDirection: 'column',
+      backgroundColor: 'purple',
+      padding: 15
+    },
+    walletAddress: {
+      padding: 15
+    },
+    destTag: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 15
     },
     wallets: {
       flex: 1,
