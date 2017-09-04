@@ -14,6 +14,7 @@ import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 // import Icon from 'react-native-vector-icons/FontAwesome';
+import LinearGradient from 'react-native-linear-gradient'
 const myIcon = (<Icon name="search" size={30} color="#900" />)
 
 
@@ -143,17 +144,18 @@ class Wallet extends React.Component {
           <View style={styles.balanceContainer}>
           </View>
           <TouchableOpacity disabled={disabled} onPress={this.generate}>
-            <Text style={disabled ? styles.redd : styles.greenn}>generate new wallet</Text>
+            <Text style={disabled ? styles.redd : styles.greenn}>Generate New Wallet</Text>
           </TouchableOpacity>
           <TouchableOpacity disabled={disabled} onPress={this.remove}>
-            <Text style={disabled ? styles.redd : styles.greenn}>remove oldest wallet</Text>
+            <Text style={disabled ? styles.redd : styles.greenn}>Remove Oldest Wallet</Text>
           </TouchableOpacity>
         </View>
 
           <View style={styles.walletsContainer}>
               {this.displayWallets()}
           </View>
-          <Tabs selected={this.state.page} style={{backgroundColor:'#111F61'}}
+
+          <Tabs selected={this.state.page} style={{backgroundColor:'transparent'}}
               onSelect={el=>this.setState({page:el.props.name})}>
              <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
                <Text>Home</Text>
@@ -168,6 +170,7 @@ class Wallet extends React.Component {
                <Text>Exchange</Text>
              </TouchableOpacity>
           </Tabs>
+
       </View>
     );
   }
@@ -181,6 +184,7 @@ const styles = StyleSheet.create({
      flexDirection: 'column',
      backgroundColor: '#111F61'
    },
+
    redd: {
      color: 'red',
      fontSize: 20
@@ -217,25 +221,30 @@ const styles = StyleSheet.create({
      textAlign: 'center',
      fontSize: 40,
      color: 'white',
-     fontFamily: 'Kohinoor Bangla'
+     fontFamily: 'Kohinoor Bangla',
+     borderColor: 'black',
+     borderRadius: 5
    },
     walletsContainer: {
       flex: 1,
       // marginTop: 20,
-      backgroundColor: 'white'
+      backgroundColor: 'green'
     },
     wallets: {
       flex: 1,
       fontFamily: 'Kohinoor Bangla',
+
     },
     wallet: {
       padding: 2,
       paddingLeft: 15,
       paddingTop: 15,
       paddingBottom: 15,
+      marginLeft: 20,
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
-      backgroundColor: 'white',
+      backgroundColor: 'yellow',
+
     },
     tabFont: {
       color: 'white',
