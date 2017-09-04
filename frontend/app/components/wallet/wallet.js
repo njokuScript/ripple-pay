@@ -184,6 +184,14 @@ const styles = StyleSheet.create({
      flexDirection: 'column',
      backgroundColor: '#111F61'
    },
+   balanceContainer: {
+     flex: 1,
+     justifyContent: 'space-between',
+     alignItems: 'flex-start',
+     flexDirection: 'row',
+     marginLeft: 45,
+     marginRight: 45,
+   },
    redd: {
      color: 'red',
      fontSize: 20
@@ -231,7 +239,7 @@ const styles = StyleSheet.create({
     walletsContainer: {
       flex: 1,
       // marginTop: 20,
-      backgroundColor: 'green'
+      backgroundColor: 'purple'
     },
     wallets: {
       flex: 1,
@@ -240,7 +248,7 @@ const styles = StyleSheet.create({
     },
     wallet: {
       padding: 2,
-      paddingLeft: 15,
+      paddingLeft: 45,
       paddingTop: 15,
       paddingBottom: 15,
       marginLeft: 20,
@@ -252,11 +260,6 @@ const styles = StyleSheet.create({
     tabFont: {
       color: 'white',
       fontFamily: 'Kohinoor Bangla',
-    },
-    balanceContainer: {
-      flex: 1,
-      justifyContent: 'space-between',
-      flexDirection: 'row'
     },
     tabs: {
       backgroundColor: '#335B7B',
