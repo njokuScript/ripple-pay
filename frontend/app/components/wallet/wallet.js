@@ -112,10 +112,10 @@ class Wallet extends React.Component {
       return (
         <View style={styles.walletsContainer}>
           <View style={styles.walletAddress}>
-          <Text>Wallet Address: {this.props.cashRegister}</Text>
+          <Text style={{fontSize: 20}}>Wallet Address: {this.props.cashRegister}</Text>
           </View>
           <View style={styles.destTag}>
-          <Text>Destination Tags:</Text>
+          <Text style={{fontSize: 20}}>Destination Tags:</Text>
           </View>
           {allWallets}
         </View>
@@ -187,7 +187,8 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      flexDirection: 'column',
-     backgroundColor: '#111F61'
+     backgroundColor: '#111F61',
+
    },
    balanceContainer: {
      flex: 1,
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
      flexDirection: 'row',
      marginLeft: 35,
      marginRight: 35,
-     top: 90
+     top: 150
    },
    redd: {
      color: 'red',
@@ -257,12 +258,18 @@ const styles = StyleSheet.create({
       padding: 15
     },
     walletAddress: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 10,
       padding: 15
     },
     destTag: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+      fontSize: 25,
+      marginTop: 10,
       padding: 15
     },
     wallets: {
