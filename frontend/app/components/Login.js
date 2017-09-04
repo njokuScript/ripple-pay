@@ -1,5 +1,5 @@
 import React from 'react';
-import {reduxForm} from 'redux-form';
+import { reduxForm } from 'redux-form';
 import {
   StyleSheet,
   Text,
@@ -8,10 +8,10 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import {loginUser, signupUser, addAlert} from '../actions';
+import { loginUser, signupUser, addAlert } from '../actions';
 
 class Login extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       loading: false,
@@ -28,7 +28,7 @@ class Login extends React.Component {
       loading: false
     });
   }
-  
+
   componentDidMount() {
     this.setState({
       loading: false
@@ -36,7 +36,7 @@ class Login extends React.Component {
   }
 
   onSignIn() {
-    let {dispatch, fields: {email, password}} = this.props;
+    let { dispatch, fields: { email, password } } = this.props;
     this.setState({
       loading: true
     });
@@ -44,7 +44,7 @@ class Login extends React.Component {
   }
 
   onSignUp() {
-    let {dispatch, fields: {email, password, screenName}} = this.props;
+    let { dispatch, fields: { email, password, screenName } } = this.props;
     this.setState({
       loading: true
     });
@@ -57,7 +57,7 @@ class Login extends React.Component {
 
   enterSite() {
     if (!this.state.enteringSite) {
-      this.setState({enteringSite: true});
+      this.setState({ enteringSite: true });
     } else {
       return this.onSignUp();
     }
@@ -66,15 +66,16 @@ class Login extends React.Component {
   renderScreenName(screenName, renderError) {
     if (this.state.enteringSite) {
       return (
-      <View style={styles.field}>
-        <TextInput
-          {...screenName}
-          placeholder="Screen Name"
-          style={styles.textInput} />
-        <View>
-          {renderError(screenName)}
+        <View style={styles.field}>
+          <TextInput
+            {...screenName}
+            placeholder="Screen Name"
+            placeholderTextColor="#6D768B"
+            style={styles.textInput} />
+          <View>
+            {renderError(screenName)}
+          </View>
         </View>
-      </View>
       );
     } else {
       return;
@@ -82,7 +83,7 @@ class Login extends React.Component {
   }
 
   render() {
-    let {fields: {email, password, screenName}} = this.props;
+    let { fields: { email, password, screenName } } = this.props;
 
     let renderError = (field) => {
       if (field.touched && field.error) {
@@ -94,7 +95,7 @@ class Login extends React.Component {
 
     if (this.state.loading) {
       return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text>
             Loading...
           </Text>
@@ -106,13 +107,14 @@ class Login extends React.Component {
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
               ripplePay
-            </Text>
+              </Text>
           </View>
           <View style={styles.field}>
             <TextInput
               {...email}
               placeholder="Email"
-              style={styles.textInput}/>
+              placeholderTextColor="#6D768B"
+              style={styles.textInput} />
             <View>
               {renderError(email)}
             </View>
@@ -121,22 +123,26 @@ class Login extends React.Component {
             <TextInput
               {...password}
               placeholder="Password"
-              style={styles.textInput}/>
+              placeholderTextColor="#6D768B"
+              secureTextEntry={true}
+              style={styles.textInput} />
             <View>
-            {renderError(password)}
+              {renderError(password)}
             </View>
           </View>
           {this.renderScreenName(screenName, renderError)}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={this.onSignIn}>
+            <TouchableOpacity style={styles.touchableButton} onPress={this.onSignIn}>
               <Text style={styles.button}>
-                login
-              </Text>
+                SIGN IN
+                </Text>
             </TouchableOpacity>
+          </View>
+          <View>
             <TouchableOpacity onPress={this.enterSite}>
-              <Text style={styles.button}>
-                sign up
-             </Text>
+              <Text style={styles.signUp}>
+                Don't have an account? SIGN UP
+                </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -145,67 +151,72 @@ class Login extends React.Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 20,
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
   },
-
   titleContainer: {
-    padding: 10,     
+    padding: 10,
     alignItems: 'center',
   },
-
   title: {
     color: 'white',
     fontSize: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 20,
+    marginBottom: 30,
+    // padding: 20,
     flex: 1,
     top: 60,
     fontFamily: 'Kohinoor Bangla'
   },
-
   field: {
+    backgroundColor: '#0F1C52',
     borderRadius: 5,
     padding: 5,
-    paddingLeft: 8,
-    margin: 45,
-    marginTop: 0,
-    top: 80,
-    backgroundColor: '#fff'
+    paddingLeft: 15,
+    margin: 30,
+    marginTop: 10,
+    top: 80
   },
-
   textInput: {
-    height: 26,
-    fontFamily: 'Kohinoor Bangla'
+    height: 40,
+    fontFamily: 'Kohinoor Bangla',
+    color: '#6D768B',
   },
-
   buttonContainer: {
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 100
+    top: 50
+  },
+  touchableButton: {
+    backgroundColor: '#0F1C52',
+    borderRadius: 50,
+    paddingTop: 10,
+    paddingBottom: 10,
+    width: 250,
+    overflow: 'hidden',
   },
   button: {
-    fontSize: 30,
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+    fontSize: 20,
     color: 'white',
     fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: 'white',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
+    textAlign: 'center'
   },
   formError: {
-    color: 'red'
+    color: 'red',
+    fontSize: 12
+  },
+  signUp: {
+    color: 'white',
+    top: 150,
+    textAlign: 'center'
   }
+
 });
 
 let validate = (formProps) => {
