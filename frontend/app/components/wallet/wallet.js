@@ -105,13 +105,13 @@ class Wallet extends React.Component {
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (
           <View style={styles.wallet} key={idx}>
-            <Text style={styles.walletFont}>{wallet}</Text>
+            <Text style={styles.walletFont}>Destination Tag: {wallet}</Text>
           </View>
         );
       });
       return (
         <View style={styles.walletsContainer}>
-          <Text>{this.props.cashRegister}</Text>
+          <Text>Wallet Address: {this.props.cashRegister}</Text>
           {allWallets}
         </View>
       );
@@ -189,18 +189,25 @@ const styles = StyleSheet.create({
      justifyContent: 'space-between',
      alignItems: 'flex-start',
      flexDirection: 'row',
-     marginLeft: 45,
-     marginRight: 45,
+     marginLeft: 35,
+     marginRight: 35,
+     top: 90
    },
    redd: {
      color: 'red',
-     fontSize: 20
+     fontSize: 20,
+          padding: 7,
+     borderRadius: 0.4,
+     borderWidth: 0.9,
+
+     borderColor: 'white'
    },
    greenn: {
      color: 'green',
      fontSize: 20,
-     borderRadius: 0,
-     borderWidth: 0.51,
+     padding: 7,
+     borderRadius: 0.4,
+     borderWidth: 0.9,
 
      borderColor: 'white'
    },
@@ -239,6 +246,7 @@ const styles = StyleSheet.create({
     walletsContainer: {
       flex: 1,
       // marginTop: 20,
+      justifyContent: 'space-between',
       backgroundColor: 'purple'
     },
     wallets: {
@@ -247,11 +255,16 @@ const styles = StyleSheet.create({
 
     },
     wallet: {
-      padding: 2,
-      paddingLeft: 45,
+
+      justifyContent: 'center',
+
+      paddingLeft: 85,
       paddingTop: 15,
       paddingBottom: 15,
-      marginLeft: 20,
+      marginLeft: 70,
+      marginRight: 70,
+      marginTop: 10,
+      marginBottom: 10,
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
       backgroundColor: 'yellow',
