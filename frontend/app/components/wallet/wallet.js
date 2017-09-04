@@ -13,6 +13,9 @@ import {
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+import LinearGradient from 'react-native-linear-gradient'
+const myIcon = (<Icon name="search" size={30} color="#900" />)
 
 
 
@@ -108,7 +111,12 @@ class Wallet extends React.Component {
       });
       return (
         <View style={styles.walletsContainer}>
-          <Text>{this.props.cashRegister}</Text>
+          <View style={styles.walletAddress}>
+          <Text style={{fontSize: 20}}>Wallet Address: {this.props.cashRegister}</Text>
+          </View>
+          <View style={styles.destTag}>
+          <Text style={{fontSize: 20}}>Destination Tags:</Text>
+          </View>
           {allWallets}
         </View>
       );
@@ -138,20 +146,21 @@ class Wallet extends React.Component {
               </Text>
             </View>
           </View>
-          <View style={styles.balanceContainer}>
           </View>
-          <TouchableOpacity disabled={disabled} onPress={this.generate}>
-            <Text style={disabled ? styles.redd : styles.greenn}>generate new wallet</Text>
-          </TouchableOpacity>
-          <TouchableOpacity disabled={disabled} onPress={this.remove}>
-            <Text style={disabled ? styles.redd : styles.greenn}>remove oldest wallet</Text>
-          </TouchableOpacity>
-        </View>
 
           <View style={styles.walletsContainer}>
               {this.displayWallets()}
+              <View style={styles.balanceContainer}>
+                <TouchableOpacity disabled={disabled} onPress={this.generate}>
+                  <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
+                </TouchableOpacity>
+                <TouchableOpacity disabled={disabled} onPress={this.remove}>
+                  <Text style={disabled ? styles.redd : styles.greenn}>- Oldest Wallet</Text>
+                </TouchableOpacity>
+              </View>
           </View>
-          <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+
+          <Tabs selected={this.state.page} style={{backgroundColor:'transparent'}}
               onSelect={el=>this.setState({page:el.props.name})}>
              <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
                <Text>Home</Text>
@@ -166,6 +175,7 @@ class Wallet extends React.Component {
                <Text>Exchange</Text>
              </TouchableOpacity>
           </Tabs>
+
       </View>
     );
   }
@@ -177,19 +187,39 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      flexDirection: 'column',
-     backgroundColor: '#335B7B'
+     backgroundColor: '#111F61',
+
+   },
+   balanceContainer: {
+     flex: 1,
+     justifyContent: 'space-between',
+     alignItems: 'flex-start',
+     flexDirection: 'row',
+     marginLeft: 35,
+     marginRight: 35,
+     top: 150
    },
    redd: {
      color: 'red',
-     fontSize: 20
+     fontSize: 20,
+          padding: 7,
+     borderRadius: 0.4,
+     borderWidth: 0.9,
+
+     borderColor: 'white'
    },
    greenn: {
      color: 'green',
-     fontSize: 20
+     fontSize: 20,
+     padding: 7,
+     borderRadius: 0.4,
+     borderWidth: 0.9,
+
+     borderColor: 'white'
    },
   topContainer: {
     alignItems: 'center',
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
     // shadowColor: '#000000',
     // shadowOffset: {
     //   width: 0,
@@ -215,25 +245,53 @@ const styles = StyleSheet.create({
      textAlign: 'center',
      fontSize: 40,
      color: 'white',
-     fontFamily: 'Kohinoor Bangla'
+     fontFamily: 'Kohinoor Bangla',
+     borderColor: 'black',
+     borderRadius: 5
    },
     walletsContainer: {
       flex: 1,
       // marginTop: 20,
-      backgroundColor: 'white'
+      // justifyContent: 'space-between',
+      flexDirection: 'column',
+      backgroundColor: 'purple',
+      padding: 15
+    },
+    walletAddress: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 10,
+      padding: 15
+    },
+    destTag: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      fontSize: 25,
+      marginTop: 10,
+      padding: 15
     },
     wallets: {
       flex: 1,
       fontFamily: 'Kohinoor Bangla',
+
     },
     wallet: {
-      padding: 2,
-      paddingLeft: 15,
+
+      justifyContent: 'center',
+
+      paddingLeft: 85,
       paddingTop: 15,
       paddingBottom: 15,
+      marginLeft: 70,
+      marginRight: 70,
+      marginTop: 10,
+      marginBottom: 10,
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
-      backgroundColor: 'white',
+      backgroundColor: 'yellow',
+
     },
     tabFont: {
       color: 'white',
