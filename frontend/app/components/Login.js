@@ -5,8 +5,10 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { loginUser, signupUser, addAlert } from '../actions';
 
@@ -20,19 +22,9 @@ class Login extends React.Component {
     this.onSignIn = this.onSignIn.bind(this);
     this.onSignUp = this.onSignUp.bind(this);
     this.renderScreenName = this.renderScreenName.bind(this);
+    this.renderButton = this.renderButton.bind(this);
     this.enterSite = this.enterSite.bind(this);
-  }
-
-  componentWillUnmount() {
-    this.setState({
-      loading: false
-    });
-  }
-
-  componentDidMount() {
-    this.setState({
-      loading: false
-    });
+    this.renderSignIn = this.renderSignIn.bind(this);
   }
 
   onSignIn() {
@@ -40,7 +32,11 @@ class Login extends React.Component {
     this.setState({
       loading: true
     });
-    dispatch(loginUser(email.value, password.value));
+    dispatch(loginUser(email.value, password.value)).then(() => {
+      this.setState({
+        loading: false
+      });
+    });
   }
 
   onSignUp() {
@@ -82,6 +78,44 @@ class Login extends React.Component {
     }
   }
 
+  renderButton() {
+    if (this.state.enteringSite) {
+      return (
+        <View>
+          <TouchableOpacity style={styles.touchableButton} onPress={this.onSignUp}>
+            <Text style={styles.button}>
+              SIGN UP
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.renderSignIn}>
+            <Text style={styles.signUpView}>
+              Already have an account? SIGN IN
+              </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return (
+      <View>
+        <TouchableOpacity style={styles.touchableButton} onPress={this.onSignIn}>
+          <Text style={styles.button}>
+            SIGN IN
+          </Text>
+        </TouchableOpacity>
+      </View>
+      );
+    }
+  }
+
+  renderSignIn() {
+    if (!this.state.enteringSite) {
+      this.setState({ enteringSite: true });
+    } else {
+      this.setState({ enteringSite: false });
+    }
+  }
+
+
   render() {
     let { fields: { email, password, screenName } } = this.props;
 
@@ -103,7 +137,12 @@ class Login extends React.Component {
       );
     } else {
       return (
-        <View style={styles.container}>
+        <KeyboardAwareScrollView
+          style={{ backgroundColor: '#4c69a5' }}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.container}
+          scrollEnabled={false}
+        >
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
               ripplePay
@@ -132,20 +171,16 @@ class Login extends React.Component {
           </View>
           {this.renderScreenName(screenName, renderError)}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.touchableButton} onPress={this.onSignIn}>
-              <Text style={styles.button}>
-                SIGN IN
-                </Text>
-            </TouchableOpacity>
+              {this.renderButton()}
           </View>
           <View>
             <TouchableOpacity onPress={this.enterSite}>
               <Text style={styles.signUp}>
                 Don't have an account? SIGN UP
-                </Text>
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       );
     }
   }
@@ -166,9 +201,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 35,
     marginBottom: 30,
-    // padding: 20,
     flex: 1,
-    top: 60,
+    top: 70,
     fontFamily: 'Kohinoor Bangla'
   },
   field: {
@@ -178,7 +212,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     margin: 30,
     marginTop: 10,
-    top: 80
+    top: 90
   },
   textInput: {
     height: 40,
@@ -186,10 +220,10 @@ const styles = StyleSheet.create({
     color: '#6D768B',
   },
   buttonContainer: {
-    padding: 20,
+    padding: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 50
+    top: 80
   },
   touchableButton: {
     backgroundColor: '#0F1C52',
@@ -213,7 +247,12 @@ const styles = StyleSheet.create({
   },
   signUp: {
     color: 'white',
-    top: 150,
+    top: 225,
+    textAlign: 'center'
+  },
+  signUpView: {
+    color: 'white',
+    top: 85,
     textAlign: 'center'
   }
 
