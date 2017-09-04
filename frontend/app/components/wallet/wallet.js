@@ -141,18 +141,18 @@ class Wallet extends React.Component {
               </Text>
             </View>
           </View>
-          <View style={styles.balanceContainer}>
           </View>
-          <TouchableOpacity disabled={disabled} onPress={this.generate}>
-            <Text style={disabled ? styles.redd : styles.greenn}>Generate New Wallet</Text>
-          </TouchableOpacity>
-          <TouchableOpacity disabled={disabled} onPress={this.remove}>
-            <Text style={disabled ? styles.redd : styles.greenn}>Remove Oldest Wallet</Text>
-          </TouchableOpacity>
-        </View>
 
           <View style={styles.walletsContainer}>
               {this.displayWallets()}
+              <View style={styles.balanceContainer}>
+                <TouchableOpacity disabled={disabled} onPress={this.generate}>
+                  <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
+                </TouchableOpacity>
+                <TouchableOpacity disabled={disabled} onPress={this.remove}>
+                  <Text style={disabled ? styles.redd : styles.greenn}>- Oldest Wallet</Text>
+                </TouchableOpacity>
+              </View>
           </View>
 
           <Tabs selected={this.state.page} style={{backgroundColor:'transparent'}}
@@ -184,14 +184,17 @@ const styles = StyleSheet.create({
      flexDirection: 'column',
      backgroundColor: '#111F61'
    },
-
    redd: {
      color: 'red',
      fontSize: 20
    },
    greenn: {
      color: 'green',
-     fontSize: 20
+     fontSize: 20,
+     borderRadius: 0,
+     borderWidth: 0.51,
+
+     borderColor: 'white'
    },
   topContainer: {
     alignItems: 'center',
@@ -249,6 +252,11 @@ const styles = StyleSheet.create({
     tabFont: {
       color: 'white',
       fontFamily: 'Kohinoor Bangla',
+    },
+    balanceContainer: {
+      flex: 1,
+      justifyContent: 'space-between',
+      flexDirection: 'row'
     },
     tabs: {
       backgroundColor: '#335B7B',
