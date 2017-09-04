@@ -151,7 +151,7 @@ class Wallet extends React.Component {
           <View style={styles.walletsContainer}>
               {this.displayWallets()}
           </View>
-          <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
+          <Tabs selected={this.state.page} style={{backgroundColor:'#111F61'}}
               onSelect={el=>this.setState({page:el.props.name})}>
              <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
                <Text>Home</Text>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      flexDirection: 'column',
-     backgroundColor: '#335B7B'
+     backgroundColor: '#111F61'
    },
    redd: {
      color: 'red',
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
    },
   topContainer: {
     alignItems: 'center',
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
     // shadowColor: '#000000',
     // shadowOffset: {
     //   width: 0,
