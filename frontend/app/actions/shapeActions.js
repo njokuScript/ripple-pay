@@ -12,8 +12,8 @@ exports.requestAllCoins = () => {
   }
 }
 
-//If direction is true we look at xrp to other coin rate.
-//If direction is false we look at other coin to xrp rate.
+// If direction is true we look at xrp to other coin rate.
+// If direction is false we look at other coin to xrp rate.
 exports.requestRate = (coin) => {
   return function(dispatch){
     return axios.get(`${RATE_URL}/${coin}_xrp`).then((response)=>{

@@ -16,7 +16,7 @@ exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
 exports.BANK_SEND_URL = `${API_URL}/banksend`;
 exports.OLDADDR_URL = `${API_URL}/old`;
 
-
+// shape shift
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
 exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
 exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
