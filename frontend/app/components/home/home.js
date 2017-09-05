@@ -3,7 +3,7 @@ import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import { unauthUser } from '../../actions';
-// import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/Entypo';
 import Tabs from 'react-native-tabs';
 import {
     ScrollView,
@@ -92,41 +92,50 @@ class Home extends React.Component {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-          <View style={styles.container}>
+
+          <View style={styles.signOut}>
+            <TouchableOpacity onPress={this.onLogout}>
+              <Icon name="log-out" size={20} color="white"/>
+            </TouchableOpacity>
+          </View>
+
             <View style={styles.logoContainer}>
               <Text style={styles.logo}>
-                balance and transactions
+                Balance & Transactions
               </Text>
             </View>
-          </View>
+
           <View style={styles.balanceContainer}>
-            <Text style={styles.balance}>
-              Ʀ{this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}
+            <Text style={styles.balanceText}>
+              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
           </View>
-          <TouchableOpacity onPress={this.onLogout}>
-            <Text>logout</Text>
-          </TouchableOpacity>
-        </View>
 
-          <ScrollView style={styles.transactionsContainer}>
-              {this.displayTransactions()}
-          </ScrollView>
+      </View>
 
+      {/* <View> */}
+        <ScrollView style={styles.transactionsContainer}>
+            {this.displayTransactions()}
+        </ScrollView>
+      {/* </View> */}
+
+      <View>
         <Tabs style={styles.tabs} selected={this.state.page} onSelect={el=>this.setState({page:el.props.name})}>
           <TouchableOpacity>
-            <Text style={styles.tabFont}>Home</Text>
+              <Text style={styles.tabFont}><Icon name="home" size={30} color="white" /></Text>
           </TouchableOpacity>
           <TouchableOpacity name="source" onPress={this.navSearch.bind(this)} >
-              <Text style={styles.tabFont}>Search</Text>
+              <Text style={styles.tabFont}><Icon name="magnifying-glass" size={30} color="white" /></Text>
               </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text style={styles.tabFont}>Wallets</Text>
+              <Text style={styles.tabFont}><Icon name="wallet" size={30} color="white" /></Text>
           </TouchableOpacity>
           <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
-            <Text style={styles.tabFont}>Exchange</Text>
+              <Text style={styles.tabFont}><Icon name="swap" size={30} color="white" /></Text>
           </TouchableOpacity>
         </Tabs>
+      </View>
+
       </View>
     );
   }
@@ -138,46 +147,46 @@ const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
      justifyContent: 'center',
-     flexDirection: 'column',
-     backgroundColor: '#335B7B'
+     backgroundColor: '#111F61'
    },
   topContainer: {
+    flex: -1,
+    backgroundColor: '#111F61',
+    // backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#335B7B',
-    // shadowColor: '#000000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1
-    // },
-    // shadowRadius: 3,
-    // shadowOpacity: .5,
+    height: 100,
   },
   logoContainer: {
-    flex: 1,
-    paddingBottom: 10,
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
   },
   logo: {
     textAlign: 'center',
-    marginTop: 25,
     color: 'white',
-    fontSize: 15,
+    fontSize: 18,
     fontFamily: 'Kohinoor Bangla'
   },
-   balance: {
-     flex: 1,
+  balanceContainer: {
+    borderRadius: 50,
+    borderColor: 'white',
+    backgroundColor: 'rgba(53, 58, 83, .5)',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+   balanceText: {
      textAlign: 'center',
-     fontSize: 40,
+     fontSize: 16,
      color: 'white',
      fontFamily: 'Kohinoor Bangla'
    },
     transactionsContainer: {
-      flex: 1,
-      // marginTop: 20,
-      backgroundColor: 'white'
+      // flex: 1,
     },
     transactions: {
-      flex: 1,
+      // flex: 1,
       fontFamily: 'Kohinoor Bangla',
     },
     transaction: {
@@ -194,12 +203,15 @@ const styles = StyleSheet.create({
       fontFamily: 'Kohinoor Bangla',
     },
     tabs: {
-      backgroundColor: '#335B7B',
+      backgroundColor: '#111F61',
       borderColor: '#d3d3d3',
       position: 'absolute',
       paddingTop: 15,
       paddingBottom: 10,
       height: 75
+    },
+    signOut: {
+      transform: [{ rotate: '180deg' }]
     }
 });
 
