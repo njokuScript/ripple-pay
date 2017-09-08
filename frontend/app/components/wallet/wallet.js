@@ -14,7 +14,7 @@ import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 // import Icon from 'react-native-vector-icons/FontAwesome';
-// import LinearGradient from 'react-native-linear-gradient';
+// import LinearGradient from 'react-native-linear-gradient'
 const myIcon = (<Icon name="search" size={30} color="#900" />)
 
 
@@ -112,10 +112,10 @@ class Wallet extends React.Component {
       return (
         <View style={styles.walletsContainer}>
           <View style={styles.walletAddress}>
-          <Text style={{fontSize: 20}}>Wallet Address: {this.props.cashRegister}</Text>
+          <Text>Wallet Address: {this.props.cashRegister}</Text>
           </View>
           <View style={styles.destTag}>
-          <Text style={{fontSize: 20}}>Destination Tags:</Text>
+          <Text>Destination Tags:</Text>
           </View>
           {allWallets}
         </View>
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      fontSize: 25,
+      // fontSize: 25,
       marginTop: 10,
       padding: 15
     },
