@@ -14,7 +14,7 @@ import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 // import Icon from 'react-native-vector-icons/FontAwesome';
-import LinearGradient from 'react-native-linear-gradient'
+// import LinearGradient from 'react-native-linear-gradient';
 const myIcon = (<Icon name="search" size={30} color="#900" />)
 
 
