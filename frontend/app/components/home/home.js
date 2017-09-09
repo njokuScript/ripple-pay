@@ -35,10 +35,18 @@ class Home extends React.Component {
       const transactions = this.props.transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
         return (
-          <View style={styles.transaction} key={idx}>
-            <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
-            <Text style={styles.transactionFont}>{ndate.toString()}</Text>
-            <Text style={styles.transactionFont}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}</Text>
+          <View className={styles.transaction}style={styles.transaction} key={idx}>
+            <View style={styles.transactionInfo}>
+              <View style={styles.transactionOtherParty}>
+                <Text style={styles.transactionOtherPartyText}>{transaction.otherParty}</Text>
+              </View>
+              <View style={styles.transactionDate}>
+                <Text style={styles.transactionDateText}>{ndate.getDay() + " " + ndate.toLocaleString("en-us", { month: "long" }) + " " + ndate.getFullYear()}</Text>
+              </View>
+            </View>
+            <View style={styles.transactionAmount}>
+              <Text style={styles.transactionAmountText}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}</Text>
+            </View>
           </View>
         );
       });
@@ -147,12 +155,11 @@ const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
      justifyContent: 'center',
-     backgroundColor: '#111F61'
+     backgroundColor: 'white'
    },
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
-    // backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -183,13 +190,15 @@ const styles = StyleSheet.create({
      fontFamily: 'Kohinoor Bangla'
    },
     transactionsContainer: {
-      // flex: 1,
+      marginTop: -20,
+      marginBottom: 75
     },
     transactions: {
-      // flex: 1,
       fontFamily: 'Kohinoor Bangla',
     },
     transaction: {
+      flex: 1,
+      flexDirection: 'row',
       padding: 2,
       paddingLeft: 15,
       paddingTop: 15,
@@ -212,6 +221,17 @@ const styles = StyleSheet.create({
     },
     signOut: {
       transform: [{ rotate: '180deg' }]
+    },
+    transactionAmount: {
+      borderRadius: 50,
+      borderColor: 'white',
+      backgroundColor: 'rgba(53, 58, 83, .5)',
+      width: 50,
+      height: 25
+    },
+    transactionAmountText: {
+      textAlign: 'center',
+      paddingTop: 4
     }
 });
 
