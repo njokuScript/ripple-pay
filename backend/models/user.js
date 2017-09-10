@@ -11,6 +11,7 @@ var validateScreenName = (screenName) => {
 };
 
 var userSchema = new Schema({
+  //Email has to be dropped at some point. WE DON'T WANT THEIR EMAILS
   email: {
     type: String,
     unique: true,
