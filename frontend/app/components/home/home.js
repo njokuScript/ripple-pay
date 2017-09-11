@@ -38,9 +38,7 @@ class Home extends React.Component {
           <View style={styles.transaction} key={idx}>
             <View style={styles.transactionInfo}>
               <View style={styles.transactionOtherParty}>
-                <Text style={styles.transactionOtherPartyText}>
-                  {transaction.otherParty.length > 16 ? transaction.otherParty.slice(0,20) + "..." : transaction.otherParty}
-                  </Text>
+                  {transaction.otherParty.length > 16 ? <Text style={styles.transactionAddress}>{transaction.otherParty}</Text> : <Text style={styles.transactionOtherPartyText}>{transaction.otherParty}</Text> }
               </View>
               <View style={styles.transactionDate}>
                 <Text style={styles.transactionDateText}>{ndate.getDay() + " " + ndate.toLocaleString("en-us", { month: "long" }) + " " + ndate.getFullYear()}</Text>
@@ -220,8 +218,8 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       padding: 2,
       paddingLeft: 20,
-      paddingTop: 15.15,
-      paddingBottom: 15.15,
+      paddingTop: 15.47,
+      paddingBottom: 15.47,
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
       backgroundColor: 'white',
@@ -241,6 +239,11 @@ const styles = StyleSheet.create({
     transactionOtherPartyText: {
       fontWeight: "600",
       fontSize: 15
+    },
+    transactionAddress:{
+      fontWeight: "600",
+      fontSize: 12
+
     },
     transactionDate: {
       paddingTop: 8
