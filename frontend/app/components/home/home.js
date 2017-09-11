@@ -35,26 +35,28 @@ class Home extends React.Component {
       const transactions = this.props.transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
         return (
-          <View className={styles.transaction}style={styles.transaction} key={idx}>
+          <View style={styles.transaction} key={idx}>
             <View style={styles.transactionInfo}>
               <View style={styles.transactionOtherParty}>
-                <Text style={styles.transactionOtherPartyText}>{transaction.otherParty}</Text>
+                <Text style={styles.transactionOtherPartyText}>
+                  {transaction.otherParty}
+                  </Text>
               </View>
               <View style={styles.transactionDate}>
                 <Text style={styles.transactionDateText}>{ndate.getDay() + " " + ndate.toLocaleString("en-us", { month: "long" }) + " " + ndate.getFullYear()}</Text>
               </View>
             </View>
             <View style={styles.transactionAmount}>
-              <Text style={styles.transactionAmountText}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}</Text>
+              <Text style={styles.transactionAmountText}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ</Text>
             </View>
           </View>
         );
       });
 
       return (
-        <View style={styles.transactionContainer}>
+        <ScrollView style={styles.transactionsContainer}>
           {transactions}
-        </View>
+        </ScrollView>
       );
     } else {
       return (
@@ -121,11 +123,7 @@ class Home extends React.Component {
 
       </View>
 
-      {/* <View> */}
-        <ScrollView style={styles.transactionsContainer}>
-            {this.displayTransactions()}
-        </ScrollView>
-      {/* </View> */}
+      {this.displayTransactions()}
 
       <View>
         <Tabs style={styles.tabs} selected={this.state.page} onSelect={el=>this.setState({page:el.props.name})}>
@@ -160,10 +158,12 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
+    // backgroundColor: 'pink',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 100,
+    height: 110,
+    paddingTop: 10
   },
   logoContainer: {
     backgroundColor: '#111F61',
@@ -190,15 +190,13 @@ const styles = StyleSheet.create({
      fontFamily: 'Kohinoor Bangla'
    },
     transactionsContainer: {
-      marginTop: -20,
       marginBottom: 75
-    },
-    transactions: {
-      fontFamily: 'Kohinoor Bangla',
+      // marginTop: -10
     },
     transaction: {
       flex: 1,
       flexDirection: 'row',
+      justifyContent: 'space-between',
       padding: 2,
       paddingLeft: 15,
       paddingTop: 15,
@@ -223,15 +221,19 @@ const styles = StyleSheet.create({
       transform: [{ rotate: '180deg' }]
     },
     transactionAmount: {
-      borderRadius: 50,
       borderColor: 'white',
-      backgroundColor: 'rgba(53, 58, 83, .5)',
       width: 50,
       height: 25
     },
     transactionAmountText: {
       textAlign: 'center',
-      paddingTop: 4
+      paddingTop: 4,
+      paddingRight: 10,
+      fontWeight: "bold",
+      fontSize: 16,
+    },
+    transactionOtherPartyText: {
+      fontWeight: "600"
     }
 });
 
