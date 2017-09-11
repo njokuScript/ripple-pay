@@ -39,7 +39,7 @@ class Home extends React.Component {
             <View style={styles.transactionInfo}>
               <View style={styles.transactionOtherParty}>
                 <Text style={styles.transactionOtherPartyText}>
-                  {transaction.otherParty}
+                  {transaction.otherParty.length > 16 ? transaction.otherParty.slice(0,20) + "..." : transaction.otherParty}
                   </Text>
               </View>
               <View style={styles.transactionDate}>
@@ -61,7 +61,13 @@ class Home extends React.Component {
     } else {
       return (
         <View style={styles.transaction}>
-          <Text style={styles.transactionFont}>no transactions</Text>
+          <View style={styles.transactionInfo}>
+            <View style={styles.transactionOtherParty}>
+              <Text style={styles.transactionOtherParty}>
+                no transactions
+              </Text>
+            </View>
+          </View>
         </View>
       );
     }
@@ -120,10 +126,11 @@ class Home extends React.Component {
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
           </View>
-
       </View>
 
-      {this.displayTransactions()}
+      <ScrollView>
+        {this.displayTransactions()}
+      </ScrollView>
 
       <View>
         <Tabs style={styles.tabs} selected={this.state.page} onSelect={el=>this.setState({page:el.props.name})}>
@@ -158,12 +165,11 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
-    // backgroundColor: 'pink',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 110,
-    paddingTop: 10
+    height: 90,
+    paddingTop: 10,
   },
   logoContainer: {
     backgroundColor: '#111F61',
@@ -189,22 +195,6 @@ const styles = StyleSheet.create({
      color: 'white',
      fontFamily: 'Kohinoor Bangla'
    },
-    transactionsContainer: {
-      marginBottom: 75
-      // marginTop: -10
-    },
-    transaction: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 2,
-      paddingLeft: 15,
-      paddingTop: 15,
-      paddingBottom: 15,
-      borderBottomWidth: 1,
-      borderColor: '#d3d3d3',
-      backgroundColor: 'white',
-    },
     tabFont: {
       color: 'white',
       fontFamily: 'Kohinoor Bangla',
@@ -220,20 +210,46 @@ const styles = StyleSheet.create({
     signOut: {
       transform: [{ rotate: '180deg' }]
     },
+    transactionsContainer: {
+      marginBottom: 75,
+      marginTop: -20
+    },
+    transaction: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 2,
+      paddingLeft: 20,
+      paddingTop: 15.15,
+      paddingBottom: 15.15,
+      borderBottomWidth: 1,
+      borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+      width: 345,
+      marginLeft: 15
+    },
     transactionAmount: {
-      borderColor: 'white',
-      width: 50,
-      height: 25
+
     },
     transactionAmountText: {
       textAlign: 'center',
-      paddingTop: 4,
-      paddingRight: 10,
+      paddingTop: 20,
       fontWeight: "bold",
-      fontSize: 16,
+      fontSize: 15,
+      // paddingRight: -10
     },
     transactionOtherPartyText: {
-      fontWeight: "600"
+      fontWeight: "600",
+      fontSize: 15
+    },
+    transactionDate: {
+      paddingTop: 8
+    },
+    transactionDateText: {
+      fontSize: 12
+    },
+    transactionInfo: {
+      marginLeft: -15
     }
 });
 
