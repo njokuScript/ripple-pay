@@ -36,22 +36,36 @@ class Home extends React.Component {
         ndate = new Date(transaction.date);
         return (
           <View style={styles.transaction} key={idx}>
-            <Text style={styles.transactionFont}>{transaction.otherParty}</Text>
-            <Text style={styles.transactionFont}>{ndate.toString()}</Text>
-            <Text style={styles.transactionFont}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}</Text>
+            <View style={styles.transactionInfo}>
+              <View style={styles.transactionOtherParty}>
+                  {transaction.otherParty.length > 16 ? <Text style={styles.transactionAddress}>{transaction.otherParty}</Text> : <Text style={styles.transactionOtherPartyText}>{transaction.otherParty}</Text> }
+              </View>
+              <View style={styles.transactionDate}>
+                <Text style={styles.transactionDateText}>{ndate.getDay() + " " + ndate.toLocaleString("en-us", { month: "long" }) + " " + ndate.getFullYear()}</Text>
+              </View>
+            </View>
+            <View style={styles.transactionAmount}>
+              <Text style={styles.transactionAmountText}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ</Text>
+            </View>
           </View>
         );
       });
 
       return (
-        <View style={styles.transactionContainer}>
+        <ScrollView style={styles.transactionsContainer}>
           {transactions}
-        </View>
+        </ScrollView>
       );
     } else {
       return (
         <View style={styles.transaction}>
-          <Text style={styles.transactionFont}>no transactions</Text>
+          <View style={styles.transactionInfo}>
+            <View style={styles.transactionOtherParty}>
+              <Text style={styles.transactionOtherParty}>
+                no transactions
+              </Text>
+            </View>
+          </View>
         </View>
       );
     }
@@ -110,14 +124,11 @@ class Home extends React.Component {
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
           </View>
-
       </View>
 
-      {/* <View> */}
-        <ScrollView style={styles.transactionsContainer}>
-            {this.displayTransactions()}
-        </ScrollView>
-      {/* </View> */}
+      <ScrollView>
+        {this.displayTransactions()}
+      </ScrollView>
 
       <View>
         <Tabs style={styles.tabs} selected={this.state.page} onSelect={el=>this.setState({page:el.props.name})}>
@@ -147,16 +158,16 @@ const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
      justifyContent: 'center',
-     backgroundColor: '#111F61'
+     backgroundColor: 'white'
    },
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
-    // backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 100,
+    height: 90,
+    paddingTop: 10,
   },
   logoContainer: {
     backgroundColor: '#111F61',
@@ -182,22 +193,6 @@ const styles = StyleSheet.create({
      color: 'white',
      fontFamily: 'Kohinoor Bangla'
    },
-    transactionsContainer: {
-      // flex: 1,
-    },
-    transactions: {
-      // flex: 1,
-      fontFamily: 'Kohinoor Bangla',
-    },
-    transaction: {
-      padding: 2,
-      paddingLeft: 15,
-      paddingTop: 15,
-      paddingBottom: 15,
-      borderBottomWidth: 1,
-      borderColor: '#d3d3d3',
-      backgroundColor: 'white',
-    },
     tabFont: {
       color: 'white',
       fontFamily: 'Kohinoor Bangla',
@@ -212,6 +207,52 @@ const styles = StyleSheet.create({
     },
     signOut: {
       transform: [{ rotate: '180deg' }]
+    },
+    transactionsContainer: {
+      marginBottom: 75,
+      marginTop: -20
+    },
+    transaction: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 2,
+      paddingLeft: 20,
+      paddingTop: 15.47,
+      paddingBottom: 15.47,
+      borderBottomWidth: 1,
+      borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+      width: 345,
+      marginLeft: 15
+    },
+    transactionAmount: {
+
+    },
+    transactionAmountText: {
+      textAlign: 'center',
+      paddingTop: 20,
+      fontWeight: "bold",
+      fontSize: 15,
+      // paddingRight: -10
+    },
+    transactionOtherPartyText: {
+      fontWeight: "600",
+      fontSize: 15
+    },
+    transactionAddress:{
+      fontWeight: "600",
+      fontSize: 12
+
+    },
+    transactionDate: {
+      paddingTop: 8
+    },
+    transactionDateText: {
+      fontSize: 12
+    },
+    transactionInfo: {
+      marginLeft: -15
     }
 });
 
