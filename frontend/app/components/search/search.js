@@ -9,12 +9,13 @@ import { View,
   Text,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
   Image,
   Dimensions,
   TextInput } from 'react-native';
   import Tabs from 'react-native-tabs';
 
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/Entypo';
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -84,9 +85,18 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-            <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName)}} style={styles.resultItem} key={idx}>
-              <Text style={styles.title}>    {user.screenName} - Click to Send</Text>
-            </TouchableOpacity>
+            <ScrollView style={styles.resultsContainer} key={idx}>
+              <View style={styles.resultItem}>
+                <View style={styles.resultsInfo}>
+                  <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName);}}>
+                    <View>
+                      <Text style={styles.resultItemText}>{user.screenName}</Text>
+                      {/* <Text><dIcon name="send" size={30} color="white" /></Text> */}
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
           );
         }
       });
@@ -103,24 +113,11 @@ class Search extends React.Component {
     // console.log(theUsers, "Iam here in render");
    return (
      <View style={styles.mainContainer}>
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-             onSelect={el=>this.setState({page:el.props.name})}>
-          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-            <Text>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-           <Text>Search</Text>
-          </TouchableOpacity>
-            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Wallets</Text>
-            </TouchableOpacity>
-          <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
-            <Text>Exchange</Text>
-        </TouchableOpacity>
-       </Tabs>
-       <View style={styles.searchContainer}>
-          <View style={styles.inputContainer}>
+       <View style={styles.topContainer}>
+        <View style={styles.searchContainer}>
+          <View style={styles.field}>
             <TextInput
+              style={styles.textInput} 
               value={this.state.query}
               onChangeText={
                 (query) => {
@@ -129,14 +126,32 @@ class Search extends React.Component {
               }
               autoFocus={true}
               placeholder="Enter Username"
-              style={styles.input} />
-          </View>
-          <View style={styles.resultsContainer}>
+              placeholderTextColor="#6D768B"
+              />
+            </View>
+          <ScrollView>
             {/* i made a conditional in this results to try to print the results only when they are in the state,
                 not working, but close i think  */}
             {this.makeUsers()}
-          </View>
+          </ScrollView>
         </View>
+       </View>
+
+
+       <Tabs style={styles.tabs} selected={this.state.page} onSelect={el => this.setState({ page: el.props.name })}>
+         <TouchableOpacity onPress={this.navHome.bind(this)}>
+           <Text style={styles.tabFont}><Icon name="home" size={30} color="white" /></Text>
+         </TouchableOpacity>
+         <TouchableOpacity name="source">
+           <Text style={styles.tabFont}><Icon name="magnifying-glass" size={30} color="white" /></Text>
+         </TouchableOpacity>
+         <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
+           <Text style={styles.tabFont}><Icon name="wallet" size={30} color="white" /></Text>
+         </TouchableOpacity>
+         <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
+           <Text style={styles.tabFont}><Icon name="swap" size={30} color="white" /></Text>
+         </TouchableOpacity>
+       </Tabs>
      </View>
    );
  }}
@@ -145,12 +160,12 @@ class Search extends React.Component {
  const styles=StyleSheet.create({
    mainContainer: {
       flex: 1,
-      backgroundColor: '#335B7B',
+      backgroundColor: 'white',
     },
-   welcome: {
-     fontSize: 20,
-     textAlign: 'center',
-     margin: 10,
+   topContainer: {
+     backgroundColor: '#111F61',
+     alignItems: 'center',
+     height: 90,
    },
     title: {
       color: 'white',
@@ -158,18 +173,18 @@ class Search extends React.Component {
       justifyContent: 'center',
       fontFamily: 'Kohinoor Bangla',
     },
-    inputContainer: {
+    field: {
+      backgroundColor: '#0F1C52',
+      borderRadius: 5,
       padding: 5,
-      margin: 10,
-      marginTop: 30,
-      borderWidth: 2,
-      borderRadius: 10,
-      borderColor: "white",
-      backgroundColor: 'white'
+      paddingLeft: 15,
+      margin: 30,
+      width: 325
     },
-    input: {
-      height: 26,
-      backgroundColor: 'white'
+    textInput: {
+      height: 35,
+      fontFamily: 'Kohinoor Bangla',
+      color: 'white',
     },
     instructions: {
      textAlign: 'center',
@@ -177,13 +192,44 @@ class Search extends React.Component {
      marginBottom: 5,
      fontSize: 15
    },
+    tabFont: {
+      color: 'white',
+      fontFamily: 'Kohinoor Bangla',
+    },
+    tabs: {
+      backgroundColor: '#111F61',
+      borderColor: '#d3d3d3',
+      position: 'absolute',
+      paddingTop: 15,
+      paddingBottom: 10,
+      height: 75
+    },
+    resultsContainer: {
+      marginBottom: 75,
+      marginTop: -20
+    },
+    resultsInfo: {
+      marginLeft: -15
+    },
+    resultItemText: {
+      fontWeight: "600",
+      fontSize: 15,
+      backgroundColor: 'white'
+    },
     resultItem: {
       flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 2,
+      paddingLeft: 15,
+      paddingTop: 15.65,
+      paddingBottom: 15.65,
+      borderBottomWidth: 1,
+      borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+      width: 345,
+      marginLeft: 15
     },
-    resultContainer: {
-      flex: 1,
-      margin: 30
-    }
  });
 
  export default Search;
