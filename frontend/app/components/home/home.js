@@ -34,18 +34,47 @@ class Home extends React.Component {
       let ndate;
       const transactions = this.props.transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
+        let time = "";
+        if (ndate.getHours() > 12) {
+          time = ndate.getHours() - 12 + ":" + ndate.getMinutes() + " PM" ;
+        } else {
+          time = time = ndate.getHours() + ":" + ndate.getMinutes() + " AM";
+        }
         return (
           <View style={styles.transaction} key={idx}>
             <View style={styles.transactionInfo}>
               <View style={styles.transactionOtherParty}>
-                  {transaction.otherParty.length > 16 ? <Text style={styles.transactionAddress}>{transaction.otherParty}</Text> : <Text style={styles.transactionOtherPartyText}>{transaction.otherParty}</Text> }
+                {
+                  transaction.otherParty.length > 16 ? 
+                  <Text style={styles.transactionAddress}>
+                    {transaction.otherParty}
+                  </Text> : 
+                  <Text style={styles.transactionOtherPartyText}>
+                    {transaction.otherParty}
+                  </Text> 
+                }
               </View>
               <View style={styles.transactionDate}>
-                <Text style={styles.transactionDateText}>{ndate.getDay() + " " + ndate.toLocaleString("en-us", { month: "long" }) + " " + ndate.getFullYear()}</Text>
+                <Text style={styles.transactionDateText}>
+                  {ndate.toLocaleString("en-us", { month: "short" }) + " " + ndate.getDay() + ", " + ndate.getFullYear() + " " + time}
+                </Text>
+                {/* <Text style={styles.transactionDateText}>
+                  {ndate.getHours() + ":" + ndate.getMinutes()}
+                </Text> */}
               </View>
             </View>
             <View style={styles.transactionAmount}>
-              <Text style={styles.transactionAmountText}>{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ</Text>
+                
+                {
+                transaction.amount > 0 ? 
+                  <Text style={styles.transactionAmountTextPos}>
+                    +{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+                </Text>
+                 :
+                  <Text style={styles.transactionAmountTextNeg}>
+                  {transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+                </Text>
+                }
             </View>
           </View>
         );
@@ -217,9 +246,9 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: 2,
-      paddingLeft: 20,
-      paddingTop: 15.47,
-      paddingBottom: 15.47,
+      paddingLeft: 15,
+      paddingTop: 15.65,
+      paddingBottom: 15.65,
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
       backgroundColor: 'white',
@@ -229,12 +258,19 @@ const styles = StyleSheet.create({
     transactionAmount: {
 
     },
-    transactionAmountText: {
+    transactionAmountTextPos: {
       textAlign: 'center',
-      paddingTop: 20,
-      fontWeight: "bold",
-      fontSize: 15,
-      // paddingRight: -10
+      // paddingTop: 15,
+      fontWeight: "600",
+      fontSize: 14,
+      color: 'green'
+    },
+    transactionAmountTextNeg: {
+      textAlign: 'center',
+      // paddingTop: 15,
+      fontWeight: "600",
+      fontSize: 14,
+      color: 'red'
     },
     transactionOtherPartyText: {
       fontWeight: "600",
