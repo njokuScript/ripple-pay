@@ -20,7 +20,6 @@ const bcrypt = require('bcrypt-nodejs');
 //and if I do, I will make a recursive call and restart.
 //Since there is a very low chance of a coincide, this shouldn't have to recurse at all
 //or more than once ever.
-//NOT SURE IF THIS IS THREADSAFE, akshay.
 
 exports.receiveOnlyDesTag = function(req, res, next){
   let {user_id, cashRegister} = req.body;
@@ -164,7 +163,6 @@ exports.sendMoney = function(req, res, next){
                 if ( respondent === true )
                 {
                   server.api.preparePayment(bankAddress, thePay).then((theOrderInfo) =>{
-                    console.log(theOrderInfo);
                     server.api.disconnect().then(()=>{
                       let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
                       let theSignedTransact = theJstring.signedTransaction;
@@ -175,7 +173,6 @@ exports.sendMoney = function(req, res, next){
                             if ( respondence === true )
                             {
                               server.api.preparePayment(fromAddress, myPayment).then((ordersinfo)=>{
-                                console.log(ordersinfo);
                                 server.api.disconnect().then(()=>{
                                   let ajstring = server.api.sign(ordersinfo.txJSON, addresses[fromAddress]);
                                   let asignedTransact = ajstring.signedTransaction;
@@ -208,7 +205,6 @@ exports.sendMoney = function(req, res, next){
                 if ( respondence === true )
                 {
                   server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
-                    console.log(orderinfo);
                     //VVIMP - WE ARE SIGNING THE TRANSACTIONS WHILE THE SERVER IS TURNED OFF FOR EXTRA SECURITY
                     server.api.disconnect().then(()=>{
                       let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
@@ -278,15 +274,20 @@ exports.generateRegister = function(req, res, next){
         })
       }, function(error, resp){
         //You need a better way to handle these destination tags.
-          //I dunno if the sort will work if there are more cash registers
-          allbals = allbals.sort();
-          let newregister = allbals[Math.floor(allbals.length/2)][1];
-          User.update({_id: existingUser._id}, {cashRegister: newregister}, function (err) {
-            if (err) { return next(err); }
-            res.json({
-              cashRegister: newregister
+          //THIS SORT IS THREADSAFE
+          async.sortBy(allbals, function(single, cb){
+            cb(null, single[0])
+          },function(err, respo){
+            // allbals = allbals.sort();
+            console.log(respo);
+            let newregister = respo[Math.floor(allbals.length/2)][1];
+            User.update({_id: existingUser._id}, {cashRegister: newregister}, function (err) {
+              if (err) { return next(err); }
+              res.json({
+                cashRegister: newregister
+              });
             });
-          });
+          })
         })
       })
     })
@@ -353,9 +354,11 @@ exports.getTransactions = function (req, res, next) {
                     }
                     if (currTxn.id === existingUser.lastTransactionId) {
                       stopIterBool = true;
+                      return [setLastTransBool, stopIterBool];
                     }
-                    if (stopIterBool === false) {
+                    // if (stopIterBool === false) {
                       let counterParty;
+                      //This only has to look at 2 keys, so It is ok that it is using forEach. It will still be threadsafe.
                       Object.keys(currTxn.outcome.balanceChanges).forEach((addr) => {
                         if (userAddress !== addr) {
                           counterParty = addr;
@@ -375,7 +378,7 @@ exports.getTransactions = function (req, res, next) {
                         otherParty: counterParty
                       };
                       changedUser.transactions.unshift(newTxn);
-                    }
+                    // }
                   }
                   return [setLastTransBool, stopIterBool];
                 };
@@ -384,13 +387,18 @@ exports.getTransactions = function (req, res, next) {
                 let stopIterBool = false;
                 async.mapSeries(txnInfo, function (currTxn, cb) {
                   [setLastTransBool, stopIterBool] = manipulateTransactions(currTxn, setLastTransBool, stopIterBool);
-                  cb(null, currTxn);
+                  if ( !stopIterBool )
+                  {
+                    cb(null, currTxn);
+                  }
+                  else {
+                    cb(true)
+                  }
                 }, function(error, resp) {
-                  let ndate;
-                  let mdate;
-                  changedUser.transactions = changedUser.transactions.sort((a,b)=>{
-                    return b.date.getTime() - a.date.getTime();
-                  })
+                  //SORTING INSIDE OF THE SERVER IS NOT THREADSAFE INSTEAD THE SORTING IS DONE IN HOME.JS CLIENT-SIDE
+                  // changedUser.transactions = changedUser.transactions.sort((a,b)=>{
+                  //   return b.date.getTime() - a.date.getTime();
+                  // })
                   User.update({_id: existingUser._id}, changedUser, function (err) {
                     if (err) { return next(err); }
                     res.json({
@@ -399,8 +407,6 @@ exports.getTransactions = function (req, res, next) {
                     });
                   });
                 });
-                  // console.log(changedUser);
-                  // console.log('++++++++++++++++++++');
               });
           })
         })

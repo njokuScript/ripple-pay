@@ -75,6 +75,11 @@ class SendRipple extends Component {
         }
       }
       let {toDesTag, toAddress, amount} = this.state;
+      if ( !parseFloat(amount) )
+      {
+        this.props.addAlert("Can't send 0 XRP");
+        return;
+      }
       this.setState({disabled: true});
       this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id).then(()=> this.setState({disabled: false}));
     }
