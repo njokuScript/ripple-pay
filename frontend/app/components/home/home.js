@@ -61,9 +61,6 @@ class Home extends React.Component {
                 <Text style={styles.transactionDateText}>
                   {ndate.toLocaleString("en-us", { month: "short" }) + " " + ndate.getDay() + ", " + ndate.getFullYear() + " " + time}
                 </Text>
-                {/* <Text style={styles.transactionDateText}>
-                  {ndate.getHours() + ":" + ndate.getMinutes()}
-                </Text> */}
               </View>
             </View>
             <View style={styles.transactionAmount}>
@@ -258,19 +255,14 @@ const styles = StyleSheet.create({
       width: 345,
       marginLeft: 15
     },
-    transactionAmount: {
-
-    },
     transactionAmountTextPos: {
       textAlign: 'center',
-      // paddingTop: 15,
       fontWeight: "600",
       fontSize: 14,
       color: 'green'
     },
     transactionAmountTextNeg: {
       textAlign: 'center',
-      // paddingTop: 15,
       fontWeight: "600",
       fontSize: 14,
       color: 'red'
