@@ -32,7 +32,10 @@ class Home extends React.Component {
     if (this.props.transactions.length > 0) {
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
       let ndate;
-      const transactions = this.props.transactions.map((transaction, idx) => {
+      let transactions = this.props.transactions.sort((a,b)=>{
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      })
+      transactions = transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
         return (
           <View style={styles.transaction} key={idx}>
