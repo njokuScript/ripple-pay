@@ -12,9 +12,11 @@ import { View,
   ScrollView,
   Image,
   Dimensions,
-  TextInput } from 'react-native';
+  TextInput,
+  TouchableHighlight } from 'react-native';
   import Tabs from 'react-native-tabs';
 
+import Ion from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 class Search extends React.Component {
   constructor(props) {
@@ -85,16 +87,13 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-            <View style={styles.resultItem} key={idx}>
-                <View style={styles.resultsInfo}>
-                  <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName);}}>
-                    <View>
-                      <Text style={styles.resultItemText}>{user.screenName}</Text>
-                      {/* <Text><dIcon name="send" size={30} color="white" /></Text> */}
-                    </View>
-                  </TouchableOpacity>
+            <TouchableHighlight key={idx} underlayColor='blue'>
+              <TouchableOpacity style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
+                <View style={styles.username}>
+                  <Text style={styles.resultItemText}>{user.screenName}</Text>
                 </View>
-              </View>
+              </TouchableOpacity>
+            </TouchableHighlight>
           );
         }
       });
@@ -111,8 +110,6 @@ class Search extends React.Component {
   }
 
   render() {
-    // const theUsers =
-    // console.log(theUsers, "Iam here in render");
    return (
      <View style={styles.mainContainer}>
        <View style={styles.topContainer}>
@@ -161,10 +158,6 @@ class Search extends React.Component {
 
  const {width, height} = Dimensions.get('window');
  const styles=StyleSheet.create({
-   mainContainer: {
-      flex: 1,
-      backgroundColor: 'white',
-    },
    mainContainer: {
      flex: 1,
      justifyContent: 'center',
@@ -217,10 +210,12 @@ class Search extends React.Component {
       height: 75
     },
     resultsContainer: {
-      // marginBottom: 75,
-      // marginTop: 0
+      flex: 1,
+      marginBottom: 75,
+      marginTop: -20
     },
     resultsInfo: {
+      flex: 1,
       marginLeft: -15
     },
     resultItemText: {
@@ -233,7 +228,6 @@ class Search extends React.Component {
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: 2,
-      paddingLeft: 15,
       paddingTop: 15.65,
       paddingBottom: 15.65,
       borderBottomWidth: 1,
@@ -242,6 +236,9 @@ class Search extends React.Component {
       width: 345,
       marginLeft: 15
     },
+    sendText: {
+      marginRight: 3
+    }
  });
 
  export default Search;
