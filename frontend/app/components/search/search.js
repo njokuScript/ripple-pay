@@ -85,8 +85,7 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-            <ScrollView style={styles.resultsContainer} key={idx}>
-              <View style={styles.resultItem}>
+            <View style={styles.resultItem} key={idx}>
                 <View style={styles.resultsInfo}>
                   <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName);}}>
                     <View>
@@ -96,11 +95,14 @@ class Search extends React.Component {
                   </TouchableOpacity>
                 </View>
               </View>
-            </ScrollView>
           );
         }
       });
-      return theUsers;
+      return (
+        <ScrollView style={styles.resultsContainer}> 
+         {theUsers}
+       </ScrollView>
+      );
     }
     else
     {
@@ -129,13 +131,14 @@ class Search extends React.Component {
               placeholderTextColor="#6D768B"
               />
             </View>
-          <ScrollView>
-            {/* i made a conditional in this results to try to print the results only when they are in the state,
-                not working, but close i think  */}
-            {this.makeUsers()}
-          </ScrollView>
         </View>
        </View>
+
+        <ScrollView>
+          {/* i made a conditional in this results to try to print the results only when they are in the state,
+              not working, but close i think  */}
+          {this.makeUsers()}
+        </ScrollView>
 
 
        <Tabs style={styles.tabs} selected={this.state.page} onSelect={el => this.setState({ page: el.props.name })}>
@@ -162,10 +165,19 @@ class Search extends React.Component {
       flex: 1,
       backgroundColor: 'white',
     },
+   mainContainer: {
+     flex: 1,
+     justifyContent: 'center',
+     backgroundColor: 'white'
+   },
    topContainer: {
+     flex: -1,
      backgroundColor: '#111F61',
+     flexDirection: 'row',
+     justifyContent: 'space-around',
      alignItems: 'center',
      height: 90,
+     paddingTop: 10,
    },
     title: {
       color: 'white',
@@ -205,8 +217,8 @@ class Search extends React.Component {
       height: 75
     },
     resultsContainer: {
-      marginBottom: 75,
-      marginTop: -20
+      // marginBottom: 75,
+      // marginTop: 0
     },
     resultsInfo: {
       marginLeft: -15
