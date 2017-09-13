@@ -87,11 +87,13 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-            <TouchableHighlight key={idx} underlayColor='blue'>
+            <TouchableHighlight key={idx} style={{backgroundColor:'white'}}>
               <TouchableOpacity style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
                 <View style={styles.username}>
                   <Text style={styles.resultItemText}>{user.screenName}</Text>
                 </View>
+                <View></View>
+                <View></View>
               </TouchableOpacity>
             </TouchableHighlight>
           );
@@ -216,7 +218,6 @@ class Search extends React.Component {
     },
     resultsInfo: {
       flex: 1,
-      marginLeft: -15
     },
     resultItemText: {
       fontWeight: "600",
@@ -225,8 +226,6 @@ class Search extends React.Component {
     },
     resultItem: {
       flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
       padding: 2,
       paddingTop: 15.65,
       paddingBottom: 15.65,
