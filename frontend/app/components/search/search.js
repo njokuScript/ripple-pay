@@ -12,9 +12,11 @@ import { View,
   ScrollView,
   Image,
   Dimensions,
-  TextInput } from 'react-native';
+  TextInput,
+  TouchableHighlight } from 'react-native';
   import Tabs from 'react-native-tabs';
 
+import Ion from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 class Search extends React.Component {
   constructor(props) {
@@ -85,22 +87,23 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-            <ScrollView style={styles.resultsContainer} key={idx}>
-              <View style={styles.resultItem}>
-                <View style={styles.resultsInfo}>
-                  <TouchableOpacity onPress={() => {this.navBankSend(user._id, user.screenName);}}>
-                    <View>
-                      <Text style={styles.resultItemText}>{user.screenName}</Text>
-                      {/* <Text><dIcon name="send" size={30} color="white" /></Text> */}
-                    </View>
-                  </TouchableOpacity>
+            <TouchableHighlight key={idx} style={{backgroundColor:'white'}}>
+              <TouchableOpacity style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
+                <View style={styles.username}>
+                  <Text style={styles.resultItemText}>{user.screenName}</Text>
                 </View>
-              </View>
-            </ScrollView>
+                <View></View>
+                <View></View>
+              </TouchableOpacity>
+            </TouchableHighlight>
           );
         }
       });
-      return theUsers;
+      return (
+        <ScrollView style={styles.resultsContainer}> 
+         {theUsers}
+       </ScrollView>
+      );
     }
     else
     {
@@ -109,8 +112,6 @@ class Search extends React.Component {
   }
 
   render() {
-    // const theUsers =
-    // console.log(theUsers, "Iam here in render");
    return (
      <View style={styles.mainContainer}>
        <View style={styles.topContainer}>
@@ -129,13 +130,14 @@ class Search extends React.Component {
               placeholderTextColor="#6D768B"
               />
             </View>
-          <ScrollView>
-            {/* i made a conditional in this results to try to print the results only when they are in the state,
-                not working, but close i think  */}
-            {this.makeUsers()}
-          </ScrollView>
         </View>
        </View>
+
+        <ScrollView>
+          {/* i made a conditional in this results to try to print the results only when they are in the state,
+              not working, but close i think  */}
+          {this.makeUsers()}
+        </ScrollView>
 
 
        <Tabs style={styles.tabs} selected={this.state.page} onSelect={el => this.setState({ page: el.props.name })}>
@@ -159,13 +161,18 @@ class Search extends React.Component {
  const {width, height} = Dimensions.get('window');
  const styles=StyleSheet.create({
    mainContainer: {
-      flex: 1,
-      backgroundColor: 'white',
-    },
+     flex: 1,
+     justifyContent: 'center',
+     backgroundColor: 'white'
+   },
    topContainer: {
+     flex: -1,
      backgroundColor: '#111F61',
+     flexDirection: 'row',
+     justifyContent: 'space-around',
      alignItems: 'center',
      height: 90,
+     paddingTop: 10,
    },
     title: {
       color: 'white',
@@ -205,11 +212,12 @@ class Search extends React.Component {
       height: 75
     },
     resultsContainer: {
+      flex: 1,
       marginBottom: 75,
       marginTop: -20
     },
     resultsInfo: {
-      marginLeft: -15
+      flex: 1,
     },
     resultItemText: {
       fontWeight: "600",
@@ -218,10 +226,7 @@ class Search extends React.Component {
     },
     resultItem: {
       flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
       padding: 2,
-      paddingLeft: 15,
       paddingTop: 15.65,
       paddingBottom: 15.65,
       borderBottomWidth: 1,
@@ -230,6 +235,9 @@ class Search extends React.Component {
       width: 345,
       marginLeft: 15
     },
+    sendText: {
+      marginRight: 3
+    }
  });
 
  export default Search;
