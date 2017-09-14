@@ -106,7 +106,7 @@ class Exchange extends Component {
       title: 'Transition',
       component: transitionContainer,
       navigationBarHidden: true,
-      passProps: {toCoin: toCoin, fromCoin: fromCoin}
+      passProps: {toCoin: toCoin, fromCoin: fromCoin, clearSendAmount:this.props.clearSendAmount}
     });
   }
 

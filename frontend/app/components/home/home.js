@@ -37,29 +37,31 @@ class Home extends React.Component {
       })
       transactions = transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
-        let time = "";
+        let time;
         if (ndate.getHours() > 12) {
-          time = ndate.getHours() - 12 + ":" + ndate.getMinutes() + " PM" ;
+          time = `${ndate.getHours() - 12} : ${ndate.getMinutes()} PM` ;
         } else {
-          time = time = ndate.getHours() + ":" + ndate.getMinutes() + " AM";
+          time = `${ndate.getHours()} : ${ndate.getMinutes()} AM`;
         }
+        //Had to replace getDay with getDate because getDay was giving the wrong day.
+        //Also don't add strings as it is slow. concatenate them
         return (
           <View style={styles.transaction} key={idx}>
             <View style={styles.transactionInfo}>
               <View style={styles.transactionOtherParty}>
                 {
-                  transaction.otherParty.length > 16 ? 
+                  transaction.otherParty.length > 16 ?
                   <Text style={styles.transactionAddress}>
                     {transaction.otherParty}
-                  </Text> : 
+                  </Text> :
                   <Text style={styles.transactionOtherPartyText}>
                     {transaction.otherParty}
-                  </Text> 
+                  </Text>
                 }
               </View>
               <View style={styles.transactionDate}>
                 <Text style={styles.transactionDateText}>
-                  {ndate.toLocaleString("en-us", { month: "short" }) + " " + ndate.getDay() + ", " + ndate.getFullYear() + " " + time}
+                  {`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${time}`}
                 </Text>
                 {/* <Text style={styles.transactionDateText}>
                   {ndate.getHours() + ":" + ndate.getMinutes()}
@@ -67,9 +69,9 @@ class Home extends React.Component {
               </View>
             </View>
             <View style={styles.transactionAmount}>
-                
+
                 {
-                transaction.amount > 0 ? 
+                transaction.amount > 0 ?
                   <Text style={styles.transactionAmountTextPos}>
                     +{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
                 </Text>

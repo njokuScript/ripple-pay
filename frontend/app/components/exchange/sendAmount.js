@@ -69,6 +69,7 @@ class SendAmount extends Component {
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
   navWallet() {
+    this.props.clearSendAmount();
     clearInterval(this.timer);
     this.props.navigator.push({
       title: 'Wallet',
@@ -78,6 +79,7 @@ class SendAmount extends Component {
   }
 
   navSearch() {
+    this.props.clearSendAmount();
     clearInterval(this.timer);
     this.props.navigator.push({
       component: SearchContainer,
@@ -87,6 +89,7 @@ class SendAmount extends Component {
   }
 
   navHome() {
+    this.props.clearSendAmount();
     clearInterval(this.timer);
     this.props.navigator.push({
       title: 'Home',
@@ -113,6 +116,11 @@ class SendAmount extends Component {
   sendPayment(){
     this.setState({pushed: true});
     let depositString = this.props.shape.sendamount.deposit;
+    if ( !depositString )
+    {
+      this.props.addAlert("There was an error in the transaction");
+      return;
+    }
     let toDesTag = depositString.match(/\?dt=(\d+)/)[1];
     let toAddress = depositString.match(/\w+/)[0];
     let total;
@@ -124,21 +132,20 @@ class SendAmount extends Component {
     {
       total = this.props.fromAmount;
     }
-    if ( total && toDesTag && toAddress )
-    {
-      this.props.signAndSend (
-        parseFloat(total),
-        this.props.returnAddress,
-        toAddress,
-        parseInt(this.props.destTag),
-        parseInt(toDesTag),
-        this.props.userId
-      );
-    }
-    else
+    if ( !total )
     {
       this.props.addAlert("There was an error in the transaction");
+      return;
     }
+    this.props.signAndSend (
+      parseFloat(total),
+      this.props.returnAddress,
+      toAddress,
+      parseInt(this.props.destTag),
+      parseInt(toDesTag),
+      this.props.userId
+    );
+    this.props.clearSendAmount();
   }
 
 

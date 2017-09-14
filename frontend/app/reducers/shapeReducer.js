@@ -30,6 +30,8 @@ module.exports = (state=defaultState, action) => {
       return Object.assign({}, state, {sendamount: action.data.success})
     case 'RECEIVED_SHAPESHIFT':
       return Object.assign({}, state, {sendamount: action.data})
+    case 'CLEARANCE':
+      return Object.assign({}, state, {sendamount: {}})
     default:
       return state;
   }

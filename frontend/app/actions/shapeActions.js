@@ -80,3 +80,7 @@ receivedMarketInfo = (data) => {
     data
   }
 }
+
+exports.clearSendAmount = {
+  type: 'CLEARANCE'
+}
