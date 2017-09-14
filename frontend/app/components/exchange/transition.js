@@ -127,7 +127,8 @@ class Transition extends Component {
                  action: this.action,
                  userId: this.props.user.user_id,
                  quoted: this.state.quoted,
-                 addAlert: this.props.addAlert
+                 addAlert: this.props.addAlert,
+                 clearSendAmount: this.props.clearSendAmount
                }
     });
   }
