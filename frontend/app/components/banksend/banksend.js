@@ -26,7 +26,7 @@ class BankSend extends Component {
       amount: "",
       page: "",
       disabled: false
-    }
+    };
   }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
@@ -58,18 +58,20 @@ class BankSend extends Component {
   }
   //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
 
-  // navHome() {
-  //   // this.props.requestTransactions(this.props.user);
-  //   this.props.navigator.push({
-  //     title: 'Home',
-  //     component: HomeContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
+  navHome() {
+    this.props.navigator.push({
+      title: 'Home',
+      component: HomeContainer,
+      navigationBarHidden: true
+    });
+  }
 
   sendPayment(){
     this.setState({disabled: true});
-    this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(()=> this.setState({disabled: false}));
+    this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(() => {
+      this.setState({disabled: false});
+      this.navHome.bind(this);
+    });
   }
 
   render() {
