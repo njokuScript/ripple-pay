@@ -5,6 +5,7 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
+import Icon from 'react-native-vector-icons/Entypo';
 import {
   StyleSheet,
   Text,
@@ -16,7 +17,6 @@ import {
 } from 'react-native';
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
-import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component
 class Exchange extends Component {
@@ -134,11 +134,15 @@ class Exchange extends Component {
         {
           showCoins.unshift(
             <View style={styles.coin} key={idx}>
-              <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+
+              <View style={styles.coinType}>
                 <Image
-                  style={{width: 50, height: 50}}
+                  style={{width: 40, height: 40}}
                   source={{uri: myCoins[coin].image}}
                 />
+               <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+              </View>
+
               <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>Send</Text>
               <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
             </View>
@@ -157,12 +161,16 @@ class Exchange extends Component {
         {
           showCoins.splice(1,0, (
             <View style={styles.coin} key={idx}>
-              <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-              <Text style={styles.coinFont}>{line}</Text>
+
+                <View style={styles.coinType}>
                 <Image
-                  style={{width: 50, height: 50}}
+                  style={{width: 40, height: 40}}
                   source={{uri: myCoins[coin].image}}
                 />
+                <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+              </View>
+
+              <Text style={styles.coinFont}>{line}</Text>
               <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
               <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
             </View>
@@ -171,12 +179,15 @@ class Exchange extends Component {
         }
         showCoins.push(
           <View style={styles.coin} key={idx}>
-            <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+              <View style={styles.coinType}>
+                <Image
+                  style={{width: 40, height: 40}}
+                  source={{uri: myCoins[coin].image}}
+                />
+                <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+              </View>
+
             <Text style={styles.coinFont}>{line}</Text>
-              <Image
-                style={{width: 50, height: 50}}
-                source={{uri: myCoins[coin].image}}
-              />
               <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
               <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
           </View>
@@ -186,8 +197,8 @@ class Exchange extends Component {
     else
     {
       showCoins = (
-        <View></View>
-      )
+        <View>Loading...</View>
+      );
     }
     return (
       <ScrollView style={styles.coinsContainer}>
@@ -198,40 +209,63 @@ class Exchange extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
+      <View style={styles.mainContainer}>
+
+      <View style={styles.topContainer}>
+        <View style={styles.logoContainer}>
+          <Text style={styles.logo}>
             Exchange
           </Text>
         </View>
-        <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-          <Text>Change Directions</Text>
-        </TouchableOpacity>
+
+        <View style={styles.logoContainer}>
+          <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
+            <Text style={styles.directions}>Change Directions</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView>
         {this.allCoins()}
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
+      </ScrollView>
+
+      <View>
+        <Tabs style={styles.tabs} selected={this.state.page}>
+
           <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-            <Text>Home</Text>
+            <Text style={styles.tabFont}><Icon name="home" size={30} color="white" /></Text>
           </TouchableOpacity>
           <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-            <Text>Search</Text>
+            <Text style={styles.tabFont}><Icon name="magnifying-glass" size={30} color="white" /></Text>
           </TouchableOpacity>
           <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text>Wallets</Text>
+            <Text style={styles.tabFont}><Icon name="wallet" size={30} color="white" /></Text>
           </TouchableOpacity>
           <TouchableOpacity>
-            <Text>Exchange</Text>
+            <Text style={styles.tabFont}><Icon name="swap" size={30} color="white" /></Text>
           </TouchableOpacity>
         </Tabs>
+      </View>
+
      </View>
     );
   }
 }
 
 // define your styles
+
 const styles = StyleSheet.create({
+    topContainer: {
+    flex: -1,
+    backgroundColor: '#111F61',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: 90,
+    paddingTop: 10,
+  },
   coinsContainer: {
     flex: 1,
-    // marginTop: 20,
     backgroundColor: 'white'
   },
   coins: {
@@ -239,43 +273,55 @@ const styles = StyleSheet.create({
     fontFamily: 'Kohinoor Bangla',
   },
   coin: {
-    padding: 2,
-    paddingLeft: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderColor: '#d3d3d3',
-    backgroundColor: 'white',
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 2,
+      paddingLeft: 15,
+      paddingTop: 15.65,
+      paddingBottom: 15.65,
+      borderBottomWidth: 1,
+      borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+      width: 345,
+      marginLeft: 15
+  },
+  coinType: {
+    flex: 1,
+    // justifyContent: 'center'
   },
   mainContainer: {
      flex: 1,
      justifyContent: 'center',
-     alignItems: 'center',
-     backgroundColor: '#335B7B',
+     backgroundColor: 'white'
+   },
+   coinFont: {
+     fontWeight: "600",
+     fontSize: 15,
+     fontFamily: 'Kohinoor Bangla',
    },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
-    backgroundColor: '#335B7B'
+    backgroundColor: '#111F61'
   },
-  titleContainer: {
-    padding: 0,
-    alignItems: 'center',
+  logoContainer: {
+    backgroundColor: '#111F61',
   },
-
-  title: {
-    color: '#F2CFB1',
-    fontSize: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 20,
-    flex: 1,
-    top: 10,
+  logo: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
     fontFamily: 'Kohinoor Bangla'
   },
-
+  directions: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 13,
+    fontFamily: 'Kohinoor Bangla'
+  },
   buttonContainer: {
     padding: 0,
     flexDirection: 'row',
@@ -296,18 +342,18 @@ const styles = StyleSheet.create({
     color: 'red'
   },
   tabFont: {
-    color: 'white',
     fontFamily: 'Kohinoor Bangla',
   },
   tabs: {
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
     borderColor: '#d3d3d3',
     position: 'absolute',
     paddingTop: 15,
     paddingBottom: 10,
     height: 75
-  }
+  },
 });
 
-//make this component available to the app
+// make this component available to the app
+
 export default Exchange;
