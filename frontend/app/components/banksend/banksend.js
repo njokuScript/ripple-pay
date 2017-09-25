@@ -15,9 +15,7 @@ import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Entypo';
 
-// create a component
-
-//I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
+// I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
 class BankSend extends Component {
   constructor(props){
     super(props);
@@ -28,42 +26,9 @@ class BankSend extends Component {
       disabled: false
     };
   }
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  // navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
-  //   this.props.navigator.push({
-  //     title: 'Wallet',
-  //     component: WalletContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
-
-  // navExchange() {
-  //   this.props.navigator.push({
-  //     title: "Exchange",
-  //     component: ExchangeContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
 
   navSearch() {
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-  // I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
-
-  navHome() {
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
+    this.props.navigator.pop();
   }
 
   sendPayment(){
@@ -84,16 +49,19 @@ class BankSend extends Component {
       <View style={styles.container}>
         
         <View style={styles.topContainer}>
-
           <TouchableOpacity onPress={this.navSearch.bind(this)} >
             <Icon name="chevron-left" size={30} color="white" />
           </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              Sending to {this.props.otherUser}
+              Send Ripple to {this.props.otherUser}
             </Text>
           </View>
-
+          <View style={styles.balanceContainer}>
+            <Text style={styles.balanceText}>
+              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+            </Text>
+          </View>
         </View>
 
         <View style={styles.field}>
@@ -137,8 +105,8 @@ const styles = StyleSheet.create({
     flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
-    justifyContent: 'space-around',
     alignItems: 'center',
+    justifyContent: 'space-around',
     height: 90,
     paddingTop: 10,
   },
@@ -146,11 +114,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 20,
     backgroundColor: '#111F61',
   },
   titleContainer: {
-    padding: 10,
     alignItems: 'center',
   },
 
@@ -207,6 +173,21 @@ const styles = StyleSheet.create({
   formError: {
     color: 'red'
   },
+    balanceContainer: {
+    borderRadius: 50,
+    borderColor: 'white',
+    backgroundColor: 'rgba(53, 58, 83, .5)',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+   balanceText: {
+     textAlign: 'center',
+     fontSize: 16,
+     color: 'white',
+     fontFamily: 'Kohinoor Bangla'
+   },
 });
 
 // make this component available to the app
