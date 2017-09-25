@@ -7,7 +7,7 @@ import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
 import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import Material from 'react-native-vector-icons/MaterialIcons';
+import Font from 'react-native-vector-icons/FontAwesome';
 import {
   StyleSheet,
   Text,
@@ -145,10 +145,17 @@ class Exchange extends Component {
               </View>
 
             <View style={styles.sendReceive}>
-              <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>
-                <IonIcon name="ios-send-outline" size={30} color="black" />
-              </Text>
-              <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
+              <View style={styles.send}>
+                <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>
+                  <Font name="send" size={20} color="black" />
+                </Text>
+              </View>
+              <View style={styles.receive}>
+                <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>
+                  <Font name="bank" size={20} color="black" />
+                </Text>
+              </View>
+
             </View>
             </View>
           );
@@ -178,11 +185,21 @@ class Exchange extends Component {
               </View>
 
               <View style={styles.sendReceive}>
-                <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
-                  <IonIcon name="ios-send-outline" size={30} color="black" />
-                </Text>
-                <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
+
+                <View style={styles.send}>
+                  <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
+                    <Font name="send" size={20} color="black" />
+                  </Text>
+                </View>
+
+                <View style={styles.receive}>
+                  <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>
+                    <Font name="bank" size={20} color="black" />
+                  </Text>
+                </View>
+
               </View>
+
             </View>
           ));
           return;
@@ -198,10 +215,16 @@ class Exchange extends Component {
                 <Text style={styles.coinAmount}>{line}</Text>
               </View>
               <View style={styles.sendReceive}>
-                <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
-                  <IonIcon name="ios-send-outline" size={30} color="black" />
-                </Text>
-                <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
+                <View style={styles.send}>
+                  <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
+                    <Font name="send" size={20} color="black" />
+                  </Text>
+                </View>
+                <View style={styles.receive}>
+                  <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>
+                    <Font name="bank" size={20} color="black" />
+                  </Text>
+                </View>
               </View>
           </View>
         );
@@ -233,7 +256,7 @@ class Exchange extends Component {
 
         <View style={styles.logoContainer}>
           <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-            <Text style={styles.directions}>Change Directions</Text>
+            <Text style={styles.directions}>reverse conversion</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -367,6 +390,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     height: 75
   },
+  sendReceive: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  receive: {
+    paddingLeft: 20
+  }
 });
 
 // make this component available to the app
