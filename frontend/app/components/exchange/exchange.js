@@ -6,6 +6,8 @@ import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
 import Icon from 'react-native-vector-icons/Entypo';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+import Material from 'react-native-vector-icons/MaterialIcons';
 import {
   StyleSheet,
   Text,
@@ -142,8 +144,12 @@ class Exchange extends Component {
                 <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
               </View>
 
-              <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>Send</Text>
+            <View style={styles.sendReceive}>
+              <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>
+                <IonIcon name="ios-send-outline" size={30} color="black" />
+              </Text>
               <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
+            </View>
             </View>
           );
           return;
@@ -171,8 +177,12 @@ class Exchange extends Component {
                 <Text style={styles.coinAmount}>{line}</Text>
               </View>
 
-              <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
-              <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
+              <View style={styles.sendReceive}>
+                <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
+                  <IonIcon name="ios-send-outline" size={30} color="black" />
+                </Text>
+                <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
+              </View>
             </View>
           ));
           return;
@@ -187,9 +197,12 @@ class Exchange extends Component {
                 <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
                 <Text style={styles.coinAmount}>{line}</Text>
               </View>
-
-              <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
-              <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
+              <View style={styles.sendReceive}>
+                <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
+                  <IonIcon name="ios-send-outline" size={30} color="black" />
+                </Text>
+                <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
+              </View>
           </View>
         );
       });
