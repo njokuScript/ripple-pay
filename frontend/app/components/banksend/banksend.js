@@ -15,9 +15,7 @@ import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Entypo';
 
-// create a component
-
-//I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
+// I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
 class BankSend extends Component {
   constructor(props){
     super(props);
@@ -28,45 +26,17 @@ class BankSend extends Component {
       disabled: false
     };
   }
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  // navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
-  //   this.props.navigator.push({
-  //     title: 'Wallet',
-  //     component: WalletContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
-
-  // navExchange() {
-  //   this.props.navigator.push({
-  //     title: "Exchange",
-  //     component: ExchangeContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
 
   navSearch() {
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
-
-  navHome() {
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
+    this.props.navigator.pop();
   }
 
   sendPayment(){
+    if (!parseFloat(this.state.amount))
+    {
+      this.props.addAlert("Can't send 0 Ripple");
+      return;
+    }
     this.setState({disabled: true});
     this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(() => {
       this.setState({disabled: false});
@@ -77,14 +47,23 @@ class BankSend extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.navSearch.bind(this)} >
-          <Icon name="chevron-left" size={30} color="white" />
-        </TouchableOpacity>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            Sending to {this.props.otherUser}
-          </Text>
+        
+        <View style={styles.topContainer}>
+          <TouchableOpacity onPress={this.navSearch.bind(this)} >
+            <Icon name="chevron-left" size={30} color="white" />
+          </TouchableOpacity>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              Send Ripple to {this.props.otherUser}
+            </Text>
+          </View>
+          <View style={styles.balanceContainer}>
+            <Text style={styles.balanceText}>
+              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+            </Text>
+          </View>
         </View>
+
         <View style={styles.field}>
           <TextInput
             placeholder="Amount"
@@ -94,15 +73,18 @@ class BankSend extends Component {
               }
             }
             autoCorrect={false}
+            placeholderTextColor="#6D768B"
+            autoFocus={true}
             autoCapitalize={'none'}
-            style={styles.textInput}/>
+            style={styles.textInput}
+            keyboardType={'number-pad'}/>
           <View>
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity disabled={this.state.disabled} onPress={this.sendPayment}>
+          <TouchableOpacity style={styles.touchableButton} disabled={this.state.disabled} onPress={this.sendPayment}>
             <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
-              Send Payment
+              SEND
             </Text>
           </TouchableOpacity>
         </View>
@@ -117,77 +99,95 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      alignItems: 'center',
-     backgroundColor: '#335B7B',
+     backgroundColor: '#111F61',
    },
+  topContainer: {
+    flex: -1,
+    backgroundColor: '#111F61',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    height: 90,
+    paddingTop: 10,
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 20,
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
   },
   titleContainer: {
-    padding: 10,
     alignItems: 'center',
   },
 
   title: {
-    color: '#F2CFB1',
-    fontSize: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 20,
-    flex: 1,
-    top: 60,
+   textAlign: 'center',
+    color: 'white',
+    fontSize: 18,
     fontFamily: 'Kohinoor Bangla'
   },
-
   field: {
+    backgroundColor: '#0F1C52',
     borderRadius: 5,
     padding: 5,
-    paddingLeft: 8,
-    margin: 45,
-    marginTop: 0,
-    top: 80,
-    backgroundColor: '#fff'
+    paddingLeft: 15,
+    margin: 30,
+    marginTop: 10,
+    top: 90
   },
-
   textInput: {
-    height: 26,
-    fontFamily: 'Kohinoor Bangla'
+    height: 40,
+    fontFamily: 'Kohinoor Bangla',
+    color: '#6D768B',
   },
-
+  touchableButton: {
+    backgroundColor: '#0F1C52',
+    borderRadius: 50,
+    paddingTop: 10,
+    paddingBottom: 10,
+    width: 250,
+    overflow: 'hidden',
+  },
   buttonContainer: {
-    padding: 20,
+    padding: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 60
+    top: 80
   },
   greenbutton: {
-    fontSize: 30,
-    color: 'green',
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+    fontSize: 20,
+    color: 'white',
     fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: 'green',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
+    textAlign: 'center'
   },
   redbutton: {
-    fontSize: 30,
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+    fontSize: 20,
     color: 'red',
     fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: 'red',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
+    textAlign: 'center'
   },
   formError: {
     color: 'red'
-  }
+  },
+    balanceContainer: {
+    borderRadius: 50,
+    borderColor: 'white',
+    backgroundColor: 'rgba(53, 58, 83, .5)',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 5,
+    paddingBottom: 5
+  },
+   balanceText: {
+     textAlign: 'center',
+     fontSize: 16,
+     color: 'white',
+     fontFamily: 'Kohinoor Bangla'
+   },
 });
 
 // make this component available to the app

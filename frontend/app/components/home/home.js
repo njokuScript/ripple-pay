@@ -237,7 +237,8 @@ const styles = StyleSheet.create({
       height: 75
     },
     signOut: {
-      transform: [{ rotate: '180deg' }]
+      transform: [{ rotate: '180deg' }],
+      marginBottom: 3
     },
     transactionsContainer: {
       marginBottom: 75,
