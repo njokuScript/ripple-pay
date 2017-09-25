@@ -41,7 +41,7 @@ class Exchange extends Component {
     this.setState({getRates: false});
     window.clearTimeout(this.timer);
     this.timer = window.setTimeout(function(){
-      that.setState({getRates: true})
+      that.setState({getRates: true});
     },20000);
   }
 
@@ -111,14 +111,14 @@ class Exchange extends Component {
   }
 
   componentDidUpdate(oldProps, oldState){
-    let alltheCoins = this.props.shape.coins;
-    if ( alltheCoins && this.state.getRates )
-    {
-      Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
-        this.props.requestRate(coin);
-      })
-      this.finishAndBeginExchange();
-    }
+    // let alltheCoins = this.props.shape.coins;
+    // if ( alltheCoins && this.state.getRates )
+    // {
+    //   Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
+    //     this.props.requestRate(coin);
+    //   })
+    //   this.finishAndBeginExchange();
+    // }
   }
 
 //Maybe give these the indexes that they are suppose to have.
@@ -134,43 +134,43 @@ class Exchange extends Component {
         {
           showCoins.unshift(
             <View style={styles.coin} key={idx}>
-
-              <View style={styles.coinType}>
                 <Image
                   style={{width: 40, height: 40}}
                   source={{uri: myCoins[coin].image}}
                 />
-               <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+              <View style={styles.coinType}>
+                <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
               </View>
 
               <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>Send</Text>
               <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
             </View>
-          )
+          );
           return;
         }
         if ( this.state.direction )
         {
-          line = `${this.props.shape.rates[coin]}   XRP/${myCoins[coin].symbol}`
+          line = `${this.props.shape.rates[coin]} XRP/${myCoins[coin].symbol}`;
         }
         else
         {
-          line = `${1/this.props.shape.rates[coin]}   ${myCoins[coin].symbol}/XRP`
+          line = `${1/this.props.shape.rates[coin]} ${myCoins[coin].symbol}/XRP`;
         }
         if ( coin === "ETH" )
         {
           showCoins.splice(1,0, (
             <View style={styles.coin} key={idx}>
 
-                <View style={styles.coinType}>
-                <Image
-                  style={{width: 40, height: 40}}
-                  source={{uri: myCoins[coin].image}}
-                />
+              <Image
+                style={{width: 40, height: 40}}
+                source={{uri: myCoins[coin].image}}
+              />
+
+              <View style={styles.coinType}>
                 <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+                <Text style={styles.coinAmount}>{line}</Text>
               </View>
 
-              <Text style={styles.coinFont}>{line}</Text>
               <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
               <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
             </View>
@@ -179,15 +179,15 @@ class Exchange extends Component {
         }
         showCoins.push(
           <View style={styles.coin} key={idx}>
-              <View style={styles.coinType}>
                 <Image
                   style={{width: 40, height: 40}}
                   source={{uri: myCoins[coin].image}}
                 />
+              <View style={styles.coinType}>
                 <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
+                <Text style={styles.coinAmount}>{line}</Text>
               </View>
 
-            <Text style={styles.coinFont}>{line}</Text>
               <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>Send</Text>
               <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>Receive</Text>
           </View>
@@ -255,7 +255,12 @@ class Exchange extends Component {
 // define your styles
 
 const styles = StyleSheet.create({
-    topContainer: {
+  mainContainer: {
+     flex: 1,
+     justifyContent: 'center',
+     backgroundColor: 'white'
+   },
+  topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
@@ -265,9 +270,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   coinsContainer: {
-    flex: 1,
-    backgroundColor: 'white'
-  },
+      marginBottom: 75,
+      marginTop: -20
+    },
   coins: {
     flex: 1,
     fontFamily: 'Kohinoor Bangla',
@@ -277,7 +282,6 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: 2,
-      paddingLeft: 15,
       paddingTop: 15.65,
       paddingBottom: 15.65,
       borderBottomWidth: 1,
@@ -288,17 +292,15 @@ const styles = StyleSheet.create({
   },
   coinType: {
     flex: 1,
-    // justifyContent: 'center'
+    paddingLeft: 10
   },
-  mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
-     backgroundColor: 'white'
-   },
    coinFont: {
      fontWeight: "600",
-     fontSize: 15,
      fontFamily: 'Kohinoor Bangla',
+     fontSize: 15,
+   },
+   coinAmount: {
+      fontSize: 12
    },
   container: {
     flex: 1,
