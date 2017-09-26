@@ -254,7 +254,7 @@ class Exchange extends Component {
           </Text>
         </View>
 
-        <View style={styles.logoContainer}>
+        <View style={styles.conversionContainer}>
           <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
             <Text style={styles.directions}>reverse conversion</Text>
           </TouchableOpacity>
@@ -299,11 +299,11 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'center',
     height: 90,
-    paddingTop: 10,
+    paddingTop: 20,
   },
   coinsContainer: {
       marginBottom: 75,
