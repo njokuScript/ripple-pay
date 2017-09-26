@@ -77,7 +77,8 @@ class BankSend extends Component {
             autoFocus={true}
             autoCapitalize={'none'}
             style={styles.textInput}
-            keyboardType={'number-pad'}/>
+            keyboardType={'number-pad'}
+            keyboardAppearance={'dark'}/>
           <View>
           </View>
         </View>

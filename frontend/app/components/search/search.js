@@ -123,6 +123,7 @@ class Search extends React.Component {
               autoFocus={true}
               placeholder="Enter Username"
               placeholderTextColor="#6D768B"
+              keyboardAppearance={'dark'}
               />
             </View>
         </View>
