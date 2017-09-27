@@ -93,17 +93,18 @@ class Wallet extends React.Component {
       return (
         <View style={styles.walletsContainer}>
           <View style={styles.walletAddress}>
-          <Text>Wallet Address: {this.props.cashRegister}</Text>
+            <Text style={styles.walletintro}>Wallet Address:</Text>
+            <Text style={styles.cashRegister}>{this.props.cashRegister}</Text>
           </View>
           <View style={styles.destTag}>
-          <Text>Destination Tags:</Text>
+            <Text style={styles.destintro}>Destination Tags:</Text>
           </View>
           {allWallets}
         </View>
       );
     } else {
       return (
-        <View style={styles.wallet}>
+        <View style={styles.nowallet}>
           <Text style={styles.walletFont}>no wallets</Text>
         </View>
       );
@@ -119,16 +120,6 @@ class Wallet extends React.Component {
     let disabled = this.state.disabled;
     return (
       <View style={styles.mainContainer}>
-        <View style={styles.topContainer}>
-          <View style={styles.container}>
-            <View style={styles.logoContainer}>
-              <Text style={styles.logo}>
-                Wallets
-              </Text>
-            </View>
-          </View>
-          </View>
-
           <View style={styles.walletsContainer}>
               {this.displayWallets()}
               <View style={styles.balanceContainer}>
@@ -152,7 +143,6 @@ const styles = StyleSheet.create({
      justifyContent: 'center',
      flexDirection: 'column',
      backgroundColor: '#111F61',
-
    },
    balanceContainer: {
      flex: 1,
@@ -166,7 +156,7 @@ const styles = StyleSheet.create({
    redd: {
      color: 'red',
      fontSize: 20,
-          padding: 7,
+     padding: 7,
      borderRadius: 0.4,
      borderWidth: 0.9,
 
@@ -178,24 +168,15 @@ const styles = StyleSheet.create({
      padding: 7,
      borderRadius: 0.4,
      borderWidth: 0.9,
-
      borderColor: 'white'
    },
   topContainer: {
-    alignItems: 'center',
     backgroundColor: '#111F61',
-    // shadowColor: '#000000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 1
-    // },
-    // shadowRadius: 3,
-    // shadowOpacity: .5,
   },
   logoContainer: {
     flex: 1,
     paddingBottom: 10,
-    backgroundColor: '#335B7B',
+    // backgroundColor: '#335B7B',
   },
   logo: {
     textAlign: 'center',
@@ -213,12 +194,14 @@ const styles = StyleSheet.create({
      borderColor: 'black',
      borderRadius: 5
    },
+   destintro: {
+     color: 'white',
+     fontSize: 20
+   },
     walletsContainer: {
       flex: 1,
-      // marginTop: 20,
-      // justifyContent: 'space-between',
       flexDirection: 'column',
-      backgroundColor: 'purple',
+      backgroundColor: '#111F61',
       padding: 15
     },
     walletAddress: {
@@ -227,6 +210,17 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginBottom: 10,
       padding: 15
+    },
+    walletintro: {
+      color: 'white',
+      textAlign: 'center',
+      fontSize: 20
+    },
+    nowallet: {
+      backgroundColor: "white",
+      paddingTop: 10,
+      paddingBottom: 10,
+      borderRadius: 10
     },
     destTag: {
       flex: 1,
@@ -239,250 +233,32 @@ const styles = StyleSheet.create({
     wallets: {
       flex: 1,
       fontFamily: 'Kohinoor Bangla',
-
+    },
+    walletFont: {
+      color: 'black',
+      textAlign: 'center',
+      fontSize: 18
+    },
+    cashRegister: {
+      marginTop: 10,
+      color: 'white',
+      fontSize: 14
     },
     wallet: {
-
+      flex: 1,
       justifyContent: 'center',
-
-      paddingLeft: 85,
-      paddingTop: 15,
-      paddingBottom: 15,
-      marginLeft: 70,
-      marginRight: 70,
+      // paddingLeft: 85,
+      paddingTop: 20,
+      paddingBottom: 20,
+      // marginLeft: 70,
+      // marginRight: 70,
       marginTop: 10,
       marginBottom: 10,
-      borderBottomWidth: 1,
-      borderColor: '#d3d3d3',
-      backgroundColor: 'yellow',
-
-    },
-    tabFont: {
-      color: 'white',
-      fontFamily: 'Kohinoor Bangla',
-    },
-    tabs: {
-      backgroundColor: '#335B7B',
-      borderColor: '#d3d3d3',
-      position: 'absolute',
-      paddingTop: 15,
-      paddingBottom: 10,
-      height: 75
+      // borderBottomWidth: 1,
+      // borderColor: '#d3d3d3',
+      backgroundColor: 'white',
+      borderRadius: 20
     }
 });
-// oneDigit() {
-//   return;
-// }
-//
-// twoDigit() {
-//   return;
-// }
-//
-// threeDigit() {
-//   return;
-// }
-//
-// fourDigit() {
-//   return;
-// }
-//
-// fiveDigit() {
-//   return;
-// }
-//
-// sixDigit() {
-//   return;
-// }
-//
-// sevenDigit() {
-//   return;
-// }
-//
-// eightDigit() {
-//   return;
-// }
-//
-// nineDigit() {
-//   return;
-// }
-//
-// zeroDigit() {
-//   return;
-// }
-//
-// enterButton() {
-//   return;
-// }
-//
-// backSpace() {
-//   return;
-// }
-
-
-
-  // render(){
-  //   return (
-  //     <View style={styles.mainContainer}>
-  //         {this.displayWallets()}
-  //         <View style={styles.buttonContainer}>
-  //           <TouchableOpacity onPress={this.generate}>
-  //             <Text style={styles.button}>
-  //               Generate Address/DesTAg
-  //             </Text>
-  //           </TouchableOpacity>
-  //         </View>
-  //         <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-  //               onSelect={el=>this.setState({page:el.props.name})}>
-  //               <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-  //                 <Text>Home</Text>
-  //               </TouchableOpacity>
-  //               <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-  //                 <Text>Search</Text>
-  //               </TouchableOpacity>
-  //               <TouchableOpacity>
-  //                 <Text>Deposit</Text>
-  //               </TouchableOpacity>
-  //               <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-  //                 <Text>Send</Text>
-  //               </TouchableOpacity>
-  //         </Tabs>
-  //     </View>
-  //   )
-  // }
-  //I commented this out because this page we only need to give the user a deposit address and a destination Tag, that's it.
-  // render()
-  // {
-  //   return (
-  //     <View style={styles.mainContainer}>
-  //       <View style={styles.keypadContainer}>
-  //         <View style={styles.keypadRow1}>
-  //           <Button>1</Button>
-  //           <Button>2</Button>
-  //           <Button>3</Button>
-  //         </View>
-  //         <View style={styles.keypadRow2}>
-  //           <Button>4</Button>
-  //           <Button>5</Button>
-  //           <Button>6</Button>
-  //         </View>
-  //         <View style={styles.keypadRow3}>
-  //           <Button>7</Button>
-  //           <Button>8</Button>
-  //           <Button>9</Button>
-  //         </View>
-  //         <View style={styles.keypadRow4}>
-  //           <Button>Enter</Button>
-  //           <Button>0</Button>
-  //           <Button>Delete</Button>
-  //         </View>
-  //       </View>
-  //
-  //
-  //       <Tabs selected={this.state.page} style={{backgroundColor:'white'}}
-  //            onSelect={el=>this.setState({page:el.props.name})}>
-  //         <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-  //           <Text>Home</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-  //           <Text>Search</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity>
-  //           <Text>Deposit</Text>
-  //         </TouchableOpacity>
-  //         <TouchableOpacity name="Stream" onPress={this.navSend.bind(this)}>
-  //           <Text>Send</Text>
-  //         </TouchableOpacity>
-  //       </Tabs>
-  //
-  //
-  //        <Text style={styles.welcome}>
-  //           Pool - Store your Ripple
-  //       </Text>
-  //       <Text style={styles.instructions}>
-  //           Selected page: {this.state.page}
-  //       </Text>
-  //     </View>
-  //   );
-  // }
-// }
-
-// const { width, height } = Dimensions.get('window');
-// const styles = StyleSheet.create({
-//   mainContainer: {
-//      flex: 1,
-//      justifyContent: 'center',
-//      alignItems: 'center',
-//      backgroundColor: '#335B7B',
-//    },
-//   buttonContainer: {
-//     padding: 20,
-//     flexDirection: 'row',
-//     justifyContent: 'space-around',
-//     top: 60
-//   },
-//   button: {
-//     fontSize: 30,
-//     color: '#F2CFB1',
-//     fontFamily: 'Kohinoor Bangla',
-//     borderWidth: 1,
-//     borderRadius: 6,
-//     borderColor: '#ddd',
-//     borderBottomWidth: 0,
-//     shadowOpacity: 0.3,
-//     padding: 7
-//   },
-//   walletsContainer: {
-//     flex: 1,
-//     // marginTop: 20,
-//     backgroundColor: 'white'
-//   },
-//   wallets: {
-//     flex: 1,
-//     fontFamily: 'Kohinoor Bangla',
-//   },
-//   wallet: {
-//     padding: 2,
-//     paddingLeft: 15,
-//     paddingTop: 15,
-//     paddingBottom: 15,
-//     borderBottomWidth: 1,
-//     borderColor: '#d3d3d3',
-//     backgroundColor: 'white',
-//   },
-// });
 
 export default Wallet;
-
-// keypadContainer: {
-//
-//   flexDirection: 'column',
-// },
-// keypadRow1: {
-//   flexDirection: 'row',
-// },
-// keypadRow2: {
-//   flexDirection: 'row',
-// },
-// keypadRow3: {
-//   flexDirection: 'row',
-// },
-// keypadRow4: {
-//   flexDirection: 'row',
-// },
-// welcome: {
-//   fontSize: 20,
-//   textAlign: 'center',
-//   margin: 10,
-// },
-// title: {
-//   color: 'white',
-//   fontSize: 20,
-//   justifyContent: 'center',
-//   fontFamily: 'Kohinoor Bangla',
-// },
-// instructions: {
-//   textAlign: 'center',
-//   color: '#333333',
-//   marginBottom: 5,
-//   fontSize: 15
-// },

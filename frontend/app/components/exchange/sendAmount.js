@@ -117,7 +117,7 @@ class SendAmount extends Component {
       return(
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this.sendPayment}>
-            <Text>
+            <Text style={styles.button}>
               Withdraw
             </Text>
           </TouchableOpacity>
@@ -181,16 +181,16 @@ class SendAmount extends Component {
               </Text>
             </View>
             <View>
-              <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-              <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-              <Text>Send Maximum: {this.props.quoted ? this.props.shape.sendamount.maxLimit : this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
-              <Text>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.deposit}</Text>
-              <Text>{this.props.toCoin} Withdraw Address: {this.props.withdrawal}</Text>
-              <Text>Deposit Amount: {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
-              <Text>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
-              <Text>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-              <Text>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
-              <Text>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
+              <Text style={styles.whitetext}>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+              <Text style={styles.whitetext}>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Send Maximum: {this.props.quoted ? this.props.shape.sendamount.maxLimit : this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.deposit}</Text>
+              <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address: {this.props.withdrawal}</Text>
+              <Text style={styles.whitetext}>Deposit Amount: {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
+              <Text style={styles.whitetext}>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
+              <Text style={styles.whitetext}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
             </View>
             {this.renderButton()}
           </View>
@@ -205,6 +205,11 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginTop: 20,
     backgroundColor: 'white'
+  },
+  whitetext: {
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 10
   },
   coins: {
     flex: 1,
@@ -227,14 +232,14 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      alignItems: 'center',
-     backgroundColor: '#335B7B',
+     backgroundColor: '#111F61',
    },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
-    backgroundColor: '#335B7B'
+    backgroundColor: '#111F61'
   },
   field: {
     borderRadius: 5,
@@ -253,11 +258,11 @@ const styles = StyleSheet.create({
   title: {
     color: '#F2CFB1',
     fontSize: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 20,
-    flex: 1,
-    top: 10,
+    marginTop: 40,
+    // marginBottom: 20,
+    // padding: 20,
+    // flex: 1,
+    // top: 10,
     fontFamily: 'Kohinoor Bangla'
   },
 
@@ -272,6 +277,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Kohinoor Bangla',
     borderWidth: 1,
     borderRadius: 6,
+    color: 'white',
+    borderColor: 'white',
     // borderColor: 'green',
     borderBottomWidth: 0,
     shadowOpacity: 0.3,
@@ -285,7 +292,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Kohinoor Bangla',
   },
   tabs: {
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
     borderColor: '#d3d3d3',
     position: 'absolute',
     paddingTop: 15,

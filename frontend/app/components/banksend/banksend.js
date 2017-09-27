@@ -58,12 +58,8 @@ class BankSend extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        
+      <View style={styles.container}>        
         <View style={styles.topContainer}>
-          <TouchableOpacity onPress={this.navSearch.bind(this)} >
-            <Icon name="chevron-left" size={30} color="white" />
-          </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
               Send Ripple to {this.props.otherUser}

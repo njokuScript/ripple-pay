@@ -128,7 +128,7 @@ class SendRipple extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.redtext}>
+        <Text style={styles.redtoptext}>
           Transaction Fee: 0.02 XRP
         </Text>
         <Text style={styles.redtext}>
@@ -145,14 +145,14 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      alignItems: 'center',
-     backgroundColor: '#335B7B',
+     backgroundColor: '#111F61',
    },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
   },
 
   titleContainer: {
@@ -163,11 +163,11 @@ const styles = StyleSheet.create({
   title: {
     color: '#F2CFB1',
     fontSize: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 20,
-    flex: 1,
-    top: 60,
+    // marginTop: 20,
+    // marginBottom: 20,
+    // padding: 20,
+    // flex: 1,
+    top: 20,
     fontFamily: 'Kohinoor Bangla'
   },
 
@@ -195,7 +195,16 @@ const styles = StyleSheet.create({
   redtext: {
     color: 'red',
     fontSize: 15,
-    marginTop: 40
+    marginTop: 20,
+    textAlign: 'center',
+    paddingRight: 10,
+    paddingLeft: 10
+  },
+  redtoptext: {
+    color: 'red',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 50
   },
   greenbutton: {
     fontSize: 30,

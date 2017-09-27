@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   },
   coinsContainer: {
       marginBottom: 75,
-      marginTop: -20
+      // marginTop: -20
     },
   coins: {
     flex: 1,

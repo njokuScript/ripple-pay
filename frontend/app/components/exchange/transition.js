@@ -63,6 +63,7 @@ class Transition extends Component {
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
 
   navSendAmount() {
+    console.log("i got pushed");
     if ( this.state.fromAmount > this.props.shape.market.maxLimit )
     {
       this.props.addAlert(`Please ${this.action} less than the maximum allowed`);
@@ -143,7 +144,7 @@ class Transition extends Component {
           </Text>
         </View>
         <TouchableOpacity onPress={() => this.setState({quoted: !this.state.quoted})}>
-          <Text>{this.state.quoted ? "Quoted - Exact Amount" : "Quick - Approximate"}</Text>
+          <Text style={styles.whitetext}>{this.state.quoted ? "Quoted - Exact Amount" : "Quick - Approximate"}</Text>
         </TouchableOpacity>
         <View style={styles.field}>
           <TextInput
@@ -196,10 +197,10 @@ class Transition extends Component {
           </View>
         </View>
         <View>
-          <Text>Rate: {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-          <Text>Shapeshifter Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-          <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-          <Text>Send Maximum: {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+          <Text style={styles.whitetext}>Rate: {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+          <Text style={styles.whitetext}>Shapeshifter Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+          <Text style={styles.whitetext}>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
+          <Text style={styles.whitetext}>Send Maximum: {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this.navSendAmount}>
@@ -219,6 +220,11 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginTop: 20,
     backgroundColor: 'white'
+  },
+  whitetext: {
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 10
   },
   coins: {
     flex: 1,
@@ -241,14 +247,14 @@ const styles = StyleSheet.create({
      flex: 1,
      justifyContent: 'center',
      alignItems: 'center',
-     backgroundColor: '#335B7B',
+     backgroundColor: '#111F61',
    },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
-    backgroundColor: '#335B7B'
+    backgroundColor: '#111F61'
   },
   field: {
     borderRadius: 5,
@@ -299,7 +305,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Kohinoor Bangla',
   },
   tabs: {
-    backgroundColor: '#335B7B',
+    backgroundColor: '#111F61',
     borderColor: '#d3d3d3',
     position: 'absolute',
     paddingTop: 15,

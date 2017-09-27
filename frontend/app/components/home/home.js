@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     },
     transactionsContainer: {
       marginBottom: 75,
-      marginTop: -20
+      // marginTop: -5
     },
     transaction: {
       flex: 1,
