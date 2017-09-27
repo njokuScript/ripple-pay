@@ -8,9 +8,12 @@ import {
 
 import Alert from './Alert';
 
-var AlertContainer = React.createClass({
+class AlertContainer extends React.Component {
+  constructor(props){
+    super(props)
+  }
   render() {
-    var renderAlerts = () => {
+    let renderAlerts = () => {
       return this.props.alerts.map((alert) => {
         return (
           <Alert alert={alert} key={alert.id}/>
@@ -21,9 +24,9 @@ var AlertContainer = React.createClass({
       <View style={styles.container}>
         {renderAlerts()}
       </View>
-    );
+    )
   }
-});
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -9,14 +9,17 @@ import {
 
 import {removeAlert} from '../../actions';
 
-var Alert = React.createClass({
+class Alert extends React.Component {
+  constructor(props){
+    super(props);
+  }
   onRemoveAlert() {
     var {dispatch, alert} = this.props;
     dispatch(removeAlert(alert.id));
-  },
+  }
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onRemoveAlert}>
+      <TouchableWithoutFeedback onPress={this.onRemoveAlert.bind(this)}>
         <View style={styles.container}>
           <Text style={styles.text}>
             {this.props.alert.text}
@@ -25,7 +28,7 @@ var Alert = React.createClass({
       </TouchableWithoutFeedback>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -223,7 +223,7 @@ exports.sendMoney = function(req, res, next){
                         // I believe that using res.json will help to resolve everything and will end it
                       })
                     })
-                  })
+                  }).catch(message => res.json({message: "Error in submitting transaction"}))
                 }
                 else
                 {

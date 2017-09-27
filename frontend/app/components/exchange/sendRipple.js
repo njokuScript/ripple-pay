@@ -48,6 +48,11 @@ class SendRipple extends Component {
     {
       this.props.addAlert("Please get a wallet first")
     }
+    //This is the REGEX to validate a Ripple Address
+    else if(!this.state.toAddress.match(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/))
+    {
+      this.props.addAlert("Invalid Ripple Address");
+    }
     else{
       let array = Object.keys(this.state);
       for (let i = 0; i < array.length; i++)

@@ -9,6 +9,8 @@ import BankSendContainer from './components/banksend/banksendContainer';
 import TransitionContainer from './components/exchange/transitionContainer';
 import SendRippleContainer from './components/exchange/sendRippleContainer';
 import SendAmountContainer from './components/exchange/sendAmountContainer';
+import AlertContainer from './components/alerts/AlertContainer';
+import Alert from './components/alerts/Alert';
 import App from './components/App'
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -54,6 +56,8 @@ export default class StartApp {
       Navigation.registerComponent('SendRipple', ()=> SendRippleContainer, store, Provider);
       Navigation.registerComponent('Transition', ()=> TransitionContainer, store, Provider);
       Navigation.registerComponent('SendAmount', ()=> SendAmountContainer, store, Provider);
+      Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
+      Navigation.registerComponent('Alert', ()=> Alert, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
     }
 

@@ -16,90 +16,65 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      enteringSite: false
+      extraField: false
     };
     this.onSignIn = this.onSignIn.bind(this);
     this.onSignUp = this.onSignUp.bind(this);
-    this.renderScreenName = this.renderScreenName.bind(this);
     this.renderButton = this.renderButton.bind(this);
-    this.enterSite = this.enterSite.bind(this);
-    this.renderSignIn = this.renderSignIn.bind(this);
+    this.toggleField = this.toggleField.bind(this);
   }
 
   onSignIn() {
     let { dispatch, fields: { email, password } } = this.props;
-    this.setState({
-      loading: true
-    });
-    dispatch(loginUser(email.value, password.value)).then(() => {
-      this.setState({
-        loading: false
-      });
-    });
+    dispatch(loginUser(email.value, password.value))
   }
 
   onSignUp() {
     let { dispatch, fields: { email, password, screenName } } = this.props;
-    this.setState({
-      loading: true
-    });
-    dispatch(signupUser(email.value, password.value, screenName.value)).then(() => {
-      this.setState({
-        loading: false
-      });
-    });
+    dispatch(signupUser(email.value, password.value, screenName.value))
   }
 
-  enterSite() {
-    if (!this.state.enteringSite) {
-      this.setState({ enteringSite: true });
-    } else {
-      return this.onSignUp();
-    }
-  }
-
-  renderScreenName(screenName, renderError) {
-    if (this.state.enteringSite) {
+  renderButton(screenName, renderError) {
+    if (this.state.extraField) {
       return (
-        <View style={styles.field}>
-          <TextInput
-            {...screenName}
-            placeholder="Screen Name"
-            placeholderTextColor="#6D768B"
-            style={styles.textInput} />
-          <View>
-            {renderError(screenName)}
+        <View style={styles.remainingContainer}>
+          <View style={styles.field}>
+            <TextInput
+              {...screenName}
+              placeholder="Screen Name"
+              placeholderTextColor="#6D768B"
+              style={styles.textInput} />
+            <View>
+              {renderError(screenName)}
+            </View>
           </View>
-        </View>
-      );
-    } else {
-      return;
-    }
-  }
-
-  renderButton() {
-    if (this.state.enteringSite) {
-      return (
-        <View>
-          <TouchableOpacity style={styles.touchableButton} onPress={this.onSignUp}>
-            <Text style={styles.button}>
-              SIGN UP
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.renderSignIn}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.touchableButton} onPress={this.onSignUp}>
+              <Text style={styles.button}>
+                SIGN UP
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={this.toggleField}>
             <Text style={styles.signUpView}>
               Already have an account? SIGN IN
-              </Text>
+            </Text>
           </TouchableOpacity>
         </View>
       );
     } else {
       return (
-      <View>
-        <TouchableOpacity style={styles.touchableButton} onPress={this.onSignIn}>
-          <Text style={styles.button}>
-            SIGN IN
+      <View style={styles.remainingContainer}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.touchableButton} onPress={this.onSignIn}>
+            <Text style={styles.button}>
+              SIGN IN
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={this.toggleField}>
+          <Text style={styles.signUpView}>
+            Don't have an account? SIGN UP
           </Text>
         </TouchableOpacity>
       </View>
@@ -107,11 +82,14 @@ class Login extends React.Component {
     }
   }
 
-  renderSignIn() {
-    if (!this.state.enteringSite) {
-      this.setState({ enteringSite: true });
-    } else {
-      this.setState({ enteringSite: false });
+  toggleField() {
+    if (!this.state.extraField)
+    {
+      this.setState({ extraField: true });
+    }
+    else
+    {
+      this.setState({ extraField: false });
     }
   }
 
@@ -126,63 +104,42 @@ class Login extends React.Component {
         );
       }
     };
-
-    if (this.state.loading) {
-      return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>
-            Loading...
-          </Text>
+    return (
+      <KeyboardAwareScrollView
+        style={{ backgroundColor: '#4c69a5' }}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
+      >
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            ripplePay
+            </Text>
         </View>
-      );
-    } else {
-      return (
-        <KeyboardAwareScrollView
-          style={{ backgroundColor: '#4c69a5' }}
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          contentContainerStyle={styles.container}
-          scrollEnabled={false}
-        >
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              ripplePay
-              </Text>
-          </View>
-          <View style={styles.field}>
-            <TextInput
-              {...email}
-              placeholder="Email"
-              placeholderTextColor="#6D768B"
-              style={styles.textInput} />
-            <View>
-              {renderError(email)}
-            </View>
-          </View>
-          <View style={styles.field}>
-            <TextInput
-              {...password}
-              placeholder="Password"
-              placeholderTextColor="#6D768B"
-              secureTextEntry={true}
-              style={styles.textInput} />
-            <View>
-              {renderError(password)}
-            </View>
-          </View>
-          {this.renderScreenName(screenName, renderError)}
-          <View style={styles.buttonContainer}>
-              {this.renderButton()}
-          </View>
+        <View style={styles.field}>
+          <TextInput
+            {...email}
+            placeholder="Email"
+            placeholderTextColor="#6D768B"
+            style={styles.textInput} />
           <View>
-            <TouchableOpacity onPress={this.enterSite}>
-              <Text style={styles.signUp}>
-                Don't have an account? SIGN UP
-              </Text>
-            </TouchableOpacity>
+            {renderError(email)}
           </View>
-        </KeyboardAwareScrollView>
-      );
-    }
+        </View>
+        <View style={styles.field}>
+          <TextInput
+            {...password}
+            placeholder="Password"
+            placeholderTextColor="#6D768B"
+            secureTextEntry={true}
+            style={styles.textInput} />
+          <View>
+            {renderError(password)}
+          </View>
+        </View>
+        {this.renderButton(screenName, renderError)}
+      </KeyboardAwareScrollView>
+    );
   }
 }
 
@@ -195,13 +152,17 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     padding: 10,
-    alignItems: 'center',
+    // alignItems: 'center',
+  },
+  remainingContainer: {
+    marginTop: 30,
   },
   title: {
     color: 'white',
     fontSize: 35,
     marginBottom: 30,
-    flex: 1,
+    textAlign: 'center',
+    // flex: 1,
     top: 70,
     fontFamily: 'Kohinoor Bangla'
   },
