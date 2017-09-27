@@ -35,7 +35,6 @@ class SendAmount extends Component {
     this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
     this.renderButton = this.renderButton.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
-    this.navHome = this.navHome.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -165,28 +164,38 @@ class SendAmount extends Component {
 
 //Maybe give these the indexes that they are suppose to have.
   render() {
-      return (
-        <View style={styles.container}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
-            </Text>
-          </View>
+      if ( !this.props.shape.sendamount )
+      {
+        return (
           <View>
-            <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-            <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-            <Text>Send Maximum: {this.props.quoted ? this.props.shape.sendamount.maxLimit : this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
-            <Text>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.deposit}</Text>
-            <Text>{this.props.toCoin} Withdraw Address: {this.props.withdrawal}</Text>
-            <Text>Deposit Amount: {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
-            <Text>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
-            <Text>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-            <Text>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
-            <Text>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
+            <Text>Transaction calculation failed. Please try again.</Text>
           </View>
-          {this.renderButton()}
-        </View>
-      );
+        )
+      }
+      else {
+        return (
+          <View style={styles.container}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>
+                {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
+              </Text>
+            </View>
+            <View>
+              <Text>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+              <Text>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
+              <Text>Send Maximum: {this.props.quoted ? this.props.shape.sendamount.maxLimit : this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+              <Text>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.deposit}</Text>
+              <Text>{this.props.toCoin} Withdraw Address: {this.props.withdrawal}</Text>
+              <Text>Deposit Amount: {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
+              <Text>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
+              <Text>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+              <Text>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
+              <Text>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
+            </View>
+            {this.renderButton()}
+          </View>
+        );
+      }
     }
   }
 

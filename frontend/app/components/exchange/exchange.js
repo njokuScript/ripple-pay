@@ -59,6 +59,11 @@ class Exchange extends Component {
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
+  navWallet(){
+    this.props.navigation.switchToTab({
+      tabIndex: 2
+    })
+  }
 
   navSendRipple() {
     this.props.navigator.push({
@@ -120,7 +125,7 @@ class Exchange extends Component {
                   source={{uri: myCoins[coin].image}}
                 />
               <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>Send</Text>
-              <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
+              <Text onPress={this.navWallet.bind(this)} style={styles.coinFont}>Receive</Text>
             </View>
           )
           return;
@@ -188,20 +193,6 @@ class Exchange extends Component {
           <Text>Change Directions</Text>
         </TouchableOpacity>
         {this.allCoins()}
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
-          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-            <Text>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-            <Text>Search</Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text>Wallets</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Exchange</Text>
-          </TouchableOpacity>
-        </Tabs>
      </View>
     );
   }
