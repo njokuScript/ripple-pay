@@ -16,7 +16,6 @@ import { View,
   TouchableHighlight } from 'react-native';
   import Tabs from 'react-native-tabs';
 
-import Ion from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 class Search extends React.Component {
   constructor(props) {
@@ -93,15 +92,11 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-            <TouchableHighlight key={idx} style={{backgroundColor:'white'}}>
-              <TouchableOpacity style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
+              <TouchableOpacity key={idx}style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
                 <View style={styles.username}>
                   <Text style={styles.resultItemText}>{user.screenName}</Text>
                 </View>
-                <View></View>
-                <View></View>
               </TouchableOpacity>
-            </TouchableHighlight>
           );
         }
       });
@@ -134,6 +129,7 @@ class Search extends React.Component {
               autoFocus={true}
               placeholder="Enter Username"
               placeholderTextColor="#6D768B"
+              keyboardAppearance={'dark'}
               />
             </View>
         </View>

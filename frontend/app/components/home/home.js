@@ -50,9 +50,9 @@ class Home extends React.Component {
         ndate = new Date(transaction.date);
         let time;
         if (ndate.getHours() > 12) {
-          time = `${ndate.getHours() - 12} : ${ndate.getMinutes()} PM` ;
+          time = `${ndate.getHours() - 12}:${ndate.getMinutes()} PM` ;
         } else {
-          time = `${ndate.getHours()} : ${ndate.getMinutes()} AM`;
+          time = `${ndate.getHours()}:${ndate.getMinutes()} AM`;
         }
         //Had to replace getDay with getDate because getDay was giving the wrong day.
         //Also don't add strings as it is slow. concatenate them
@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
       height: 75
     },
     signOut: {
-      transform: [{ rotate: '180deg' }]
+      transform: [{ rotate: '180deg' }],
+      marginBottom: 3
     },
     transactionsContainer: {
       marginBottom: 75,
@@ -239,7 +240,6 @@ const styles = StyleSheet.create({
     transactionAddress:{
       fontWeight: "600",
       fontSize: 12
-
     },
     transactionDate: {
       paddingTop: 8
