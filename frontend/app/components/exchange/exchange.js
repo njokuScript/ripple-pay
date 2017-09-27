@@ -30,12 +30,19 @@ class Exchange extends Component {
     this.finishAndBeginExchange = this.finishAndBeginExchange.bind(this);
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentDidMount(){
-    this.props.requestAllCoins();
+  onNavigatorEvent(event){
+    if ( event.id === "didAppear" )
+    {
+      this.props.requestAllCoins();
+    }
+    else if (event.id === "didDisappear")
+    {
+      window.clearTimeout(this.timer);
+    }
   }
-
   finishAndBeginExchange() {
     let that = this;
     this.setState({getRates: false});
@@ -52,44 +59,16 @@ class Exchange extends Component {
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
-  navWallet() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSearch() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-
-  navHome() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
 
   navSendRipple() {
-    window.clearTimeout(this.timer);
     this.props.navigator.push({
-      title: 'SendRipple',
-      component: sendRippleContainer,
-      navigationBarHidden: true
+      screen: 'SendRipple',
+      animation: true,
+      animationType: 'fade'
     });
   }
 
   navTransition(coin, dir) {
-    window.clearTimeout(this.timer);
     let toCoin;
     let fromCoin;
     if ( dir === 'send' )
@@ -103,10 +82,11 @@ class Exchange extends Component {
       toCoin = 'XRP';
     }
     this.props.navigator.push({
-      title: 'Transition',
-      component: transitionContainer,
-      navigationBarHidden: true,
-      passProps: {toCoin: toCoin, fromCoin: fromCoin, clearSendAmount:this.props.clearSendAmount}
+      screen: 'Transition',
+      // navigatorStyle: {navBarHidden: true},
+      passProps: {toCoin: toCoin, fromCoin: fromCoin, clearSendAmount:this.props.clearSendAmount},
+      animation: true,
+      animationType: 'fade'
     });
   }
 

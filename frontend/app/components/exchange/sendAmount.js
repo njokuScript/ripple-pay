@@ -36,28 +36,42 @@ class SendAmount extends Component {
     this.renderButton = this.renderButton.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.navHome = this.navHome.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-
-
-  componentDidMount(){
-    let that = this;
-    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
-    let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
-    if ( this.props.quoted )
+  onNavigatorEvent(event){
+    if ( event.id === "didAppear" )
     {
-      this.timer = window.setInterval(function(){
-        if ( that.state.time === 1000 )
-        {
-          that.navHome();
-        }
-        that.setState({time: that.state.time - 1000})
-      },1000);
-      this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+      let that = this;
+      this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
+      let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
+      if ( this.props.quoted )
+      {
+        this.timer = window.setInterval(function(){
+          if ( that.state.time === 1000 )
+          {
+            that.navHome();
+          }
+          that.setState({time: that.state.time - 1000})
+        },1000);
+        this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+      }
+      else
+      {
+        this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+      }
     }
-    else
-    {
-      this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+    else if (event.id === "bottomTabSelected"){
+      this.props.clearSendAmount();
+      clearInterval(this.timer);
+      this.props.navigator.resetTo({
+        screen: 'Exchange',
+        navigatorStyle: {navBarHidden: true}
+      })
+    }
+    else if (event.id === "didDisappear"){
+      this.props.clearSendAmount();
+      clearInterval(this.timer);
     }
   }
 
@@ -68,35 +82,35 @@ class SendAmount extends Component {
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
-  navWallet() {
-    this.props.clearSendAmount();
-    clearInterval(this.timer);
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSearch() {
-    this.props.clearSendAmount();
-    clearInterval(this.timer);
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-
-  navHome() {
-    this.props.clearSendAmount();
-    clearInterval(this.timer);
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
+  // navWallet() {
+  //   this.props.clearSendAmount();
+  //   clearInterval(this.timer);
+  //   this.props.navigator.push({
+  //     title: 'Wallet',
+  //     component: WalletContainer,
+  //     navigationBarHidden: true
+  //   });
+  // }
+  //
+  // navSearch() {
+  //   this.props.clearSendAmount();
+  //   clearInterval(this.timer);
+  //   this.props.navigator.push({
+  //     component: SearchContainer,
+  //     title: 'Search',
+  //     navigationBarHidden: true
+  //   });
+  // }
+  //
+  // navHome() {
+  //   this.props.clearSendAmount();
+  //   clearInterval(this.timer);
+  //   this.props.navigator.push({
+  //     title: 'Home',
+  //     component: HomeContainer,
+  //     navigationBarHidden: true
+  //   });
+  // }
 
   renderButton(){
     if ( this.props.action === 'withdraw' && this.state.pushed === false )
@@ -171,20 +185,6 @@ class SendAmount extends Component {
             <Text>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
           </View>
           {this.renderButton()}
-          <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
-            <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-              <Text>Home</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-              <Text>Search</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Wallets</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text>Exchange</Text>
-            </TouchableOpacity>
-          </Tabs>
         </View>
       );
     }

@@ -23,6 +23,8 @@ export default class App extends React.Component {
     let renderMainView = () => {
       if (this.props.user_id) {
         this.starter.startTabs();
+        //Since it starts at tab-based application, it automatically knows to
+        //start with the home page
         return (
           <View>
           </View>

@@ -24,48 +24,25 @@ class BankSend extends Component {
     this.sendPayment = this.sendPayment.bind(this);
     this.state = {
       amount: "",
-      page: "",
       disabled: false
+    }
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  onNavigatorEvent(event){
+    if ( event.id === "bottomTabSelected" )
+    {
+      this.props.navigator.resetTo({
+        screen: 'Search',
+        navigatorStyle: {navBarHidden: true}
+      });
     }
   }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  navWallet() {
-    // this.props.requestTransactions(this.props.user);
-    // this.props.requestAddressAndDesTag(this.props.user.user_id);
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
 
-  navExchange() {
-    this.props.navigator.push({
-      title: "Exchange",
-      component: ExchangeContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSearch() {
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
   //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
-
-  navHome() {
-    // this.props.requestTransactions(this.props.user);
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
 
   sendPayment(){
     this.setState({disabled: true});
@@ -101,20 +78,6 @@ class BankSend extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
-            <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-              <Text>Home</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-              <Text>Search</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Wallets</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
-              <Text>Exchange</Text>
-            </TouchableOpacity>
-       </Tabs>
       </View>
     );
   }

@@ -25,7 +25,13 @@ module.exports = (state=defaultState, action) => {
       return merge({}, state, {user_id: action.user_id});
       //Make the user_id undefined after logout.
     case 'UNAUTH_USER':
-      return merge({}, {user_id: undefined});
+      return Object.assign({}, state,
+        {user_id: undefined,
+          transactions: [],
+          users: [],
+          balance: 0,
+          cashRegister: undefined,
+          wallets: []});
       //We have action.data.stuff here because we have passed in 'data' from the received_transactions normal/non-thunk action of the
       //authActions.
       //action.data.transactions is an array of all the transactions and the other is the balance.
@@ -46,7 +52,7 @@ module.exports = (state=defaultState, action) => {
     case 'RECEIVED_ADDRESS':
       return Object.assign({}, state, {cashRegister: action.data.cashRegister});
     case 'RECEIVED_OLD_ADDRESS':
-      return Object.assign({}, state, { cashRegister: action.data.cashRegister }); 
+      return Object.assign({}, state, { cashRegister: action.data.cashRegister });
     default:
       return state;
   }

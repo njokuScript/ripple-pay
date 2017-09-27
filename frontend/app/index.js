@@ -5,6 +5,10 @@ import SearchContainer from './components/search/searchContainer';
 import WalletContainer from './components/wallet/walletContainer';
 import ExchangeContainer from './components/exchange/exchangeContainer';
 import HomeContainer from './components/home/homeContainer';
+import BankSendContainer from './components/banksend/banksendContainer';
+import TransitionContainer from './components/exchange/transitionContainer';
+import SendRippleContainer from './components/exchange/sendRippleContainer';
+import SendAmountContainer from './components/exchange/sendAmountContainer';
 import App from './components/App'
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -46,6 +50,10 @@ export default class StartApp {
       Navigation.registerComponent('Wallet', ()=> WalletContainer, store, Provider);
       Navigation.registerComponent('Exchange', ()=> ExchangeContainer, store, Provider);
       Navigation.registerComponent('Home', ()=> HomeContainer, store, Provider);
+      Navigation.registerComponent('Banksend', ()=> BankSendContainer, store, Provider);
+      Navigation.registerComponent('SendRipple', ()=> SendRippleContainer, store, Provider);
+      Navigation.registerComponent('Transition', ()=> TransitionContainer, store, Provider);
+      Navigation.registerComponent('SendAmount', ()=> SendAmountContainer, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
     }
 
@@ -62,7 +70,8 @@ export default class StartApp {
       Navigation.startSingleScreenApp({
         screen: {
           screen: 'App',
-          title: 'App'
+          title: 'App',
+          navigatorStyle: {navBarHidden: true}
         }
       });
     }
@@ -76,28 +85,32 @@ export default class StartApp {
             screen: 'Home',
             icon: this.homeIcon,
             selectedIcon: this.homeIcon,
-            title: 'Home'
+            title: 'Home',
+            navigatorStyle: {navBarHidden: true}
           },
           {
             label: 'Search',
             screen: 'Search',
             icon: this.searchIcon,
             selectedIcon: this.searchIcon,
-            title: 'Search'
+            title: 'Search',
+            navigatorStyle: {navBarHidden: true}
           },
           {
             label: 'Wallet',
             screen: 'Wallet',
             icon: this.walletIcon,
             selectedIcon: this.walletIcon,
-            title: 'Wallet'
+            title: 'Wallet',
+            navigatorStyle: {navBarHidden: true}
           },
           {
             label: 'Exchange',
             screen: 'Exchange',
             icon: this.exchangeIcon,
             selectedIcon: this.exchangeIcon,
-            title: 'Exchange'
+            title: 'Exchange',
+            navigatorStyle: {navBarHidden: true}
           }
         ]
       });
