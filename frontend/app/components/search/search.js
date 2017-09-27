@@ -25,8 +25,15 @@ class Search extends React.Component {
     this.navBankSend = this.navBankSend.bind(this);
     this.state = {
       query: "",
-      page: 'source'
     };
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  onNavigatorEvent(event){
+    if ( event.id === "didDisappear" )
+    {
+      this.setState({query: ""});
+    }
   }
 
   componentDidUpdate(prevProps,prevState){
@@ -38,43 +45,42 @@ class Search extends React.Component {
 
   //I set the query to an empty string so that when this comes back it is an empty string we are searching for since none of the components
   //are unmounting with navigatorIOS. They just stay mounted.
-  navHome() {
-    this.setState({query: ""});
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
-
+  // navHome() {
+  //   this.setState({query: ""});
+  //   this.props.navigator.push({
+  //     title: 'Home',
+  //     component: HomeContainer,
+  //     navigationBarHidden: true
+  //   });
+  // }
+  //
   navBankSend(receiver_id, otherUser) {
-    this.setState({query: ""});
     this.props.navigator.push({
-      title: 'BankSend',
-      component: BankSendContainer,
-      navigationBarHidden: true,
-      passProps: {receiver_id: receiver_id, otherUser: otherUser}
+      screen: 'Banksend',
+      passProps: {receiver_id: receiver_id, otherUser: otherUser},
+      animation: true,
+      animationType: 'fade'
     });
   }
-
-  navWallet() {
-    this.setState({query: ""});
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-  //You can store a constant as stuff that is not wrapped in jsx tags
-
-  navExchange() {
-    this.setState({query: ""});
-    this.props.navigator.push({
-      title: 'Exchange',
-      component: ExchangeContainer,
-      navigationBarHidden: true
-    });
-  }
+  //
+  // navWallet() {
+  //   this.setState({query: ""});
+  //   this.props.navigator.push({
+  //     title: 'Wallet',
+  //     component: WalletContainer,
+  //     navigationBarHidden: true
+  //   });
+  // }
+  // //You can store a constant as stuff that is not wrapped in jsx tags
+  //
+  // navExchange() {
+  //   this.setState({query: ""});
+  //   this.props.navigator.push({
+  //     title: 'Exchange',
+  //     component: ExchangeContainer,
+  //     navigationBarHidden: true
+  //   });
+  // }
 
 //Disregard where your id is equal to the user id that comes back.
   makeUsers(){
@@ -95,7 +101,7 @@ class Search extends React.Component {
         }
       });
       return (
-        <ScrollView style={styles.resultsContainer}> 
+        <ScrollView style={styles.resultsContainer}>
          {theUsers}
        </ScrollView>
       );
@@ -113,7 +119,7 @@ class Search extends React.Component {
         <View style={styles.searchContainer}>
           <View style={styles.field}>
             <TextInput
-              style={styles.textInput} 
+              style={styles.textInput}
               value={this.state.query}
               onChangeText={
                 (query) => {
@@ -134,22 +140,6 @@ class Search extends React.Component {
               not working, but close i think  */}
           {this.makeUsers()}
         </ScrollView>
-
-
-       <Tabs style={styles.tabs} selected={this.state.page} onSelect={el => this.setState({ page: el.props.name })}>
-         <TouchableOpacity onPress={this.navHome.bind(this)}>
-           <Text style={styles.tabFont}><Icon name="home" size={30} color="white" /></Text>
-         </TouchableOpacity>
-         <TouchableOpacity name="source">
-           <Text style={styles.tabFont}><Icon name="magnifying-glass" size={30} color="white" /></Text>
-         </TouchableOpacity>
-         <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-           <Text style={styles.tabFont}><Icon name="wallet" size={30} color="white" /></Text>
-         </TouchableOpacity>
-         <TouchableOpacity name="Stream" onPress={this.navExchange.bind(this)}>
-           <Text style={styles.tabFont}><Icon name="swap" size={30} color="white" /></Text>
-         </TouchableOpacity>
-       </Tabs>
      </View>
    );
  }}

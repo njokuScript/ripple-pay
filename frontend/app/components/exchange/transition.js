@@ -34,13 +34,24 @@ class Transition extends Component {
     this.navSendAmount = this.navSendAmount.bind(this);
     this.toThisAmount = "";
     this.fromThisAmount = "";
-    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw"
+    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentDidMount(){
-    this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
-    this.props.requestOldAddress(this.props.user.user_id);
-    this.props.requestAllWallets(this.props.user.user_id);
+  onNavigatorEvent(event){
+    if ( event.id === "didAppear" )
+    {
+      this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
+      this.props.requestOldAddress(this.props.user.user_id);
+      this.props.requestAllWallets(this.props.user.user_id);
+    }
+    else if (event.id === "bottomTabSelected")
+    {
+      this.props.navigator.resetTo({
+        screen: 'Exchange',
+        navigatorStyle: {navBarHidden: true}
+      })
+    }
   }
 
   // componentWillUnmount(){
@@ -50,29 +61,6 @@ class Transition extends Component {
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
-  navWallet() {
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSearch() {
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-
-  navHome() {
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
 
   navSendAmount() {
     if ( this.state.fromAmount > this.props.shape.market.maxLimit )
@@ -113,9 +101,8 @@ class Transition extends Component {
       }
     }
     this.props.navigator.push({
-      title: 'SendAmount',
-      component: sendAmountContainer,
-      navigationBarHidden: true,
+      screen: 'SendAmount',
+      navigatorStyle: {navBarHidden: true},
       passProps: {
                  withdrawal: this.withdrawalAddress,
                  returnAddress: this.returnAddress,
@@ -221,20 +208,6 @@ class Transition extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
-          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-            <Text>Home</Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-            <Text>Search</Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text>Wallets</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text>Exchange</Text>
-          </TouchableOpacity>
-        </Tabs>
      </View>
     );
   }

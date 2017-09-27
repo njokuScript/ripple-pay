@@ -32,12 +32,19 @@ class Exchange extends Component {
     this.finishAndBeginExchange = this.finishAndBeginExchange.bind(this);
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentDidMount(){
-    this.props.requestAllCoins();
+  onNavigatorEvent(event){
+    if ( event.id === "didAppear" )
+    {
+      this.props.requestAllCoins();
+    }
+    else if (event.id === "didDisappear")
+    {
+      window.clearTimeout(this.timer);
+    }
   }
-
   finishAndBeginExchange() {
     let that = this;
     this.setState({getRates: false});
@@ -54,44 +61,21 @@ class Exchange extends Component {
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
-  navWallet() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSearch() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-
-  navHome() {
-    window.clearTimeout(this.timer);
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
+  navWallet(){
+    this.props.navigation.switchToTab({
+      tabIndex: 2
+    })
   }
 
   navSendRipple() {
-    window.clearTimeout(this.timer);
     this.props.navigator.push({
-      title: 'SendRipple',
-      component: sendRippleContainer,
-      navigationBarHidden: true
+      screen: 'SendRipple',
+      animation: true,
+      animationType: 'fade'
     });
   }
 
   navTransition(coin, dir) {
-    window.clearTimeout(this.timer);
     let toCoin;
     let fromCoin;
     if ( dir === 'send' )
@@ -105,10 +89,11 @@ class Exchange extends Component {
       toCoin = 'XRP';
     }
     this.props.navigator.push({
-      title: 'Transition',
-      component: transitionContainer,
-      navigationBarHidden: true,
-      passProps: {toCoin: toCoin, fromCoin: fromCoin, clearSendAmount:this.props.clearSendAmount}
+      screen: 'Transition',
+      // navigatorStyle: {navBarHidden: true},
+      passProps: {toCoin: toCoin, fromCoin: fromCoin, clearSendAmount:this.props.clearSendAmount},
+      animation: true,
+      animationType: 'fade'
     });
   }
 
@@ -143,20 +128,18 @@ class Exchange extends Component {
               <View style={styles.coinType}>
                 <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
               </View>
-
-            <View style={styles.sendReceive}>
-              <View style={styles.send}>
-                <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>
-                  <Font name="send" size={20} color="black" />
-                </Text>
+              <View style={styles.sendReceive}>
+                <View style={styles.send}>
+                  <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>
+                    <Font name="send" size={20} color="black" />
+                  </Text>
+                </View>
+                <View style={styles.receive}>
+                  <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>
+                    <Font name="bank" size={20} color="black" />
+                  </Text>
+                </View>
               </View>
-              <View style={styles.receive}>
-                <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>
-                  <Font name="bank" size={20} color="black" />
-                </Text>
-              </View>
-
-            </View>
             </View>
           );
           return;
@@ -264,25 +247,6 @@ class Exchange extends Component {
       <ScrollView>
         {this.allCoins()}
       </ScrollView>
-
-      <View>
-        <Tabs style={styles.tabs} selected={this.state.page}>
-
-          <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-            <Text style={styles.tabFont}><Icon name="home" size={30} color="white" /></Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-            <Text style={styles.tabFont}><Icon name="magnifying-glass" size={30} color="white" /></Text>
-          </TouchableOpacity>
-          <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-            <Text style={styles.tabFont}><Icon name="wallet" size={30} color="white" /></Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.tabFont}><Icon name="swap" size={30} color="white" /></Text>
-          </TouchableOpacity>
-        </Tabs>
-      </View>
-
      </View>
     );
   }

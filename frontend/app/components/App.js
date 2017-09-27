@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import { unauthUser } from '../actions/authActions';
+import StartApp from '../index';
 import {
   StyleSheet,
   Text,
@@ -15,14 +16,19 @@ import AlertContainer from './alerts/AlertContainer';
 export default class App extends React.Component {
   constructor(props){
     super(props);
+    this.starter = new StartApp();
   }
 
   render() {
     let renderMainView = () => {
       if (this.props.user_id) {
+        this.starter.startTabs();
+        //Since it starts at tab-based application, it automatically knows to
+        //start with the home page
         return (
-          <Main />
-        );
+          <View>
+          </View>
+        )
       } else {
         return (
           <Login />

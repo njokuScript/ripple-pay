@@ -27,36 +27,21 @@ class SendRipple extends Component {
       amount: "",
       disabled: false,
     }
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  onNavigatorEvent(event){
+    if ( event.id === "bottomTabSelected" )
+    {
+      this.props.navigator.resetTo({
+        screen: 'Exchange',
+        navigatorStyle: {navBarHidden: true}
+      })
+    }
+  }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  navWallet() {
-    this.props.navigator.push({
-      title: 'Wallet',
-      component: WalletContainer,
-      navigationBarHidden: true
-    });
-  }
-
-  navSearch() {
-    this.props.navigator.push({
-      component: SearchContainer,
-      title: 'Search',
-      navigationBarHidden: true
-    });
-  }
-  //I am not required to do request coins here because this will happen automatically from componentDidMount in home.js
-
-  navHome() {
-    // this.props.requestTransactions(this.props.user);
-    this.props.navigator.push({
-      title: 'Home',
-      component: HomeContainer,
-      navigationBarHidden: true
-    });
-  }
 
   sendPayment(){
     if ( !this.props.fromAddress || !this.props.sourceTag)
@@ -149,20 +134,6 @@ class SendRipple extends Component {
         <Text style={styles.redtext}>
           Warning: You will be charged a fee if you send to other party and they require a destination tag or if you send less than 20 ripple to a new wallet
         </Text>
-        <Tabs selected={this.state.page} style={{backgroundColor:'white'}}>
-            <TouchableOpacity name="cloud" onPress={this.navHome.bind(this)}>
-              <Text>Home</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="source" onPress={this.navSearch.bind(this)}>
-              <Text>Search</Text>
-            </TouchableOpacity>
-            <TouchableOpacity name="pool" onPress={this.navWallet.bind(this)}>
-              <Text>Wallets</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text>Send</Text>
-            </TouchableOpacity>
-       </Tabs>
       </View>
     );
   }

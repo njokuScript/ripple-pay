@@ -22,14 +22,26 @@ class BankSend extends Component {
     this.sendPayment = this.sendPayment.bind(this);
     this.state = {
       amount: "",
-      page: "",
       disabled: false
-    };
+    }
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  navSearch() {
-    this.props.navigator.pop();
+  onNavigatorEvent(event){
+    if ( event.id === "bottomTabSelected" )
+    {
+      this.props.navigator.resetTo({
+        screen: 'Search',
+        navigatorStyle: {navBarHidden: true}
+      });
+    }
   }
+  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
+  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
+  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
+
+  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
+
 
   sendPayment(){
     if (!parseFloat(this.state.amount))
