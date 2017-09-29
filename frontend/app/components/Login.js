@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   remainingContainer: {
-    marginTop: 30,
+    marginTop: 40,
   },
   title: {
     color: 'white',

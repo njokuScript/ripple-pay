@@ -52,13 +52,12 @@ class BankSend extends Component {
     this.setState({disabled: true});
     this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(() => {
       this.setState({disabled: false});
-      this.navHome.bind(this);
     });
   }
 
   render() {
     return (
-      <View style={styles.container}>        
+      <View style={styles.container}>
         <View style={styles.topContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>

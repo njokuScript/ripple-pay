@@ -39,7 +39,7 @@ class SendAmount extends Component {
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "didAppear" )
+    if ( event.id === "willAppear" )
     {
       let that = this;
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
@@ -49,7 +49,9 @@ class SendAmount extends Component {
         this.timer = window.setInterval(function(){
           if ( that.state.time === 1000 )
           {
-            that.navHome();
+            that.props.navigator.switchToTab({
+              tabIndex: 0
+            });
           }
           that.setState({time: that.state.time - 1000})
         },1000);
@@ -73,43 +75,6 @@ class SendAmount extends Component {
       clearInterval(this.timer);
     }
   }
-
-  // componentWillUnmount(){
-  //   window.clearTimeout(this.timer);
-  // }
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
-  // navWallet() {
-  //   this.props.clearSendAmount();
-  //   clearInterval(this.timer);
-  //   this.props.navigator.push({
-  //     title: 'Wallet',
-  //     component: WalletContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
-  //
-  // navSearch() {
-  //   this.props.clearSendAmount();
-  //   clearInterval(this.timer);
-  //   this.props.navigator.push({
-  //     component: SearchContainer,
-  //     title: 'Search',
-  //     navigationBarHidden: true
-  //   });
-  // }
-  //
-  // navHome() {
-  //   this.props.clearSendAmount();
-  //   clearInterval(this.timer);
-  //   this.props.navigator.push({
-  //     title: 'Home',
-  //     component: HomeContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
 
   renderButton(){
     if ( this.props.action === 'withdraw' && this.state.pushed === false )
