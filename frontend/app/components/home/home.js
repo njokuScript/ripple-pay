@@ -28,7 +28,7 @@ class Home extends React.Component {
 
   //Once this screen appears, all the of transactions are requested
   onNavigatorEvent(event){
-    if ( event.id === "didAppear" )
+    if ( event.id === "willAppear" )
     {
       this.props.requestTransactions(this.props.user);
     }

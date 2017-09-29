@@ -43,17 +43,6 @@ class Search extends React.Component {
     }
   }
 
-  //I set the query to an empty string so that when this comes back it is an empty string we are searching for since none of the components
-  //are unmounting with navigatorIOS. They just stay mounted.
-  // navHome() {
-  //   this.setState({query: ""});
-  //   this.props.navigator.push({
-  //     title: 'Home',
-  //     component: HomeContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
-  //
   navBankSend(receiver_id, otherUser) {
     this.props.navigator.push({
       screen: 'Banksend',
@@ -62,25 +51,6 @@ class Search extends React.Component {
       animationType: 'fade'
     });
   }
-  //
-  // navWallet() {
-  //   this.setState({query: ""});
-  //   this.props.navigator.push({
-  //     title: 'Wallet',
-  //     component: WalletContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
-  // //You can store a constant as stuff that is not wrapped in jsx tags
-  //
-  // navExchange() {
-  //   this.setState({query: ""});
-  //   this.props.navigator.push({
-  //     title: 'Exchange',
-  //     component: ExchangeContainer,
-  //     navigationBarHidden: true
-  //   });
-  // }
 
 //Disregard where your id is equal to the user id that comes back.
   makeUsers(){
@@ -172,7 +142,7 @@ class Search extends React.Component {
       padding: 5,
       paddingLeft: 15,
       margin: 30,
-      width: 325
+      width: 345
     },
     textInput: {
       height: 35,
@@ -199,8 +169,7 @@ class Search extends React.Component {
     },
     resultsContainer: {
       flex: 1,
-      marginBottom: 75,
-      marginTop: -20
+      marginBottom: 75
     },
     resultsInfo: {
       flex: 1,
