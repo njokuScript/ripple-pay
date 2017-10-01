@@ -49,34 +49,30 @@ class Login extends React.Component {
             </View>
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.touchableButton} onPress={this.onSignUp}>
-              <Text style={styles.button}>
+            <View style={styles.touchableButton}>
+              <Text style={styles.button} onPress={this.onSignUp}>
                 SIGN UP
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
-          <TouchableOpacity onPress={this.toggleField}>
-            <Text style={styles.signUpView}>
-              Already have an account? SIGN IN
-            </Text>
-          </TouchableOpacity>
+          <Text style={styles.signUpView} onPress={this.toggleField}>
+            Already have an account? SIGN IN
+          </Text>
         </View>
       );
     } else {
       return (
       <View style={styles.remainingContainer}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.touchableButton} onPress={this.onSignIn}>
-            <Text style={styles.button}>
+          <View style={styles.touchableButton}>
+            <Text style={styles.button} onPress={this.onSignIn}>
               SIGN IN
             </Text>
-          </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity onPress={this.toggleField}>
-          <Text style={styles.signUpView}>
-            Don't have an account? SIGN UP
-          </Text>
-        </TouchableOpacity>
+        <Text style={styles.signUpView} onPress={this.toggleField}>
+          Don't have an account? SIGN UP
+        </Text>
       </View>
       );
     }

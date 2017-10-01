@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/layout-v11/notification_media_cancel_action.xml",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/layout-v11/notification_media_cancel_action.xml"
+    },
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media_narrow_custom.xml",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/layout-v11/notification_template_big_media_narrow_custom.xml"
+    },
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media.xml",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/layout-v11/notification_template_big_media.xml"
+    },
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media_custom.xml",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/layout-v11/notification_template_big_media_custom.xml"
+    },
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/layout-v11/notification_template_big_media_narrow.xml",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/layout-v11/notification_template_big_media_narrow.xml"
+    },
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/layout-v11/notification_media_action.xml",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/layout-v11/notification_media_action.xml"
+    }
+]

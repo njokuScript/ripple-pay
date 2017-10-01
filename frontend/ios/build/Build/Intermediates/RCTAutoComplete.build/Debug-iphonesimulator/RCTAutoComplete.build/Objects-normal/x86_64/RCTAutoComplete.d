@@ -1,0 +1,35 @@
+dependencies: \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/RCTAutoComplete.m \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/RCTAutoComplete.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTBridgeModule.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTDefines.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTViewManager.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTConvert.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTAnimationType.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTBorderStyle.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTLog.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTAssert.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTUtils.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTPointerEvents.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTTextDecorationLineType.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/Yoga.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGEnums.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/yoga/YGMacros.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTEventDispatcher.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTBridge.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTBridgeDelegate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTJavaScriptLoader.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTFrameUpdate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTInvalidating.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/UIView+React.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTComponent.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/MLPAutoCompleteTextField/MLPAutoCompleteTextField.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/MLPAutoCompleteTextField/MLPAutoCompleteTextFieldDataSource.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/MLPAutoCompleteTextField/MLPAutoCompleteTextFieldDelegate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/MLPAutoCompleteTextField/MLPAutoCompletionObject.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/RCTTableViewCell.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTRootView.h \
+  ../../node_modules/react-native/React/Views/UIView+React.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/AutoCompleteView.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-autocomplete/DictionaryAutoCompleteObject.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/ios/build/Build/Products/Debug-iphonesimulator/include/React/RCTFont.h

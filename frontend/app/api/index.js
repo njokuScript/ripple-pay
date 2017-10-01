@@ -1,7 +1,7 @@
 //This is the frontend communication with backend where we go so that we can route to specific URL's that we can go to the controller with.
 //The next file to look at is router.js
 
-var API_URL = 'http://localhost:3000/v1';
+var API_URL = 'http://192.168.1.73:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
 exports.ADDR_URL = `${API_URL}/addrs`;
