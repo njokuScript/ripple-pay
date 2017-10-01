@@ -4,10 +4,7 @@ See Live Demo Here: [https://pateldd1.github.io/ripplePay-Demo/](https://pateldd
 
 ## Background
 
-ripplePay is an XRP cryptocurrency mobile (iOS and Android) transferring system that allows currency conversion with over 60 other cryptocurrencies. Ripple has disrupted the conventional banking system, and will continue to reform and change the world with this user-facing application.
-
-## Enter ripplePay.
-A Robust Ripple XRP cryptocurrency mobile transferring platform.  Ripple has disrupted the conventional banking system, and will continue to reform and change the world with ripplePay.  
+ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that allows currency conversion with over 60 other cryptocurrencies.
 
 ## Sending Ripple Cross-platform to Gatehub Wallet
 <br><br>
