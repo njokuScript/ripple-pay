@@ -217,7 +217,7 @@ class Exchange extends Component {
     else
     {
       showCoins = (
-        <View>Loading...</View>
+        <View><Text>Loading...</Text></View>
       );
     }
     return (

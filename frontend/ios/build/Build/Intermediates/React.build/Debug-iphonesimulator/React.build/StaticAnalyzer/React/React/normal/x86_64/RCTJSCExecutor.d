@@ -1,0 +1,23 @@
+dependencies: \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Executors/RCTJSCExecutor.mm \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Executors/RCTJSCExecutor.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTJavaScriptExecutor.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridge+Private.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Modules/RCTDevMenu.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTLog.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Profiler/RCTProfile.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTPerformanceLogger.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTUtils.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Profiler/RCTJSCProfiler.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Modules/RCTRedBox.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTErrorCustomizer.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Modules/RCTSourceCode.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Executors/RCTJSCWrapper.h
