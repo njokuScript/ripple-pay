@@ -20,7 +20,9 @@ A Robust Ripple XRP cryptocurrency mobile transferring platform.  Ripple has dis
 ## App Screens
 <br><br>
 ![altcoins](/images/newest_altcoins.png)
+![android_altcoins](/images/Android_tokens.png)
 ![all-transactions](/images/newest_transactions.png)
+![android-transactions](/images/Android_transactions.png)
 ![userSearch](/images/newest_user_search.png)
 ![sending](/images/newest_banksend.png)
 
