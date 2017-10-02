@@ -17,7 +17,9 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 ## App Screens
 <br><br>
 ![altcoins](/images/newest_altcoins.png)
+![android_altcoins](/images/Android_tokens.png)
 ![all-transactions](/images/newest_transactions.png)
+![android-transactions](/images/Android_transactions.png)
 ![userSearch](/images/newest_user_search.png)
 ![sending](/images/newest_banksend.png)
 

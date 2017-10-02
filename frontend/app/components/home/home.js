@@ -14,7 +14,8 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    NavigatorIOS
+    NavigatorIOS,
+    RefreshControl
   } from 'react-native';
 
 class Home extends React.Component {
@@ -24,6 +25,10 @@ class Home extends React.Component {
     this.displayTransactions = this.displayTransactions.bind(this);
     this.starter = new StartApp();
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.state = {
+      refreshing: false
+    }
+    this.onRefresh = this.onRefresh.bind(this);
   }
 
   //Once this screen appears, all the of transactions are requested
@@ -32,6 +37,13 @@ class Home extends React.Component {
     {
       this.props.requestTransactions(this.props.user);
     }
+  }
+
+  onRefresh(){
+    this.setState({refreshing: true});
+    this.props.requestTransactions(this.props.user).then(() => {
+      this.setState({refreshing: false});
+    })
   }
 
   onLogout() {
@@ -138,7 +150,14 @@ class Home extends React.Component {
             </Text>
           </View>
       </View>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}/>
+        }
+        automaticallyAdjustContentInsets={false}
+        contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
       </ScrollView>
       </View>

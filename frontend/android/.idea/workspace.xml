@@ -39,8 +39,11 @@
         <entry file="file://$PROJECT_DIR$/app/build.gradle">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="370">
-              <caret line="96" column="39" selection-start-line="96" selection-start-column="39" selection-end-line="96" selection-end-column="39" />
-              <folding />
+              <caret line="95" column="19" selection-start-line="95" selection-start-column="19" selection-end-line="95" selection-end-column="19" />
+              <folding>
+                <marker date="1506852950000" expanded="true" signature="3961:4067" ph="{...}" />
+                <marker date="1506852950000" expanded="true" signature="4038:4067" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -5364,7 +5367,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="24" y="23" width="1251" height="777" extended-state="0" />
+    <frame x="24" y="23" width="1251" height="777" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980332" sideWeight="0.49710503" order="6" side_tool="false" content_ui="tabs" />
@@ -5424,7 +5427,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2115">
           <caret line="141" column="47" selection-start-line="141" selection-start-column="47" selection-end-line="141" selection-end-column="47" />
-          <folding />
+          <folding>
+            <marker date="1506852950000" expanded="true" signature="3961:4067" ph="{...}" />
+            <marker date="1506852950000" expanded="true" signature="4038:4067" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -5481,8 +5487,11 @@
     <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="370">
-          <caret line="96" column="39" selection-start-line="96" selection-start-column="39" selection-end-line="96" selection-end-column="39" />
-          <folding />
+          <caret line="95" column="19" selection-start-line="95" selection-start-column="19" selection-end-line="95" selection-end-column="19" />
+          <folding>
+            <marker date="1506852950000" expanded="true" signature="3961:4067" ph="{...}" />
+            <marker date="1506852950000" expanded="true" signature="4038:4067" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
