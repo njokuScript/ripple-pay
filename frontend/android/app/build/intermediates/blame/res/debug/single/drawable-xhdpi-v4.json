@@ -1,11 +1,11 @@
 [
     {
-        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/abc_ic_star_half_black_48dp.png",
-        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/drawable-xhdpi-v4/abc_ic_star_half_black_48dp.png"
-    },
-    {
         "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/abc_scrubber_control_off_mtrl_alpha.png",
         "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/drawable-xhdpi-v4/abc_scrubber_control_off_mtrl_alpha.png"
+    },
+    {
+        "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/abc_ic_star_half_black_48dp.png",
+        "source": "/Users/dpatel/.android/build-cache/d9663c2e1dad40968eac34a37f4e1521785e2f79/output/res/drawable-xhdpi-v4/abc_ic_star_half_black_48dp.png"
     },
     {
         "merged": "/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4/abc_btn_check_to_on_mtrl_015.png",
