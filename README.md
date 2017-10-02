@@ -11,11 +11,11 @@ A Robust Ripple XRP cryptocurrency mobile transferring platform.  Ripple has dis
 
 ## Sending Ripple Cross-platform to Gatehub Wallet
 <br><br>
-![gatehub-bitcoin](/images/sending_demonstration.gif)
+![gatehub-bitcoin](/images/ripplesending.gif)
 
 ## Withdraw and Deposit in 60 different cryptocurrencies
 <br><br>
-![user-sending](/images/conversion_demonstration.gif)
+![user-sending](/images/conversions.gif)
 
 ## App Screens (iOS and Android)
 <br><br>
