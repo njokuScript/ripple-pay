@@ -26,8 +26,6 @@ A Robust Ripple XRP cryptocurrency mobile transferring platform.  Ripple has dis
 ![userSearch](/images/newest_user_search.png)
 ![sending](/images/newest_banksend.png)
 
-ripplePay is a revolutionary mobile app that implements the following
-
 ## Features
 * Users can signup and login to their accounts
 * Users can see their incoming and outgoing ripple transactions and their balance
@@ -51,6 +49,36 @@ ripplePay is a revolutionary mobile app that implements the following
 * If quoted, the user has 10 minutes to exchange currencies at that rate after which the user will be redirected to the home page.
 * Once they send, their Ripple will be converted to the other currency and received on the receiving end as that currency
 * They can also use the Shapeshift Deliver Address to send to and that will be received as Ripple into their ripplePay wallet
+
+# Detailed Implementation
+## Ripple Protocol
+* 10 Ripple Addresses currently operate as operational addresses or 'hot wallets' and 1 Ripple Address acts as the Issuing Address or 'cold wallet'.
+* Hot wallets are used the most and have a lower amount of money in them than the cold wallet which functions as the centralized bank.
+* The spread of money amongst multiple addresses and the usage of multiple secret keys reduces the risk of losing a large chunk of money all at once. A hacker would have to hack into all of these addresses to steal all of the money.
+* As the cold wallet is the most important, it makes as few transactions as possible and uses its secret key to sign transactions the least. This limits the number of times the secret key is vulnerable. Even though ripplePay turns off the server when signing transactions, this is an extra measure of security.
+### User money storage on hot wallet
+* A user's money is stored on a hot wallet and user's a given an address with a maximum of 5 destination tags. In this way they have '5 wallets' max when in all reality they don't have a personal wallet or access to secret keys. They do not have to keep their secret key, worry about losing it, or anything. Their money is stored with ripplePay. RipplePay has the secret keys.
+* Benefits: Users can send money to each other Free of Charge. ripplePay simply changes their balances in the database.
+### How a transaction is made through Ripple
+* If a user wants to send to a non-user, they would need the other user's address and maybe their destination tag if they have one. I.E. Kraken also uses destination tags so they would need a DT there.
+* When a transaction is made, a new node is added to the Ripple Ledger, which is a blockchain. This node stores the address, the destination tag, the source tag, and the transaction ID. When a user sends money, the Ripple stores their destination tag as source tag and when they receive, it is stored as a destination tag
+### How ripplePay gets a user's transactions and balance
+* Using the getTransactions(address) call through the Ripple API, ripplePay can get all of the transactions belonging to a particular address on the ledger, i.e. one of ripplePay operational addresses
+* By storing a user's last transaction ID, their cash Register aka their operational address, and their destination tags, ripplePay iterates through the array returned by Ripple API and finds a user's transactions by source tags or destination tags that match the user's. The iteration stops at the last transaction ID and incorporates the matched transactions into the database entry for that user's transactions, changing the balance as well. It also stores the first match as the new 'last transaction ID' database entry for the user.
+* This way, only the necessary transactions are incorporated into calcululating the user's balance. This optimizes time and efficiency as well since all the of the transactions from the getTransactions(address) call for the user don't have to be traversed.
+* Async.mapseries function is used in the Node.js backend iteration because Node.js is single threaded and this iteration through transactions could be 'blocking' if placed in a normal 'for loop'.
+### Wallet Generation
+* When a user requests a new wallet they are given a destination tag, which is a base-32 number. If the user does not have a hot wallet register to him/her, then a node.js controller function will generate that wallet for the user.
+* Hot wallet generation for the user is a meticulous process. ripplePay will calculate the hot wallet within all of its hot wallets that has the median balance based on all of the hot wallets. This is done because the user could use this hot wallet for sending OR receiving money and giving the user a hot wallet with the median balance will minimize hot wallet refilling.
+### Hot Wallet Refilling
+* If a user requests to send money from the hot wallet that he/she is assigned to and the user has enough balance to make the transaction but the hot wallet does not have enough balance, ripplePay will have to refill this hot wallet by using the cold wallet (issuing address).
+* Wallet refilling is the only cost incurred to ripplePay directly and because the user is requesting to send money and must pay ripplePay a small fee of 0.02 XRP to make the transaction, ripplePay will incur not cost after wallet refilling. Wallet refilling only occurs when a user make a request to send money and is willing to pay a fee.
+## Shapeshift API
+* Using the Shapeshift API, ripplePay is able to take a user's XRP and convert it to 60 other cryptocurrencies or vice versa.
+* To withdraw BTC for instance, a user only needs the send address and the amount of XRP they want to send. Shapeshift will calculate the rest, stating how much Bitcoin the send address will receive and how much the fee incurred by the user through Shapeshift will be. If the user decided he is ok with this transaction, he can just press 'Withdraw' and poof, ripplePay handles the middleman work.
+* ripplePay will send the user's XRP from their ripple wallet to one of Shapeshift's intermediary ripple addresses. Shapeshift also gives a destination tag to use for ripplePay to send to. After a certain amount of time that Shapeshift requires to validate and send the Bitcoin to the send address, the user will have sent Bitcoin to the send address by incurring costs in XRP through ripplePay.
+* The user does not have to worry about copy and pasting the Shapeshift address and destination tag and sending to that address to start the conversion because ripplePay handles all of that internally.
+* To receive Bitcoin, Shapeshift will give the user one of their Bitcoin addresses to send to and because ripplePay has linked the user's wallet to this transaction, the user will receive Ripple when they send Bitcoin or any other cryptocurrency into the app. This will show up in their balance.
 
 ## Current Security Features
 * Passwords are never stored, instead a hashed password is stored with bcrypt
