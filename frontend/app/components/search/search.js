@@ -199,8 +199,7 @@ class Search extends React.Component {
     },
     resultsContainer: {
       flex: 1,
-      marginBottom: 75,
-      marginTop: -20
+      marginBottom: 75
     },
     resultsInfo: {
       flex: 1,
