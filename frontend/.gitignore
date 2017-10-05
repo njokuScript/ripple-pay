@@ -3,6 +3,8 @@
 
 .DS_Store
 
+frontend/ios/
+
 # Xcode
 #
 build/
