@@ -35,7 +35,7 @@ class Wallet extends React.Component {
   // }
 
   onNavigatorEvent(event){
-    if ( event.id === "didAppear" )
+    if ( event.id === "willAppear" )
     {
       this.props.requestOldAddress(this.props.user.user_id);
       this.props.requestAllWallets(this.props.user.user_id);

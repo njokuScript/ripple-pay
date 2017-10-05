@@ -1,0 +1,12 @@
+dependencies: \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTTouchEvent.m \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTTouchEvent.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTEventDispatcher.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/React/Base/RCTAssert.h

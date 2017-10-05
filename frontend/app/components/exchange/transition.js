@@ -39,7 +39,7 @@ class Transition extends Component {
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "didAppear" )
+    if ( event.id === "willAppear" )
     {
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
       this.props.requestOldAddress(this.props.user.user_id);
@@ -261,23 +261,28 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingLeft: 8,
     margin: 45,
-    marginTop: 0,
+    width: 300,
+    marginTop: -10,
     top: 40,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    // alignItems: 'center',
+    // alignSelf: 'center',
   },
   titleContainer: {
-    padding: 0,
-    alignItems: 'center',
+    // padding: 0,
+    // alignItems: 'center',
   },
 
   title: {
     color: '#F2CFB1',
     fontSize: 35,
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 0,
-    flex: 1,
-    top: 10,
+    textAlign: 'center',
+    // marginTop: 20,
+    // marginBottom: 20,
+    // padding: 0,
+    // flex: 1,
+    // top: 10,
     fontFamily: 'Kohinoor Bangla'
   },
 
@@ -295,7 +300,9 @@ const styles = StyleSheet.create({
     // borderColor: 'green',
     borderBottomWidth: 0,
     shadowOpacity: 0.3,
-    padding: 7
+    padding: 7,
+    borderColor: 'white',
+    color: 'white'
   },
   formError: {
     color: 'red'

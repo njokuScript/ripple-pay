@@ -3,26 +3,26 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 // import {configureStore} from '../store';
 //KINDA HCKY BUT I'M IMPORTING THE ENTIRE STORE.
-import theStore from '../../index.ios.js';
 import { SIGNIN_URL, SIGNUP_URL, BANK_SEND_URL, TRANSACTIONS_URL, OLDADDR_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
 //Look at authreducer for defaultstate of user.
 //Log the user out after 7 minutes of inactivity.
-var timer;
+let timer;
 finishAndBeginTimer = ()=> {
-  window.clearTimeout(timer);
-  timer = window.setTimeout(function(){
-    theStore.dispatch(thisunauthUser);
-    theStore.dispatch(addAlert("Session Timed Out Due to Inactivity"));
-  },99999999);
+  // window.clearTimeout(timer);
+  // timer = window.setTimeout(function(){
+  //   theStore.dispatch(thisunauthUser);
+  //   theStore.dispatch(addAlert("Session Timed Out Due to Inactivity"));
+  // },9999);
 }
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
-      var {user_id, token} = response.data;
+      console.log('hliadlfkjs');
+      let {user_id, token} = response.data;
       // Keychain.setGenericPassword(user_id, token)
       //   .then(function() {
           dispatch(authUser(user_id))
@@ -50,7 +50,8 @@ exports.requestOldAddress = (user_id) => {
 exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
     return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
-      var {user_id, token} = response.data;
+      console.log('hliadlfkjs');
+      let {user_id, token} = response.data;
       // Keychain.setGenericPassword(user_id, token)
       //   .then(function() {
           dispatch(authUser(user_id));
@@ -69,7 +70,7 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, user
   finishAndBeginTimer();
   return function(dispatch) {
     return axios.post(SEND_URL, {amount, fromAddress, toAddress, sourceTag, toDesTag, userId}).then((response) => {
-      var {message} = response.data;
+      let {message} = response.data;
       let respMessage;
       if ( message === "tesSUCCESS" )
       {
@@ -113,7 +114,7 @@ exports.sendInBank = (sender_id, receiver_id, amount) => {
   finishAndBeginTimer();
   return function(dispatch){
     return axios.post(BANK_SEND_URL, {sender_id, receiver_id, amount}).then((response)=>{
-      var {message} = response.data;
+      let {message} = response.data;
       dispatch(addAlert(message));
     })
   }

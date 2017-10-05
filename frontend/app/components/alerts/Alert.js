@@ -14,7 +14,7 @@ class Alert extends React.Component {
     super(props);
   }
   onRemoveAlert() {
-    var {dispatch, alert} = this.props;
+    let {dispatch, alert} = this.props;
     dispatch(removeAlert(alert.id));
   }
   render() {

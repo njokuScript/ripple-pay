@@ -36,7 +36,7 @@ class Exchange extends Component {
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "didAppear" )
+    if ( event.id === "willAppear" )
     {
       this.props.requestAllCoins();
     }
@@ -62,8 +62,9 @@ class Exchange extends Component {
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
   navWallet(){
-    this.props.navigation.switchToTab({
-      tabIndex: 2
+    this.props.navigator.push({
+      screen: 'Wallet',
+      navigatorStyle: {navBarHidden: true}
     })
   }
 
@@ -216,7 +217,7 @@ class Exchange extends Component {
     else
     {
       showCoins = (
-        <View>Loading...</View>
+        <View><Text>Loading...</Text></View>
       );
     }
     return (
