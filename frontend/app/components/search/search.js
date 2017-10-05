@@ -36,7 +36,7 @@ class Search extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps,prevState){
+  componentDidUpdate(prevProps, prevState){
     if ( prevState.query !== this.state.query )
     {
       this.requestUsers(this.state.query);
@@ -52,7 +52,7 @@ class Search extends React.Component {
     });
   }
 
-//Disregard where your id is equal to the user id that comes back.
+// Disregard where your id is equal to the user id that comes back.
   makeUsers(){
     let theUsers;
     if ( this.props.users )
@@ -142,7 +142,7 @@ class Search extends React.Component {
       padding: 5,
       paddingLeft: 15,
       margin: 30,
-      width: 345
+      width: 325
     },
     textInput: {
       height: 35,

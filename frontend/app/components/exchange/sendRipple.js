@@ -79,9 +79,6 @@ class SendRipple extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            Send Your Ripple
-          </Text>
         </View>
         <View style={styles.field}>
           <TextInput
@@ -93,6 +90,7 @@ class SendRipple extends Component {
             }
             autoFocus={true}
             autoCorrect={false}
+            keyboardAppearance={'dark'}
             autoCapitalize={'none'}
             style={styles.textInput}/>
           <View>
@@ -108,6 +106,8 @@ class SendRipple extends Component {
             }
             autoCorrect={false}
             autoCapitalize={'none'}
+            keyboardType={'number-pad'}
+            keyboardAppearance={'dark'}
             style={styles.textInput}/>
           <View>
           </View>
@@ -122,12 +122,14 @@ class SendRipple extends Component {
             }
             autoCorrect={false}
             autoCapitalize={'none'}
+            keyboardType={'number-pad'}
+            keyboardAppearance={'dark'}
             style={styles.textInput}/>
           <View>
           </View>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity disabled={this.state.disabled} onPress={this.sendPayment}>
+          <TouchableOpacity style={styles.touchableButton} disabled={this.state.disabled} onPress={this.sendPayment}>
             <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
               Send Payment
             </Text>
@@ -159,23 +161,10 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: '#111F61',
   },
-
   titleContainer: {
     padding: 0,
     alignItems: 'center',
   },
-
-  title: {
-    color: '#F2CFB1',
-    fontSize: 35,
-    // marginTop: 20,
-    // marginBottom: 20,
-    // padding: 20,
-    // flex: 1,
-    top: 20,
-    fontFamily: 'Kohinoor Bangla'
-  },
-
   field: {
     borderRadius: 5,
     padding: 5,
@@ -185,17 +174,23 @@ const styles = StyleSheet.create({
     top: 40,
     backgroundColor: '#fff'
   },
-
   textInput: {
     height: 26,
     fontFamily: 'Kohinoor Bangla'
   },
-
+  touchableButton: {
+    backgroundColor: '#0F1C52',
+    borderRadius: 50,
+    paddingTop: 10,
+    paddingBottom: 10,
+    width: 250,
+    overflow: 'hidden',
+  },
   buttonContainer: {
-    padding: 0,
+    padding: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 30
+    top: 80
   },
   redtext: {
     color: 'red',
@@ -212,26 +207,20 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   greenbutton: {
-    fontSize: 30,
-    color: 'green',
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+    fontSize: 20,
+    color: 'white',
     fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: 'green',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
+    textAlign: 'center'
   },
   redbutton: {
-    fontSize: 30,
+    backgroundColor: 'transparent',
+    fontWeight: '400',
+    fontSize: 20,
     color: 'red',
     fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: 'red',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
+    textAlign: 'center'
   },
   formError: {
     color: 'red'
