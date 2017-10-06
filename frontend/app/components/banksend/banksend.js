@@ -24,18 +24,18 @@ class BankSend extends Component {
       amount: "",
       disabled: false
     }
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  onNavigatorEvent(event){
-    if ( event.id === "bottomTabSelected" )
-    {
-      this.props.navigator.resetTo({
-        screen: 'Search',
-        navigatorStyle: {navBarHidden: true}
-      });
-    }
-  }
+  // onNavigatorEvent(event){
+  //   if ( event.id === "bottomTabSelected" )
+  //   {
+  //     this.props.navigator.resetTo({
+  //       screen: 'Search',
+  //       navigatorStyle: {navBarHidden: true}
+  //     });
+  //   }
+  // }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
@@ -59,6 +59,11 @@ class BankSend extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.topContainer}>
+          <TouchableOpacity onPress={() => this.props.navigator.pop({
+            animationType: 'fade'
+          })}>
+            <Text><Icon name="chevron-left" size={30} color={"white"}/></Text>
+          </TouchableOpacity>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
               Send Ripple to {this.props.otherUser}
@@ -103,12 +108,6 @@ class BankSend extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
-  mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
-     alignItems: 'center',
-     backgroundColor: '#111F61',
-   },
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     height: 90,
-    paddingTop: 10,
+    paddingTop: 10
   },
   container: {
     flex: 1,
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingLeft: 15,
     margin: 30,
-    marginTop: 10,
+    marginTop: -20,
     top: 90
   },
   textInput: {

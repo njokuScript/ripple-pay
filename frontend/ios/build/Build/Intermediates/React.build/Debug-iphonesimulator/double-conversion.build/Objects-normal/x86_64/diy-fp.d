@@ -1,4 +1,4 @@
 dependencies: \
-  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/third-party/double-conversion-1.1.5/src/diy-fp.cc \
-  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/third-party/double-conversion-1.1.5/src/diy-fp.h \
-  /Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native/third-party/double-conversion-1.1.5/src/utils.h
+  /Users/jon/Desktop/ripple-pay/frontend/node_modules/react-native/third-party/double-conversion-1.1.5/src/diy-fp.cc \
+  /Users/jon/Desktop/ripple-pay/frontend/node_modules/react-native/third-party/double-conversion-1.1.5/src/diy-fp.h \
+  /Users/jon/Desktop/ripple-pay/frontend/node_modules/react-native/third-party/double-conversion-1.1.5/src/utils.h

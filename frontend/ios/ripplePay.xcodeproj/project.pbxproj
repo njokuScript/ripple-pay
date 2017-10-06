@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -49,6 +48,9 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		F99AAD0D0B9C4E0EB23D32C8 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8570A9F9BB534BA8845903B4 /* Foundation.ttf */; };
 		FE72B60CE1E74ACCBB82A38D /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F464FDB6A4E439EA72D1915 /* Entypo.ttf */; };
+		C2FE1E92EC4D41819070EFEB /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E27230971564FD2A81DEC12 /* Feather.ttf */; };
+		24A153F9B6C8485EB084ACE3 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9ACB2CD191FE40D28867B8A8 /* MaterialCommunityIcons.ttf */; };
+		9681D6902DC242F184176BC6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F6E265E54D743D9B70822B4 /* SimpleLineIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -362,6 +364,9 @@
 		87B74FB804C34D0CB5CCBAAB /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		9EAACFEEABBE4F928A6C0F33 /* RNKeychain.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNKeychain.xcodeproj; path = "../node_modules/react-native-keychain/RNKeychain.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		7E27230971564FD2A81DEC12 /* Feather.ttf */ = {isa = PBXFileReference; name = "Feather.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9ACB2CD191FE40D28867B8A8 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; name = "MaterialCommunityIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5F6E265E54D743D9B70822B4 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -651,6 +656,9 @@
 				87B74FB804C34D0CB5CCBAAB /* MaterialIcons.ttf */,
 				5AC6BBB34C70431F8E176882 /* Octicons.ttf */,
 				21838330C35443AEA2D9718B /* Zocial.ttf */,
+				7E27230971564FD2A81DEC12 /* Feather.ttf */,
+				9ACB2CD191FE40D28867B8A8 /* MaterialCommunityIcons.ttf */,
+				5F6E265E54D743D9B70822B4 /* SimpleLineIcons.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1129,6 +1137,9 @@
 				4338293DEF1946049F1E2759 /* MaterialIcons.ttf in Resources */,
 				173973C60F234022926BFBE4 /* Octicons.ttf in Resources */,
 				0C266E912BBA4C59809E7581 /* Zocial.ttf in Resources */,
+				C2FE1E92EC4D41819070EFEB /* Feather.ttf in Resources */,
+				24A153F9B6C8485EB084ACE3 /* MaterialCommunityIcons.ttf in Resources */,
+				9681D6902DC242F184176BC6 /* SimpleLineIcons.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

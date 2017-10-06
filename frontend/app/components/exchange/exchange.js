@@ -72,7 +72,10 @@ class Exchange extends Component {
     this.props.navigator.push({
       screen: 'SendRipple',
       animation: true,
-      animationType: 'fade'
+      animationType: 'fade',
+      navigatorStyle: {
+        navBarHidden: true,
+      },
     });
   }
 
