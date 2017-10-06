@@ -22,7 +22,7 @@ DerivedData23
 *.ipa
 *.xcuserstate
 project.xcworkspace
-/ios
+ios/
 
 # Android/IJ
 #

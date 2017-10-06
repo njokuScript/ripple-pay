@@ -90,6 +90,9 @@ class Search extends React.Component {
    return (
      <View style={styles.mainContainer}>
        <View style={styles.topContainer}>
+         <TouchableOpacity style={styles.nav} onPress={() => this.props.navigator.pop()}>
+           <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
+         </TouchableOpacity>
         <View style={styles.searchContainer}>
           <View style={styles.field}>
             <TextInput
@@ -124,6 +127,9 @@ class Search extends React.Component {
      flex: 1,
      justifyContent: 'center',
      backgroundColor: 'white'
+   },
+   nav: {
+    marginLEft: 10
    },
    topContainer: {
      flex: -1,
