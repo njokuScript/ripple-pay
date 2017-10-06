@@ -45,10 +45,14 @@ class Search extends React.Component {
 
   navBankSend(receiver_id, otherUser) {
     this.props.navigator.push({
+      backButtonTitle: "",
       screen: 'Banksend',
       passProps: {receiver_id: receiver_id, otherUser: otherUser},
       animation: true,
-      animationType: 'fade'
+      animationType: 'fade',
+      navigatorStyle: {
+        navBarHidden: true,
+      },
     });
   }
 

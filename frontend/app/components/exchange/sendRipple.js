@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/Entypo';
 
 // create a component
 //I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
@@ -27,18 +27,8 @@ class SendRipple extends Component {
       amount: "",
       disabled: false,
     }
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  onNavigatorEvent(event){
-    if ( event.id === "bottomTabSelected" )
-    {
-      this.props.navigator.resetTo({
-        screen: 'Exchange',
-        navigatorStyle: {navBarHidden: true}
-      })
-    }
-  }
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
@@ -78,7 +68,12 @@ class SendRipple extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
+        <View style={styles.topContainer}>
+          <TouchableOpacity onPress={() => this.props.navigator.pop({
+            animationType: 'fade'
+            })}>
+            <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.field}>
           <TextInput
@@ -90,44 +85,47 @@ class SendRipple extends Component {
             }
             autoFocus={true}
             autoCorrect={false}
+            placeholderTextColor="#6D768B"
             keyboardAppearance={'dark'}
             autoCapitalize={'none'}
             style={styles.textInput}/>
           <View>
           </View>
         </View>
-        <View style={styles.field}>
-          <TextInput
-            placeholder="Destination Tag - optional"
-            onChangeText={
-              (des) => {
-                this.setState({toDesTag: des});
+        <View style={styles.inputField}>
+          <View style={styles.field}>
+            <TextInput
+              placeholder="Destination Tag - optional"
+              onChangeText={
+                (des) => {
+                  this.setState({toDesTag: des});
+                }
               }
-            }
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            keyboardType={'number-pad'}
-            keyboardAppearance={'dark'}
-            style={styles.textInput}/>
-          <View>
+              autoCorrect={false}
+              autoCapitalize={'none'}
+              placeholderTextColor="#6D768B"
+              keyboardType={'number-pad'}
+              keyboardAppearance={'dark'}
+              style={styles.textInput}/>
+            <View>
+            </View>
           </View>
-        </View>
-        <View style={styles.field}>
-          <TextInput
-            placeholder="Amount"
-            onChangeText={
-              (amt) => {
-                this.setState({amount: amt});
-              }
-            }
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            keyboardType={'number-pad'}
-            keyboardAppearance={'dark'}
-            style={styles.textInput}/>
-          <View>
+            <View style={styles.field}>
+              <TextInput
+                placeholder="Amount"
+                onChangeText={
+                  (amt) => {
+                    this.setState({amount: amt});
+                  }
+                }
+                autoCorrect={false}
+                placeholderTextColor="#6D768B"
+                autoCapitalize={'none'}
+                keyboardType={'number-pad'}
+                keyboardAppearance={'dark'}
+                style={styles.textInput}/>
+            </View>
           </View>
-        </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.touchableButton} disabled={this.state.disabled} onPress={this.sendPayment}>
             <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
@@ -135,12 +133,11 @@ class SendRipple extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <Text style={styles.redtoptext}>
-          Transaction Fee: 0.02 XRP
-        </Text>
-        <Text style={styles.redtext}>
-          Warning: You will be charged a fee if you send to other party and they require a destination tag or if you send less than 20 ripple to a new wallet
-        </Text>
+        <View style={styles.fee}>
+          <Text style={styles.redtoptext}>
+            transaction Fee: 0.02 XRP
+          </Text>
+        </View>
       </View>
     );
   }
@@ -148,31 +145,28 @@ class SendRipple extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
-  mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
-     alignItems: 'center',
-     backgroundColor: '#111F61',
-   },
   container: {
     flex: 1,
+    flexDirection: "column",
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 0,
     backgroundColor: '#111F61',
+    paddingTop: 20
   },
-  titleContainer: {
-    padding: 0,
-    alignItems: 'center',
+  inputField: {
+    marginBottom: -110
+  },
+  topContainer: {
+    marginBottom: -10
   },
   field: {
+    backgroundColor: '#0F1C52',
     borderRadius: 5,
     padding: 5,
-    paddingLeft: 8,
-    margin: 45,
-    marginTop: 0,
-    top: 40,
-    backgroundColor: '#fff'
+    paddingLeft: 15,
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
   },
   textInput: {
     height: 26,
@@ -190,7 +184,7 @@ const styles = StyleSheet.create({
     padding: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 80
+    top: 100
   },
   redtext: {
     color: 'red',
@@ -201,8 +195,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   redtoptext: {
-    color: 'red',
-    fontSize: 15,
+    color: 'white',
+    fontFamily: 'Kohinoor Bangla',
+    fontSize: 13,
     textAlign: 'center',
     marginTop: 50
   },
@@ -224,6 +219,9 @@ const styles = StyleSheet.create({
   },
   formError: {
     color: 'red'
+  },
+  fee: {
+    marginTop: 30
   }
 });
 
