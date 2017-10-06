@@ -154,15 +154,16 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   inputField: {
-    marginBottom: -110
+    marginBottom: -100
   },
   topContainer: {
-    marginBottom: -10
+    marginBottom: -10,
+    marginLeft: 10
   },
   field: {
     backgroundColor: '#0F1C52',
     borderRadius: 5,
-    padding: 5,
+    padding: 10,
     paddingLeft: 15,
     marginLeft: 30,
     marginRight: 30,

@@ -59,7 +59,9 @@ class BankSend extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.topContainer}>
-          <TouchableOpacity onPress={()=> this.props.navigator.pop()}>
+          <TouchableOpacity onPress={() => this.props.navigator.pop({
+            animationType: 'fade'
+          })}>
             <Text><Icon name="chevron-left" size={30} color={"white"}/></Text>
           </TouchableOpacity>
           <View style={styles.titleContainer}>
