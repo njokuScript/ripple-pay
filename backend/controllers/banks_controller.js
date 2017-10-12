@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt-nodejs');
 
 //Since there is a very low chance of a coincide, this shouldn't have to recurse at all
 //or more than once ever.
-// DesTags are in 32 bits
+// DesTags are in 32 bits/
 exports.receiveOnlyDesTag = function(req, res, next){
   let {user_id, cashRegister} = req.body;
   let newTag;
