@@ -44,3 +44,4 @@ android/keystores/debug.keystore
 frontend/ios/
 frontend/ios/build/
 node_modules/
+ios
