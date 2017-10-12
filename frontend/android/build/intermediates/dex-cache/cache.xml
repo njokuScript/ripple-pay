@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-keychain/android/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="097c8c725fd3a72aa368100645a18f786aac5dbc">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_8c67da0dcfad205ba3522e02b2578c0029132ebe.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/9ae16e0950f38f9d1a372fa66343d7240f57c41d/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="67127c9b29c164cd2c17726630cde41ce614d811">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_b2e8f0047f85cf7bd517648cd3d3087438e6fa4e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/7037f0a1fe151cd64d5a4d5d5f6267a1c9f5612b/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="56d3e81fee5f47a7a12ab65f4620f580c9c71d1e">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_0dc3bf6df98b5a488683502a1c8446ea12cfad35.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/420ffe6e960a8296783f0af52d7ec3e75ddd8f33/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="48c7f54c2515a2312d3a4481d10c43fbb807f3af">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_5aa4d24cf6bae2cf76ffb554ce64a85c0822cce1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-vector-icons/android/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="f2cf527de8d0bd35d72088fafea02395ba4a9eec">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_2a80a58658b4f9e7cabd7ef53d39b5c145103e72.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/62775e37136065623cc271375687eb3b02429fd9/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="72128af126ddd7d6252da9357fe560d3abcdfb0c">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_652f21a04a4ea1ce9344e21e5d6fce42decc4ef0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/eb7c3f6dabd6de1eb0f3286eba473dd72107f27e/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="c65a2e39d54023bac3aef64a2f0cff89289c7ff6">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_51e1d7da5098718b5742846c568070afe6b2069c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/5afca0f2117a9a3b05bb9728ed49449d9c7f112e/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="37345de2ed2772f385eaeec37a9c2ff0fea99ad7">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_4794d2bd383b93a69db1ac2b2d2f6717dc8b49b5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/bae0c602daf374784daa2bd38e61a322444d04c0/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="fe85b87215e405f5917d40ae4960488ac9224b74">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_a0caf194952bba22eafba5b5e6257447fcb92dff.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/7037f0a1fe151cd64d5a4d5d5f6267a1c9f5612b/output/jars/libs/infer-annotations-4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="9809e90be788acdb479b2b44e2112f3295a03068">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/infer-annotations-4.0_8c4edfb2327872bf520c2cfcaa701b308588d9ac.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/Desktop/ripple-pay/frontend/node_modules/react-native-navigation/android/app/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="a1ee08e5de35079c2d5542633552d5aee66f5b3c">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_424b39ec1410ba78ec1ce941bfdb5fe4303e0329.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/dpatel/.android/build-cache/5c0fe41d352b3d3a7613201d0a24a871a92a9a15/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="c03c08c9934b23c8c09c803345ec51a74119127b">
+        <dex dex="/Users/dpatel/Desktop/ripple-pay/frontend/android/app/build/intermediates/pre-dexed/debug/classes_02437a6dd36c7dd17c05c4b2d3578e0a6c909fed.jar" />
+    </item>
+
+</items>
