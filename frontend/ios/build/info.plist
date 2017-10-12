@@ -3,8 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>LastAccessedDate</key>
+<<<<<<< HEAD
 	<date>2017-10-11T23:13:20Z</date>
+=======
+	<date>2017-10-06T00:06:29Z</date>
+>>>>>>> 56321aeb2edd8b7fd5f13d745996e2246e3cdb6e
 	<key>WorkspacePath</key>
-	<string>/Users/dpatel/Desktop/ripple-pay/frontend/ios/ripplePay.xcodeproj</string>
+	<string>/Users/jon/Desktop/ripple-pay/frontend/ios/ripplePay.xcodeproj</string>
 </dict>
 </plist>

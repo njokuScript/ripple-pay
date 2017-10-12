@@ -145,7 +145,6 @@ exports.requestUsers = (item) => {
       dispatch(receivedUsers(users));
       // might be users.data
     }).catch((error) => {
-
     });
   };
 };

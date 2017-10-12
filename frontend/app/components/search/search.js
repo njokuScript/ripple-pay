@@ -36,7 +36,7 @@ class Search extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps,prevState){
+  componentDidUpdate(prevProps, prevState){
     if ( prevState.query !== this.state.query )
     {
       this.requestUsers(this.state.query);
@@ -45,14 +45,18 @@ class Search extends React.Component {
 
   navBankSend(receiver_id, otherUser) {
     this.props.navigator.push({
+      backButtonTitle: "",
       screen: 'Banksend',
       passProps: {receiver_id: receiver_id, otherUser: otherUser},
       animation: true,
-      animationType: 'fade'
+      animationType: 'fade',
+      navigatorStyle: {
+        navBarHidden: true,
+      },
     });
   }
 
-//Disregard where your id is equal to the user id that comes back.
+// Disregard where your id is equal to the user id that comes back.
   makeUsers(){
     let theUsers;
     if ( this.props.users )
@@ -121,6 +125,9 @@ class Search extends React.Component {
      justifyContent: 'center',
      backgroundColor: 'white'
    },
+   nav: {
+    marginLeft: 10
+   },
    topContainer: {
      flex: -1,
      backgroundColor: '#111F61',
@@ -142,7 +149,7 @@ class Search extends React.Component {
       padding: 5,
       paddingLeft: 15,
       margin: 30,
-      width: 345
+      width: 325
     },
     textInput: {
       height: 35,
