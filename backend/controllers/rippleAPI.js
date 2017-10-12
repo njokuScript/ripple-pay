@@ -196,29 +196,19 @@ const orderbook = {
   }
 };
 
-const async = require('async');
-
-let server = new Rippled();
-
-// Or, with named functions:
-async.waterfall([
-    function(callback) {
-      server.api.connect()
-      callback(null);
-    },
-    function(callback) {
-      // arg1 now equals 'one' and arg2 now equals 'two'
-      let bals = server.api.getBalances("r4QDfkUkpNSkuo4m4SnfxgDbrryrtTn883")
-      callback(null, bals)
-    },
-    function(bals, callback) {
-      // arg1 now equals 'three'
-      callback(null, bals);
-    }
-], function (err, result) {
-  console.log(result);
-    // result now equals 'done'
-});
-
+// const async = require('async');
+//
+// let server = new Rippled();
+//
+// // Or, with named functions:
+// let x = (cb) => {
+//   y();
+// }
+//
+// let y = () => {
+//   console.log("hi");
+// }
+//
+// x()
 
 module.exports = Rippled;

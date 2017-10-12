@@ -155,7 +155,7 @@ exports.sendMoney = function(req, res, next){
             });
           }
 
-          let refillCashRegister = () => {
+          let refillCashRegisterAndSend = () => {
             let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
             console.log(thePay);
             bcrypt.compare(bank[bankAddress], existingBank.secret, function (errors, respondent){
@@ -184,7 +184,7 @@ exports.sendMoney = function(req, res, next){
             // Done to check if the address has a minimum of 20 ripple in it. All addresses of ours should abide
             if ( parseFloat(balinfo[0].value) - amount < 20 )
             {
-              refillCashRegister();
+              refillCashRegisterAndSend();
             }
             else
             {
@@ -227,7 +227,7 @@ exports.generateRegister = function(req, res, next){
           cb(null, addr);
         })
       }, function(error, resp){
-          //THIS SORT IS THREADSAFE
+          //THIS SORT IS THREADSAFE and NON-BLOCKING
           async.sortBy(allbals, function(single, cb){
             cb(null, single[0])
           },function(err, respo){
@@ -253,8 +253,10 @@ exports.generateRegister = function(req, res, next){
     })
   }
 
-
-//The users balance changes AND the cash register's balance changes so we can know how much we have in each register for testing.
+// Address and Destination/Source Tag used to get user's transactions and balance
+// Last Transaction ID is the stopping point at which new balance is created.
+// Last Transaction ID is reset to the first transaction ID that matches
+// A user's address and destination tag
 exports.getTransactions = function (req, res, next) {
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
@@ -263,7 +265,7 @@ exports.getTransactions = function (req, res, next) {
   User.findOne({ _id: userId }, function (err, existingUser) {
     if (err) { return next(err); }
 
-    let finalResponse = () => {
+    let sendHomePageInfo = () => {
       res.json({
         transactions: existingUser.transactions,
         balance: existingUser.balance
@@ -333,6 +335,7 @@ exports.getTransactions = function (req, res, next) {
               // map over transactions asynchronously
               let setLastTransBool = true;
               let stopIterBool = false;
+              // Stop at a user's last transaction ID and reset the last TID.
               async.mapSeries(txnInfo, function (currTxn, cb) {
                 [setLastTransBool, stopIterBool] = manipulateTransactions(currTxn, setLastTransBool, stopIterBool);
                 if ( !stopIterBool )
@@ -346,7 +349,7 @@ exports.getTransactions = function (req, res, next) {
                 //SORTING INSIDE OF THE SERVER IS BLOCKING INSTEAD THE SORTING IS DONE IN HOME.JS CLIENT-SIDE
                 User.update({_id: existingUser._id}, changedUser, function (err) {
                   if (err) { return next(err); }
-                  finalResponse();
+                  sendHomePageInfo();
                 });
               });
             });
@@ -356,7 +359,7 @@ exports.getTransactions = function (req, res, next) {
     }
     else
     {
-      finalResponse();
+      sendHomePageInfo();
     }
   });
 };
