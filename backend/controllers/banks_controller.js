@@ -363,35 +363,68 @@ exports.generateRegister = function(req, res, next){
   let server = new Rippled();
   let x = req.query;
   let userId = x[Object.keys(x)[0]];
-  User.findOne({ _id: userId }, function (err, existingUser) {
-    if (err) { return next(err);}
-    server.connect().then(() => {
-      let allbals = [];
-      let minAddr;
-      let newBal;
-      //I am getting the median balance cash register and using it.
-      async.mapSeries(adds, function(addr, cb){
-        server.api.getBalances(addr).then((info) => {
-          allbals.push([parseFloat(info[0].value), addr]);
-          cb(null, addr);
-        })
-      }, function(error, resp){
-          //THIS SORT IS THREADSAFE and NON-BLOCKING
-          async.sortBy(allbals, function(single, cb){
-            cb(null, single[0])
-          },function(err, respo){
-            let newregister = respo[Math.floor(allbals.length/2)][1];
-            User.update({_id: existingUser._id}, {cashRegister: newregister}, function (err) {
-              if (err) { return next(err); }
-              res.json({
-                cashRegister: newregister
-              });
+
+  let makeRegister = asynchronous (function(){
+    let existingUser = await (User.findOne({ _id: userId }));
+    await (server.connect());
+    let allbals = [];
+    let minAddr;
+    let newBal;
+    async.mapSeries(adds, function(addr, cb){
+      server.api.getBalances(addr).then((info) => {
+        allbals.push([parseFloat(info[0].value), addr]);
+        cb(null, addr);
+      })
+    }, function(error, resp){
+      //THIS SORT IS THREADSAFE and NON-BLOCKING
+      async.sortBy(allbals, function(single, cb){
+        cb(null, single[0])
+      },function(err, respo){
+        let newregister = respo[Math.floor(allbals.length/2)][1];
+        User.update({_id: existingUser._id}, {cashRegister: newregister},
+          function (err) {
+            if (err) { return next(err); }
+            res.json({
+              cashRegister: newregister
             });
-          })
+          });
         })
       })
     })
-  }
+
+  makeRegister();
+}
+
+
+  // User.findOne({ _id: userId }, function (err, existingUser) {
+  //   if (err) { return next(err);}
+  //   server.connect().then(() => {
+  //     let allbals = [];
+  //     let minAddr;
+  //     let newBal;
+  //     //I am getting the median balance cash register and using it.
+  //     async.mapSeries(adds, function(addr, cb){
+  //       server.api.getBalances(addr).then((info) => {
+  //         allbals.push([parseFloat(info[0].value), addr]);
+  //         cb(null, addr);
+  //       })
+  //     }, function(error, resp){
+  //         //THIS SORT IS THREADSAFE and NON-BLOCKING
+  //         async.sortBy(allbals, function(single, cb){
+  //           cb(null, single[0])
+  //         },function(err, respo){
+  //           let newregister = respo[Math.floor(allbals.length/2)][1];
+  //           User.update({_id: existingUser._id}, {cashRegister: newregister}, function (err) {
+  //             if (err) { return next(err); }
+  //             res.json({
+  //               cashRegister: newregister
+  //             });
+  //           });
+  //         })
+  //       })
+  //     })
+  //   })
+  // }
 
   exports.receiveAllWallets = function(req, res, next){
     let x = req.query;
