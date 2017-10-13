@@ -2,13 +2,15 @@ import React from 'react';
 import HomeContainer from '../home/homeContainer';
 import SearchContainer from '../search/searchContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
+
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
-  Dimensions
+  Dimensions,
+  Clipboard
 } from 'react-native';
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
@@ -16,8 +18,6 @@ import Icon from 'react-native-vector-icons/Octicons';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import LinearGradient from 'react-native-linear-gradient'
 const myIcon = (<Icon name="search" size={30} color="#900" />)
-
-
 
 class Wallet extends React.Component {
   constructor(props) {
@@ -30,9 +30,6 @@ class Wallet extends React.Component {
     this.remove = this.remove.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
-
-  // componentDidMount(){
-  // }
 
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
@@ -79,6 +76,13 @@ class Wallet extends React.Component {
     }
   }
 
+  clipBoardCopy(string){
+    Clipboard.setString(string);
+    Clipboard.getString().then((str)=>{
+      return str;
+    })
+  }
+
 
   displayWallets() {
     if (this.props.wallets && this.props.wallets.length > 0) {
@@ -87,14 +91,25 @@ class Wallet extends React.Component {
         return (
           <View style={styles.wallet} key={idx}>
             <Text style={styles.walletFont}>{wallet}</Text>
+            <Text style={styles.cashRegister}
+              onPress={() => this.clipBoardCopy(wallet.toString())}
+              >Copy to clipboard</Text>
           </View>
         );
       });
+      let qrURL = `https://api.qrserver.com/v1/create-qr-code/?data=${this.props.cashRegister}&size=100x100`;
       return (
         <View style={styles.walletsContainer}>
           <View style={styles.walletAddress}>
             <Text style={styles.walletintro}>Wallet Address:</Text>
             <Text style={styles.cashRegister}>{this.props.cashRegister}</Text>
+            <Text style={styles.cashRegister}
+              onPress={() => this.clipBoardCopy(this.props.cashRegister)}
+              >Copy to clipboard</Text>
+            <Image
+             style={{width: 100, height: 100}}
+             source={{uri: qrURL}}
+           />
           </View>
           <View style={styles.destTag}>
             <Text style={styles.destintro}>Destination Tags:</Text>
@@ -244,21 +259,21 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 14
     },
-    wallet: {
-      flex: 1,
-      justifyContent: 'center',
-      // paddingLeft: 85,
-      paddingTop: 20,
-      paddingBottom: 20,
-      // marginLeft: 70,
-      // marginRight: 70,
-      marginTop: 10,
-      marginBottom: 10,
-      // borderBottomWidth: 1,
-      // borderColor: '#d3d3d3',
-      backgroundColor: 'white',
-      borderRadius: 20
-    }
+    // wallet: {
+    //   flex: 1,
+    //   justifyContent: 'center',
+    //   // paddingLeft: 85,
+    //   paddingTop: 20,
+    //   paddingBottom: 20,
+    //   // marginLeft: 70,
+    //   // marginRight: 70,
+    //   marginTop: 10,
+    //   marginBottom: 10,
+    //   // borderBottomWidth: 1,
+    //   // borderColor: '#d3d3d3',
+    //   backgroundColor: 'white',
+    //   borderRadius: 20
+    // }
 });
 
 export default Wallet;
