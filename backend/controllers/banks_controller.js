@@ -5,6 +5,8 @@ const {Bank} = require('../models/populateBank');
 const {UsedWallet} = require('../models/populateBank');
 const {Money} = require('../models/populateBank');
 const async = require('async');
+let asynchronous = require('asyncawait/async');
+let await = require('asyncawait/await');
 const {addresses, bank} = require('./addresses');
 const bcrypt = require('bcrypt-nodejs');
 
@@ -15,96 +17,163 @@ exports.receiveOnlyDesTag = function(req, res, next){
   let {user_id, cashRegister} = req.body;
   let newTag;
   let findthis;
-  let recurse = function(){
-    newTag = parseInt(Math.floor(Math.random()*4294967294));
-    findthis = `${cashRegister}${newTag}`;
-    UsedWallet.findOne({wallet: findthis}, function(err, existingWallet){
-      if (err){return next(err);}
+  let genTagRecursion = asynchronous (function(){
+      newTag = parseInt(Math.floor(Math.random()*4294967294));
+      findthis = `${cashRegister}${newTag}`;
+      let existingWallet = await (UsedWallet.findOne({wallet: findthis}))
       if ( existingWallet )
       {
         // console.log("same address and dest tag not allowed");
-        recurse();
+        genTagRecursion();
       }
       else
       {
         let theNewWallet = new UsedWallet({wallet: findthis});
-        theNewWallet.save(function(err){
-          if ( err )
-          {
-            return next(err);
-          }
-          User.update({_id: user_id}, {$push: {wallets: newTag}}, function(err){
-            if (err){return next(err);}
-            res.json({
-              destinationTag: newTag
-            });
-          })
-        })
+        await (theNewWallet.save());
+        await (User.update({_id: user_id}, {$push: {wallets: newTag}}));
+        res.json({ destinationTag: newTag });
       }
-    })
-  }
-  recurse();
+    }
+  )
+
+  genTagRecursion();
 }
+
+// UsedWallet.findOne({wallet: findthis}, function(err, existingWallet){
+//   if (err){return next(err);}
+//   if ( existingWallet )
+//   {
+//     // console.log("same address and dest tag not allowed");
+//     genTagRecurse();
+//   }
+//   else
+//   {
+//     let theNewWallet = new UsedWallet({wallet: findthis});
+//     theNewWallet.save(function(err){
+//       if ( err )
+//       {
+//         return next(err);
+//       }
+//       User.update({_id: user_id}, {$push: {wallets: newTag}}, function(err){
+//         if (err){return next(err);}
+//         res.json({
+//           destinationTag: newTag
+//         });
+//       })
+//     })
+//   }
+// })
+// })
+
 
 exports.inBankSend = function(req, res, next){
   let {sender_id, receiver_id, amount} = req.body;
-  User.findOne({_id: sender_id}, function(errorOne, sender){
-    if ( errorOne){return next(errorOne);}
+
+  let sendToUser = asynchronous (function(){
+    let sender = await (User.findOne({_id: sender_id}))
     if ( amount > sender.balance )
     {
       res.json({message: "Balance Insufficient"});
       return;
     }
-    User.findOne({_id: receiver_id}, function(errorTwo, receiver){
-      if ( errorTwo){return next(errorTwo);}
-      if ( sender && receiver )
-      {
-        let trTime = new Date;
-        let senderBal = {
-          balance: sender.balance - amount
-        }
-        let senderTransaction = {
-          date: trTime,
-          amount: -amount,
-          otherParty: receiver.screenName
-        }
-        let receiverBal = {
-          balance: receiver.balance + amount
-        }
-        let receiverTransaction = {
-          date: trTime,
-          amount: amount,
-          otherParty: sender.screenName
-        }
-        User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}, function(err){
-          if(err){return next(err);}
-          User.update({_id: receiver_id}, {$set: receiverBal, $push: {transactions: receiverTransaction}}, function(err){
-            if(err){return next(err);}
-            res.json({message: "Payment was Successful"});
-          })
-        })
+    let receiver = await (User.findOne({_id: receiver_id}))
+    if ( sender && receiver )
+    {
+      let trTime = new Date;
+      let senderBal = {
+        balance: sender.balance - amount
       }
-      else
-      {
-        res.json({message: "Payment Unsuccessful"});
+      let senderTransaction = {
+        date: trTime,
+        amount: -amount,
+        otherParty: receiver.screenName
       }
-    })
+      let receiverBal = {
+        balance: receiver.balance + amount
+      }
+      let receiverTransaction = {
+        date: trTime,
+        amount: amount,
+        otherParty: sender.screenName
+      }
+      await (User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}))
+      await (User.update({_id: receiver_id}, {$set: receiverBal, $push: {transactions: receiverTransaction}}))
+      res.json({message: "Payment was Successful"});
+    }
+    else
+    {
+      res.json({message: "Payment Unsuccessful"})
+    }
   })
+
+  sendToUser();
 }
+// User.findOne({_id: sender_id}, function(errorOne, sender){
+//   if ( errorOne){return next(errorOne);}
+//   if ( amount > sender.balance )
+//   {
+//     res.json({message: "Balance Insufficient"});
+//     return;
+//   }
+//   User.findOne({_id: receiver_id}, function(errorTwo, receiver){
+//     if ( errorTwo){return next(errorTwo);}
+//     if ( sender && receiver )
+//     {
+//       let trTime = new Date;
+//       let senderBal = {
+//         balance: sender.balance - amount
+//       }
+//       let senderTransaction = {
+//         date: trTime,
+//         amount: -amount,
+//         otherParty: receiver.screenName
+//       }
+//       let receiverBal = {
+//         balance: receiver.balance + amount
+//       }
+//       let receiverTransaction = {
+//         date: trTime,
+//         amount: amount,
+//         otherParty: sender.screenName
+//       }
+//       User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}, function(err){
+//         if(err){return next(err);}
+//         User.update({_id: receiver_id}, {$set: receiverBal, $push: {transactions: receiverTransaction}}, function(err){
+//           if(err){return next(err);}
+//           res.json({message: "Payment was Successful"});
+//         })
+//       })
+//     }
+//     else
+//     {
+//       res.json({message: "Payment Unsuccessful"});
+//     }
+//   })
+// })
 
 exports.deleteWallet = function(req, res, next){
   let {user_id, desTag, cashRegister} = req.body;
   let findthiswallet = `${cashRegister}${desTag}`;
-  User.update({_id: user_id}, {$pull: {wallets: desTag}}, function(err){
-    if (err){return next(err);}
-    UsedWallet.findOneAndRemove({wallet: findthiswallet}, function(err){
-      if ( err ){return next(err);}
-      res.json({
+  let removeWallet = asynchronous (function(){
+  await (User.update({_id: user_id}, {$pull: {wallets: desTag}}));
+  await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
+    res.json({
 
-      });
-    })
+    });
   })
+
+  removeWallet();
 }
+
+// User.update({_id: user_id}, {$pull: {wallets: desTag}}, function(err){
+//   if (err){return next(err);}
+//   UsedWallet.findOneAndRemove({wallet: findthiswallet}, function(err){
+//     if ( err ){return next(err);}
+//     res.json({
+//
+//     });
+//   })
+// })
 
 exports.sendMoney = function(req, res, next){
   const Rippled = require('./rippleAPI');
@@ -112,93 +181,173 @@ exports.sendMoney = function(req, res, next){
   let {amount, fromAddress, toAddress, sourceTag, toDesTag, userId} = req.body;
   let bankAddress = Object.keys(bank)[0];
 
-  Bank.findOne({address: bankAddress}, function(err, existingBank){
-    User.findOne({_id: userId}, function(err, existingUser){
-      if ( amount > existingUser.balance )
-      {
-        res.json({message: "Balance Insufficient"});
-        return;
-      }
-      server.connect().then(() => {
-        const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
-        console.log(myPayment);
-        CashRegister.findOne({address: fromAddress}, function(err, register){
-          if (err) { return next(err); }
-
-          let sendMyMoney = () => {
-            bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
-              if ( respondence === true )
-              {
-                server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
-                  let theFee = orderinfo.instructions.fee;
-                  //VVIMP - WE ARE SIGNING THE TRANSACTIONS WHILE THE SERVER IS TURNED OFF FOR EXTRA SECURITY
-                  server.api.disconnect().then(()=>{
-                    let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
-                    let signedTransact = jstring.signedTransaction;
-                    server.connect().then(()=>{
-                      let numberFee = parseFloat(theFee);
-                      Money.update({}, {$inc: {cost: numberFee, revenue: 0.02, profit: 0.02 - numberFee}}, function(err){
-                        if(err){return next(err);}
-                        server.api.submit(signedTransact).then((result) => {
-                          console.log(result);
-                          res.json({message: result.resultCode});
-                        }).catch(message => res.json({message: "Error In submitting transaction"}));
-                      })
-                    })
-                  })
-                }).catch(message => res.json({message: "Error in submitting transaction"}))
-              }
-              else
-              {
-                res.json({message: "Someone's Trying to Get into Your Wallet"});
-              }
-            });
+  let mainFunction = asynchronous (function(){
+    let existingUser = await (User.findOne({_id: userId}));
+    if ( amount > existingUser.balance )
+    {
+       res.json({message: "Balance Insufficient"});
+       return;
+    }
+    await (server.connect());
+    const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
+    console.log(myPayment);
+    let balInfo = await (server.api.getBalances(fromAddress));
+    let register = await (CashRegister.findOne({address: fromAddress}));
+    let sendMyMoney = asynchronous (function(){
+      bcrypt.compare(addresses[fromAddress], register.secret, asynchronous (function(err, theResponse){
+        if (err) { return next(err)}
+        // IMP: MUST REMOVE THE TRY AND CATCH IF YOU WANT TO SEE THE ERRORS WHILE DEBUGGING
+        if ( theResponse )
+        {
+          try {
+            let orderinfo = await (server.api.preparePayment(fromAddress, myPayment));
+            let theFee = orderinfo.instructions.fee;
+            await (server.api.disconnect());
+            let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
+            let signedTransact = jstring.signedTransaction;
+            await (server.connect());
+            let numberFee = parseFloat(theFee);
+            await (Money.update({}, {$inc: {cost: numberFee, revenue: 0.02, profit: 0.02 - numberFee}}));
+            let result = await (server.api.submit(signedTransact));
+            console.log(result);
+            res.json({message: result.resultCode});
           }
-
-          let refillCashRegisterAndSend = () => {
-            let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
-            console.log(thePay);
-            bcrypt.compare(bank[bankAddress], existingBank.secret, function (errors, respondent){
-              if ( respondent === true )
-              {
-                server.api.preparePayment(bankAddress, thePay).then((theOrderInfo) =>{
-                  server.api.disconnect().then(()=>{
-                    let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
-                    let theSignedTransact = theJstring.signedTransaction;
-                    server.connect().then(()=>{
-                      server.api.submit(theSignedTransact).then((resultance) => {
-                        console.log(resultance);
-                        sendMyMoney();
-                      })
-                    })
-                  })
-                }).catch((err) => console.log(err))
-              }
-            })
+          catch (err){
+            res.json({message: "Error In submitting transaction"});
           }
-
-          //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
-          //I am taking an address from another file and then I'm checking if that
-          //password checks out with the bcrypt hashed secret key stored in the database
-          server.api.getBalances(fromAddress).then((balinfo) => {
-            // Done to check if the address has a minimum of 20 ripple in it. All addresses of ours should abide
-            if ( parseFloat(balinfo[0].value) - amount < 20 )
-            {
-              refillCashRegisterAndSend();
-            }
-            else
-            {
-              sendMyMoney();
-            }
-          })
-          //I believe that his bcrypt.compare function is taking the secret key on a remote computer(atom) and not sending it in through any
-          //server
-          //I DON'T KNOW IF THERE IS ANY POINT OF STORING THE SECRET KEYS IN THE DATABASE WHEN THEY CAN EASILY BE STORED IN AN ATOM FILE.
-        })
-      })
+        }
+        else
+        {
+          res.json({message: "Someone's Trying to Get into Your Wallet"});
+        }
+      }))
     })
+    let refillCashRegisterAndSend = asynchronous(function(){
+      let existingBank = await(Bank.findOne({address: bankAddress}));
+      let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
+      console.log(thePay);
+      try {
+        bcrypt.compare(bank[bankAddress], existingBank.secret, asynchronous (function(err, respondent){
+          if ( respondent )
+          {
+            let theOrderInfo = await (server.api.preparePayment(bankAddress, thePay));
+            await (server.api.disconnect());
+            let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
+            let theSignedTransact = theJstring.signedTransaction;
+            await (server.connect());
+            let resultance = await (server.api.submit(theSignedTransact));
+            console.log(resultance);
+            sendMyMoney();
+          }
+        }))
+      }
+      catch (err){
+        console.log(err);
+      }
+    })
+      // Done to check if the address has a minimum of 20 ripple in it. All addresses of ours should abide
+    if ( parseFloat(balInfo[0].value) - amount < 20 )
+    {
+      refillCashRegisterAndSend();
+    }
+    else
+    {
+      sendMyMoney();
+    }
   })
+
+  mainFunction();
 }
+
+
+//   Bank.findOne({address: bankAddress}, function(err, existingBank){
+//
+//     User.findOne({_id: userId}, function(err, existingUser){
+//       if ( amount > existingUser.balance )
+//       {
+//         res.json({message: "Balance Insufficient"});
+//         return;
+//       }
+//       server.connect().then(() => {
+//         const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
+//         console.log(myPayment);
+//         CashRegister.findOne({address: fromAddress}, function(err, register){
+//           if (err) { return next(err); }
+//
+//           let sendMyMoney = () => {
+//             bcrypt.compare(addresses[fromAddress], register.secret, function (err, respondence) {
+//               if ( respondence === true )
+//               {
+//                 server.api.preparePayment(fromAddress, myPayment).then((orderinfo)=>{
+//                   let theFee = orderinfo.instructions.fee;
+//                   //VVIMP - WE ARE SIGNING THE TRANSACTIONS WHILE THE SERVER IS TURNED OFF FOR EXTRA SECURITY
+//                   server.api.disconnect().then(()=>{
+//                     let jstring = server.api.sign(orderinfo.txJSON, addresses[fromAddress]);
+//                     let signedTransact = jstring.signedTransaction;
+//                     server.connect().then(()=>{
+//                       let numberFee = parseFloat(theFee);
+//                       Money.update({}, {$inc: {cost: numberFee, revenue: 0.02, profit: 0.02 - numberFee}}, function(err){
+//                         if(err){return next(err);}
+//                         server.api.submit(signedTransact).then((result) => {
+//                           console.log(result);
+//                           res.json({message: result.resultCode});
+//                         }).catch(message => res.json({message: "Error In submitting transaction"}));
+//                       })
+//                     })
+//                   })
+//                 }).catch(message => res.json({message: "Error in submitting transaction"}))
+//               }
+//               else
+//               {
+//                 res.json({message: "Someone's Trying to Get into Your Wallet"});
+//               }
+//             });
+//           }
+//
+//           let refillCashRegisterAndSend = () => {
+//             let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
+//             console.log(thePay);
+//             bcrypt.compare(bank[bankAddress], existingBank.secret, function (errors, respondent){
+//               if ( respondent === true )
+//               {
+//                 server.api.preparePayment(bankAddress, thePay).then((theOrderInfo) =>{
+//                   server.api.disconnect().then(()=>{
+//                     let theJstring = server.api.sign(theOrderInfo.txJSON, bank[bankAddress]);
+//                     let theSignedTransact = theJstring.signedTransaction;
+//                     server.connect().then(()=>{
+//                       server.api.submit(theSignedTransact).then((resultance) => {
+//                         console.log(resultance);
+//                         sendMyMoney();
+//                       })
+//                     })
+//                   })
+//                 }).catch((err) => console.log(err))
+//               }
+//             })
+//           }
+//
+//           //addresses[fromAddress] is the secret we have in our atom page and what we use to sign the payment.
+//           //I am taking an address from another file and then I'm checking if that
+//           //password checks out with the bcrypt hashed secret key stored in the database
+//           server.api.getBalances(fromAddress).then((balinfo) => {
+//             // Done to check if the address has a minimum of 20 ripple in it. All addresses of ours should abide
+//             if ( parseFloat(balinfo[0].value) - amount < 20 )
+//             {
+//               refillCashRegisterAndSend();
+//             }
+//             else
+//             {
+//               sendMyMoney();
+//             }
+//           })
+//           //I believe that his bcrypt.compare function is taking the secret key on a remote computer(atom) and not sending it in through any
+//           //server
+//           //I DON'T KNOW IF THERE IS ANY POINT OF STORING THE SECRET KEYS IN THE DATABASE WHEN THEY CAN EASILY BE STORED IN AN ATOM FILE.
+//         })
+//       })
+//     })
+//   })
+// }
 
 exports.findOldAddress = function( req, res, next){
   let x = req.query;
