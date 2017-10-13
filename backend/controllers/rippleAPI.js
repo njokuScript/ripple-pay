@@ -1,6 +1,8 @@
 // API to interact with Rippled Server
 const { RippleAPI } = require('ripple-lib');
 const { addresses, bank } = require('../controllers/addresses');
+let async = require('asyncawait/async');
+let await = require('asyncawait/await');
 
 class Rippled {
   constructor(){
@@ -196,19 +198,13 @@ const orderbook = {
   }
 };
 
-// const async = require('async');
+// let x = async (function(){
+//   let server = new Rippled();
+//   let n = await (server.api.connect())
+//   let bal = await (server.api.getBalances("rPxkAQQB65foPBg2Y84xyEHCieXv5qCjTY"))
+//   console.log(bal);
+// })
 //
-// let server = new Rippled();
-//
-// // Or, with named functions:
-// let x = (cb) => {
-//   y();
-// }
-//
-// let y = () => {
-//   console.log("hi");
-// }
-//
-// x()
+// x();
 
 module.exports = Rippled;

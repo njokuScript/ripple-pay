@@ -34,6 +34,7 @@ class SendRipple extends Component {
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
 
   sendPayment(){
+    console.log('hi');
     if ( !this.props.fromAddress || !this.props.sourceTag)
     {
       this.props.addAlert("Please get a wallet first")
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     padding: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    top: 100
+    top: 200
   },
   redtext: {
     color: 'red',

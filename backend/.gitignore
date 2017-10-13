@@ -3,3 +3,4 @@ controllers/addresses.js
 controllers/ripplePay.pem
 
 .DS_Store
+package-lock.json
