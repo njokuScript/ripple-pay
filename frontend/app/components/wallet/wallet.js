@@ -14,10 +14,9 @@ import {
 } from 'react-native';
 import Tabs from 'react-native-tabs';
 import Button from 'react-native-buttons';
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/Entypo';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import LinearGradient from 'react-native-linear-gradient'
-const myIcon = (<Icon name="search" size={30} color="#900" />);
 
 class Wallet extends React.Component {
   constructor(props) {
@@ -111,9 +110,7 @@ class Wallet extends React.Component {
         return (
           <View style={styles.wallet} key={idx}>
             <Text style={styles.walletFont}>{wallet}</Text>
-            <Text style={styles.cashRegister}
-              onPress={() => this.clipBoardCopy(wallet.toString())}
-              >Copy to clipboard</Text>
+            <Icon onPress={() => this.clipBoardCopy(wallet.toString())} name="clipboard" size={30} color="white" />
           </View>
         );
       });
@@ -175,8 +172,8 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
-     justifyContent: 'center',
-     flexDirection: 'column',
+    //  justifyContent: 'center',
+    //  flexDirection: 'column',
      backgroundColor: '#111F61',
    },
    balanceContainer: {
@@ -235,7 +232,7 @@ const styles = StyleSheet.create({
    },
     walletsContainer: {
       flex: 1,
-      flexDirection: 'column',
+      // flexDirection: 'column',
       backgroundColor: '#111F61',
       padding: 15
     },
@@ -262,7 +259,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       // fontSize: 25,
-      marginTop: 10,
+      marginTop: 50,
       padding: 15
     },
     wallets: {
@@ -270,7 +267,7 @@ const styles = StyleSheet.create({
       fontFamily: 'Kohinoor Bangla',
     },
     walletFont: {
-      color: 'black',
+      color: 'white',
       textAlign: 'center',
       fontSize: 18
     },
@@ -279,21 +276,23 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 14
     },
-    // wallet: {
-    //   flex: 1,
-    //   justifyContent: 'center',
-    //   // paddingLeft: 85,
-    //   paddingTop: 20,
-    //   paddingBottom: 20,
-    //   // marginLeft: 70,
-    //   // marginRight: 70,
-    //   marginTop: 10,
-    //   marginBottom: 10,
-    //   // borderBottomWidth: 1,
-    //   // borderColor: '#d3d3d3',
-    //   backgroundColor: 'white',
-    //   borderRadius: 20
-    // }
+    wallet: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      // paddingLeft: 85,
+      // paddingTop: 20,
+      // paddingBottom: 20,
+      // marginLeft: 70,
+      // marginRight: 70,
+      marginTop: 10,
+      marginBottom: 10,
+      // borderBottomWidth: 1,
+      // borderColor: '#d3d3d3',
+      // backgroundColor: 'white',
+      borderRadius: 20
+    }
 });
 
 export default Wallet;

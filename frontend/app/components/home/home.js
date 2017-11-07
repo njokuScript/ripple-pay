@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import Tabs from 'react-native-tabs';
 import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
+import TopTabs from '../presentationals/topTabs';
 import {
     ScrollView,
     View,
@@ -23,10 +24,12 @@ class Home extends React.Component {
     super(props);
     this.onLogout = this.onLogout.bind(this);
     this.displayTransactions = this.displayTransactions.bind(this);
+    this.handlePress = this.handlePress.bind(this);
     this.starter = new StartApp();
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
-      refreshing: false
+      refreshing: false,
+      pressed: true,
     }
     this.onRefresh = this.onRefresh.bind(this);
   }
@@ -48,9 +51,13 @@ class Home extends React.Component {
 
   onLogout() {
     this.props.unauthUser();
-    console.log("dalskjf");
     this.starter.startSingleApplication();
-    console.log("akjdioo");
+  }
+
+  handlePress() {
+    this.setState({
+      pressed: !this.state.pressed
+    })
   }
   //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
@@ -98,11 +105,11 @@ class Home extends React.Component {
             </TouchableOpacity>
           </View>
 
-            <View style={styles.logoContainer}>
-              <Text style={styles.logo}>
-                Balance & Transactions
-              </Text>
-            </View>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logo}>
+              Balance & Transactions
+            </Text>
+          </View>
 
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>
@@ -110,6 +117,9 @@ class Home extends React.Component {
             </Text>
           </View>
       </View>
+
+      <TopTabs handlePress={this.handlePress} pressed={this.state.pressed}/>
+
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -173,7 +183,7 @@ const styles = StyleSheet.create({
     transactionsContainer: {
       marginBottom: 75,
       // marginTop: -5
-    }
+    },
 });
 
 export default Home;
