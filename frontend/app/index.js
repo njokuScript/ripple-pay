@@ -90,7 +90,7 @@ export default class StartApp {
             icon: this.homeIcon,
             selectedIcon: this.homeIcon,
             title: 'Home',
-            navigatorStyle: {navBarHidden: true}
+            navigatorStyle: {navBarHidden: true},
           },
           {
             label: 'Search',

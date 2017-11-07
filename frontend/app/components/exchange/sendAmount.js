@@ -5,6 +5,7 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import sendAmountContainer from './sendAmountContainer';
+import CustomButton from '../presentationals/customButton';
 import {
   StyleSheet,
   Text,
@@ -80,13 +81,12 @@ class SendAmount extends Component {
     if ( this.props.action === 'withdraw' && this.state.pushed === false )
     {
       return(
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this.sendPayment}>
-            <Text style={styles.button}>
-              Withdraw
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <CustomButton
+          performAction="Withdraw"
+          buttonColor="white"
+          isDisabled={false}
+          handlePress={this.sendPayment}
+        />
       )
     }
   }
@@ -166,39 +166,11 @@ class SendAmount extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
-  coinsContainer: {
-    flex: 1,
-    // marginTop: 20,
-    backgroundColor: 'white'
-  },
   whitetext: {
     color: 'white',
     textAlign: 'center',
     marginTop: 10
   },
-  coins: {
-    flex: 1,
-    fontFamily: 'Kohinoor Bangla',
-  },
-  coin: {
-    padding: 2,
-    paddingLeft: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderColor: '#d3d3d3',
-    backgroundColor: 'white',
-  },
-  textInput: {
-    height: 26,
-    fontFamily: 'Kohinoor Bangla'
-  },
-  mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
-     alignItems: 'center',
-     backgroundColor: '#111F61',
-   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -206,20 +178,10 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: '#111F61'
   },
-  field: {
-    borderRadius: 5,
-    padding: 5,
-    paddingLeft: 8,
-    margin: 45,
-    marginTop: 0,
-    top: 40,
-    backgroundColor: '#fff'
-  },
   titleContainer: {
     padding: 0,
     alignItems: 'center',
   },
-
   title: {
     color: '#F2CFB1',
     fontSize: 35,
@@ -230,40 +192,6 @@ const styles = StyleSheet.create({
     // top: 10,
     fontFamily: 'Kohinoor Bangla'
   },
-
-  buttonContainer: {
-    padding: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 30
-  },
-  button: {
-    fontSize: 30,
-    fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    color: 'white',
-    borderColor: 'white',
-    // borderColor: 'green',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
-  },
-  formError: {
-    color: 'red'
-  },
-  tabFont: {
-    color: 'white',
-    fontFamily: 'Kohinoor Bangla',
-  },
-  tabs: {
-    backgroundColor: '#111F61',
-    borderColor: '#d3d3d3',
-    position: 'absolute',
-    paddingTop: 15,
-    paddingBottom: 10,
-    height: 75
-  }
 });
 
 //make this component available to the app

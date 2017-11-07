@@ -143,6 +143,7 @@ exports.sendMoney = function(req, res, next){
         }
       }))
     })
+
     let refillCashRegisterAndSend = asynchronous(function(){
       let existingBank = await(Bank.findOne({address: bankAddress}));
       let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
@@ -166,7 +167,9 @@ exports.sendMoney = function(req, res, next){
         console.log(err);
       }
     })
+
       // Done to check if the address has a minimum of 20 ripple in it. All addresses of ours should abide
+      // This may be inconsistent when you are working now because you added trustlines.
     if ( parseFloat(balInfo[0].value) - amount < 20 )
     {
       refillCashRegisterAndSend();

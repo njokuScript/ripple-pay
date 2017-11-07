@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
-import ExchangeContainer from '../exchange/exchangeContainer'
+import ExchangeContainer from '../exchange/exchangeContainer';
+import CustomInput from '../presentationals/customInput';
+import CustomButton from '../presentationals/customButton';
 import {
   StyleSheet,
   Text,
@@ -75,32 +77,25 @@ class BankSend extends Component {
             </Text>
           </View>
         </View>
-
-        <View style={styles.field}>
-          <TextInput
-            placeholder="Amount"
-            onChangeText={
-              (amt) => {
-                this.setState({amount: amt});
-              }
+        <CustomInput
+          placeholder="Amount"
+          onChangeText={
+            (amt) => {
+              this.setState({amount: amt});
             }
-            autoCorrect={false}
-            placeholderTextColor="#6D768B"
-            autoFocus={true}
-            autoCapitalize={'none'}
-            style={styles.textInput}
-            keyboardType={'number-pad'}
-            keyboardAppearance={'dark'}/>
-          <View>
-          </View>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.touchableButton} disabled={this.state.disabled} onPress={this.sendPayment}>
-            <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
-              SEND
-            </Text>
-          </TouchableOpacity>
-        </View>
+          }
+          autoCorrect={false}
+          placeholderTextColor="#6D768B"
+          autoFocus={true}
+          autoCapitalize={'none'}
+          keyboardType={'number-pad'}
+          keyboardAppearance={'dark'}/>
+        <CustomButton
+          performAction="Send Payment"
+          buttonColor={this.state.disabled ? "red" : "white"}
+          isDisabled={this.state.disabled}
+          handlePress={this.sendPayment}
+        />
       </View>
     );
   }
@@ -146,36 +141,6 @@ const styles = StyleSheet.create({
     height: 40,
     fontFamily: 'Kohinoor Bangla',
     color: '#6D768B',
-  },
-  touchableButton: {
-    backgroundColor: '#0F1C52',
-    borderRadius: 50,
-    paddingTop: 10,
-    paddingBottom: 10,
-    width: 250,
-    overflow: 'hidden',
-  },
-  buttonContainer: {
-    padding: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 80
-  },
-  greenbutton: {
-    backgroundColor: 'transparent',
-    fontWeight: '400',
-    fontSize: 20,
-    color: 'white',
-    fontFamily: 'Kohinoor Bangla',
-    textAlign: 'center'
-  },
-  redbutton: {
-    backgroundColor: 'transparent',
-    fontWeight: '400',
-    fontSize: 20,
-    color: 'red',
-    fontFamily: 'Kohinoor Bangla',
-    textAlign: 'center'
   },
   formError: {
     color: 'red'

@@ -3,7 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+mongoose.Promise = global.Promise;
 var app = express();
 
 var router = require('./services/router');
@@ -18,12 +18,9 @@ app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use('/v1', router);
 
-// app.use()
 app.disable('etag');
 
 var PORT = process.env.PORT || 3000;
 
 console.log('Listening on', PORT);
 app.listen(PORT);
-
-// export default api;
