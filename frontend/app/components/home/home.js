@@ -6,6 +6,7 @@ import { unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo';
 import Tabs from 'react-native-tabs';
 import StartApp from '../../index.js';
+import Transaction from '../presentationals/transaction';
 import {
     ScrollView,
     View,
@@ -14,7 +15,6 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    NavigatorIOS,
     RefreshControl
   } from 'react-native';
 
@@ -48,63 +48,29 @@ class Home extends React.Component {
 
   onLogout() {
     this.props.unauthUser();
+    console.log("dalskjf");
     this.starter.startSingleApplication();
+    console.log("akjdioo");
   }
   //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
     if (this.props.transactions.length > 0) {
-      //Jon - You were talking about some way to allow scrolling here so you can scroll through the transactions.
       let ndate;
       let transactions = this.props.transactions.sort((a,b)=>{
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       })
       transactions = transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
-        let time;
-        if (ndate.getHours() > 12) {
-          time = `${ndate.getHours() - 12}:${ndate.getMinutes()} PM` ;
-        } else {
-          time = `${ndate.getHours()}:${ndate.getMinutes()} AM`;
-        }
-        //Had to replace getDay with getDate because getDay was giving the wrong day.
-        //Also don't add strings as it is slow. concatenate them
         return (
-          <View style={styles.transaction} key={idx}>
-            <View style={styles.transactionInfo}>
-              <View style={styles.transactionOtherParty}>
-                {
-                  transaction.otherParty.length > 16 ?
-                  <Text style={styles.transactionAddress}>
-                    {transaction.otherParty}
-                  </Text> :
-                  <Text style={styles.transactionOtherPartyText}>
-                    {transaction.otherParty}
-                  </Text>
-                }
-              </View>
-              <View style={styles.transactionDate}>
-                <Text style={styles.transactionDateText}>
-                  {`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${time}`}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.transactionAmount}>
-
-                {
-                transaction.amount > 0 ?
-                  <Text style={styles.transactionAmountTextPos}>
-                    +{transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
-                </Text>
-                 :
-                  <Text style={styles.transactionAmountTextNeg}>
-                  {transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
-                </Text>
-                }
-            </View>
-          </View>
+          <Transaction
+            key={idx}
+            otherParty={transaction.otherParty}
+            ndate={ndate}
+            amount={transaction.amount}
+            transactionColor={transaction.amount < 0 ? "red" : "green"}
+          />
         );
       });
-
       return (
         <ScrollView style={styles.transactionsContainer}>
           {transactions}
@@ -112,15 +78,9 @@ class Home extends React.Component {
       );
     } else {
       return (
-        <View style={styles.transaction}>
-          <View style={styles.transactionInfo}>
-            <View style={styles.transactionOtherParty}>
-              <Text style={styles.transactionOtherParty}>
-                no transactions
-              </Text>
-            </View>
-          </View>
-        </View>
+        <Transaction
+          otherParty="no transactions"
+        />
       );
     }
   }
@@ -206,18 +166,6 @@ const styles = StyleSheet.create({
      color: 'white',
      fontFamily: 'Kohinoor Bangla'
    },
-    tabFont: {
-      color: 'white',
-      fontFamily: 'Kohinoor Bangla',
-    },
-    tabs: {
-      backgroundColor: '#111F61',
-      borderColor: '#d3d3d3',
-      position: 'absolute',
-      paddingTop: 15,
-      paddingBottom: 10,
-      height: 75
-    },
     signOut: {
       transform: [{ rotate: '180deg' }],
       marginBottom: 3
@@ -225,49 +173,6 @@ const styles = StyleSheet.create({
     transactionsContainer: {
       marginBottom: 75,
       // marginTop: -5
-    },
-    transaction: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 2,
-      paddingLeft: 15,
-      paddingTop: 15.65,
-      paddingBottom: 15.65,
-      borderBottomWidth: 1,
-      borderColor: '#d3d3d3',
-      backgroundColor: 'white',
-      width: 345,
-      marginLeft: 15
-    },
-    transactionAmountTextPos: {
-      textAlign: 'center',
-      fontWeight: "600",
-      fontSize: 14,
-      color: 'green'
-    },
-    transactionAmountTextNeg: {
-      textAlign: 'center',
-      fontWeight: "600",
-      fontSize: 14,
-      color: 'red'
-    },
-    transactionOtherPartyText: {
-      fontWeight: "600",
-      fontSize: 15
-    },
-    transactionAddress:{
-      fontWeight: "600",
-      fontSize: 12
-    },
-    transactionDate: {
-      paddingTop: 8
-    },
-    transactionDateText: {
-      fontSize: 12
-    },
-    transactionInfo: {
-      marginLeft: -15
     }
 });
 

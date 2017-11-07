@@ -5,6 +5,7 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
+import Coin from '../presentationals/coin';
 import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Font from 'react-native-vector-icons/FontAwesome';
@@ -101,16 +102,16 @@ class Exchange extends Component {
     });
   }
 
-  componentDidUpdate(oldProps, oldState){
-    // let alltheCoins = this.props.shape.coins;
-    // if ( alltheCoins && this.state.getRates )
-    // {
-    //   Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
-    //     this.props.requestRate(coin);
-    //   })
-    //   this.finishAndBeginExchange();
-    // }
-  }
+  // componentDidUpdate(oldProps, oldState){
+  //   let alltheCoins = this.props.shape.coins;
+  //   if ( alltheCoins && this.state.getRates )
+  //   {
+  //     Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
+  //       this.props.requestRate(coin);
+  //     })
+      // this.finishAndBeginExchange();
+  //   }
+  // }
 
 //Maybe give these the indexes that they are suppose to have.
   allCoins() {
@@ -118,36 +119,19 @@ class Exchange extends Component {
     let theCoins;
     let line;
     let showCoins = [];
+    showCoins.unshift(
+      <Coin
+        key="RippleOne"
+        imageSource={require('./images/ripplePic.png')}
+        coinName="Ripple"
+        sendFunction={this.navSendRipple.bind(this) }
+        receiveFunction={this.navWallet.bind(this)}
+        rate=""
+      />
+    )
     if ( myCoins )
     {
-      Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && cn !== "NXT").forEach((coin, idx) => {
-        if ( coin === "XRP" )
-        {
-          showCoins.unshift(
-            <View style={styles.coin} key={idx}>
-                <Image
-                  style={{width: 40, height: 40}}
-                  source={{uri: myCoins[coin].image}}
-                />
-              <View style={styles.coinType}>
-                <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-              </View>
-              <View style={styles.sendReceive}>
-                <View style={styles.send}>
-                  <Text onPress={this.navSendRipple.bind(this)} style={styles.coinFont}>
-                    <Font name="send" size={20} color="black" />
-                  </Text>
-                </View>
-                <View style={styles.receive}>
-                  <Text onPrss={this.navWallet.bind(this)} style={styles.coinFont}>
-                    <Font name="bank" size={20} color="black" />
-                  </Text>
-                </View>
-              </View>
-            </View>
-          );
-          return;
-        }
+      Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
         if ( this.state.direction )
         {
           line = `${this.props.shape.rates[coin]} XRP/${myCoins[coin].symbol}`;
@@ -158,62 +142,27 @@ class Exchange extends Component {
         }
         if ( coin === "ETH" )
         {
-          showCoins.splice(1,0, (
-            <View style={styles.coin} key={idx}>
-
-              <Image
-                style={{width: 40, height: 40}}
-                source={{uri: myCoins[coin].image}}
-              />
-
-              <View style={styles.coinType}>
-                <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-                <Text style={styles.coinAmount}>{line}</Text>
-              </View>
-
-              <View style={styles.sendReceive}>
-
-                <View style={styles.send}>
-                  <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
-                    <Font name="send" size={20} color="black" />
-                  </Text>
-                </View>
-
-                <View style={styles.receive}>
-                  <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>
-                    <Font name="bank" size={20} color="black" />
-                  </Text>
-                </View>
-
-              </View>
-
-            </View>
+          showCoins.splice(2,0, (
+            <Coin
+              key={idx}
+              imageSource={{uri: myCoins[coin].image}}
+              coinName={myCoins[coin].name}
+              sendFunction={()=> this.navTransition(coin, 'send')}
+              receiveFunction={()=> this.navTransition(coin, 'receive')}
+              rate={line}
+            />
           ));
           return;
         }
         showCoins.push(
-          <View style={styles.coin} key={idx}>
-                <Image
-                  style={{width: 40, height: 40}}
-                  source={{uri: myCoins[coin].image}}
-                />
-              <View style={styles.coinType}>
-                <Text style={styles.coinFont}>{myCoins[coin].name}</Text>
-                <Text style={styles.coinAmount}>{line}</Text>
-              </View>
-              <View style={styles.sendReceive}>
-                <View style={styles.send}>
-                  <Text onPress={()=> this.navTransition(coin, 'send')} style={styles.coinFont}>
-                    <Font name="send" size={20} color="black" />
-                  </Text>
-                </View>
-                <View style={styles.receive}>
-                  <Text onPress={()=> this.navTransition(coin, 'receive')} style={styles.coinFont}>
-                    <Font name="bank" size={20} color="black" />
-                  </Text>
-                </View>
-              </View>
-          </View>
+          <Coin
+            key={idx}
+            imageSource={{uri: myCoins[coin].image}}
+            coinName={myCoins[coin].name}
+            sendFunction={()=> this.navTransition(coin, 'send')}
+            receiveFunction={()=> this.navTransition(coin, 'receive')}
+            rate={line}
+          />
         );
       });
     }
@@ -273,39 +222,6 @@ const styles = StyleSheet.create({
     height: 90,
     paddingTop: 20,
   },
-  coinsContainer: {
-      marginBottom: 75,
-      // marginTop: -20
-    },
-  coins: {
-    flex: 1,
-    fontFamily: 'Kohinoor Bangla',
-  },
-  coin: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 2,
-      paddingTop: 15.65,
-      paddingBottom: 15.65,
-      borderBottomWidth: 1,
-      borderColor: '#d3d3d3',
-      backgroundColor: 'white',
-      width: 345,
-      marginLeft: 15
-  },
-  coinType: {
-    flex: 1,
-    paddingLeft: 10
-  },
-   coinFont: {
-     fontWeight: "600",
-     fontFamily: 'Kohinoor Bangla',
-     fontSize: 15,
-   },
-   coinAmount: {
-      fontSize: 12
-   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -328,22 +244,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Kohinoor Bangla'
   },
-  buttonContainer: {
-    padding: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 30
-  },
-  button: {
-    fontSize: 30,
-    fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    borderColor: 'green',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7
-  },
   formError: {
     color: 'red'
   },
@@ -358,13 +258,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     height: 75
   },
-  sendReceive: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  receive: {
-    paddingLeft: 20
-  }
 });
 
 // make this component available to the app
