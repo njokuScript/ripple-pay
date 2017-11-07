@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
+import CustomInput from '../presentationals/customInput';
+import CustomButton from '../presentationals/customButton';
 import {
   StyleSheet,
   Text,
@@ -76,8 +78,7 @@ class SendRipple extends Component {
             <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.field}>
-          <TextInput
+        <CustomInput
             placeholder="Destination Address"
             onChangeText={
               (toAddr) => {
@@ -89,53 +90,41 @@ class SendRipple extends Component {
             placeholderTextColor="#6D768B"
             keyboardAppearance={'dark'}
             autoCapitalize={'none'}
-            style={styles.textInput}/>
-          <View>
-          </View>
-        </View>
-        <View style={styles.inputField}>
-          <View style={styles.field}>
-            <TextInput
-              placeholder="Destination Tag - optional"
-              onChangeText={
-                (des) => {
-                  this.setState({toDesTag: des});
-                }
+        />
+        <CustomInput
+            placeholder="Destination Tag - optional"
+            onChangeText={
+              (des) => {
+                this.setState({toDesTag: des});
               }
-              autoCorrect={false}
-              autoCapitalize={'none'}
-              placeholderTextColor="#6D768B"
-              keyboardType={'number-pad'}
-              keyboardAppearance={'dark'}
-              style={styles.textInput}/>
-            <View>
-            </View>
-          </View>
-            <View style={styles.field}>
-              <TextInput
-                placeholder="Amount"
-                onChangeText={
-                  (amt) => {
-                    this.setState({amount: amt});
-                  }
-                }
-                autoCorrect={false}
-                placeholderTextColor="#6D768B"
-                autoCapitalize={'none'}
-                keyboardType={'number-pad'}
-                keyboardAppearance={'dark'}
-                style={styles.textInput}/>
-            </View>
-          </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.touchableButton} disabled={this.state.disabled} onPress={this.sendPayment}>
-            <Text style={this.state.disabled ? styles.redbutton : styles.greenbutton}>
-              Send Payment
-            </Text>
-          </TouchableOpacity>
-        </View>
+            }
+            autoCorrect={false}
+            autoCapitalize={'none'}
+            placeholderTextColor="#6D768B"
+            keyboardType={'number-pad'}
+            keyboardAppearance={'dark'}
+          />
+        <CustomInput
+            placeholder="Amount"
+            onChangeText={
+              (amt) => {
+                this.setState({amount: amt});
+              }
+            }
+            autoCorrect={false}
+            placeholderTextColor="#6D768B"
+            autoCapitalize={'none'}
+            keyboardType={'number-pad'}
+            keyboardAppearance={'dark'}
+          />
+        <CustomButton
+          performAction="Send Payment"
+          buttonColor={this.state.disabled ? "red" : "white"}
+          isDisabled={this.state.disabled}
+          handlePress={this.sendPayment}
+        />
         <View style={styles.fee}>
-          <Text style={styles.redtoptext}>
+          <Text style={styles.feetext}>
             transaction Fee: 0.02 XRP
           </Text>
         </View>
@@ -154,76 +143,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#111F61',
     paddingTop: 20
   },
-  inputField: {
-    marginBottom: -100
-  },
   topContainer: {
     marginBottom: -10,
     marginLeft: 10
   },
-  field: {
-    backgroundColor: '#0F1C52',
-    borderRadius: 5,
-    padding: 10,
-    paddingLeft: 15,
-    marginLeft: 30,
-    marginRight: 30,
-    marginTop: 20,
-  },
-  textInput: {
-    height: 26,
-    fontFamily: 'Kohinoor Bangla'
-  },
-  touchableButton: {
-    backgroundColor: '#0F1C52',
-    borderRadius: 50,
-    paddingTop: 10,
-    paddingBottom: 10,
-    width: 250,
-    overflow: 'hidden',
-  },
-  buttonContainer: {
-    padding: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 200
-  },
-  redtext: {
-    color: 'red',
-    fontSize: 15,
-    marginTop: 20,
-    textAlign: 'center',
-    paddingRight: 10,
-    paddingLeft: 10
-  },
-  redtoptext: {
+  feetext: {
     color: 'white',
     fontFamily: 'Kohinoor Bangla',
     fontSize: 13,
     textAlign: 'center',
-    marginTop: 50
-  },
-  greenbutton: {
-    backgroundColor: 'transparent',
-    fontWeight: '400',
-    fontSize: 20,
-    color: 'white',
-    fontFamily: 'Kohinoor Bangla',
-    textAlign: 'center'
-  },
-  redbutton: {
-    backgroundColor: 'transparent',
-    fontWeight: '400',
-    fontSize: 20,
-    color: 'red',
-    fontFamily: 'Kohinoor Bangla',
-    textAlign: 'center'
+    marginTop: 20
   },
   formError: {
     color: 'red'
-  },
-  fee: {
-    marginTop: 30
   }
 });
 

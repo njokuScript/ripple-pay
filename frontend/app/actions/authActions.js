@@ -21,7 +21,6 @@ finishAndBeginTimer = ()=> {
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
-      console.log('hliadlfkjs');
       let {user_id, token} = response.data;
       // Keychain.setGenericPassword(user_id, token)
       //   .then(function() {

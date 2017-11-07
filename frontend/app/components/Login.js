@@ -1,5 +1,7 @@
 import React from 'react';
 import { reduxForm } from 'redux-form';
+import CustomInput from './presentationals/customInput';
+import CustomButton from './presentationals/customButton';
 import {
   StyleSheet,
   Text,
@@ -20,7 +22,6 @@ class Login extends React.Component {
     };
     this.onSignIn = this.onSignIn.bind(this);
     this.onSignUp = this.onSignUp.bind(this);
-    this.renderButton = this.renderButton.bind(this);
     this.toggleField = this.toggleField.bind(this);
   }
 
@@ -38,23 +39,18 @@ class Login extends React.Component {
     if (this.state.extraField) {
       return (
         <View style={styles.remainingContainer}>
-          <View style={styles.field}>
-            <TextInput
-              {...screenName}
-              placeholder="Screen Name"
-              placeholderTextColor="#6D768B"
-              style={styles.textInput} />
-            <View>
-              {renderError(screenName)}
-            </View>
-          </View>
-          <View style={styles.buttonContainer}>
-            <View style={styles.touchableButton}>
-              <Text style={styles.button} onPress={this.onSignUp}>
-                SIGN UP
-              </Text>
-            </View>
-          </View>
+          <CustomInput
+            {...screenName}
+            placeholder="Screen Name"
+            placeholderTextColor="#6D768B"
+            errorText={renderError(screenName)}
+          />
+          <CustomButton
+            performAction="SIGN UP"
+            handlePress={this.onSignUp}
+            isDisabled={false}
+            buttonColor="white"
+          />
           <Text style={styles.signUpView} onPress={this.toggleField}>
             Already have an account? SIGN IN
           </Text>
@@ -63,13 +59,12 @@ class Login extends React.Component {
     } else {
       return (
       <View style={styles.remainingContainer}>
-        <View style={styles.buttonContainer}>
-          <View style={styles.touchableButton}>
-            <Text style={styles.button} onPress={this.onSignIn}>
-              SIGN IN
-            </Text>
-          </View>
-        </View>
+        <CustomButton
+          performAction="SIGN IN"
+          handlePress={this.onSignIn}
+          isDisabled={false}
+          buttonColor="white"
+        />
         <Text style={styles.signUpView} onPress={this.toggleField}>
           Don't have an account? SIGN UP
         </Text>
@@ -109,30 +104,22 @@ class Login extends React.Component {
       >
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
-            ripplePay
-            </Text>
+            RipplePay
+          </Text>
         </View>
-        <View style={styles.field}>
-          <TextInput
-            {...email}
-            placeholder="Email"
-            placeholderTextColor="#6D768B"
-            style={styles.textInput} />
-          <View>
-            {renderError(email)}
-          </View>
-        </View>
-        <View style={styles.field}>
-          <TextInput
-            {...password}
-            placeholder="Password"
-            placeholderTextColor="#6D768B"
-            secureTextEntry={true}
-            style={styles.textInput} />
-          <View>
-            {renderError(password)}
-          </View>
-        </View>
+        <CustomInput
+          {...email}
+          placeholder="Email"
+          placeholderTextColor="#6D768B"
+          errorText={renderError(email)}
+        />
+        <CustomInput
+          {...password}
+          placeholder="Password"
+          placeholderTextColor="#6D768B"
+          secureTextEntry={true}
+          errorText={renderError(password)}
+        />
         {this.renderButton(screenName, renderError)}
       </KeyboardAwareScrollView>
     );
@@ -151,7 +138,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
   remainingContainer: {
-    marginTop: 40,
+    marginTop: 10,
   },
   title: {
     color: 'white',
@@ -159,60 +146,18 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
     // flex: 1,
-    top: 70,
+    top: 30,
     fontFamily: 'Kohinoor Bangla'
-  },
-  field: {
-    backgroundColor: '#0F1C52',
-    borderRadius: 5,
-    padding: 5,
-    paddingLeft: 15,
-    margin: 30,
-    marginTop: 10,
-    top: 90
-  },
-  textInput: {
-    height: 40,
-    fontFamily: 'Kohinoor Bangla',
-    color: '#6D768B',
-  },
-  buttonContainer: {
-    padding: 30,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 80
-  },
-  touchableButton: {
-    backgroundColor: '#0F1C52',
-    borderRadius: 50,
-    paddingTop: 10,
-    paddingBottom: 10,
-    width: 250,
-    overflow: 'hidden',
-  },
-  button: {
-    backgroundColor: 'transparent',
-    fontWeight: '400',
-    fontSize: 20,
-    color: 'white',
-    fontFamily: 'Kohinoor Bangla',
-    textAlign: 'center'
   },
   formError: {
     color: 'red',
     fontSize: 12
   },
-  signUp: {
-    color: 'white',
-    top: 225,
-    textAlign: 'center'
-  },
   signUpView: {
     color: 'white',
-    top: 85,
+    top: 5,
     textAlign: 'center'
   }
-
 });
 
 let validate = (formProps) => {

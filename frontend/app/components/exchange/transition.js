@@ -5,6 +5,8 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import sendAmountContainer from './sendAmountContainer';
+import CustomInput from '../presentationals/customInput';
+import CustomButton from '../presentationals/customButton';
 import {
   StyleSheet,
   Text,
@@ -146,69 +148,59 @@ class Transition extends Component {
         <TouchableOpacity onPress={() => this.setState({quoted: !this.state.quoted})}>
           <Text style={styles.whitetext}>{this.state.quoted ? "Quoted - Exact Amount" : "Quick - Approximate"}</Text>
         </TouchableOpacity>
-        <View style={styles.field}>
-          <TextInput
-            placeholder="From Amount"
-            onChangeText={
-              (amt) => {
-                this.setState({fromAmount: amt, editFromAmount: false, editToAmount: true});
-              }
+        <CustomInput
+          placeholder="From Amount"
+          placeholderTextColor="#6D768B"
+          onChangeText={
+            (amt) => {
+              this.setState({fromAmount: amt, editFromAmount: false, editToAmount: true});
             }
-            autoCorrect={false}
-            value={this.state.fromAmount}
-            autoCapitalize={'none'}
-            style={styles.textInput}/>
-          <View>
-          </View>
-        </View>
+          }
+          autoCorrect={false}
+          value={this.state.fromAmount}
+          autoCapitalize={'none'}
+        />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
             To {this.props.toCoin}
           </Text>
         </View>
-        <View style={styles.field}>
-          <TextInput
-            placeholder="To Amount"
-            onChangeText={
-              (amt) => {
-                this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
-              }
+        <CustomInput
+          placeholder="To Amount"
+          placeholderTextColor="#6D768B"
+          onChangeText={
+            (amt) => {
+              this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
             }
-            value={this.state.toAmount}
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            style={styles.textInput}/>
-          <View>
-          </View>
-        </View>
-        <View style={styles.field}>
-          <TextInput
-            placeholder={this.action === "deposit" ? "Return Address -- Recommended" : "Send To Address"}
-            onChangeText={
-              (addr) => {
-                this.setState({address: addr});
-              }
+          }
+          value={this.state.toAmount}
+          autoCorrect={false}
+          autoCapitalize={'none'}
+        />
+        <CustomInput
+          placeholder={this.action === "deposit" ? "Return Address -- Recommended" : "Send To Address"}
+          placeholderTextColor="#6D768B"
+          onChangeText={
+            (addr) => {
+              this.setState({address: addr});
             }
-            value={this.state.address}
-            autoCorrect={false}
-            autoCapitalize={'none'}
-            style={styles.textInput}/>
-          <View>
-          </View>
-        </View>
+          }
+          value={this.state.address}
+          autoCorrect={false}
+          autoCapitalize={'none'}
+        />
         <View>
           <Text style={styles.whitetext}>Rate: {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
           <Text style={styles.whitetext}>Shapeshifter Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
           <Text style={styles.whitetext}>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
           <Text style={styles.whitetext}>Send Maximum: {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={this.navSendAmount}>
-            <Text style={styles.button}>
-              {this.action}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <CustomButton
+          performAction={this.action}
+          buttonColor="white"
+          isDisabled={false}
+          handlePress={this.navSendAmount}
+        />
      </View>
     );
   }
@@ -216,39 +208,11 @@ class Transition extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
-  coinsContainer: {
-    flex: 1,
-    // marginTop: 20,
-    backgroundColor: 'white'
-  },
   whitetext: {
     color: 'white',
     textAlign: 'center',
     marginTop: 10
   },
-  coins: {
-    flex: 1,
-    fontFamily: 'Kohinoor Bangla',
-  },
-  coin: {
-    padding: 2,
-    paddingLeft: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderColor: '#d3d3d3',
-    backgroundColor: 'white',
-  },
-  textInput: {
-    height: 26,
-    fontFamily: 'Kohinoor Bangla'
-  },
-  mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
-     alignItems: 'center',
-     backgroundColor: '#111F61',
-   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -256,24 +220,10 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: '#111F61'
   },
-  field: {
-    borderRadius: 5,
-    padding: 5,
-    paddingLeft: 8,
-    margin: 45,
-    width: 300,
-    marginTop: -10,
-    top: 40,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    // alignItems: 'center',
-    // alignSelf: 'center',
-  },
   titleContainer: {
     // padding: 0,
     // alignItems: 'center',
   },
-
   title: {
     color: '#F2CFB1',
     fontSize: 35,
@@ -285,40 +235,9 @@ const styles = StyleSheet.create({
     // top: 10,
     fontFamily: 'Kohinoor Bangla'
   },
-
-  buttonContainer: {
-    padding: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    top: 30
-  },
-  button: {
-    fontSize: 30,
-    fontFamily: 'Kohinoor Bangla',
-    borderWidth: 1,
-    borderRadius: 6,
-    // borderColor: 'green',
-    borderBottomWidth: 0,
-    shadowOpacity: 0.3,
-    padding: 7,
-    borderColor: 'white',
-    color: 'white'
-  },
   formError: {
     color: 'red'
   },
-  tabFont: {
-    color: 'white',
-    fontFamily: 'Kohinoor Bangla',
-  },
-  tabs: {
-    backgroundColor: '#111F61',
-    borderColor: '#d3d3d3',
-    position: 'absolute',
-    paddingTop: 15,
-    paddingBottom: 10,
-    height: 75
-  }
 });
 
 //make this component available to the app

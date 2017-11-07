@@ -3,6 +3,7 @@ import HomeContainer from '../home/homeContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import BankSendContainer from '../banksend/banksendContainer';
+import CustomInput from '../presentationals/customInput';
 import { reduxForm } from 'redux-form';
 
 import { View,
@@ -66,7 +67,7 @@ class Search extends React.Component {
         if ( user._id !== this.props.user.user_id )
         {
           return (
-              <TouchableOpacity key={idx}style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
+              <TouchableOpacity key={idx} style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
                 <View style={styles.username}>
                   <Text style={styles.resultItemText}>{user.screenName}</Text>
                 </View>
@@ -91,21 +92,18 @@ class Search extends React.Component {
      <View style={styles.mainContainer}>
        <View style={styles.topContainer}>
         <View style={styles.searchContainer}>
-          <View style={styles.field}>
-            <TextInput
-              style={styles.textInput}
-              value={this.state.query}
-              onChangeText={
-                (query) => {
-                  this.setState({query: query});
-                }
+          <CustomInput
+            value={this.state.query}
+            onChangeText={
+              (query) => {
+                this.setState({query: query});
               }
-              autoFocus={true}
-              placeholder="Enter Username"
-              placeholderTextColor="#6D768B"
-              keyboardAppearance={'dark'}
-              />
-            </View>
+            }
+            autoFocus={true}
+            placeholder="Enter Username"
+            placeholderTextColor="#6D768B"
+            keyboardAppearance={'dark'}
+          />
         </View>
        </View>
 
@@ -129,11 +127,7 @@ class Search extends React.Component {
     marginLeft: 10
    },
    topContainer: {
-     flex: -1,
      backgroundColor: '#111F61',
-     flexDirection: 'row',
-     justifyContent: 'space-around',
-     alignItems: 'center',
      height: 90,
      paddingTop: 10,
    },
@@ -143,37 +137,12 @@ class Search extends React.Component {
       justifyContent: 'center',
       fontFamily: 'Kohinoor Bangla',
     },
-    field: {
-      backgroundColor: '#0F1C52',
-      borderRadius: 5,
-      padding: 5,
-      paddingLeft: 15,
-      margin: 30,
-      width: 325
-    },
-    textInput: {
-      height: 35,
-      fontFamily: 'Kohinoor Bangla',
-      color: 'white',
-    },
     instructions: {
      textAlign: 'center',
      color: '#333333',
      marginBottom: 5,
      fontSize: 15
    },
-    tabFont: {
-      color: 'white',
-      fontFamily: 'Kohinoor Bangla',
-    },
-    tabs: {
-      backgroundColor: '#111F61',
-      borderColor: '#d3d3d3',
-      position: 'absolute',
-      paddingTop: 15,
-      paddingBottom: 10,
-      height: 75
-    },
     resultsContainer: {
       flex: 1,
       marginBottom: 75
