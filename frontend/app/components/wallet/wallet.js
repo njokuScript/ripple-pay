@@ -180,12 +180,10 @@ class Wallet extends React.Component {
 
 const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-  mainContainer: {
+    mainContainer: {
      flex: 1,
-    //  justifyContent: 'center',
-    //  flexDirection: 'column',
      backgroundColor: '#111F61',
-   },
+    },
    buttonsContainer: {
      flex: 1,
      justifyContent: 'space-between',
@@ -193,9 +191,6 @@ const styles = StyleSheet.create({
      flexDirection: 'column',
      marginLeft: 35,
      marginRight: 35,
-    //  top: 140,
-    //  left: 230,
-    //  position: 'absolute'
    },
    redd: {
      color: 'white',
@@ -226,9 +221,6 @@ const styles = StyleSheet.create({
     walletsContainer: {
       flex: -1,
       flexDirection: 'column',
-      // backgroundColor: 'yellow',
-      // top: 20,
-      // padding: 15
     },
     walletAddress: {
       color: 'white',
@@ -285,7 +277,6 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-around',
       alignItems: 'center',
-      // padding: 3,
       width: 370,
       left: 20,
     },
@@ -323,9 +314,6 @@ const styles = StyleSheet.create({
       width: 120,
       height: 120,
       borderRadius: 10,
-      // left: 140,
-      // marginTop: 84,
-      // position: 'absolute'
     }
 });
 
