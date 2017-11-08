@@ -6,6 +6,7 @@ import HomeContainer from '../home/homeContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
+import CustomBackButton from '../presentationals/customBackButton';
 import {
   StyleSheet,
   Text,
@@ -61,11 +62,9 @@ class BankSend extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.topContainer}>
-          <TouchableOpacity onPress={() => this.props.navigator.pop({
+          <CustomBackButton handlePress={() => this.props.navigator.pop({
             animationType: 'fade'
-          })}>
-            <Text><Icon name="chevron-left" size={30} color={"white"}/></Text>
-          </TouchableOpacity>
+          })}/>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
               Send Ripple to {this.props.otherUser}

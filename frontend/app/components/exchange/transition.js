@@ -7,6 +7,7 @@ import sendRippleContainer from './sendRippleContainer';
 import sendAmountContainer from './sendAmountContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
+import CustomBackButton from '../presentationals/customBackButton';
 import {
   StyleSheet,
   Text,
@@ -136,20 +137,25 @@ class Transition extends Component {
     }
   }
 
+  toggleQuoted(){
+    this.setState({quoted: !this.state.quoted})
+  }
 //Maybe give these the indexes that they are suppose to have.
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            From {this.props.fromCoin}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={() => this.setState({quoted: !this.state.quoted})}>
-          <Text style={styles.whitetext}>{this.state.quoted ? "Quoted - Exact Amount" : "Quick - Approximate"}</Text>
-        </TouchableOpacity>
+        <CustomBackButton handlePress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })} style={{paddingLeft: 10, paddingTop: 60}} />
+        <CustomButton
+          performAction={this.state.quoted ? "Quoted Transaction" : "Approx Transaction"}
+          buttonColor="white"
+          isDisabled={false}
+          handlePress={this.toggleQuoted.bind(this)}
+        />
+        <View style={styles.customInputContainer}>
         <CustomInput
-          placeholder="From Amount"
+          placeholder={`from ${this.props.fromCoin}`}
           placeholderTextColor="#6D768B"
           onChangeText={
             (amt) => {
@@ -160,13 +166,8 @@ class Transition extends Component {
           value={this.state.fromAmount}
           autoCapitalize={'none'}
         />
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            To {this.props.toCoin}
-          </Text>
-        </View>
         <CustomInput
-          placeholder="To Amount"
+          placeholder={`to ${this.props.toCoin}`}
           placeholderTextColor="#6D768B"
           onChangeText={
             (amt) => {
@@ -189,11 +190,12 @@ class Transition extends Component {
           autoCorrect={false}
           autoCapitalize={'none'}
         />
-        <View>
-          <Text style={styles.whitetext}>Rate: {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-          <Text style={styles.whitetext}>Shapeshifter Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-          <Text style={styles.whitetext}>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-          <Text style={styles.whitetext}>Send Maximum: {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+          <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
+          <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+          <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
         </View>
         <CustomButton
           performAction={this.action}
@@ -208,36 +210,35 @@ class Transition extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
+  topContainer: {
+    flex: -1,
+    backgroundColor: '#111F61',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    height: 90,
+    paddingTop: 10
+  },
   whitetext: {
     color: 'white',
-    textAlign: 'center',
-    marginTop: 10
+    // marginTop: 10,
+    fontSize: 16
   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
+    marginTop: -60,
     backgroundColor: '#111F61'
   },
-  titleContainer: {
-    // padding: 0,
-    // alignItems: 'center',
+  infoContainer: {
+    marginTop: 20,
+    left: 37
   },
-  title: {
-    color: '#F2CFB1',
-    fontSize: 35,
-    textAlign: 'center',
-    // marginTop: 20,
-    // marginBottom: 20,
-    // padding: 0,
-    // flex: 1,
-    // top: 10,
-    fontFamily: 'Kohinoor Bangla'
-  },
-  formError: {
-    color: 'red'
-  },
+  customInputContainer: {
+    marginTop: -30
+  }
 });
 
 //make this component available to the app

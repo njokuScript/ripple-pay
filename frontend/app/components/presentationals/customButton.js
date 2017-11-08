@@ -18,8 +18,8 @@ const CustomButton = (props) => {
   }
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity disabled={props.isDisabled} style={styles.touchableButton}>
-        <Text style={buttonStyle} onPress={props.handlePress}>
+      <TouchableOpacity onPress={props.handlePress} disabled={props.isDisabled} style={styles.touchableButton}>
+        <Text style={buttonStyle}>
           {props.performAction}
         </Text>
       </TouchableOpacity>

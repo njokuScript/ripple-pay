@@ -98,7 +98,10 @@ class Exchange extends Component {
       // navigatorStyle: {navBarHidden: true},
       passProps: {toCoin: toCoin, fromCoin: fromCoin, clearSendAmount:this.props.clearSendAmount},
       animation: true,
-      animationType: 'fade'
+      animationType: 'fade',
+      navigatorStyle: {
+        navBarHidden: true,
+      },
     });
   }
 
