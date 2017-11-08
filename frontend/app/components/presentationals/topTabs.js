@@ -18,7 +18,7 @@ const TopTabs = (props) => {
   return (
     <View style={styles.topTabsContainer}>
       <TouchableOpacity
-        onPress={props.handlePress}
+        onPress={props.handleLeftPress}
         style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: props.pressed ? 2 : 1})}
       >
         <Text style={styles.topTab}>
@@ -26,11 +26,11 @@ const TopTabs = (props) => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={props.handlePress}
+        onPress={props.handleRightPress}
         style={Object.assign({}, topTabContainer, {borderBottomWidth: !props.pressed ? 2 : 1})}
       >
         <Text style={styles.topTab}>
-        Other
+        Conversions
         </Text>
       </TouchableOpacity>
     </View>
