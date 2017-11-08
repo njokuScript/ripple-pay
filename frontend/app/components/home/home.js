@@ -24,7 +24,8 @@ class Home extends React.Component {
     super(props);
     this.onLogout = this.onLogout.bind(this);
     this.displayTransactions = this.displayTransactions.bind(this);
-    this.handlePress = this.handlePress.bind(this);
+    this.handleLeftPress = this.handleLeftPress.bind(this);
+    this.handleRightPress = this.handleRightPress.bind(this);
     this.starter = new StartApp();
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
@@ -54,9 +55,15 @@ class Home extends React.Component {
     this.starter.startSingleApplication();
   }
 
-  handlePress() {
+  handleLeftPress() {
     this.setState({
-      pressed: !this.state.pressed
+      pressed: true
+    })
+  }
+
+  handleRightPress() {
+    this.setState({
+      pressed: false
     })
   }
   //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
@@ -118,7 +125,11 @@ class Home extends React.Component {
           </View>
       </View>
 
-      <TopTabs handlePress={this.handlePress} pressed={this.state.pressed}/>
+      <TopTabs
+        handleLeftPress={this.handleLeftPress}
+        handleRightPress={this.handleRightPress}
+        pressed={this.state.pressed}
+      />
 
       <ScrollView
         refreshControl={
