@@ -104,40 +104,61 @@ class Wallet extends React.Component {
     }
   }
   displayWallets() {
+    const disabled = this.state.disabled;
     if (this.props.wallets && this.props.wallets.length > 0) {
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the wallets.
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (
           <View style={styles.wallet} key={idx}>
+            <Text style={styles.walletFont}>{idx+1}.</Text>
             <Text style={styles.walletFont}>{wallet}</Text>
-            <Icon onPress={() => this.clipBoardCopy(wallet.toString())} name="clipboard" size={30} color="white" />
+            <TouchableOpacity onPress={() => this.clipBoardCopy(wallet.toString())} style={styles.clipBoardContainer}>
+              <Icon name="clipboard" size={25} color="brown" />
+            </TouchableOpacity>
           </View>
         );
       });
       const imageSource = this.getQRCode();
       return (
-        <View style={styles.walletsContainer}>
-          <View style={styles.walletAddress}>
-            <Text style={styles.walletintro}>Wallet Address:</Text>
-            <Text style={styles.cashRegister}>{this.props.cashRegister}</Text>
-            <Text style={styles.cashRegister}
-              onPress={() => this.clipBoardCopy(this.props.cashRegister)}
-              >Copy to clipboard</Text>
-            <Image
-             style={{width: 100, height: 100}}
-             source={imageSource}
-           />
+          <View style={styles.walletDisplay}>
+            <Text style={styles.walletAddress}>Wallet Address:</Text>
+            <View style={styles.address}>
+              <Text style={styles.cashRegister}>{this.props.cashRegister}</Text>
+              <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.cashRegister)} style={styles.clipBoardContainer}>
+                <Icon  name="clipboard" size={25} color="brown" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.qrCode}
+                source={imageSource}
+              />
+              <View style={styles.buttonsContainer}>
+                <TouchableOpacity disabled={disabled} onPress={this.generate}>
+                  <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
+                </TouchableOpacity>
+                <TouchableOpacity disabled={disabled} onPress={this.remove}>
+                  <Text style={disabled ? styles.redd : styles.greenn}>- Oldest Wallet</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.destTag}>
+              <Text style={styles.destintro}>Destination Tags:</Text>
+            </View>
+            <View style={styles.walletsContainer}>
+              {allWallets}
+            </View>
           </View>
-          <View style={styles.destTag}>
-            <Text style={styles.destintro}>Destination Tags:</Text>
-          </View>
-          {allWallets}
-        </View>
       );
     } else {
       return (
-        <View style={styles.nowallet}>
-          <Text style={styles.walletFont}>no wallets</Text>
+        <View style={styles.noWalletContainer}>
+          <Text style={styles.noWallet}>Please get a Wallet</Text>
+          <View style={styles.noWalletsButtonsContainer}>
+            <TouchableOpacity disabled={disabled} onPress={this.generate}>
+              <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -149,20 +170,9 @@ class Wallet extends React.Component {
 
   render()
   {
-    let disabled = this.state.disabled;
     return (
       <View style={styles.mainContainer}>
-          <View style={styles.walletsContainer}>
-              {this.displayWallets()}
-              <View style={styles.balanceContainer}>
-                <TouchableOpacity disabled={disabled} onPress={this.generate}>
-                  <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
-                </TouchableOpacity>
-                <TouchableOpacity disabled={disabled} onPress={this.remove}>
-                  <Text style={disabled ? styles.redd : styles.greenn}>- Oldest Wallet</Text>
-                </TouchableOpacity>
-              </View>
-          </View>
+          {this.displayWallets()}
       </View>
     );
   }
@@ -176,90 +186,84 @@ const styles = StyleSheet.create({
     //  flexDirection: 'column',
      backgroundColor: '#111F61',
    },
-   balanceContainer: {
+   buttonsContainer: {
      flex: 1,
      justifyContent: 'space-between',
      alignItems: 'flex-start',
-     flexDirection: 'row',
+     flexDirection: 'column',
      marginLeft: 35,
      marginRight: 35,
-     top: 150
+    //  top: 140,
+    //  left: 230,
+    //  position: 'absolute'
    },
    redd: {
-     color: 'red',
+     color: 'white',
+     backgroundColor: 'red',
      fontSize: 20,
      padding: 7,
-     borderRadius: 0.4,
+     borderRadius: 3,
      borderWidth: 0.9,
-
-     borderColor: 'white'
+     borderColor: 'white',
+     width: 150,
+     textAlign: 'center'
    },
    greenn: {
-     color: 'green',
+     color: 'white',
      fontSize: 20,
      padding: 7,
-     borderRadius: 0.4,
+     borderRadius: 3,
+     backgroundColor: 'green',
      borderWidth: 0.9,
-     borderColor: 'white'
-   },
-  topContainer: {
-    backgroundColor: '#111F61',
-  },
-  logoContainer: {
-    flex: 1,
-    paddingBottom: 10,
-    // backgroundColor: '#335B7B',
-  },
-  logo: {
-    textAlign: 'center',
-    marginTop: 25,
-    color: 'white',
-    fontSize: 15,
-    fontFamily: 'Kohinoor Bangla'
-  },
-   balance: {
-     flex: 1,
-     textAlign: 'center',
-     fontSize: 40,
-     color: 'white',
-     fontFamily: 'Kohinoor Bangla',
-     borderColor: 'black',
-     borderRadius: 5
+     borderColor: 'white',
+     width: 150,
+     textAlign: 'center'
    },
    destintro: {
      color: 'white',
      fontSize: 20
    },
     walletsContainer: {
-      flex: 1,
-      // flexDirection: 'column',
-      backgroundColor: '#111F61',
-      padding: 15
+      flex: -1,
+      flexDirection: 'column',
+      // backgroundColor: 'yellow',
+      // top: 20,
+      // padding: 15
     },
     walletAddress: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 10,
-      padding: 15
+      color: 'white',
+      textAlign: 'center',
+      fontSize: 20
     },
     walletintro: {
       color: 'white',
       textAlign: 'center',
       fontSize: 20
     },
-    nowallet: {
-      backgroundColor: "white",
-      paddingTop: 10,
-      paddingBottom: 10,
-      borderRadius: 10
+    walletDisplay: {
+      top: 30
+    },
+    noWallet: {
+      color: 'white',
+      fontSize: 25,
+      textAlign: 'center',
+      marginTop: 20
+    },
+    noWalletsButtonsContainer: {
+      flex: -1,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'column',
+      marginTop: 200,
+      marginLeft: 32,
+      marginRight: 35,
     },
     destTag: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       // fontSize: 25,
-      marginTop: 50,
+      marginTop: 150,
       padding: 15
     },
     wallets: {
@@ -269,29 +273,59 @@ const styles = StyleSheet.create({
     walletFont: {
       color: 'white',
       textAlign: 'center',
-      fontSize: 18
+      fontSize: 18,
     },
     cashRegister: {
       marginTop: 10,
       color: 'white',
-      fontSize: 14
+      fontSize: 16
     },
-    wallet: {
-      flex: 1,
+    address: {
+      flex: -1,
       flexDirection: 'row',
       justifyContent: 'space-around',
       alignItems: 'center',
-      // paddingLeft: 85,
-      // paddingTop: 20,
-      // paddingBottom: 20,
-      // marginLeft: 70,
-      // marginRight: 70,
+      // padding: 3,
+      width: 370,
+      left: 20,
+    },
+    clipBoardContainer: {
+      borderColor: 'white',
+      borderWidth: 1,
+      padding: 1,
+      borderRadius: 3,
+      backgroundColor: 'white'
+    },
+    wallet: {
+      flex: -1,
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      borderColor: 'white',
+      borderWidth: 1,
+      padding: 6,
+      width: 370,
+      left: 20,
       marginTop: 10,
       marginBottom: 10,
-      // borderBottomWidth: 1,
-      // borderColor: '#d3d3d3',
-      // backgroundColor: 'white',
-      borderRadius: 20
+      borderRadius: 10,
+      backgroundColor: 'black'
+    },
+    imageContainer: {
+      flex: 1,
+      justifyContent: 'space-between',
+      position: 'absolute',
+      flexDirection: 'row',
+      top: 80,
+      left: 60
+    },
+    qrCode: {
+      width: 120,
+      height: 120,
+      borderRadius: 10,
+      // left: 140,
+      // marginTop: 84,
+      // position: 'absolute'
     }
 });
 
