@@ -40,26 +40,22 @@ class SendAmount extends Component {
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "willAppear" )
-    {
+    if ( event.id === "willAppear" ) {
       let that = this;
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
       let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
-      if ( this.props.quoted )
-      {
+      if ( this.props.quoted ){
         this.timer = window.setInterval(function(){
-          if ( that.state.time === 1000 )
-          {
+          if ( that.state.time === 1000 ){
             that.props.navigator.switchToTab({
               tabIndex: 0
             });
           }
           that.setState({time: that.state.time - 1000})
-        },1000);
+        }, 1000);
         this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
       }
-      else
-      {
+      else {
         this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
       }
     }
@@ -71,7 +67,7 @@ class SendAmount extends Component {
         navigatorStyle: {navBarHidden: true}
       })
     }
-    else if (event.id === "didDisappear"){
+    else if (event.id === "willDisappear"){
       this.props.clearSendAmount();
       clearInterval(this.timer);
     }
@@ -126,8 +122,13 @@ class SendAmount extends Component {
     this.props.clearSendAmount();
   }
 
+  truncate(num){
+    return num ? num.toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
+  }
 
 //Maybe give these the indexes that they are suppose to have.
+// XRP withdraw address that ripplePay auto sends to on withdrawals is shown just
+// for testing purposes
   render() {
       if ( !this.props.shape.sendamount )
       {
@@ -144,18 +145,18 @@ class SendAmount extends Component {
               <Text style={styles.title}>
                 {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
               </Text>
+              <Text style={styles.timeleft}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
             </View>
-            <View>
-              <Text style={styles.whitetext}>Fee: {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-              <Text style={styles.whitetext}>Send Minimum: {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Send Maximum: {this.props.quoted ? this.props.shape.sendamount.maxLimit : this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address: {this.props.shape.sendamount.deposit}</Text>
-              <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address: {this.props.withdrawal}</Text>
-              <Text style={styles.whitetext}>Deposit Amount: {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Withdraw Amount: {this.props.amount} {this.props.toCoin}</Text>
-              <Text style={styles.whitetext}>Quoted Rate: {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>XRP Dest Tag: {this.props.shape.sendamount.xrpDestTag}</Text>
-              <Text style={styles.whitetext}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
+            <View style={styles.infoContainer}>
+              <Text style={styles.whitetext}>Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+              <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Send Maximum:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.maxLimit) : this.tuncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
+              { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit}</Text> : null}
+              <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
+              <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.depositAmount) : this.truncate(this.props.fromAmount)} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Withdraw Amount:   {this.truncate(this.props.amount)} {this.props.toCoin}</Text>
+              <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text>
             </View>
             {this.renderButton()}
           </View>
@@ -167,9 +168,14 @@ class SendAmount extends Component {
 // define your styles
 const styles = StyleSheet.create({
   whitetext: {
-    color: 'white',
-    textAlign: 'center',
-    marginTop: 10
+    color: '#F2CFB1',
+    textAlign: 'left',
+    marginTop: 6,
+    fontSize: 19,
+  },
+  timeleft: {
+    color: '#F2CFB1',
+    fontSize: 25,
   },
   container: {
     flex: 1,
@@ -191,6 +197,10 @@ const styles = StyleSheet.create({
     // flex: 1,
     // top: 10,
     fontFamily: 'Kohinoor Bangla'
+  },
+  infoContainer: {
+    marginTop: 20,
+    left: 20
   },
 });
 
