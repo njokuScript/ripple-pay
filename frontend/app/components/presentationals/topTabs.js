@@ -19,7 +19,7 @@ const TopTabs = (props) => {
     <View style={styles.topTabsContainer}>
       <TouchableOpacity
         onPress={props.handleLeftPress}
-        style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: props.pressed ? 2 : 1})}
+        style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1})}
       >
         <Text style={styles.topTab}>
         XRP
@@ -27,7 +27,7 @@ const TopTabs = (props) => {
       </TouchableOpacity>
       <TouchableOpacity
         onPress={props.handleRightPress}
-        style={Object.assign({}, topTabContainer, {borderBottomWidth: !props.pressed ? 2 : 1})}
+        style={Object.assign({}, topTabContainer, {borderBottomWidth: props.pressed ? 2 : 1})}
       >
         <Text style={styles.topTab}>
         Conversions

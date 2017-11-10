@@ -3,7 +3,19 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 // import {configureStore} from '../store';
 //KINDA HCKY BUT I'M IMPORTING THE ENTIRE STORE.
-import { SIGNIN_URL, SIGNUP_URL, BANK_SEND_URL, TRANSACTIONS_URL, OLDADDR_URL, SEARCH_USERS_URL, ADDR_URL, SEND_URL, WALLETS_URL, DEST_URL, DEL_WALLET_URL } from '../api';
+import {
+  SIGNIN_URL,
+  SIGNUP_URL,
+  BANK_SEND_URL,
+  TRANSACTIONS_URL,
+  OLDADDR_URL,
+  SEARCH_USERS_URL,
+  ADDR_URL, SEND_URL,
+  WALLETS_URL,
+  DEST_URL,
+  DEL_WALLET_URL,
+} from '../api';
+
 import { addAlert } from './alertsActions';
 
 //The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
@@ -44,7 +56,6 @@ exports.requestOldAddress = (user_id) => {
     });
   };
 }
-
 
 exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
@@ -125,7 +136,7 @@ exports.sendInBank = (sender_id, receiver_id, amount) => {
 //I'M PASSING THE ENTIRE USER IN HERE EVEN THOUGH IT MAY SEEM COUNTERINTUITIVE BECAUSE I'LL HAVE TO COMBINE
 //THEM LATER WITH THE IN-BANK TRANSACTIONS.
 exports.requestTransactions = (user) => {
-  finishAndBeginTimer();
+  // finishAndBeginTimer();
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
@@ -185,7 +196,7 @@ exports.requestOnlyDesTag = (user_id, cashRegister) => {
   };
 }
 exports.delWallet = (user_id, desTag, cashRegister) => {
-  finishAndBeginTimer();
+  // finishAndBeginTimer();
   return function(dispatch) {
     // user following is {user_id: whatever} since it is deconstructed
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
@@ -196,7 +207,6 @@ exports.delWallet = (user_id, desTag, cashRegister) => {
     });
   };
 }
-
 //Set timedlogout of the sessin to 5 minutes.
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.

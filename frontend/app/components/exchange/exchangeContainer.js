@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Exchange from './exchange'
-import { requestAllCoins, requestRate, clearSendAmount } from '../../actions/shapeActions';
+import { requestAllCoins, requestRate } from '../../actions/shapeActions';
 
 const mapStateToProps = ({ shape }) => ({
   shape: shape
@@ -9,7 +9,6 @@ const mapStateToProps = ({ shape }) => ({
 const mapDispatchToProps = dispatch => ({
   requestAllCoins: () => dispatch(requestAllCoins()),
   requestRate: (coin) => dispatch(requestRate(coin)),
-  clearSendAmount: () => dispatch(clearSendAmount)
 });
 
 export default connect(

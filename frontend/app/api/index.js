@@ -15,6 +15,8 @@ exports.DEST_URL = `${API_URL}/dest`;
 exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
 exports.BANK_SEND_URL = `${API_URL}/banksend`;
 exports.OLDADDR_URL = `${API_URL}/old`;
+exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
+exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 
 // shape shift
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;

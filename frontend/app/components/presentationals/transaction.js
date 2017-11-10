@@ -4,12 +4,13 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity
 } from 'react-native';
 
 // Pass down props.otherParty,
 // the color of transaction is either green or red based on neg or pos
 const Transaction = (props) => {
-  const { otherParty, ndate, amount, transactionColor } = props;
+  const { otherParty, ndate, amount, transactionColor, toAmount } = props;
   let transactionDate;
   let transactionAmount;
   if (ndate && amount) {
@@ -23,7 +24,7 @@ const Transaction = (props) => {
       textAlign: 'center',
       fontWeight: "600",
       fontSize: 14,
-      color: transactionColor
+      color: transactionColor,
     }
     transactionDate = (
       <View style={styles.transactionDate}>
@@ -35,13 +36,16 @@ const Transaction = (props) => {
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
-          {amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+          { amount }
+        </Text>
+        <Text style={transactionAmountStyle}>
+          { toAmount }
         </Text>
       </View>
     )
   }
   return (
-    <View style={styles.transaction}>
+    <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
       <View style={styles.transactionInfo}>
         <View style={styles.transactionOtherParty}>
           <Text style={styles.transactionOtherPartyText}>
@@ -51,7 +55,7 @@ const Transaction = (props) => {
         { transactionDate }
       </View>
       { transactionAmount }
-    </View>
+    </TouchableOpacity>
   )
 }
 

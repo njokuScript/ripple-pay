@@ -1,11 +1,16 @@
 // import liraries
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import sendAmountContainer from './sendAmountContainer';
 import CustomButton from '../presentationals/customButton';
+import AlertContainer from '../alerts/AlertContainer';
+import { makeShapeshiftTransaction } from '../../actions/authActions';
+import { clearSendAmount } from '../../actions/shapeActions';
+import { addAlert } from '../../actions/alertsActions';
 import {
   StyleSheet,
   Text,
@@ -29,7 +34,7 @@ class SendAmount extends Component {
       toAmount: "",
       address: "",
       pushed: false,
-      time: 600000
+      time: 600000,
     }
     this.toThisAmount = "";
     this.fromThisAmount = "";
@@ -40,7 +45,8 @@ class SendAmount extends Component {
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "willAppear" ) {
+    if ( event.id === "didAppear" ) {
+      console.log("hellow");
       let that = this;
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
       let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
@@ -71,6 +77,28 @@ class SendAmount extends Component {
       this.props.clearSendAmount();
       clearInterval(this.timer);
     }
+  }
+
+  componentWillReceiveProps(newProps){
+    console.log("componentreceived");
+    if (newProps.shape.sendamount.deposit) {
+      let otherParty = newProps.fromCoin === "XRP" ? newProps.withdrawal : newProps.returnAddress;
+      otherParty = otherParty === '' ? 'Not Entered' : otherParty;
+      let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
+      newProps.makeShapeshiftTransaction(
+        newProps.userId,
+        `${this.truncate(newProps.shape.sendamount.depositAmount)} ${newProps.fromCoin}`,
+        `${this.truncate(newProps.amount)} ${newProps.toCoin}`,
+        otherParty,
+        newProps.shape.sendamount.deposit,
+        returnAddress,
+        newProps.shape.sendamount.orderId
+      )
+    }
+  }
+
+  truncate(num){
+    return num ? num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0] : "";
   }
 
   renderButton(){
@@ -141,6 +169,7 @@ class SendAmount extends Component {
       else {
         return (
           <View style={styles.container}>
+            <AlertContainer />
             <View style={styles.titleContainer}>
               <Text style={styles.title}>
                 {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
@@ -204,5 +233,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//make this component available to the app
 export default SendAmount;

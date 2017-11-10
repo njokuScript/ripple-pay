@@ -8,6 +8,7 @@ import sendAmountContainer from './sendAmountContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
+import AlertContainer from '../alerts/AlertContainer';
 import {
   StyleSheet,
   Text,
@@ -118,8 +119,6 @@ class Transition extends Component {
                  action: this.action,
                  userId: this.props.user.user_id,
                  quoted: this.state.quoted,
-                 addAlert: this.props.addAlert,
-                 clearSendAmount: this.props.clearSendAmount
                }
     });
   }
@@ -144,6 +143,7 @@ class Transition extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <AlertContainer />
         <CustomBackButton handlePress={() => this.props.navigator.pop({
           animationType: 'fade'
         })} style={{paddingLeft: 10, paddingTop: 60}} />
@@ -241,5 +241,4 @@ const styles = StyleSheet.create({
   }
 });
 
-//make this component available to the app
 export default Transition;

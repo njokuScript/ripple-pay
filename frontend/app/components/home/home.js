@@ -8,6 +8,8 @@ import Tabs from 'react-native-tabs';
 import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
 import TopTabs from '../presentationals/topTabs';
+import ShapeTransactionView from '../presentationals/shapeTransactionView';
+
 import {
     ScrollView,
     View,
@@ -30,7 +32,8 @@ class Home extends React.Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       refreshing: false,
-      pressed: true,
+      shapeshift: false,
+      showshift: ''
     }
     this.onRefresh = this.onRefresh.bind(this);
   }
@@ -40,6 +43,7 @@ class Home extends React.Component {
     if ( event.id === "willAppear" )
     {
       this.props.requestTransactions(this.props.user);
+      this.props.requestShifts(this.props.user.user_id);
     }
   }
 
@@ -57,33 +61,66 @@ class Home extends React.Component {
 
   handleLeftPress() {
     this.setState({
-      pressed: true
+      shapeshift: false,
+      showshift: false,
     })
   }
 
   handleRightPress() {
     this.setState({
-      pressed: false
+      shapeshift: true,
+      showshift: false,
+    })
+  }
+
+  show(transaction) {
+    this.setState({
+      showshift: <ShapeTransactionView {...transaction}/>
     })
   }
   //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
-    if (this.props.transactions.length > 0) {
+    if (this.state.showshift != '') {
+      return this.state.showshift;
+    }
+    if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
+      (!this.state.shapeshift && this.props.transactions.length > 0)) {
       let ndate;
-      let transactions = this.props.transactions.sort((a,b)=>{
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      })
+      let transactions;
+      if (!this.state.shapeshift) {
+        transactions = this.props.transactions.sort((a,b)=>{
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        })
+      }
+      else{
+        transactions = this.props.shapeshiftTransactions;
+      }
       transactions = transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
-        return (
-          <Transaction
+        if (!this.state.shapeshift) {
+          return (
+            <Transaction
             key={idx}
             otherParty={transaction.otherParty}
             ndate={ndate}
-            amount={transaction.amount}
+            amount={`${transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ`}
             transactionColor={transaction.amount < 0 ? "red" : "green"}
-          />
-        );
+            />
+          );
+        }
+        else {
+          return (
+            <Transaction
+              key={idx}
+              otherParty={`${transaction.otherParty.slice(0,17)}...`}
+              ndate={ndate}
+              amount={transaction.from}
+              toAmount={`to ${transaction.to}`}
+              transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
+              handlePress={() => this.show(transaction)}
+            />
+          );
+        }
       });
       return (
         <ScrollView style={styles.transactionsContainer}>
@@ -128,7 +165,7 @@ class Home extends React.Component {
       <TopTabs
         handleLeftPress={this.handleLeftPress}
         handleRightPress={this.handleRightPress}
-        pressed={this.state.pressed}
+        pressed={this.state.shapeshift}
       />
 
       <ScrollView
