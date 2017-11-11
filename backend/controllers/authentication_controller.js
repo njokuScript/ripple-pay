@@ -47,7 +47,6 @@ exports.signup = function(req, res, next) {
 
 exports.search = function (req, res, next) {
   let item = req.query;
-  Object.keys(item)[0];
   let key = Object.keys(item)[0];
   let reg = new RegExp(`^${item[key]}\\w*$` , 'i');
   User.find({ "screenName": reg } , function(err, users) {

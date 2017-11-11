@@ -59,7 +59,6 @@ export default class StartApp {
       Navigation.registerComponent('Alert', ()=> Alert, store, Provider);
       Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
-
     }
 
     startTabs(){

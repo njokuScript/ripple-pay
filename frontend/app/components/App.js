@@ -11,7 +11,6 @@ import {
 
 import Login from './Login';
 import Main from './Main';
-import AlertContainer from './alerts/AlertContainer';
 
 export default class App extends React.Component {
   constructor(props){
@@ -39,7 +38,6 @@ export default class App extends React.Component {
       <View style={{ flex: 1 }}>
         <StatusBar barStyle="light-content" />
         {renderMainView()}
-        <AlertContainer />
       </View>
     );
   }

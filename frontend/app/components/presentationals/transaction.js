@@ -4,26 +4,21 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity
 } from 'react-native';
 
 // Pass down props.otherParty,
 // the color of transaction is either green or red based on neg or pos
 const Transaction = (props) => {
-  const { otherParty, ndate, amount, transactionColor } = props;
+  const { otherParty, ndate, amount, transactionColor, toAmount, time } = props;
   let transactionDate;
   let transactionAmount;
-  if (ndate && amount) {
-    let time;
-    if (ndate.getHours() > 12) {
-      time = `${ndate.getHours() - 12}:${ndate.getMinutes()} PM` ;
-    } else {
-      time = `${ndate.getHours()}:${ndate.getMinutes()} AM`;
-    }
+  if (amount) {
     const transactionAmountStyle = {
       textAlign: 'center',
       fontWeight: "600",
       fontSize: 14,
-      color: transactionColor
+      color: transactionColor,
     }
     transactionDate = (
       <View style={styles.transactionDate}>
@@ -35,24 +30,40 @@ const Transaction = (props) => {
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
-          {amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+          { amount }
+        </Text>
+        <Text style={transactionAmountStyle}>
+          { toAmount }
         </Text>
       </View>
     )
   }
-  return (
-    <View style={styles.transaction}>
-      <View style={styles.transactionInfo}>
-        <View style={styles.transactionOtherParty}>
-          <Text style={styles.transactionOtherPartyText}>
-            { otherParty }
-          </Text>
-        </View>
-        { transactionDate }
+  const transactionData = (
+    <View style={styles.transactionInfo}>
+      <View style={styles.transactionOtherParty}>
+      <Text style={styles.transactionOtherPartyText}>
+      { otherParty }
+      </Text>
       </View>
-      { transactionAmount }
+      { transactionDate }
     </View>
   )
+  if (props.shapeshift) {
+    return (
+      <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
+      { transactionData }
+      { transactionAmount }
+      </TouchableOpacity>
+    )
+  }
+  else {
+    return (
+      <View style={styles.transaction}>
+      { transactionData }
+      { transactionAmount }
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

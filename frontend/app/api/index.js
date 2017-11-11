@@ -15,6 +15,9 @@ exports.DEST_URL = `${API_URL}/dest`;
 exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
 exports.BANK_SEND_URL = `${API_URL}/banksend`;
 exports.OLDADDR_URL = `${API_URL}/old`;
+exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
+exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
+exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
 
 // shape shift
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
@@ -22,3 +25,4 @@ exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
 exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
 exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
 exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
+exports.SHAPE_TXTSTAT_URL = `${SHAPESHIFT_URL}/txStat`;
