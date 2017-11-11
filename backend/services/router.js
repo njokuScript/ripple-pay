@@ -33,6 +33,7 @@ router.get('/old', WalletController.findOldAddress);
 
 router.post('/makeshift', ShapeshiftController.createShapeshiftTransaction);
 router.get('/getshifts', ShapeshiftController.getShapeshiftTransactions);
+router.get('/getShapeId', ShapeshiftController.getShapeshiftTransactionId);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

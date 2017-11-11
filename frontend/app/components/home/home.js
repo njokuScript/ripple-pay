@@ -73,9 +73,9 @@ class Home extends React.Component {
     })
   }
 
-  show(transaction) {
+  show(transaction, time) {
     this.setState({
-      showshift: <ShapeTransactionView {...transaction}/>
+      showshift: <ShapeTransactionView time={time} {...transaction}/>
     })
   }
   //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
@@ -97,6 +97,12 @@ class Home extends React.Component {
       }
       transactions = transactions.map((transaction, idx) => {
         ndate = new Date(transaction.date);
+        let time;
+        if (ndate.getHours() > 12) {
+          time = `${ndate.getHours() - 12}:${ndate.getMinutes()} PM` ;
+        } else {
+          time = `${ndate.getHours()}:${ndate.getMinutes()} AM`;
+        }
         if (!this.state.shapeshift) {
           return (
             <Transaction
@@ -105,6 +111,7 @@ class Home extends React.Component {
             ndate={ndate}
             amount={`${transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ`}
             transactionColor={transaction.amount < 0 ? "red" : "green"}
+            time={time}
             />
           );
         }
@@ -117,7 +124,8 @@ class Home extends React.Component {
               amount={transaction.from}
               toAmount={`to ${transaction.to}`}
               transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
-              handlePress={() => this.show(transaction)}
+              handlePress={() => this.show(transaction, time)}
+              time={time}
             />
           );
         }

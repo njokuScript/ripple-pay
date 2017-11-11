@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 40
   },
-
   topTabContainerRight: {
     borderColor: 'black',
     borderBottomWidth: 1,

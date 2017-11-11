@@ -10,16 +10,10 @@ import {
 // Pass down props.otherParty,
 // the color of transaction is either green or red based on neg or pos
 const Transaction = (props) => {
-  const { otherParty, ndate, amount, transactionColor, toAmount } = props;
+  const { otherParty, ndate, amount, transactionColor, toAmount, time } = props;
   let transactionDate;
   let transactionAmount;
-  if (ndate && amount) {
-    let time;
-    if (ndate.getHours() > 12) {
-      time = `${ndate.getHours() - 12}:${ndate.getMinutes()} PM` ;
-    } else {
-      time = `${ndate.getHours()}:${ndate.getMinutes()} AM`;
-    }
+  if (amount) {
     const transactionAmountStyle = {
       textAlign: 'center',
       fontWeight: "600",
