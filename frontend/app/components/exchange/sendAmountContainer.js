@@ -1,6 +1,12 @@
 import { connect } from 'react-redux';
 import SendAmount from './sendAmount';
-import { requestMarketInfo, sendAmount, shapeshift } from '../../actions/shapeActions';
+import {
+  requestMarketInfo,
+  sendAmount,
+  shapeshift,
+  makeShapeshiftTransaction,
+  clearSendAmount
+ } from '../../actions/shapeActions';
 import { addAlert } from '../../actions/alertsActions';
 import { signAndSend } from '../../actions/authActions';
 
@@ -15,7 +21,13 @@ const mapDispatchToProps = dispatch => ({
   signAndSend: (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => dispatch(
     signAndSend(amount, fromAddress, toAddress, sourceTag, toDesTag, userId)
   ),
-  shapeshift: (withdrawal, pair, returnAddress, destTag) => dispatch(shapeshift(withdrawal, pair, returnAddress, destTag))
+  shapeshift: (withdrawal, pair, returnAddress, destTag) => dispatch(shapeshift(withdrawal, pair, returnAddress, destTag)),
+  makeShapeshiftTransaction: (
+    userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+  ) => dispatch(makeShapeshiftTransaction(
+    userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+  )),
+  clearSendAmount: () => dispatch(clearSendAmount),
 });
 
 export default connect(
