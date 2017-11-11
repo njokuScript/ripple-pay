@@ -38,19 +38,32 @@ const Transaction = (props) => {
       </View>
     )
   }
-  return (
-    <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
-      <View style={styles.transactionInfo}>
-        <View style={styles.transactionOtherParty}>
-          <Text style={styles.transactionOtherPartyText}>
-            { otherParty }
-          </Text>
-        </View>
-        { transactionDate }
+  const transactionData = (
+    <View style={styles.transactionInfo}>
+      <View style={styles.transactionOtherParty}>
+      <Text style={styles.transactionOtherPartyText}>
+      { otherParty }
+      </Text>
       </View>
-      { transactionAmount }
-    </TouchableOpacity>
+      { transactionDate }
+    </View>
   )
+  if (props.shapeshift) {
+    return (
+      <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
+      { transactionData }
+      { transactionAmount }
+      </TouchableOpacity>
+    )
+  }
+  else {
+    return (
+      <View style={styles.transaction}>
+      { transactionData }
+      { transactionAmount }
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

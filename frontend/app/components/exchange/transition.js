@@ -49,13 +49,6 @@ class Transition extends Component {
       this.props.requestOldAddress(this.props.user.user_id);
       this.props.requestAllWallets(this.props.user.user_id);
     }
-    else if (event.id === "bottomTabSelected")
-    {
-      this.props.navigator.resetTo({
-        screen: 'Exchange',
-        navigatorStyle: {navBarHidden: true}
-      })
-    }
   }
 
   // componentWillUnmount(){
@@ -104,6 +97,10 @@ class Transition extends Component {
         this.props.addAlert("Please Get a Wallet First");
         return;
       }
+    }
+    if (this.action === "withdraw" && this.withdrawalAddress === '') {
+      this.props.addAlert("Please Enter a Withdrawal Address");
+      return;
     }
     this.props.navigator.push({
       screen: 'SendAmount',

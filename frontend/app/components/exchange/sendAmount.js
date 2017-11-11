@@ -46,7 +46,6 @@ class SendAmount extends Component {
 
   onNavigatorEvent(event){
     if ( event.id === "didAppear" ) {
-      console.log("hellow");
       let that = this;
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
       let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
@@ -65,7 +64,8 @@ class SendAmount extends Component {
         this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
       }
     }
-    else if (event.id === "bottomTabSelected"){
+    else if (event.id === "willDisappear"){
+      console.log('screen disappeared');
       this.props.clearSendAmount();
       clearInterval(this.timer);
       this.props.navigator.resetTo({
@@ -73,15 +73,15 @@ class SendAmount extends Component {
         navigatorStyle: {navBarHidden: true}
       })
     }
-    else if (event.id === "willDisappear"){
-      this.props.clearSendAmount();
-      clearInterval(this.timer);
-    }
   }
 
   componentWillReceiveProps(newProps){
-    console.log("componentreceived");
-    if (newProps.shape.sendamount.deposit) {
+    if (
+      this.props.shape.sendamount &&
+      Object.keys(this.props.shape.sendamount).length === 0 &&
+      newProps.shape.sendamount &&
+      newProps.shape.sendamount.deposit
+    ) {
       let otherParty = newProps.fromCoin === "XRP" ? newProps.withdrawal : newProps.returnAddress;
       otherParty = otherParty === '' ? 'Not Entered' : otherParty;
       let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
@@ -162,7 +162,7 @@ class SendAmount extends Component {
       {
         return (
           <View>
-            <Text>Transaction calculation failed. Please try again.</Text>
+            <Text>Error Making Transaction....</Text>
           </View>
         )
       }
@@ -180,12 +180,12 @@ class SendAmount extends Component {
               <Text style={styles.whitetext}>Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
               <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Send Maximum:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.maxLimit) : this.tuncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
-              { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit}</Text> : null}
+              { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit ? this.props.shape.sendamount.deposit : 'Please Wait...' }</Text> : null}
               <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
               <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.depositAmount) : this.truncate(this.props.fromAmount)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Withdraw Amount:   {this.truncate(this.props.amount)} {this.props.toCoin}</Text>
               <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text>
+              {this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text> : null}
             </View>
             {this.renderButton()}
           </View>
@@ -197,10 +197,14 @@ class SendAmount extends Component {
 // define your styles
 const styles = StyleSheet.create({
   whitetext: {
-    color: '#F2CFB1',
+    // color: '#F2CFB1',
     textAlign: 'left',
     marginTop: 6,
     fontSize: 19,
+    borderBottomWidth: 1,
+    paddingBottom: 5,
+    paddingTop: 5,
+    borderBottomColor: '#F2CFB1'
   },
   timeleft: {
     color: '#F2CFB1',
@@ -211,25 +215,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
-    backgroundColor: '#111F61'
+    backgroundColor: 'white'
   },
   titleContainer: {
-    padding: 0,
+    paddingBottom: 10,
     alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F2CFB1',
+    backgroundColor: '#111F61'
   },
   title: {
     color: '#F2CFB1',
     fontSize: 35,
     marginTop: 40,
-    // marginBottom: 20,
-    // padding: 20,
-    // flex: 1,
-    // top: 10,
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'Kohinoor Bangla',
   },
   infoContainer: {
     marginTop: 20,
-    left: 20
+    marginLeft: 10
   },
 });
 

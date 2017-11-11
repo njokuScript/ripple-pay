@@ -49,9 +49,16 @@ class Home extends React.Component {
 
   onRefresh(){
     this.setState({refreshing: true});
-    this.props.requestTransactions(this.props.user).then(() => {
-      this.setState({refreshing: false});
-    })
+    if (this.state.shapeshift) {
+      this.props.requestShifts(this.props.user.user_id).then(() => {
+        this.setState({refreshing: false})
+      })
+    }
+    else {
+      this.props.requestTransactions(this.props.user).then(() => {
+        this.setState({refreshing: false});
+      })
+    }
   }
 
   onLogout() {
@@ -106,6 +113,7 @@ class Home extends React.Component {
         if (!this.state.shapeshift) {
           return (
             <Transaction
+            shapeshift={false}
             key={idx}
             otherParty={transaction.otherParty}
             ndate={ndate}
@@ -118,6 +126,7 @@ class Home extends React.Component {
         else {
           return (
             <Transaction
+              shapeshift={true}
               key={idx}
               otherParty={`${transaction.otherParty.slice(0,17)}...`}
               ndate={ndate}
