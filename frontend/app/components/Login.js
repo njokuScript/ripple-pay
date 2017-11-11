@@ -2,6 +2,7 @@ import React from 'react';
 import { reduxForm } from 'redux-form';
 import CustomInput from './presentationals/customInput';
 import CustomButton from './presentationals/customButton';
+import AlertContainer from './alerts/AlertContainer';
 import {
   StyleSheet,
   Text,
@@ -102,6 +103,7 @@ class Login extends React.Component {
         contentContainerStyle={styles.container}
         scrollEnabled={false}
       >
+        <AlertContainer />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>
             RipplePay

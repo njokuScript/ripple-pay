@@ -5,6 +5,7 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
+import AlertContainer from '../alerts/AlertContainer';
 import {
   StyleSheet,
   Text,
@@ -36,7 +37,6 @@ class SendRipple extends Component {
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
 
   sendPayment(){
-    console.log('hi');
     if ( !this.props.fromAddress || !this.props.sourceTag)
     {
       this.props.addAlert("Please get a wallet first")
@@ -58,9 +58,9 @@ class SendRipple extends Component {
         }
       }
       let {toDesTag, toAddress, amount} = this.state;
-      if ( !parseFloat(amount) )
+      if ( parseFloat(amount) <= 0 )
       {
-        this.props.addAlert("Can't send 0 XRP");
+        this.props.addAlert("Can't send 0 or less Ripple");
         return;
       }
       this.setState({disabled: true});
@@ -71,6 +71,7 @@ class SendRipple extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <AlertContainer />
         <View style={styles.topContainer}>
           <TouchableOpacity onPress={() => this.props.navigator.pop({
             animationType: 'fade'

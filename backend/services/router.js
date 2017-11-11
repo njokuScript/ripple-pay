@@ -5,6 +5,8 @@ const passport = require('passport');
 
 const AuthenticationController = require('../controllers/authentication_controller');
 const BankController = require('../controllers/banks_controller');
+const WalletController = require('../controllers/wallets_controller');
+const ShapeshiftController = require('../controllers/shapeshift_controller');
 const passportService = require('./passport');
 
 var requireAuth = passport.authenticate('jwt', {session: false});
@@ -18,17 +20,20 @@ router.route('/signup')
   .post(AuthenticationController.signup);
 router.route('/signin')
   .post([requireLogin, AuthenticationController.signin]);
-// router.route('/transactions')
-//   .get(AuthenticationController.getTransactions);
-router.post('/send', BankController.sendMoney);
-router.get('/addrs', BankController.generateRegister);
-router.get('/transactions', BankController.getTransactions);
 router.get('/search', AuthenticationController.search);
-router.get('/wallets', BankController.receiveAllWallets);
-router.post('/dest', BankController.receiveOnlyDesTag);
-router.post('/delwallet', BankController.deleteWallet);
 router.post('/banksend', BankController.inBankSend);
-router.get('/old', BankController.findOldAddress);
+router.post('/send', BankController.sendMoney);
+router.get('/transactions', BankController.getTransactions);
+
+router.get('/addrs', WalletController.generateRegister);
+router.get('/wallets', WalletController.receiveAllWallets);
+router.post('/dest', WalletController.receiveOnlyDesTag);
+router.post('/delwallet', WalletController.deleteWallet);
+router.get('/old', WalletController.findOldAddress);
+
+router.post('/makeshift', ShapeshiftController.createShapeshiftTransaction);
+router.get('/getshifts', ShapeshiftController.getShapeshiftTransactions);
+router.get('/getShapeId', ShapeshiftController.getShapeshiftTransactionId);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

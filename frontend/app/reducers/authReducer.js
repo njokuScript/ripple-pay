@@ -11,6 +11,7 @@ import { merge } from 'lodash';
 var defaultState = {
   user_id: undefined,
   transactions: [],
+  shapeshiftTransactions: [],
   users: [],
   balance: 0,
   cashRegister: undefined,
@@ -53,6 +54,8 @@ module.exports = (state=defaultState, action) => {
       return Object.assign({}, state, {cashRegister: action.data.cashRegister});
     case 'RECEIVED_OLD_ADDRESS':
       return Object.assign({}, state, { cashRegister: action.data.cashRegister });
+    case 'RECEIVED_SHAPESHIFTS':
+      return Object.assign({}, state, { shapeshiftTransactions: action.data.shapeshiftTransactions.reverse()})
     default:
       return state;
   }

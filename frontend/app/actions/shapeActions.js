@@ -1,5 +1,13 @@
 import axios from 'axios';
-import { COINS_URL, RATE_URL, MARKET_URL, SEND_AMOUNT_URL, SHAPER_URL } from '../api';
+import {
+  COINS_URL,
+  RATE_URL,
+  MARKET_URL,
+  SEND_AMOUNT_URL,
+  SHAPER_URL,
+  MAKESHIFT_URL,
+  GETSHIFTS_URL
+ } from '../api';
 
 // const axios = require('axios');
 // const { COINS_URL } = require('../api');
@@ -46,6 +54,26 @@ exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
 }
 
 
+exports.makeShapeshiftTransaction = (userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId) => {
+  return function(dispatch){
+    return axios.post(MAKESHIFT_URL, { userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId } ).then((response) => {
+
+    }).catch((error) => {
+
+    });
+  }
+}
+
+exports.requestShifts = (userId) => {
+  return function(dispatch){
+    return axios.get(GETSHIFTS_URL, { params: userId }).then((response) => {
+      dispatch(receivedShifts(response.data))
+    }).catch((error) => {
+
+    })
+  }
+}
+
 receivedCoins = (data) => {
   return {
     type: 'RECEIVED_COINS',
@@ -77,6 +105,13 @@ receivedRate = (data, coin) => {
 receivedMarketInfo = (data) => {
   return{
     type: 'MARKET_INFO',
+    data
+  }
+}
+
+let receivedShifts = (data) => {
+  return {
+    type: 'RECEIVED_SHAPESHIFTS',
     data
   }
 }

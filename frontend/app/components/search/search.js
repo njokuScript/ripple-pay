@@ -4,6 +4,7 @@ import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import BankSendContainer from '../banksend/banksendContainer';
 import CustomInput from '../presentationals/customInput';
+
 import { reduxForm } from 'redux-form';
 
 import { View,

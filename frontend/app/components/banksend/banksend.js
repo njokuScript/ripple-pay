@@ -7,6 +7,7 @@ import ExchangeContainer from '../exchange/exchangeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
+import AlertContainer from '../alerts/AlertContainer';
 import {
   StyleSheet,
   Text,
@@ -47,9 +48,9 @@ class BankSend extends Component {
 
 
   sendPayment(){
-    if (!parseFloat(this.state.amount))
+    if (parseFloat(this.state.amount) <= 0)
     {
-      this.props.addAlert("Can't send 0 Ripple");
+      this.props.addAlert("Can't send 0 or less Ripple");
       return;
     }
     this.setState({disabled: true});
@@ -61,6 +62,7 @@ class BankSend extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <AlertContainer />
         <View style={styles.topContainer}>
           <CustomBackButton handlePress={() => this.props.navigator.pop({
             animationType: 'fade'
