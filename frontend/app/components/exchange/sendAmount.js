@@ -151,7 +151,7 @@ class SendAmount extends Component {
   }
 
   truncate(num){
-    return num ? num.toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
+    return num ? parseFloat(num).toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
   }
 
 //Maybe give these the indexes that they are suppose to have.
@@ -174,19 +174,19 @@ class SendAmount extends Component {
               <Text style={styles.title}>
                 {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
               </Text>
-              <Text style={styles.timeleft}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text>
+              {this.props.quoted ? <Text style={styles.timeleft}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text> : null}
             </View>
-            <View style={styles.infoContainer}>
-              <Text style={styles.whitetext}>Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-              <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Send Maximum:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.maxLimit) : this.tuncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
+            <ScrollView style={styles.infoContainer}>
               { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit ? this.props.shape.sendamount.deposit : 'Please Wait...' }</Text> : null}
               <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
+              <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Send Maximum:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.maxLimit) : this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.depositAmount) : this.truncate(this.props.fromAmount)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Withdraw Amount:   {this.truncate(this.props.amount)} {this.props.toCoin}</Text>
               <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
               {this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text> : null}
-            </View>
+              <Text style={styles.whitetext}>Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+            </ScrollView>
             {this.renderButton()}
           </View>
         );
@@ -198,17 +198,17 @@ class SendAmount extends Component {
 const styles = StyleSheet.create({
   whitetext: {
     // color: '#F2CFB1',
-    textAlign: 'left',
+    textAlign: 'center',
     marginTop: 6,
-    fontSize: 19,
+    fontSize: 16,
     borderBottomWidth: 1,
-    paddingBottom: 5,
-    paddingTop: 5,
-    borderBottomColor: '#F2CFB1'
+    padding: 20,
+
+    borderBottomColor: '#d3d3d3'
   },
   timeleft: {
-    color: '#F2CFB1',
-    fontSize: 25,
+    color: 'white',
+    fontSize: 18,
   },
   container: {
     flex: 1,
@@ -218,17 +218,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   titleContainer: {
-    paddingBottom: 10,
+    flex: -1,
+    backgroundColor: '#111F61',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#F2CFB1',
-    backgroundColor: '#111F61'
+    height: 90,
+    padding: 10,
   },
   title: {
-    color: '#F2CFB1',
-    fontSize: 35,
-    marginTop: 40,
-    fontFamily: 'Kohinoor Bangla',
+    color: 'white',
+    fontSize: 25,
+    // marginTop: 40,
+    // fontFamily: 'Kohinoor Bangla',
+    // textAlign: 'center'
   },
   infoContainer: {
     marginTop: 20,

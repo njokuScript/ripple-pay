@@ -135,10 +135,10 @@ class Wallet extends React.Component {
               />
               <View style={styles.buttonsContainer}>
                 <TouchableOpacity disabled={disabled} onPress={this.generate}>
-                  <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
+                  <Text style={disabled ? styles.redButton : styles.greenButton}>+ New Wallet</Text>
                 </TouchableOpacity>
                 <TouchableOpacity disabled={disabled} onPress={this.remove}>
-                  <Text style={disabled ? styles.redd : styles.greenn}>- Oldest Wallet</Text>
+                  <Text style={disabled ? styles.redButton : styles.greenButton}>- Oldest Wallet</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -156,7 +156,7 @@ class Wallet extends React.Component {
           <Text style={styles.noWallet}>Please get a Wallet</Text>
           <View style={styles.noWalletsButtonsContainer}>
             <TouchableOpacity disabled={disabled} onPress={this.generate}>
-              <Text style={disabled ? styles.redd : styles.greenn}>+ New Wallet</Text>
+              <Text style={disabled ? styles.redButton : styles.greenButton}>+ New Wallet</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -192,27 +192,28 @@ const styles = StyleSheet.create({
      marginLeft: 35,
      marginRight: 35,
    },
-   redd: {
+   redButton: {
      color: 'white',
      backgroundColor: 'red',
-     fontSize: 20,
-     padding: 7,
-     borderRadius: 3,
-     borderWidth: 0.9,
-     borderColor: 'white',
+     borderRadius: 50,
+     padding: 16,
      width: 150,
-     textAlign: 'center'
-   },
-   greenn: {
+     overflow: 'hidden',
+     textAlign: 'center',
      color: 'white',
-     fontSize: 20,
-     padding: 7,
-     borderRadius: 3,
-     backgroundColor: 'green',
-     borderWidth: 0.9,
-     borderColor: 'white',
+     fontSize: 15,
+    //  marginLeft: 15
+   },
+   greenButton: {
+     backgroundColor: '#0F1C52',
+     borderRadius: 50,
+     padding: 16,
      width: 150,
-     textAlign: 'center'
+     overflow: 'hidden',
+     textAlign: 'center',
+     color: 'white',
+     fontSize: 15,
+    //  marginLeft: 10
    },
    destintro: {
      color: 'white',
@@ -221,11 +222,17 @@ const styles = StyleSheet.create({
     walletsContainer: {
       flex: -1,
       flexDirection: 'column',
+      // borderColor: 'white',
+      // borderWidth: 1,
+      marginTop: 190,
+      width: 330,
+      marginLeft: 50,
+      // borderRadius: 20
     },
     walletAddress: {
       color: 'white',
       textAlign: 'center',
-      fontSize: 20
+      fontSize: 25,
     },
     walletintro: {
       color: 'white',
@@ -233,7 +240,7 @@ const styles = StyleSheet.create({
       fontSize: 20
     },
     walletDisplay: {
-      top: 30
+      top: 30,
     },
     noWallet: {
       color: 'white',
@@ -255,7 +262,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       // fontSize: 25,
-      marginTop: 150,
+      top: 180,
       padding: 15
     },
     wallets: {
@@ -270,7 +277,7 @@ const styles = StyleSheet.create({
     cashRegister: {
       marginTop: 10,
       color: 'white',
-      fontSize: 16
+      fontSize: 16,
     },
     address: {
       flex: -1,
@@ -278,7 +285,7 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       alignItems: 'center',
       width: 370,
-      left: 20,
+      left: 25,
     },
     clipBoardContainer: {
       borderColor: 'white',
@@ -293,27 +300,28 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       alignItems: 'center',
       borderColor: 'white',
-      borderWidth: 1,
-      padding: 6,
-      width: 370,
-      left: 20,
+      borderBottomWidth: 1,
+      paddingBottom: 10,
+      width: 330,
+      // left: 47,
       marginTop: 10,
-      marginBottom: 10,
-      borderRadius: 10,
-      backgroundColor: 'black'
+      // marginBottom: 10,
+      // borderRadius: 10,
+      // backgroundColor: 'black'
     },
     imageContainer: {
       flex: 1,
       justifyContent: 'space-between',
       position: 'absolute',
       flexDirection: 'row',
-      top: 80,
-      left: 60
+      top: 83,
+      left: 45,
     },
     qrCode: {
-      width: 120,
-      height: 120,
+      width: 140,
+      height: 140,
       borderRadius: 10,
+      marginLeft: 10,
     }
 });
 

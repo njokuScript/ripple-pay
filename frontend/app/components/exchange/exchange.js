@@ -137,11 +137,11 @@ class Exchange extends Component {
       Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
         if ( this.state.direction )
         {
-          line = `${this.props.shape.rates[coin]} XRP/${myCoins[coin].symbol}`;
+          line = `${this.truncate(this.props.shape.rates[coin])} XRP/${myCoins[coin].symbol}`;
         }
         else
         {
-          line = `${1/this.props.shape.rates[coin]} ${myCoins[coin].symbol}/XRP`;
+          line = `${this.truncate(1/this.props.shape.rates[coin])} ${myCoins[coin].symbol}/XRP`;
         }
         if ( coin === "ETH" )
         {
@@ -180,6 +180,10 @@ class Exchange extends Component {
         {showCoins}
       </ScrollView>
     );
+  }
+
+  truncate(num){
+    return num ? num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0] : "";
   }
 
   render() {
