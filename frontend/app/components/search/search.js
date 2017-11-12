@@ -15,8 +15,8 @@ import { View,
   Image,
   Dimensions,
   TextInput,
-  TouchableHighlight } from 'react-native';
-  import Tabs from 'react-native-tabs';
+  TouchableHighlight
+} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
 class Search extends React.Component {
@@ -63,14 +63,14 @@ class Search extends React.Component {
     let theUsers;
     if ( this.props.users )
     {
-      theUsers = this.props.users.sort((a,b) => a.screenName - b.screenName)
-      .map((user, idx) => {
-        if ( user._id !== this.props.user.user_id )
+      theUsers = this.props.users.sort()
+      .map((screenName, idx) => {
+        if ( screenName !== this.props.user.screenName )
         {
           return (
               <TouchableOpacity key={idx} style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
                 <View style={styles.username}>
-                  <Text style={styles.resultItemText}>{user.screenName}</Text>
+                  <Text style={styles.resultItemText}>{screenName}</Text>
                 </View>
               </TouchableOpacity>
           );

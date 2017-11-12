@@ -18,10 +18,7 @@ import {
   Image,
   ScrollView
 } from 'react-native';
-import Tabs from 'react-native-tabs';
-import Button from 'react-native-buttons';
-
-// create a component
+// create a Component
 class Exchange extends Component {
   constructor(props){
     super(props);

@@ -38,6 +38,8 @@ module.exports = (state=defaultState, action) => {
       //action.data.transactions is an array of all the transactions and the other is the balance.
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+    case 'RECEIVED_BALANCE':
+      return Object.assign({}, state, {balance: action.data.balance})
     case 'RECEIVED_USERS':
       return Object.assign({}, state, {users: action.users.data.search});
     case 'RECEIVED_WALLETS':

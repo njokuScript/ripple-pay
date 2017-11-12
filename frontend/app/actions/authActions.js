@@ -126,6 +126,7 @@ exports.sendInBank = (sender_id, receiver_id, amount) => {
     return axios.post(BANK_SEND_URL, {sender_id, receiver_id, amount}).then((response)=>{
       let {message} = response.data;
       dispatch(addAlert(message));
+      dispatch(receivedBalance(response.data))
     })
   }
 }
@@ -142,6 +143,7 @@ exports.requestTransactions = (user) => {
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     // index.js and router.js and THEN we finally get to our backend.
     return axios.get(TRANSACTIONS_URL, { params: user.user_id } ).then((response) => {
+      console.log(response.data);
       dispatch(receivedTransactions(response.data));
     }).catch((error) => {
 
@@ -259,6 +261,13 @@ let receivedTransactions = (data) => {
     data
   };
 };
+
+let receivedBalance = (data) => {
+  return {
+    type: 'RECEIVED_BALANCE',
+    data
+  }
+}
 
 let receivedUsers = (users) => {
   return {

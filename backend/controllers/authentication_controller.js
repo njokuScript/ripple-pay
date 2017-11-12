@@ -1,6 +1,10 @@
 const User = require('../models/user');
 const jwt = require('jwt-simple');
 const config = require('../config');
+const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
+const async = require('async');
+let asynchronous = require('asyncawait/async');
+let await = require('asyncawait/await');
 
 function tokenForUser(user) {
   let timestamp = new Date().getTime();
@@ -45,12 +49,24 @@ exports.signup = function(req, res, next) {
   });
 };
 
-exports.search = function (req, res, next) {
+exports.search = asynchronous(function (req, res, next) {
+  // Get from cache if cached
   let item = req.query;
   let key = Object.keys(item)[0];
-  let reg = new RegExp(`^${item[key]}\\w*$` , 'i');
-  User.find({ "screenName": reg } , function(err, users) {
-    if (err) { return next(err); }
-    res.json({search: users});
-  });
-};
+  let reg = new RegExp(`${item[key]}\\w*` , 'g');
+  let allUsers = await (RedisCache.getAsync('all-users'));
+  if (allUsers) {
+    res.json({search: allUsers.match(reg)});
+    return;
+  }
+  // Get from Mongo and set in cache
+  allUsers = await (User.find({}));
+  allUsers = JSON.stringify(allUsers.map((user) => user.screenName).join(' '));
+  RedisCache.set('all-users', allUsers);
+  res.json({search: allUsers.match(reg)})
+  //
+  // User.find({ "screenName": reg } , function(err, users) {
+  //   if (err) { return next(err); }
+  //   res.json({search: users});
+  // });
+})
