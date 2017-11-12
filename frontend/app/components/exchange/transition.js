@@ -143,63 +143,65 @@ class Transition extends Component {
         <AlertContainer />
         <CustomBackButton handlePress={() => this.props.navigator.pop({
           animationType: 'fade'
-        })} style={{paddingLeft: 10, paddingTop: 60}} />
-        <CustomButton
-          performAction={this.state.quoted ? "Quoted Transaction" : "Approx Transaction"}
-          buttonColor="white"
-          isDisabled={false}
-          handlePress={this.toggleQuoted.bind(this)}
-        />
-        <View style={styles.customInputContainer}>
-        <CustomInput
-          placeholder={`from ${this.props.fromCoin}`}
-          placeholderTextColor="#6D768B"
-          onChangeText={
-            (amt) => {
-              this.setState({fromAmount: amt, editFromAmount: false, editToAmount: true});
+        })} style={{paddingLeft: 10, marginTop: 80}} />
+        <View style={{marginTop: -20}}>
+          <CustomButton
+            performAction={this.state.quoted ? "Quoted Transaction" : "Approx Transaction"}
+            buttonColor="white"
+            isDisabled={false}
+            handlePress={this.toggleQuoted.bind(this)}
+          />
+          <View style={styles.customInputContainer}>
+          <CustomInput
+            placeholder={`from ${this.props.fromCoin}`}
+            placeholderTextColor="#6D768B"
+            onChangeText={
+              (amt) => {
+                this.setState({fromAmount: amt, editFromAmount: false, editToAmount: true});
+              }
             }
-          }
-          autoCorrect={false}
-          value={this.state.fromAmount}
-          autoCapitalize={'none'}
-        />
-        <CustomInput
-          placeholder={`to ${this.props.toCoin}`}
-          placeholderTextColor="#6D768B"
-          onChangeText={
-            (amt) => {
-              this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
+            autoCorrect={false}
+            value={this.state.fromAmount}
+            autoCapitalize={'none'}
+          />
+          <CustomInput
+            placeholder={`to ${this.props.toCoin}`}
+            placeholderTextColor="#6D768B"
+            onChangeText={
+              (amt) => {
+                this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
+              }
             }
-          }
-          value={this.state.toAmount}
-          autoCorrect={false}
-          autoCapitalize={'none'}
-        />
-        <CustomInput
-          placeholder={this.action === "deposit" ? "Return Address -- Recommended" : "Send To Address"}
-          placeholderTextColor="#6D768B"
-          onChangeText={
-            (addr) => {
-              this.setState({address: addr});
+            value={this.state.toAmount}
+            autoCorrect={false}
+            autoCapitalize={'none'}
+          />
+          <CustomInput
+            placeholder={this.action === "deposit" ? "Return Address -- Recommended" : "Send To Address"}
+            placeholderTextColor="#6D768B"
+            onChangeText={
+              (addr) => {
+                this.setState({address: addr});
+              }
             }
-          }
-          value={this.state.address}
-          autoCorrect={false}
-          autoCapitalize={'none'}
-        />
+            value={this.state.address}
+            autoCorrect={false}
+            autoCapitalize={'none'}
+          />
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
+            <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+          </View>
+          <CustomButton
+            performAction={this.action === 'withdraw' ? 'Continue withdrawal...' : 'Continue deposit...'}
+            buttonColor="white"
+            isDisabled={false}
+            handlePress={this.navSendAmount}
+          />
         </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-          <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-          <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
-          <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-        </View>
-        <CustomButton
-          performAction={this.action}
-          buttonColor="white"
-          isDisabled={false}
-          handlePress={this.navSendAmount}
-        />
      </View>
     );
   }

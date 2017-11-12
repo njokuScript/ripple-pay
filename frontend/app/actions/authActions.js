@@ -34,14 +34,14 @@ exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
       let {user_id, token} = response.data;
-      // Keychain.setGenericPassword(user_id, token)
-      //   .then(function() {
+      Keychain.setGenericPassword(user_id, token)
+        .then(function() {
           dispatch(authUser(user_id))
           finishAndBeginTimer();
-        // })
-      // .catch((error) => {
-      //     dispatch(addAlert("Could not log in. keychain"));
-      //   });
+        })
+      .catch((error) => {
+          dispatch(addAlert("Could not log in. keychain"));
+        });
     }).catch((error) => {
       dispatch(addAlert("Could not log in. axios"));
     });
@@ -62,14 +62,14 @@ exports.signupUser = (email, password, screenName) => {
     return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
       console.log('hliadlfkjs');
       let {user_id, token} = response.data;
-      // Keychain.setGenericPassword(user_id, token)
-      //   .then(function() {
+      Keychain.setGenericPassword(user_id, token)
+        .then(function() {
           dispatch(authUser(user_id));
           finishAndBeginTimer();
-        // })
-        // .catch((error) => {
-        //   dispatch(addAlert("Could not log in."));
-        // });
+        })
+        .catch((error) => {
+          dispatch(addAlert("Could not log in."));
+        });
     }).catch((error) => {
       dispatch(addAlert("Could not sign up."));
     });
