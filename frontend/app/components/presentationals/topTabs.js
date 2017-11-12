@@ -22,7 +22,7 @@ const TopTabs = (props) => {
         style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1})}
       >
         <Text style={styles.topTab}>
-        XRP
+        Transactions
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -30,7 +30,7 @@ const TopTabs = (props) => {
         style={Object.assign({}, topTabContainer, {borderBottomWidth: props.pressed ? 2 : 1})}
       >
         <Text style={styles.topTab}>
-        Conversions
+        Orders
         </Text>
       </TouchableOpacity>
     </View>
