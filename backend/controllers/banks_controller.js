@@ -3,6 +3,7 @@ const User = require('../models/user');
 const {CashRegister} = require('../models/populateBank');
 const {Bank} = require('../models/populateBank');
 const {Money} = require('../models/populateBank');
+const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
 const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
@@ -62,12 +63,15 @@ exports.sendMoney = asynchronous (function(req, res, next){
   const myPayment = server.thePayment(fromAddress, toAddress, toDesTag, sourceTag, amount);
   console.log(myPayment);
   let balInfo = await (server.api.getBalances(fromAddress));
-  let register = await (CashRegister.findOne({address: fromAddress}));
-
+  let registerSecret = await (RedisCache.getAsync(fromAddress));
+  if (!registerSecret) {
+    let register = await (CashRegister.findOne({address: fromAddress}));
+    registerSecret = register.secret;
+    RedisCache.set(fromAddress, registerSecret);
+  }
   let sendMyMoney = asynchronous (function(){
-    bcrypt.compare(addresses[fromAddress], register.secret, asynchronous (function(err, theResponse){
+    bcrypt.compare(addresses[fromAddress], registerSecret, asynchronous (function(err, theResponse){
       if (err) { return next(err)}
-
       // FOR SHAPESHIFT, WILL NEED TO RETURN THE TXNID WHEN A SUCCESSFUL TRANSACTION OCCURS
       // IMP: MUST REMOVE THE TRY AND CATCH IF YOU WANT TO SEE THE ERRORS WHILE DEBUGGING
       if ( theResponse )
@@ -86,6 +90,7 @@ exports.sendMoney = asynchronous (function(req, res, next){
           res.json({message: result.resultCode});
         }
         catch (err){
+          console.log(err);
           res.json({message: "Error In submitting transaction"});
         }
       }
@@ -97,11 +102,16 @@ exports.sendMoney = asynchronous (function(req, res, next){
   })
 
   let refillCashRegisterAndSend = asynchronous(function(){
-    let existingBank = await(Bank.findOne({address: bankAddress}));
+    let bankSecret = await (RedisCache.getAsync(bankAddress));
+    if (!bankSecret) {
+      let theBank = await (Bank.findOne({address: bankAddress}));
+      bankSecret = theBank.secret;
+      RedisCache.set(bankAddress, bankSecret);
+    }
     let thePay = server.thePayment(bankAddress, fromAddress, null, 0, 30)
     console.log(thePay);
     try {
-      bcrypt.compare(bank[bankAddress], existingBank.secret, asynchronous (function(err, respondent){
+      bcrypt.compare(bank[bankAddress], bankSecret, asynchronous (function(err, respondent){
         if ( respondent )
         {
           let theOrderInfo = await (server.api.preparePayment(bankAddress, thePay));
@@ -147,10 +157,7 @@ exports.getTransactions = asynchronous(function (req, res, next) {
     let newbalance;
     let info = await (server.api.getBalances(existingUser.cashRegister));
     newbalance = info[0].value;
-    let cashreg = {
-      balance: newbalance
-    }
-    await (CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, cashreg, {upsert: false}));
+    await (CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, { balance: newbalance }, {upsert: false}));
     let txnInfo = await (server.api.getTransactions(existingUser.cashRegister, { excludeFailures: true, types: ["payment"] }));
     let userAddress = existingUser.cashRegister;
     // console.log(txnInfo);

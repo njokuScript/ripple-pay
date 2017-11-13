@@ -91,12 +91,12 @@ exports.generateRegister = asynchronous(function(req, res, next){
 exports.receiveAllWallets = asynchronous(function(req, res, next){
   let x = req.query;
   let userId = x[Object.keys(x)[0]];
-  let cacheVal = getFromTheCache(`${userId}: redis-wallets`);
+  let cacheVal = await (getFromTheCache(`${userId}: redis-wallets`));
   if (cacheVal) {
     res.json({wallets: cacheVal});
     return;
   }
   let existingUser = await(User.findOne({_id: userId}))
-  setInCache(`${userId}: redis-wallets`, JSON.stringify(existingUser.wallets))
+  setInCache(`${userId}: redis-wallets`, existingUser.wallets)
   res.json({wallets: existingUser.wallets});
 })

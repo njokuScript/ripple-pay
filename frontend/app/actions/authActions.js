@@ -143,7 +143,6 @@ exports.requestTransactions = (user) => {
     // followup in the gettransactions method in the authenticationController since we go to the backend through the TRANS_URL through
     // index.js and router.js and THEN we finally get to our backend.
     return axios.get(TRANSACTIONS_URL, { params: user.user_id } ).then((response) => {
-      console.log(response.data);
       dispatch(receivedTransactions(response.data));
     }).catch((error) => {
 

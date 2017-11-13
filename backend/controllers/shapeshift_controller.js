@@ -28,13 +28,13 @@ exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
 exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
   let x = req.query;
   let userId = x[Object.keys(x)[0]];
-  let cacheVal = getFromTheCache(`${userId}: shapeshift-transactions`);
+  let cacheVal = await (getFromTheCache(`${userId}: shapeshift-transactions`));
   if (cacheVal) {
     res.json({shapeshiftTransactions: cacheVal});
     return;
   }
   let existingUser = await(User.findOne({_id: userId}));
-  setInCache(`${userId}: shapeshift-transactions`, JSON.stringify(existingUser.shapeshiftTransactions));
+  setInCache(`${userId}: shapeshift-transactions`, existingUser.shapeshiftTransactions);
   res.json({
     shapeshiftTransactions: existingUser.shapeshiftTransactions
   })

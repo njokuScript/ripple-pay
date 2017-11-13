@@ -5,22 +5,19 @@ exports.findFromAndUpdateCache = asynchronous(function (key, callback) {
   let myCacheValue = await (RedisCache.getAsync(key));
   if (myCacheValue) {
     let newCacheValue = JSON.parse(myCacheValue);
-    newCacheValue = callback(newCacheValue);
+    callback(newCacheValue);
     RedisCache.set(key, JSON.stringify(newCacheValue));
   }
 })
 
-exports.getFromTheCache = function (key) {
+exports.getFromTheCache = asynchronous(function (key) {
   let myCacheValue;
-  let executeCacheCheck = asynchronous(function(){
-    myCacheValue = await (RedisCache.getAsync(key));
-  })
-  executeCacheCheck();
+  myCacheValue = await (RedisCache.getAsync(key));
   if (myCacheValue) {
     return JSON.parse(myCacheValue);
   }
   return null;
-}
+})
 
 exports.setInCache = asynchronous(function(key, value){
   RedisCache.set(key, JSON.stringify(value));

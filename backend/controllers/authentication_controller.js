@@ -67,7 +67,7 @@ exports.search = asynchronous(function (req, res, next) {
   }
   // Get from Mongo and set in Redis cache
   allUsers = await (User.find({}));
-  allUsers = JSON.stringify(allUsers.map((user) => user.screenName).join(' '));
+  allUsers = allUsers.map((user) => user.screenName).join(' ');
   RedisCache.set('all-users', allUsers);
   res.json({search: allUsers.match(reg)})
   //
