@@ -15,8 +15,6 @@ import {
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import Tabs from 'react-native-tabs';
-import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Entypo';
 
 // I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
@@ -54,12 +52,13 @@ class BankSend extends Component {
       return;
     }
     this.setState({disabled: true});
-    this.props.sendInBank(this.props.sender_id, this.props.receiver_id, parseFloat(this.state.amount)).then(() => {
+    this.props.sendInBank(this.props.sender_id, this.props.receiverScreenName, parseFloat(this.state.amount)).then(() => {
       this.setState({disabled: false});
     });
   }
 
   render() {
+    console.log(this.props.balance);
     return (
       <View style={styles.container}>
         <AlertContainer />

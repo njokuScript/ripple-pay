@@ -4,7 +4,6 @@ import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import { unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo';
-import Tabs from 'react-native-tabs';
 import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
 import TopTabs from '../presentationals/topTabs';
