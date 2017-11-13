@@ -18,8 +18,6 @@ import {
   Image,
   ScrollView
 } from 'react-native';
-import Tabs from 'react-native-tabs';
-import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Octicons';
 
 // create a component

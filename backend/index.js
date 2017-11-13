@@ -7,6 +7,17 @@ mongoose.Promise = global.Promise;
 var app = express();
 
 var router = require('./services/router');
+var redis = require("redis");
+let bluebird = require('bluebird');
+bluebird.promisifyAll(redis.RedisClient.prototype);
+client = redis.createClient();
+client.on("error", function (err) {
+  console.log("Error " + err);
+});
+global.RedisCache = client;
+// RedisCache.end(true);
+// if you'd like to select database 3, instead of 0 (default), call
+// client.select(3, function() { /* ... */ });
 
 if (process.env.NODE_ENV=='production') {
   mongoose.connect(process.env.MONGO_URL);

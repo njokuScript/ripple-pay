@@ -33,10 +33,10 @@ finishAndBeginTimer = ()=> {
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
-      let {user_id, token} = response.data;
+      let { user_id, token, screenName } = response.data;
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
-          dispatch(authUser(user_id))
+          dispatch(authUser(user_id, screenName))
           finishAndBeginTimer();
         })
       .catch((error) => {
@@ -64,7 +64,7 @@ exports.signupUser = (email, password, screenName) => {
       let {user_id, token} = response.data;
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
-          dispatch(authUser(user_id));
+          dispatch(authUser(user_id, screenName));
           finishAndBeginTimer();
         })
         .catch((error) => {
@@ -120,12 +120,13 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, user
   };
 };
 
-exports.sendInBank = (sender_id, receiver_id, amount) => {
+exports.sendInBank = (sender_id, receiverScreenName, amount) => {
   finishAndBeginTimer();
   return function(dispatch){
-    return axios.post(BANK_SEND_URL, {sender_id, receiver_id, amount}).then((response)=>{
+    return axios.post(BANK_SEND_URL, {sender_id, receiverScreenName, amount}).then((response)=>{
       let {message} = response.data;
       dispatch(addAlert(message));
+      dispatch(receivedBalance(response.data))
     })
   }
 }
@@ -211,10 +212,11 @@ exports.delWallet = (user_id, desTag, cashRegister) => {
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
 
-authUser = (user_id) => {
+authUser = (user_id, screenName) => {
   return {
     type: 'AUTH_USER',
-    user_id
+    user_id,
+    screenName
   };
 };
 
@@ -259,6 +261,13 @@ let receivedTransactions = (data) => {
     data
   };
 };
+
+let receivedBalance = (data) => {
+  return {
+    type: 'RECEIVED_BALANCE',
+    data
+  }
+}
 
 let receivedUsers = (users) => {
   return {

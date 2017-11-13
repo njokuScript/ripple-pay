@@ -14,8 +14,6 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import Tabs from 'react-native-tabs';
-import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Entypo';
 
 // create a component
@@ -45,6 +43,9 @@ class SendRipple extends Component {
     else if(!this.state.toAddress.match(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/))
     {
       this.props.addAlert("Invalid Ripple Address");
+    }
+    else if (this.props.fromAddress === this.state.toAddress) {
+      this.props.addAlert("Can't Send to yourself");
     }
     else{
       let array = Object.keys(this.state);

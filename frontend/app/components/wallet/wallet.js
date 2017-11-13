@@ -12,8 +12,6 @@ import {
   Dimensions,
   Clipboard
 } from 'react-native';
-import Tabs from 'react-native-tabs';
-import Button from 'react-native-buttons';
 import Icon from 'react-native-vector-icons/Entypo';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import LinearGradient from 'react-native-linear-gradient'
@@ -95,7 +93,7 @@ class Wallet extends React.Component {
         return this.qrOne;
       case "r9bxkP":
         return this.qrTwo;
-      case "rpN2Nz":
+      case "rPN2Nz":
         return this.qrThree;
       case "rPxkAQ":
         return this.qrFour;
@@ -138,7 +136,7 @@ class Wallet extends React.Component {
                   <Text style={disabled ? styles.redButton : styles.greenButton}>+ New Wallet</Text>
                 </TouchableOpacity>
                 <TouchableOpacity disabled={disabled} onPress={this.remove}>
-                  <Text style={disabled ? styles.redButton : styles.greenButton}>- Oldest Wallet</Text>
+                  <Text style={disabled ? styles.redButton : styles.greenButton}>- Old Wallet</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -193,14 +191,13 @@ const styles = StyleSheet.create({
      marginRight: 35,
    },
    redButton: {
-     color: 'white',
-     backgroundColor: 'red',
+     color: 'red',
+     backgroundColor: '#0F1C52',
      borderRadius: 50,
      padding: 16,
      width: 150,
      overflow: 'hidden',
      textAlign: 'center',
-     color: 'white',
      fontSize: 15,
     //  marginLeft: 15
    },
