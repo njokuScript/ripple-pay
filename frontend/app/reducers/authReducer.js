@@ -15,7 +15,8 @@ var defaultState = {
   users: [],
   balance: 0,
   cashRegister: undefined,
-  wallets: []
+  wallets: [],
+  screenName: ''
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -23,7 +24,7 @@ module.exports = (state=defaultState, action) => {
   Object.freeze(state);
   switch(action.type) {
     case 'AUTH_USER':
-      return merge({}, state, {user_id: action.user_id});
+      return merge({}, state, {user_id: action.user_id, screenName: action.screenName});
       //Make the user_id undefined after logout.
     case 'UNAUTH_USER':
       return Object.assign({}, state,
@@ -38,6 +39,8 @@ module.exports = (state=defaultState, action) => {
       //action.data.transactions is an array of all the transactions and the other is the balance.
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+    case 'RECEIVED_BALANCE':
+      return Object.assign({}, state, {balance: action.data.balance})
     case 'RECEIVED_USERS':
       return Object.assign({}, state, {users: action.users.data.search});
     case 'RECEIVED_WALLETS':

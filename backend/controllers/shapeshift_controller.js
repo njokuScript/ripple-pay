@@ -2,7 +2,7 @@ const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
 const User = require('../models/user');
-
+const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
 // from e.g. would be 'from 50 XRP'
 // to e.g. would be 'to 1 BTC'
 // shapeshiftAddress should be URI encoded if its a Ripple address
@@ -19,6 +19,7 @@ exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
     date: new Date()
   }
   await (User.update({ _id: userId }, {$push: {shapeshiftTransactions: shapeshift}}));
+  findFromAndUpdateCache(`${userId}: shapeshift-transactions`, (val) => val.push(shapeshift));
   res.json({
 
   })
@@ -27,7 +28,13 @@ exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
 exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
   let x = req.query;
   let userId = x[Object.keys(x)[0]];
-  let existingUser = await(User.findOne({_id: userId}))
+  let cacheVal = await (getFromTheCache(`${userId}: shapeshift-transactions`));
+  if (cacheVal) {
+    res.json({shapeshiftTransactions: cacheVal});
+    return;
+  }
+  let existingUser = await(User.findOne({_id: userId}));
+  setInCache(`${userId}: shapeshift-transactions`, existingUser.shapeshiftTransactions);
   res.json({
     shapeshiftTransactions: existingUser.shapeshiftTransactions
   })
@@ -67,7 +74,6 @@ exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
       cb(null, currTxn)
     }
   }, function(error, resp) {
-    console.log(transId === null ? 'null' : 'lasjkd');
     //SORTING INSIDE OF THE SERVER IS BLOCKING INSTEAD THE SORTING IS DONE IN HOME.JS CLIENT-SIDE
     res.json({
       txnId: transId
