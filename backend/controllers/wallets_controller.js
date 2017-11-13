@@ -27,7 +27,7 @@ exports.receiveOnlyDesTag = function(req, res, next){
         let theNewWallet = new UsedWallet({wallet: findthis});
         await (theNewWallet.save());
         await (User.update({_id: user_id}, {$push: {wallets: newTag}}));
-        findFromAndUpdateCache('redis-wallets', (val) => val.push(newTag))
+        findFromAndUpdateCache(`${user_id}: redis-wallets`, (val) => val.push(newTag))
         res.json({ destinationTag: newTag });
       }
     }
@@ -38,7 +38,7 @@ exports.receiveOnlyDesTag = function(req, res, next){
 exports.deleteWallet = asynchronous(function(req, res, next){
 let {user_id, desTag, cashRegister} = req.body;
 let findthiswallet = `${cashRegister}${desTag}`;
-findFromAndUpdateCache('redis-wallets', (val) => val.shift())
+findFromAndUpdateCache(`${user_id}: redis-wallets`, (val) => val.shift())
 await (User.update({_id: user_id}, {$pull: {wallets: desTag}}));
 await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
   res.json({
@@ -89,14 +89,14 @@ exports.generateRegister = asynchronous(function(req, res, next){
 })
 
 exports.receiveAllWallets = asynchronous(function(req, res, next){
-  let cacheVal = getFromTheCache('redis-wallets');
+  let x = req.query;
+  let userId = x[Object.keys(x)[0]];
+  let cacheVal = getFromTheCache(`${userId}: redis-wallets`);
   if (cacheVal) {
     res.json({wallets: cacheVal});
     return;
   }
-  let x = req.query;
-  let userId = x[Object.keys(x)[0]]
   let existingUser = await(User.findOne({_id: userId}))
-  setInCache('redis-wallets', JSON.stringify(existingUser.wallets))
+  setInCache(`${userId}: redis-wallets`, JSON.stringify(existingUser.wallets))
   res.json({wallets: existingUser.wallets});
 })

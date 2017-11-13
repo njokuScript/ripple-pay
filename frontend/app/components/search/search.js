@@ -45,11 +45,11 @@ class Search extends React.Component {
     }
   }
 
-  navBankSend(receiver_id, otherUser) {
+  navBankSend(receiverScreenName) {
     this.props.navigator.push({
       backButtonTitle: "",
       screen: 'Banksend',
-      passProps: {receiver_id: receiver_id, otherUser: otherUser},
+      passProps: { receiverScreenName },
       animation: true,
       animationType: 'fade',
       navigatorStyle: {
@@ -68,7 +68,7 @@ class Search extends React.Component {
         if ( screenName !== this.props.user.screenName )
         {
           return (
-              <TouchableOpacity key={idx} style={styles.resultItem} onPress={() => { this.navBankSend(user._id, user.screenName); }}>
+              <TouchableOpacity key={idx} style={styles.resultItem} onPress={() => { this.navBankSend(screenName); }}>
                 <View style={styles.username}>
                   <Text style={styles.resultItemText}>{screenName}</Text>
                 </View>

@@ -1,7 +1,12 @@
 const User = require('../models/user');
 const jwt = require('jwt-simple');
 const config = require('../config');
-const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
+const {
+  findFromAndUpdateCache,
+  getFromTheCache,
+  setInCache,
+  findFromCacheUpdateString
+ } = require('../models/redis');
 const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
@@ -21,7 +26,7 @@ function tokenForUser(user) {
 // res.send vs res.json - res.send won't convert undefined and null but json will to JSON
 exports.signin = function(req, res) {
   let user = req.user;
-  res.send({token: tokenForUser(user), user_id: user._id});
+  res.send({ token: tokenForUser(user), user_id: user._id, screenName: user.screenName });
 };
 
 // req.body is {email: whatever, password: whatever}
@@ -44,22 +49,23 @@ exports.signup = function(req, res, next) {
     });
     user.save(function(err) {
       if (err) { return next(err); }
+      findFromCacheUpdateString('all-users', (val) => val + ` ${screenName}`)
       res.json({user_id: user._id, token: tokenForUser(user)});
     });
   });
 };
 
 exports.search = asynchronous(function (req, res, next) {
-  // Get from cache if cached
+  // Get from Redis cache if cached
   let item = req.query;
   let key = Object.keys(item)[0];
-  let reg = new RegExp(`${item[key]}\\w*` , 'g');
+  let reg = new RegExp(`\\b${item[key]}\\w*` , 'g');
   let allUsers = await (RedisCache.getAsync('all-users'));
   if (allUsers) {
     res.json({search: allUsers.match(reg)});
     return;
   }
-  // Get from Mongo and set in cache
+  // Get from Mongo and set in Redis cache
   allUsers = await (User.find({}));
   allUsers = JSON.stringify(allUsers.map((user) => user.screenName).join(' '));
   RedisCache.set('all-users', allUsers);

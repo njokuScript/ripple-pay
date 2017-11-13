@@ -2,7 +2,6 @@
 const User = require('../models/user');
 const {CashRegister} = require('../models/populateBank');
 const {Bank} = require('../models/populateBank');
-const {UsedWallet} = require('../models/populateBank');
 const {Money} = require('../models/populateBank');
 const async = require('async');
 let asynchronous = require('asyncawait/async');
@@ -11,14 +10,14 @@ const {addresses, bank} = require('./addresses');
 const bcrypt = require('bcrypt-nodejs');
 
 exports.inBankSend = asynchronous(function(req, res, next){
-  let {sender_id, receiver_id, amount} = req.body;
+  let {sender_id, receiverScreenName, amount} = req.body;
   let sender = await (User.findOne({_id: sender_id}))
   if ( amount > sender.balance )
   {
     res.json({message: "Balance Insufficient"});
     return;
   }
-  let receiver = await (User.findOne({_id: receiver_id}))
+  let receiver = await (User.findOne({ screenName: receiverScreenName}))
   if ( sender && receiver )
   {
     let trTime = new Date;
@@ -39,7 +38,7 @@ exports.inBankSend = asynchronous(function(req, res, next){
       otherParty: sender.screenName
     }
     await (User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}))
-    await (User.update({_id: receiver_id}, {$set: receiverBal, $push: {transactions: receiverTransaction}}))
+    await (User.findOneAndUpdate({ screenName: receiverScreenName }, {$set: receiverBal, $push: {transactions: receiverTransaction}}))
     res.json({message: "Payment was Successful", balance: senderBal.balance});
   }
   else
@@ -51,9 +50,9 @@ exports.inBankSend = asynchronous(function(req, res, next){
 exports.sendMoney = asynchronous (function(req, res, next){
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let {amount, fromAddress, toAddress, sourceTag, toDesTag, userId} = req.body;
+  let { amount, fromAddress, toAddress, sourceTag, toDesTag, userId } = req.body;
   let bankAddress = Object.keys(bank)[0];
-  let existingUser = await (User.findOne({_id: userId}));
+  let existingUser = await (User.findOne({ _id: userId }));
   if ( amount > existingUser.balance )
   {
      res.json({message: "Balance Insufficient"});
