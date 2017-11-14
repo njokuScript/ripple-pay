@@ -28,6 +28,7 @@
     "promise-map-series": "^0.2.3",
     "react-native-keychain": "^2.0.0-rc",
     "redis": "^2.8.0",
+    "redredisearch": "0.0.1",
     "ripple-lib": "^0.17.7",
     "uuid": "^2.0.2"
   },
