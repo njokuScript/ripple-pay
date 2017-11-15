@@ -15,7 +15,7 @@ const mapDispatchToProps = dispatch => ({
   unauthUser: () => dispatch(unauthUser),
   requestTransactions: (user) => dispatch(requestTransactions(user)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
-  requestShifts: (userId) => dispatch(requestShifts(userId))
+  requestShifts: () => dispatch(requestShifts())
 });
 
 export default connect(

@@ -36,8 +36,8 @@ class Wallet extends React.Component {
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestOldAddress(this.props.user.user_id);
-      this.props.requestAllWallets(this.props.user.user_id);
+      this.props.requestOldAddress();
+      this.props.requestAllWallets();
     }
   }
 
@@ -63,7 +63,7 @@ class Wallet extends React.Component {
       this.setState({disabled: true});
       if ( alltheWallets.length === 0 )
       {
-        this.props.requestAddress(this.props.user.user_id)
+        this.props.requestAddress()
         .then(()=> this.props.requestOnlyDesTag(this.props.cashRegister))
         .then(()=> this.setState({disabled: false}));
       }

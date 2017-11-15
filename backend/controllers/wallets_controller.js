@@ -49,8 +49,8 @@ exports.deleteWallet = asynchronous(function(req, res, next){
 })
 
 exports.findOldAddress = asynchronous(function(req, res, next){
-  let x = req.query;
-  let userId = x[Object.keys(x)[0]];
+  let existingUser = req.user;
+  let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: redis-cash-register`));
   if (cacheVal) {
     res.json({cashRegister: cacheVal});
@@ -60,19 +60,16 @@ exports.findOldAddress = asynchronous(function(req, res, next){
     res.json({cashRegister: undefined});
     return;
   }
-  User.findOne({_id: userId}, function(err, existingUser){
-    console.log(existingUser.cashRegister, "dsfi");
-    setInCache(`${userId}: redis-cash-register`, existingUser.cashRegister);
-    res.json({cashRegister: existingUser.cashRegister});
-  });
+  setInCache(`${userId}: redis-cash-register`, existingUser.cashRegister);
+  res.json({cashRegister: existingUser.cashRegister});
 })
 
 exports.generateRegister = asynchronous(function(req, res, next){
   let adds = Object.keys(addresses).slice(0,5);
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let { userId } = req.body;
   let existingUser = req.user;
+  let userId = existingUser._id;
   await (server.connect());
   let allbals = [];
   let minAddr;
@@ -102,14 +99,13 @@ exports.generateRegister = asynchronous(function(req, res, next){
 })
 
 exports.receiveAllWallets = asynchronous(function(req, res, next){
-  let x = req.query;
-  let userId = x[Object.keys(x)[0]];
+  let existingUser = req.user;
+  let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: redis-wallets`));
   if (cacheVal) {
     res.json({wallets: cacheVal});
     return;
   }
-  let existingUser = await(User.findOne({_id: userId}))
   setInCache(`${userId}: redis-wallets`, existingUser.wallets)
   res.json({wallets: existingUser.wallets});
 })

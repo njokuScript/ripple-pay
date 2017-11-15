@@ -150,9 +150,8 @@ exports.sendMoney = asynchronous (function(req, res, next){
 exports.getTransactions = asynchronous(function (req, res, next) {
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let x = req.query;
-  let userId = x[Object.keys(x)[0]];
-  let existingUser = await (User.findOne({ _id: userId }));
+  let existingUser = req.user;
+  let userId = existingUser._id;
   if (existingUser.cashRegister)
   {
     await (server.connect());

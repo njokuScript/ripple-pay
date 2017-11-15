@@ -18,12 +18,12 @@ const mapStateToProps = ({user}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestTransactions: (user) => dispatch(requestTransactions(user)),
-  requestAllWallets: (user_id) => dispatch(requestAllWallets(user_id)),
+  requestTransactions: () => dispatch(requestTransactions()),
+  requestAllWallets: () => dispatch(requestAllWallets()),
   requestOnlyDesTag: (cashRegister) => dispatch(requestOnlyDesTag(cashRegister)),
-  requestAddress: (user_id) => dispatch(requestAddress(user_id)),
+  requestAddress: () => dispatch(requestAddress()),
   delWallet: (desTag, cashRegister) => dispatch(delWallet(desTag, cashRegister)),
-  requestOldAddress: (user_id) => dispatch(requestOldAddress(user_id)),
+  requestOldAddress: () => dispatch(requestOldAddress()),
   removeCashRegister: () => dispatch(removeCashRegister())
 });
 

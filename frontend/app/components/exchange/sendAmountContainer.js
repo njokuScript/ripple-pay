@@ -23,9 +23,9 @@ const mapDispatchToProps = dispatch => ({
   ),
   shapeshift: (withdrawal, pair, returnAddress, destTag) => dispatch(shapeshift(withdrawal, pair, returnAddress, destTag)),
   makeShapeshiftTransaction: (
-    userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+    from, to, otherParty, shapeShiftAddress, refundAddress, orderId
   ) => dispatch(makeShapeshiftTransaction(
-    userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+    from, to, otherParty, shapeShiftAddress, refundAddress, orderId
   )),
   clearSendAmount: () => dispatch(clearSendAmount),
 });

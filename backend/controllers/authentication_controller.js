@@ -17,7 +17,13 @@ function tokenForUser(user) {
 // res.send vs res.json - res.send won't convert undefined and null but json will to JSON
 exports.signin = function(req, res) {
   let user = req.user;
-  res.send({token: tokenForUser(user), user_id: user._id, screenName: user.screenName});
+  res.send({
+    user_id: user._id,
+    token: tokenForUser(user),
+    cashRegister: user.cashRegister,
+    wallets: user.wallets,
+    screenName: user.screenName
+  });
 };
 
 // req.body is {email: whatever, password: whatever}

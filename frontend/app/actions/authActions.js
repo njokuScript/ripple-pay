@@ -31,18 +31,28 @@ let finishAndBeginTimer = ()=> {
   // },9999);
 };
 
-let authRequest = (url, data, ...cbs) => {
+let authRequest = (type, url, data, ...cbs) => {
   return function(dispatch){
     return Keychain.getGenericPassword().then((creds) => {
       const authedAxios = axios.create({
         headers: { authorization: creds.password },
       });
-      return authedAxios.post(url, data).then((response) => {
-        for (let i = 0; i < cbs.length; i++) {
-          let cb = cbs[i];
-          dispatch(cb(response));
-        }
-      });
+      if (type === "POST") {
+        return authedAxios.post(url, data).then((response) => {
+          for (let i = 0; i < cbs.length; i++) {
+            let cb = cbs[i];
+            dispatch(cb(response));
+          }
+        });
+      }
+      else {
+        return authedAxios.get(url, data).then((response) => {
+          for (let i = 0; i < cbs.length; i++) {
+            let cb = cbs[i];
+            dispatch(cb(response));
+          }
+        });
+      }
     });
   };
 };
@@ -50,11 +60,11 @@ let authRequest = (url, data, ...cbs) => {
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
-      let { user_id, token, screenName } = response.data;
+      let { user_id, token, screenName, wallets, cashRegister } = response.data;
       console.log(token);
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
-          dispatch(authUser(user_id, screenName));
+          dispatch(authUser(screenName, wallets, cashRegister));
           // finishAndBeginTimer();
         })
       .catch((error) => {
@@ -72,7 +82,7 @@ exports.signupUser = (email, password, screenName) => {
       let {user_id, token} = response.data;
       Keychain.setGenericPassword(user_id, token)
       .then(function() {
-        dispatch(authUser(user_id, screenName));
+        dispatch(authUser(screenName));
         // finishAndBeginTimer();
       })
       .catch((error) => {
@@ -87,6 +97,7 @@ exports.signupUser = (email, password, screenName) => {
 exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
   // finishAndBeginTimer();
   return authRequest(
+    "POST",
     SEND_URL,
     {amount, fromAddress, toAddress, sourceTag, toDesTag},
     (response) => {
@@ -131,6 +142,7 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
 exports.sendInBank = (receiverScreenName, amount) => {
   // finishAndBeginTimer();
   return authRequest(
+    "POST",
     BANK_SEND_URL,
     {receiverScreenName, amount},
     (response) => addAlert(response.data.message),
@@ -140,77 +152,65 @@ exports.sendInBank = (receiverScreenName, amount) => {
 
 exports.delWallet = (desTag, cashRegister) => {
   // finishAndBeginTimer();
-  return authRequest(DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
+  return authRequest("POST", DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
     return deltheWallet(response.data);
   });
 };
 
 exports.removeCashRegister = () => {
-  return authRequest(DEL_REGISTER_URL, {}, (response) => {
+  return authRequest("POST", DEL_REGISTER_URL, {}, (response) => {
     return deltheRegister();
   });
 };
 exports.requestOnlyDesTag = (cashRegister) => {
   // finishAndBeginTimer();
-  return authRequest(DEST_URL, {cashRegister}, (response) => {
+  return authRequest("POST", DEST_URL, {cashRegister}, (response) => {
     return receivedDesTag(response.data);
   });
 };
 
 exports.requestAddress = () => {
   // finishAndBeginTimer();
-  return authRequest(ADDR_URL, {}, (response) => {
+  return authRequest("POST", ADDR_URL, {}, (response) => {
     return receivedAddress(response.data);
   });
 };
 
-exports.requestOldAddress = (user_id) => {
-  return function (dispatch) {
-    return axios.get(OLDADDR_URL, { params: user_id }).then((response) => {
-      dispatch(receivedOldAddress(response.data));
-    }).catch((error) => {
-    });
-  };
+exports.requestOldAddress = () => {
+  return authRequest("GET", OLDADDR_URL, {}, (response) => {
+    return receivedOldAddress(response.data);
+  });
 };
 
-exports.requestTransactions = (user) => {
+exports.requestTransactions = () => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return axios.get(TRANSACTIONS_URL, { params: user.user_id } ).then((response) => {
-      dispatch(receivedTransactions(response.data));
-    }).catch((error) => {
-
-    });
-  };
+  return authRequest("GET", TRANSACTIONS_URL, {}, (response) => {
+    return receivedTransactions(response.data);
+  });
 };
 
 exports.requestUsers = (item) => {
-  return function(dispatch) {
-    return axios.get(SEARCH_USERS_URL, {params: item} ).then(users => {
-      dispatch(receivedUsers(users));
-    }).catch((error) => {
-    });
-  };
+  return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
+    return receivedUsers(response.data);
+  });
 };
 
-exports.requestAllWallets = (user_id) => {
+exports.requestAllWallets = () => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return axios.get(WALLETS_URL, { params: user_id } ).then((response) => {
-      dispatch(receivedWallets(response.data));
-    }).catch((error) => {
-    });
-  };
+  return authRequest("GET", WALLETS_URL, {}, (response) => {
+    return receivedWallets(response.data);
+  });
 };
 //Set timedlogout of the sessin to 5 minutes.
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
 
-const authUser = (user_id, screenName) => {
+const authUser = (screenName, wallets, cashRegister) => {
   return {
     type: 'AUTH_USER',
-    user_id,
-    screenName
+    screenName,
+    wallets,
+    cashRegister
   };
 };
 

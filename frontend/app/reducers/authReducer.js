@@ -9,7 +9,6 @@ import { merge } from 'lodash';
 //and then this will force a re-rendering of the home page with those database values. Look at the authactions for followup documentation
 
 var defaultState = {
-  user_id: undefined,
   transactions: [],
   shapeshiftTransactions: [],
   users: [],
@@ -24,11 +23,15 @@ module.exports = (state=defaultState, action) => {
   Object.freeze(state);
   switch(action.type) {
     case 'AUTH_USER':
-      return merge({}, state, {user_id: action.user_id, screenName: action.screenName});
+      return merge({}, state, {
+        screenName: action.screenName,
+        wallets: action.wallets,
+        cashRegister: action.cashRegister
+      });
       //Make the user_id undefined after logout.
     case 'UNAUTH_USER':
       return Object.assign({}, state,
-        {user_id: undefined,
+        {
           transactions: [],
           users: [],
           balance: 0,
@@ -42,7 +45,8 @@ module.exports = (state=defaultState, action) => {
     case 'RECEIVED_BALANCE':
       return Object.assign({}, state, {balance: action.data.balance})
     case 'RECEIVED_USERS':
-      return Object.assign({}, state, {users: action.users.data.search});
+    console.log(action);
+      return Object.assign({}, state, {users: action.users.search});
     case 'RECEIVED_WALLETS':
       return Object.assign({}, state, {wallets: action.data.wallets});
     case 'DEL_WALLET':

@@ -5,7 +5,6 @@ import { addAlert } from '../../actions/alertsActions';
 import { requestTransactions } from '../../actions/authActions';
 
 const mapStateToProps = ({user}) => ({
-  sender_id: user.user_id,
   balance: user.balance,
 });
 
