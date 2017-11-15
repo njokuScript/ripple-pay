@@ -5,12 +5,11 @@ import { addAlert } from '../../actions/alertsActions';
 import { requestTransactions } from '../../actions/authActions';
 
 const mapStateToProps = ({user}) => ({
-  sender_id: user.user_id,
   balance: user.balance,
 });
 
 const mapDispatchToProps = dispatch => ({
-  sendInBank: (sender_id, receiver_id, amount) => dispatch(sendInBank(sender_id, receiver_id, amount)),
+  sendInBank: (receiver_id, amount) => dispatch(sendInBank(receiver_id, amount)),
   addAlert: (msg) => dispatch(addAlert(msg)),
   requestTransactions: (user) => dispatch(requestTransactions(user)),
 

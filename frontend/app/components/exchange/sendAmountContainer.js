@@ -18,14 +18,14 @@ const mapDispatchToProps = dispatch => ({
   requestMarketInfo: (coin1, coin2) => dispatch(requestMarketInfo(coin1, coin2)),
   addAlert: (message) => dispatch(addAlert(message)),
   sendAmount: (amount, withdrawal, pair, returnAddress, destTag) => dispatch(sendAmount(amount, withdrawal, pair, returnAddress, destTag)),
-  signAndSend: (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => dispatch(
-    signAndSend(amount, fromAddress, toAddress, sourceTag, toDesTag, userId)
+  signAndSend: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
+    signAndSend(amount, fromAddress, toAddress, sourceTag, toDesTag)
   ),
   shapeshift: (withdrawal, pair, returnAddress, destTag) => dispatch(shapeshift(withdrawal, pair, returnAddress, destTag)),
   makeShapeshiftTransaction: (
-    userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+    from, to, otherParty, shapeShiftAddress, refundAddress, orderId
   ) => dispatch(makeShapeshiftTransaction(
-    userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+    from, to, otherParty, shapeShiftAddress, refundAddress, orderId
   )),
   clearSendAmount: () => dispatch(clearSendAmount),
 });

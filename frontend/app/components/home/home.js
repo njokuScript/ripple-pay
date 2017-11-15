@@ -41,20 +41,20 @@ class Home extends React.Component {
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestTransactions(this.props.user);
-      this.props.requestShifts(this.props.user.user_id);
+      this.props.requestTransactions();
+      this.props.requestShifts();
     }
   }
 
   onRefresh(){
     this.setState({refreshing: true});
     if (this.state.shapeshift) {
-      this.props.requestShifts(this.props.user.user_id).then(() => {
+      this.props.requestShifts().then(() => {
         this.setState({refreshing: false})
       })
     }
     else {
-      this.props.requestTransactions(this.props.user).then(() => {
+      this.props.requestTransactions().then(() => {
         this.setState({refreshing: false});
       })
     }
