@@ -46,7 +46,7 @@ class BankSend extends Component {
 
 
   sendPayment(){
-    if (parseFloat(this.state.amount) <= 0)
+    if (parseFloat(this.state.amount) <= 0 || !this.state.amount.match(/^\d+$/))
     {
       this.props.addAlert("Can't send 0 or less Ripple");
       return;
@@ -58,7 +58,6 @@ class BankSend extends Component {
   }
 
   render() {
-    console.log(this.props.balance);
     return (
       <View style={styles.container}>
         <AlertContainer />
@@ -68,7 +67,7 @@ class BankSend extends Component {
           })}/>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>
-              Send Ripple to {this.props.otherUser}
+              Send Ripple to {this.props.receiverScreenName}
             </Text>
           </View>
           <View style={styles.balanceContainer}>
@@ -77,25 +76,29 @@ class BankSend extends Component {
             </Text>
           </View>
         </View>
-        <CustomInput
-          placeholder="Amount"
-          onChangeText={
-            (amt) => {
-              this.setState({amount: amt});
+        <View style={styles.amount}>
+          <CustomInput
+            placeholder="Amount"
+            onChangeText={
+              (amt) => {
+                this.setState({amount: amt});
+              }
             }
-          }
-          autoCorrect={false}
-          placeholderTextColor="#6D768B"
-          autoFocus={true}
-          autoCapitalize={'none'}
-          keyboardType={'number-pad'}
-          keyboardAppearance={'dark'}/>
-        <CustomButton
-          performAction="Send Payment"
-          buttonColor={this.state.disabled ? "red" : "white"}
-          isDisabled={this.state.disabled}
-          handlePress={this.sendPayment}
-        />
+            autoCorrect={false}
+            placeholderTextColor="#6D768B"
+            autoFocus={true}
+            autoCapitalize={'none'}
+            keyboardType={'number-pad'}
+            keyboardAppearance={'dark'}/>
+        </View>
+        <View style={styles.paymentButton}>
+          <CustomButton
+            performAction="Send Payment"
+            buttonColor={this.state.disabled ? "red" : "white"}
+            isDisabled={this.state.disabled}
+            handlePress={this.sendPayment}
+          />
+        </View>
       </View>
     );
   }
@@ -114,19 +117,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
+    // justifyContent: 'flex-start',
+    // alignItems: 'stretch',
     backgroundColor: '#111F61',
   },
   titleContainer: {
     alignItems: 'center',
   },
-
+  amount: {
+    // marginTop: 30,
+    // flex: 1,
+    // alignItems: 'stretch'
+  },
+  paymentButton:{
+    marginTop: 50
+  },
   title: {
    textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'Kohinoor Bangla',
+    marginLeft: 37
   },
   field: {
     backgroundColor: '#0F1C52',

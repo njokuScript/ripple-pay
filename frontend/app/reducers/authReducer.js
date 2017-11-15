@@ -33,10 +33,10 @@ module.exports = (state=defaultState, action) => {
           users: [],
           balance: 0,
           cashRegister: undefined,
-          wallets: []});
-      //We have action.data.stuff here because we have passed in 'data' from the received_transactions normal/non-thunk action of the
-      //authActions.
-      //action.data.transactions is an array of all the transactions and the other is the balance.
+          wallets: [],
+          screenName: '',
+          shapeshiftTransactions: []
+        });
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
     case 'RECEIVED_BALANCE':
@@ -49,6 +49,8 @@ module.exports = (state=defaultState, action) => {
       let x = state.wallets.slice(0);
       x.shift();
       return Object.assign({}, state, {wallets: x});
+    case 'DEL_REGISTER':
+      return Object.assign({}, state, {cashRegister: undefined});
     case 'RECEIVED_DESTAG':
       let walls = state.wallets.slice(0);
       walls.push(action.data.destinationTag);

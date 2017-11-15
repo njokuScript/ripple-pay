@@ -18,6 +18,8 @@ let localStrategy = new LocalStrategy(localOptions, function(email, password, do
     user.comparePassword(password, function(err, isMatch) {
       if (err) { return done(err) }
       if (!isMatch) { return done(null, false) }
+      // after this is done, returning the following will return the user object to
+      // the authentication controller signin method.
       return done(null, user);
     });
   });

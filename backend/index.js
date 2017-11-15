@@ -3,11 +3,9 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const redisSearch = require('redredisearch');
+const helmet = require('helmet');
 mongoose.Promise = global.Promise;
 var app = express();
-
-var router = require('./services/router');
 var redis = require("redis");
 let bluebird = require('bluebird');
 bluebird.promisifyAll(redis.RedisClient.prototype);
@@ -16,8 +14,9 @@ client.on("error", function (err) {
   console.log("Error " + err);
 });
 global.RedisCache = client;
-redisSearch.setClient(client);
-global.RedisSearch = redisSearch;
+
+var router = require('./services/router');
+
 // RedisCache.end(true);
 // if you'd like to select database 3, instead of 0 (default), call
 // client.select(3, function() { /* ... */ });
@@ -27,7 +26,7 @@ if (process.env.NODE_ENV=='production') {
 } else {
   mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
 }
-
+app.use(helmet());
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use('/v1', router);
