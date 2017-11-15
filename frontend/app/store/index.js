@@ -8,6 +8,7 @@ import logger from 'redux-logger';
 var defaultState = {};
 
 exports.configureStore = (initialState=defaultState) => {
+  // AsyncStorage.clear().then(() => {})
   var store = createStore(reducer, initialState, compose(
     applyMiddleware(thunk, logger),
     autoRehydrate()

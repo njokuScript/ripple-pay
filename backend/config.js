@@ -1,3 +1,3 @@
 module.exports = {
-  secret: "This is a secret! dhkjdashjkdsakhjdsahkjakdshj"
+  secret: "A new secret is here salkjipoz .mas,.m. It's used asdifhjpiubvxz for stuffaoisdpjix"
 };
