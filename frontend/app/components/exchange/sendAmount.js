@@ -84,7 +84,6 @@ class SendAmount extends Component {
       otherParty = otherParty === '' ? 'Not Entered' : otherParty;
       let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
       newProps.makeShapeshiftTransaction(
-        newProps.userId,
         `${this.truncate(newProps.shape.sendamount.depositAmount)} ${newProps.fromCoin}`,
         `${this.truncate(newProps.amount)} ${newProps.toCoin}`,
         otherParty,
@@ -143,7 +142,6 @@ class SendAmount extends Component {
       toAddress,
       parseInt(this.props.destTag),
       parseInt(toDesTag),
-      this.props.userId
     );
     this.props.clearSendAmount();
   }

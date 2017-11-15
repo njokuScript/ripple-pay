@@ -52,7 +52,7 @@ class BankSend extends Component {
       return;
     }
     this.setState({disabled: true});
-    this.props.sendInBank(this.props.sender_id, this.props.receiverScreenName, parseFloat(this.state.amount)).then(() => {
+    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount)).then(() => {
       this.setState({disabled: false});
     });
   }

@@ -20,7 +20,7 @@ export default class App extends React.Component {
 
   render() {
     let renderMainView = () => {
-      if (this.props.user_id) {
+      if (this.props.screenName) {
         this.starter.startTabs();
         //Since it starts at tab-based application, it automatically knows to
         //start with the home page
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 
 let mapStateToProps = (state) => {
   return {
-    user_id: state.user.user_id
+    screenName: state.user.screenName
   };
 };
 let mapDispatchToProps = (dispatch) => {
