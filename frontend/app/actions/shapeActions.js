@@ -21,6 +21,32 @@ exports.requestAllCoins = () => {
   };
 };
 
+let authRequest = (type, url, data, ...cbs) => {
+  return function(dispatch){
+    return Keychain.getGenericPassword().then((creds) => {
+      const authedAxios = axios.create({
+        headers: { authorization: creds.password },
+      });
+      if (type === "POST") {
+        return authedAxios.post(url, data).then((response) => {
+          for (let i = 0; i < cbs.length; i++) {
+            let cb = cbs[i];
+            dispatch(cb(response));
+          }
+        });
+      }
+      else {
+        return authedAxios.get(url, data).then((response) => {
+          for (let i = 0; i < cbs.length; i++) {
+            let cb = cbs[i];
+            dispatch(cb(response));
+          }
+        });
+      }
+    });
+  };
+};
+
 // If direction is true we look at xrp to other coin rate.
 // If direction is false we look at other coin to xrp rate.
 exports.requestRate = (coin) => {
@@ -54,31 +80,18 @@ exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
   };
 };
 
-exports.makeShapeshiftTransaction = (userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId) => {
-  return function(dispatch){
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: {authorization: creds.password},
-      });
-      return authedAxios.post(MAKESHIFT_URL, {
-        userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
-      } ).then((response) => {
-
-      }).catch((error) => {
-        console.log(error);
-      });
-    });
-  };
+exports.makeShapeshiftTransaction = (from, to, otherParty, shapeShiftAddress, refundAddress, orderId) => {
+  return authRequest(
+    "POST",
+    MAKESHIFT_URL,
+    {from, to, otherParty, shapeShiftAddress, refundAddress, orderId}
+  );
 };
 
-exports.requestShifts = (userId) => {
-  return function(dispatch){
-    return axios.get(GETSHIFTS_URL, { params: userId }).then((response) => {
-      dispatch(receivedShifts(response.data));
-    }).catch((error) => {
-
-    });
-  };
+exports.requestShifts = () => {
+  return authRequest("GET", GETSHIFTS_URL, {}, (response) => {
+    return receivedShifts(response.data);
+  });
 };
 
 const receivedCoins = (data) => {

@@ -11,11 +11,12 @@ const {addresses, bank} = require('./addresses');
 const bcrypt = require('bcrypt-nodejs');
 
 exports.inBankSend = asynchronous(function(req, res, next){
-  let {sender_id, receiverScreenName, amount} = req.body;
-  let sender = await (User.findOne({_id: sender_id}))
+  let {receiverScreenName, amount} = req.body;
+  let sender = req.user;
+  let sender_id = sender._id;
   if ( amount > sender.balance )
   {
-    res.json({message: "Balance Insufficient"});
+    res.json({message: "Balance Insufficient", balance: sender.balance});
     return;
   }
   let receiver = await (User.findOne({ screenName: receiverScreenName}))
@@ -51,9 +52,10 @@ exports.inBankSend = asynchronous(function(req, res, next){
 exports.sendMoney = asynchronous (function(req, res, next){
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let { amount, fromAddress, toAddress, sourceTag, toDesTag, userId } = req.body;
+  let { amount, fromAddress, toAddress, sourceTag, toDesTag } = req.body;
+  let existingUser = req.user;
+  let userId = existingUser._id;
   let bankAddress = Object.keys(bank)[0];
-  let existingUser = await (User.findOne({ _id: userId }));
   if ( amount > existingUser.balance )
   {
      res.json({message: "Balance Insufficient"});
@@ -148,9 +150,8 @@ exports.sendMoney = asynchronous (function(req, res, next){
 exports.getTransactions = asynchronous(function (req, res, next) {
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let x = req.query;
-  let userId = x[Object.keys(x)[0]];
-  let existingUser = await (User.findOne({ _id: userId }));
+  let existingUser = req.user;
+  let userId = existingUser._id;
   if (existingUser.cashRegister)
   {
     await (server.connect());

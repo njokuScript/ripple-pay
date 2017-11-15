@@ -44,8 +44,8 @@ class Transition extends Component {
     if ( event.id === "willAppear" )
     {
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
-      this.props.requestOldAddress(this.props.user.user_id);
-      this.props.requestAllWallets(this.props.user.user_id);
+      this.props.requestOldAddress();
+      this.props.requestAllWallets();
     }
   }
 
@@ -112,7 +112,6 @@ class Transition extends Component {
                  amount: this.state.toAmount,
                  fromAmount: this.state.fromAmount,
                  action: this.action,
-                 userId: this.props.user.user_id,
                  quoted: this.state.quoted,
                }
     });

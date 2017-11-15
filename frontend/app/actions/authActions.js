@@ -31,14 +31,40 @@ let finishAndBeginTimer = ()=> {
   // },9999);
 };
 
+let authRequest = (type, url, data, ...cbs) => {
+  return function(dispatch){
+    return Keychain.getGenericPassword().then((creds) => {
+      const authedAxios = axios.create({
+        headers: { authorization: creds.password },
+      });
+      if (type === "POST") {
+        return authedAxios.post(url, data).then((response) => {
+          for (let i = 0; i < cbs.length; i++) {
+            let cb = cbs[i];
+            dispatch(cb(response));
+          }
+        });
+      }
+      else {
+        return authedAxios.get(url, data).then((response) => {
+          for (let i = 0; i < cbs.length; i++) {
+            let cb = cbs[i];
+            dispatch(cb(response));
+          }
+        });
+      }
+    });
+  };
+};
+
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
-      let { user_id, token, screenName } = response.data;
+      let { user_id, token, screenName, wallets, cashRegister } = response.data;
       console.log(token);
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
-          dispatch(authUser(user_id, screenName));
+          dispatch(authUser(screenName, wallets, cashRegister));
           // finishAndBeginTimer();
         })
       .catch((error) => {
@@ -56,7 +82,7 @@ exports.signupUser = (email, password, screenName) => {
       let {user_id, token} = response.data;
       Keychain.setGenericPassword(user_id, token)
       .then(function() {
-        dispatch(authUser(user_id, screenName));
+        dispatch(authUser(screenName));
         // finishAndBeginTimer();
       })
       .catch((error) => {
@@ -68,181 +94,123 @@ exports.signupUser = (email, password, screenName) => {
   };
 };
 
-exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag, userId) => {
+exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: {authorization: creds.password},
-      });
-      return authedAxios.post(SEND_URL, {
-          amount, fromAddress, toAddress, sourceTag, toDesTag, userId
-        })
-      .then((response) => {
-        let {message} = response.data;
-        let respMessage;
-        if ( message === "tesSUCCESS" )
-        {
-          respMessage = "Payment was Successful";
-        }
-        else if (message === "terQUEUED")
-        {
-          respMessage = "Payment placed in Queue";
-        }
-        else if (message === "tecNO_DST_INSUF_XRP")
-        {
-          respMessage = "Must send at least 20 ripple to this address";
-        }
-        else if (message === "tecDST_TAG_NEEDED")
-        {
-          respMessage = "Sending address requires a destination tag";
-        }
-        else if (message === "Balance Insufficient")
-        {
-          respMessage = "Balance Insufficient";
-        }
-        else if (message === "Someone's Trying to Get into Your Wallet")
-        {
-          respMessage = "Someone's Trying to Get into Your Wallet";
-        }
-        else if (message === "Refill and Send Successful"){
-          respMessage = "Refill and Send Successful";
-        }
-        else
-        {
-          respMessage = "Payment Unsuccessful";
-        }
-        dispatch(addAlert(respMessage));
-      })
-      .catch((error) => {
-        dispatch(addAlert("Could Not Send."));
-      });
-    });
-  };
+  return authRequest(
+    "POST",
+    SEND_URL,
+    {amount, fromAddress, toAddress, sourceTag, toDesTag},
+    (response) => {
+      let {message} = response.data;
+      let respMessage;
+      if ( message === "tesSUCCESS" )
+      {
+        respMessage = "Payment was Successful";
+      }
+      else if (message === "terQUEUED")
+      {
+        respMessage = "Payment placed in Queue";
+      }
+      else if (message === "tecNO_DST_INSUF_XRP")
+      {
+        respMessage = "Must send at least 20 ripple to this address";
+      }
+      else if (message === "tecDST_TAG_NEEDED")
+      {
+        respMessage = "Sending address requires a destination tag";
+      }
+      else if (message === "Balance Insufficient")
+      {
+        respMessage = "Balance Insufficient";
+      }
+      else if (message === "Someone's Trying to Get into Your Wallet")
+      {
+        respMessage = "Someone's Trying to Get into Your Wallet";
+      }
+      else if (message === "Refill and Send Successful"){
+        respMessage = "Refill and Send Successful";
+      }
+      else
+      {
+        respMessage = "Payment Unsuccessful";
+      }
+      return addAlert(respMessage);
+    }
+  );
 };
 
-exports.sendInBank = (sender_id, receiverScreenName, amount) => {
+exports.sendInBank = (receiverScreenName, amount) => {
   // finishAndBeginTimer();
-  return function(dispatch){
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: {authorization: creds.password},
-      })
-      return authedAxios.post(BANK_SEND_URL, {
-        sender_id, receiverScreenName, amount
-      }).then((response)=>{
-        let {message} = response.data;
-        dispatch(addAlert(message));
-        dispatch(receivedBalance(response.data));
-      });
-    });
-  };
+  return authRequest(
+    "POST",
+    BANK_SEND_URL,
+    {receiverScreenName, amount},
+    (response) => addAlert(response.data.message),
+    (response) => receivedBalance(response.data)
+  );
 };
 
-exports.delWallet = (user_id, desTag, cashRegister) => {
+exports.delWallet = (desTag, cashRegister) => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: {authorization: creds.password},
-      })
-      return authedAxios.post(DEL_WALLET_URL, {
-        user_id, desTag, cashRegister
-       }).then((response) => {
-        dispatch(deltheWallet(response.data));
-      }).catch((error) => {
-      });
-    });
-  };
+  return authRequest("POST", DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
+    return deltheWallet(response.data);
+  });
 };
 
-exports.removeCashRegister = (userId) => {
-  return function(dispatch) {
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: {authorization: creds.password},
-      });
-      return authedAxios.post(DEL_REGISTER_URL, {
-        userId
-      }).then((response) => {
-        dispatch(deltheRegister());
-      });
-    });
-  };
+exports.removeCashRegister = () => {
+  return authRequest("POST", DEL_REGISTER_URL, {}, (response) => {
+    return deltheRegister();
+  });
 };
-exports.requestOnlyDesTag = (user_id, cashRegister) => {
+exports.requestOnlyDesTag = (cashRegister) => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: {authorization: creds.password},
-      });
-      return authedAxios.post(DEST_URL, {
-        user_id, cashRegister
-      }).then((response) => {
-        dispatch(receivedDesTag(response.data));
-      }).catch((error) => {
-      });
-    });
-  };
+  return authRequest("POST", DEST_URL, {cashRegister}, (response) => {
+    return receivedDesTag(response.data);
+  });
 };
 
-exports.requestOldAddress = (user_id) => {
-  return function (dispatch) {
-    return axios.get(OLDADDR_URL, { params: user_id }).then((response) => {
-      dispatch(receivedOldAddress(response.data));
-    }).catch((error) => {
-    });
-  };
-};
-
-exports.requestTransactions = (user) => {
+exports.requestAddress = () => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return axios.get(TRANSACTIONS_URL, { params: user.user_id } ).then((response) => {
-      dispatch(receivedTransactions(response.data));
-    }).catch((error) => {
+  return authRequest("POST", ADDR_URL, {}, (response) => {
+    return receivedAddress(response.data);
+  });
+};
 
-    });
-  };
+exports.requestOldAddress = () => {
+  return authRequest("GET", OLDADDR_URL, {}, (response) => {
+    return receivedOldAddress(response.data);
+  });
+};
+
+exports.requestTransactions = () => {
+  // finishAndBeginTimer();
+  return authRequest("GET", TRANSACTIONS_URL, {}, (response) => {
+    return receivedTransactions(response.data);
+  });
 };
 
 exports.requestUsers = (item) => {
-  return function(dispatch) {
-    return axios.get(SEARCH_USERS_URL, {params: item} ).then(users => {
-      dispatch(receivedUsers(users));
-    }).catch((error) => {
-    });
-  };
+  return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
+    return receivedUsers(response.data);
+  });
 };
 
-exports.requestAddress = (user_id) => {
+exports.requestAllWallets = () => {
   // finishAndBeginTimer();
-  return function(dispatch) {
-    return axios.get(ADDR_URL, { params: user_id } ).then((response) => {
-      dispatch(receivedAddress(response.data));
-    }).catch((error) => {
-    });
-  };
-};
-exports.requestAllWallets = (user_id) => {
-  // finishAndBeginTimer();
-  return function(dispatch) {
-    return axios.get(WALLETS_URL, { params: user_id } ).then((response) => {
-      dispatch(receivedWallets(response.data));
-    }).catch((error) => {
-    });
-  };
+  return authRequest("GET", WALLETS_URL, {}, (response) => {
+    return receivedWallets(response.data);
+  });
 };
 //Set timedlogout of the sessin to 5 minutes.
 
 // Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
 
-const authUser = (user_id, screenName) => {
+const authUser = (screenName, wallets, cashRegister) => {
   return {
     type: 'AUTH_USER',
-    user_id,
-    screenName
+    screenName,
+    wallets,
+    cashRegister
   };
 };
 
