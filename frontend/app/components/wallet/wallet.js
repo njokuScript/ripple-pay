@@ -45,11 +45,12 @@ class Wallet extends React.Component {
     if ( this.props.wallets.length > 0 )
     {
       this.setState({disabled: true});
-      this.props.requestTransactions(this.props.user).then(() => this.props.delWallet(this.props.user.user_id, this.props.wallets[0], this.props.cashRegister)).then(()=> this.setState({disabled: false}));
+      this.props.requestTransactions(this.props.user)
+      .then(() => this.props.delWallet(this.props.user.user_id, this.props.wallets[0], this.props.cashRegister))
+      .then(()=> this.setState({disabled: false}));
     }
-    else
-    {
-      return;
+    if (this.props.wallets.length === 1) {
+      this.props.removeCashRegister(this.props.user.user_id);
     }
   }
 
@@ -68,8 +69,8 @@ class Wallet extends React.Component {
       }
       else
       {
-        this.props.requestOnlyDesTag(this.props.user.user_id, this.props.cashRegister)
-        .then(()=> this.setState({disabled: false}));
+        console.log(this.props.requestOnlyDesTag);
+        this.props.requestOnlyDesTag(this.props.user.user_id, this.props.cashRegister).then(()=> this.setState({disabled: false}));
       }
     }
     else
@@ -88,22 +89,26 @@ class Wallet extends React.Component {
   //Dynamically requiring files is not possible, so unfortunately, any time you change the addresses
   // You will also have to change this function to match the addresses and images
   getQRCode(){
-    switch (this.props.cashRegister.slice(0,6)){
-      case "r4QDfk":
-        return this.qrOne;
-      case "r9bxkP":
-        return this.qrTwo;
-      case "rPN2Nz":
-        return this.qrThree;
-      case "rPxkAQ":
-        return this.qrFour;
-      case "rs1DXn":
-        return this.qrFive;
+    let { cashRegister } = this.props;
+    if (cashRegister) {
+      switch (this.props.cashRegister.slice(0,6)){
+        case "r4QDfk":
+          return this.qrOne;
+        case "r9bxkP":
+          return this.qrTwo;
+        case "rPN2Nz":
+          return this.qrThree;
+        case "rPxkAQ":
+          return this.qrFour;
+        case "rs1DXn":
+          return this.qrFive;
+      }
     }
+    return ''
   }
   displayWallets() {
     const disabled = this.state.disabled;
-    if (this.props.wallets && this.props.wallets.length > 0) {
+    if (this.props.wallets && this.props.cashRegister && this.props.wallets.length > 0) {
       //Jon - You were talking about some way to allow scrolling here so you can scroll through the wallets.
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (

@@ -36,23 +36,33 @@ exports.receiveOnlyDesTag = function(req, res, next){
 }
 
 exports.deleteWallet = asynchronous(function(req, res, next){
-let {user_id, desTag, cashRegister} = req.body;
-let findthiswallet = `${cashRegister}${desTag}`;
-findFromAndUpdateCache(`${user_id}: redis-wallets`, (val) => val.shift())
-await (User.update({_id: user_id}, {$pull: {wallets: desTag}}));
-await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
+  let {user_id, desTag, cashRegister} = req.body;
+  let findthiswallet = `${cashRegister}${desTag}`;
+  findFromAndUpdateCache(`${user_id}: redis-wallets`, (val) => val.shift())
+  await (User.update({_id: user_id}, {$pull: {wallets: desTag}}));
+  await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
   res.json({
 
   });
 })
 
-exports.findOldAddress = function( req, res, next){
+exports.findOldAddress = asynchronous(function( req, res, next){
   let x = req.query;
   let userId = x[Object.keys(x)[0]];
+  let cacheVal = await (getFromTheCache(`${userId}: redis-cash-register`));
+  if (cacheVal) {
+    res.json({cashRegister: cacheVal});
+    return;
+  }
+  else if (cacheVal === '') {
+    res.json({cashRegister: undefined});
+    return;
+  }
   User.findOne({_id: userId}, function(err, existingUser){
+    setInCache(`${userId}: redis-cash-register`, existingUser.cashRegister);
     res.json({cashRegister: existingUser.cashRegister});
   });
-};
+})
 
 exports.generateRegister = asynchronous(function(req, res, next){
   let adds = Object.keys(addresses).slice(0,5);
@@ -80,6 +90,7 @@ exports.generateRegister = asynchronous(function(req, res, next){
       User.update({_id: existingUser._id}, {cashRegister: newregister},
         function (err) {
           if (err) { return next(err); }
+          findFromAndUpdateCache(`${userId}: redis-cash-register`, null, newregister);
           res.json({
             cashRegister: newregister
           });
@@ -100,3 +111,16 @@ exports.receiveAllWallets = asynchronous(function(req, res, next){
   setInCache(`${userId}: redis-wallets`, existingUser.wallets)
   res.json({wallets: existingUser.wallets});
 })
+
+exports.removeCashRegister = function(req, res, next){
+  let { userId } = req.body;
+  User.findOneAndUpdate({_id: userId }, {cashRegister: undefined}, function(err){
+    if (err) {
+      return next(err);
+    }
+    findFromAndUpdateCache(`${userId}: redis-cash-register`, null, '');
+    res.json({
+
+    })
+  })
+}

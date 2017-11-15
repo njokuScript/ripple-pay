@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as Keychain from 'react-native-keychain';
 import {
   COINS_URL,
   RATE_URL,
@@ -16,9 +17,9 @@ exports.requestAllCoins = () => {
   return function(dispatch){
     return axios.get(COINS_URL).then((response)=>{
       dispatch(receivedCoins(response.data));
-    })
-  }
-}
+    });
+  };
+};
 
 // If direction is true we look at xrp to other coin rate.
 // If direction is false we look at other coin to xrp rate.
@@ -26,96 +27,103 @@ exports.requestRate = (coin) => {
   return function(dispatch){
     return axios.get(`${RATE_URL}/${coin}_xrp`).then((response)=>{
       dispatch(receivedRate(response.data, coin));
-    })
-  }
-}
+    });
+  };
+};
 
 exports.requestMarketInfo = (coin1, coin2) => {
   return function(dispatch){
     return axios.get(`${MARKET_URL}/${coin1.toLowerCase()}_${coin2.toLowerCase()}`).then((response)=>{
       dispatch(receivedMarketInfo(response.data));
-    })
-  }
-}
+    });
+  };
+};
 
 exports.sendAmount = (amount, withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
     return axios.post(SEND_AMOUNT_URL, {amount, withdrawal, pair, returnAddress, destTag}).then((response)=>{
       dispatch(receivedSendAmount(response.data));
-    })
-  }
-}
+    });
+  };
+};
 exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
     return axios.post(SHAPER_URL, { withdrawal, pair, returnAddress, destTag}).then((response)=>{
       dispatch(receivedShapeshift(response.data));
-    })
-  }
-}
-
+    });
+  };
+};
 
 exports.makeShapeshiftTransaction = (userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId) => {
   return function(dispatch){
-    return axios.post(MAKESHIFT_URL, { userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId } ).then((response) => {
+    return Keychain.getGenericPassword().then((creds) => {
+      const authedAxios = axios.create({
+        headers: {authorization: creds.password},
+      });
+      return authedAxios.post(MAKESHIFT_URL, {
+        userId, from, to, otherParty, shapeShiftAddress, refundAddress, orderId
+      } ).then((response) => {
 
-    }).catch((error) => {
-
+      }).catch((error) => {
+        console.log(error);
+      });
     });
-  }
-}
+  };
+};
 
 exports.requestShifts = (userId) => {
   return function(dispatch){
     return axios.get(GETSHIFTS_URL, { params: userId }).then((response) => {
-      dispatch(receivedShifts(response.data))
+      dispatch(receivedShifts(response.data));
     }).catch((error) => {
 
-    })
-  }
-}
+    });
+  };
+};
 
-receivedCoins = (data) => {
+const receivedCoins = (data) => {
   return {
     type: 'RECEIVED_COINS',
     data
-  }
-}
+  };
+};
 
-receivedSendAmount = (data) => {
+const receivedSendAmount = (data) => {
   return {
     type: 'RECEIVED_SEND_AMOUNT',
     data
-  }
-}
-receivedShapeshift = (data) => {
+  };
+};
+
+const receivedShapeshift = (data) => {
   return {
     type: 'RECEIVED_SHAPESHIFT',
     data
-  }
-}
+  };
+};
 
-receivedRate = (data, coin) => {
+const receivedRate = (data, coin) => {
   return {
     type: 'RECEIVED_RATE',
     data,
     coin
-  }
-}
+  };
+};
 
-receivedMarketInfo = (data) => {
+const receivedMarketInfo = (data) => {
   return{
     type: 'MARKET_INFO',
     data
-  }
-}
+  };
+};
 
-let receivedShifts = (data) => {
+const receivedShifts = (data) => {
   return {
     type: 'RECEIVED_SHAPESHIFTS',
     data
-  }
-}
+  };
+};
 
 exports.clearSendAmount = {
   type: 'CLEARANCE'
-}
+};
