@@ -1,12 +1,14 @@
 let await = require('asyncawait/await');
 let asynchronous = require('asyncawait/async');
 
-exports.findFromAndUpdateCache = asynchronous(function (key, callback) {
+exports.findFromAndUpdateCache = asynchronous(function (key, callback, newValue) {
   let myCacheValue = await (RedisCache.getAsync(key));
   if (myCacheValue) {
     let newCacheValue = JSON.parse(myCacheValue);
-    callback(newCacheValue);
-    RedisCache.set(key, JSON.stringify(newCacheValue));
+    if (callback) {
+      callback(newCacheValue);
+    }
+    RedisCache.set(key, JSON.stringify(newValue !== undefined ? newValue : newCacheValue));
   }
 })
 
