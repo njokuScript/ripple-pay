@@ -46,11 +46,11 @@ class Wallet extends React.Component {
     {
       this.setState({disabled: true});
       this.props.requestTransactions(this.props.user)
-      .then(() => this.props.delWallet(this.props.user.user_id, this.props.wallets[0], this.props.cashRegister))
+      .then(() => this.props.delWallet(this.props.wallets[0], this.props.cashRegister))
       .then(()=> this.setState({disabled: false}));
     }
     if (this.props.wallets.length === 1) {
-      this.props.removeCashRegister(this.props.user.user_id);
+      this.props.removeCashRegister();
     }
   }
 
@@ -64,13 +64,13 @@ class Wallet extends React.Component {
       if ( alltheWallets.length === 0 )
       {
         this.props.requestAddress(this.props.user.user_id)
-        .then(()=> this.props.requestOnlyDesTag(this.props.user.user_id, this.props.cashRegister))
+        .then(()=> this.props.requestOnlyDesTag(this.props.cashRegister))
         .then(()=> this.setState({disabled: false}));
       }
       else
       {
         console.log(this.props.requestOnlyDesTag);
-        this.props.requestOnlyDesTag(this.props.user.user_id, this.props.cashRegister).then(()=> this.setState({disabled: false}));
+        this.props.requestOnlyDesTag(this.props.cashRegister).then(()=> this.setState({disabled: false}));
       }
     }
     else

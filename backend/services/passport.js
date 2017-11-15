@@ -13,11 +13,11 @@ let localOptions = {
 let localStrategy = new LocalStrategy(localOptions, function(email, password, done) {
   // Verify this username and password
   User.findOne({email: email.toLowerCase()}, function(err, user) {
-    if (err) { return done(err) }
-    if (!user) { return done(null, false) }
-    user.comparePassword(password, function(err, isMatch) {
-      if (err) { return done(err) }
-      if (!isMatch) { return done(null, false) }
+    if (err) { return done(err); }
+    if (!user) { return done(null, false); }
+    user.comparePassword(password, function(error, isMatch) {
+      if (error) { return done(error); }
+      if (!isMatch) { return done(null, false); }
       // after this is done, returning the following will return the user object to
       // the authentication controller signin method.
       return done(null, user);
@@ -32,7 +32,7 @@ let jwtOptions = {
 
 let jwtStrategy = new JwtStrategy(jwtOptions, function(payload, done) {
   User.findById(payload.sub, function(err, user) {
-    if (err) { return done(err, false) }
+    if (err) { return done(err, false); }
     if (user) {
       done(null, user);
     } else {

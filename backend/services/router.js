@@ -10,9 +10,9 @@ const ShapeshiftController = require('../controllers/shapeshift_controller');
 // the following will take passport and will make some requirements on it
 const passportService = require('./passport');
 
-var requireAuth = passport.authenticate('jwt', {session: false});
-var requireLogin = passport.authenticate('local', {session: false});
-var router = require('express').Router();
+let requireAuth = passport.authenticate('jwt', {session: false});
+let requireLogin = passport.authenticate('local', {session: false});
+let router = require('express').Router();
 // Auth Routes`
 // -----------------------------------------------------------------------------
 router.route('/signup')
@@ -32,7 +32,8 @@ router.route('/delRegister')
   .post(requireAuth, WalletController.removeCashRegister);
 router.route('/dest')
   .post(requireAuth, WalletController.receiveOnlyDesTag);
-router.get('/addrs', WalletController.generateRegister);
+router.route('/addrs')
+  .post(requireAuth, WalletController.generateRegister);
 router.get('/wallets', WalletController.receiveAllWallets);
 router.get('/old', WalletController.findOldAddress);
 

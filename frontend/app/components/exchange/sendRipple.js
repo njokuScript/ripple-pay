@@ -65,7 +65,7 @@ class SendRipple extends Component {
         return;
       }
       this.setState({disabled: true});
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag), this.props.user.user_id).then(()=> this.setState({disabled: false}));
+      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag)).then(()=> this.setState({disabled: false}));
     }
   }
 

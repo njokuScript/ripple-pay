@@ -10,7 +10,7 @@ const mapStateToProps = ({user}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  sendInBank: (sender_id, receiver_id, amount) => dispatch(sendInBank(sender_id, receiver_id, amount)),
+  sendInBank: (receiver_id, amount) => dispatch(sendInBank(receiver_id, amount)),
   addAlert: (msg) => dispatch(addAlert(msg)),
   requestTransactions: (user) => dispatch(requestTransactions(user)),
 

@@ -10,7 +10,8 @@ const {addresses, bank} = require('./addresses');
 //or more than once ever.
 // DesTags are in 32 bits/
 exports.receiveOnlyDesTag = function(req, res, next){
-  let {user_id, cashRegister} = req.body;
+  let {cashRegister} = req.body;
+  let userId = req.user._id
   let newTag;
   let findthis;
   let genTagRecursion = asynchronous (function(){
@@ -26,8 +27,8 @@ exports.receiveOnlyDesTag = function(req, res, next){
       {
         let theNewWallet = new UsedWallet({wallet: findthis});
         await (theNewWallet.save());
-        await (User.update({_id: user_id}, {$push: {wallets: newTag}}));
-        findFromAndUpdateCache(`${user_id}: redis-wallets`, (val) => val.push(newTag))
+        await (User.update({_id: userId}, {$push: {wallets: newTag}}));
+        findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.push(newTag))
         res.json({ destinationTag: newTag });
       }
     }
@@ -36,17 +37,18 @@ exports.receiveOnlyDesTag = function(req, res, next){
 }
 
 exports.deleteWallet = asynchronous(function(req, res, next){
-  let {user_id, desTag, cashRegister} = req.body;
+  let { desTag, cashRegister} = req.body;
+  let userId = req.user._id
   let findthiswallet = `${cashRegister}${desTag}`;
-  findFromAndUpdateCache(`${user_id}: redis-wallets`, (val) => val.shift())
-  await (User.update({_id: user_id}, {$pull: {wallets: desTag}}));
+  findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.shift())
+  await (User.update({ _id: userId }, {$pull: {wallets: desTag}}));
   await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
   res.json({
 
   });
 })
 
-exports.findOldAddress = asynchronous(function( req, res, next){
+exports.findOldAddress = asynchronous(function(req, res, next){
   let x = req.query;
   let userId = x[Object.keys(x)[0]];
   let cacheVal = await (getFromTheCache(`${userId}: redis-cash-register`));
@@ -54,11 +56,12 @@ exports.findOldAddress = asynchronous(function( req, res, next){
     res.json({cashRegister: cacheVal});
     return;
   }
-  else if (cacheVal === '') {
+  else if (cacheVal === 'none') {
     res.json({cashRegister: undefined});
     return;
   }
   User.findOne({_id: userId}, function(err, existingUser){
+    console.log(existingUser.cashRegister, "dsfi");
     setInCache(`${userId}: redis-cash-register`, existingUser.cashRegister);
     res.json({cashRegister: existingUser.cashRegister});
   });
@@ -68,9 +71,8 @@ exports.generateRegister = asynchronous(function(req, res, next){
   let adds = Object.keys(addresses).slice(0,5);
   const Rippled = require('./rippleAPI');
   let server = new Rippled();
-  let x = req.query;
-  let userId = x[Object.keys(x)[0]];
-  let existingUser = await (User.findOne({ _id: userId }));
+  let { userId } = req.body;
+  let existingUser = req.user;
   await (server.connect());
   let allbals = [];
   let minAddr;
@@ -113,12 +115,12 @@ exports.receiveAllWallets = asynchronous(function(req, res, next){
 })
 
 exports.removeCashRegister = function(req, res, next){
-  let { userId } = req.body;
+  let userId = req.user._id
   User.findOneAndUpdate({_id: userId }, {cashRegister: undefined}, function(err){
     if (err) {
       return next(err);
     }
-    findFromAndUpdateCache(`${userId}: redis-cash-register`, null, '');
+    findFromAndUpdateCache(`${userId}: redis-cash-register`, null, 'none');
     res.json({
 
     })

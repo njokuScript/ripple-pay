@@ -8,7 +8,8 @@ const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../mode
 // shapeshiftAddress should be URI encoded if its a Ripple address
 // tell user to get the TXN id in their other wallet if its a deposit transaction
 exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
-  let { otherParty, from, to, userId, shapeShiftAddress, refundAddress, orderId } = req.body;
+  let { otherParty, from, to, shapeShiftAddress, refundAddress, orderId } = req.body;
+  let userId = req.user._id;
   let shapeshift = {
     from,
     to,
