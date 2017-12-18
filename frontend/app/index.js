@@ -75,7 +75,7 @@ export default class StartApp {
         screen: {
           screen: 'App',
           title: 'App',
-          navigatorStyle: {navBarHidden: true}
+          navigatorStyle: {navBarHidden: true},
         }
       });
     }

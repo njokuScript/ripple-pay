@@ -60,17 +60,14 @@ class BankSend extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <AlertContainer />
         <View style={styles.topContainer}>
           <CustomBackButton handlePress={() => this.props.navigator.pop({
             animationType: 'fade'
           })}/>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              Send Ripple to {this.props.receiverScreenName}
-            </Text>
-          </View>
           <View style={styles.balanceContainer}>
+            <Text style={styles.balanceTextField}>
+              balance:
+            </Text>
             <Text style={styles.balanceText}>
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
@@ -93,11 +90,14 @@ class BankSend extends Component {
         </View>
         <View style={styles.paymentButton}>
           <CustomButton
-            performAction="Send Payment"
+            performAction={`pay ${this.props.receiverScreenName}`}
             buttonColor={this.state.disabled ? "red" : "white"}
             isDisabled={this.state.disabled}
             handlePress={this.sendPayment}
           />
+          <View style={styles.alert}>
+            <AlertContainer />
+          </View>
         </View>
       </View>
     );
@@ -110,40 +110,32 @@ const styles = StyleSheet.create({
     flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    height: 90,
-    paddingTop: 10
+    height: 70,
+    paddingTop: 10,
+    paddingLeft: 30,
+    paddingRight: 20
   },
   container: {
     flex: 1,
-    // justifyContent: 'flex-start',
-    // alignItems: 'stretch',
     backgroundColor: '#111F61',
   },
   titleContainer: {
     alignItems: 'center',
   },
-  amount: {
-    // marginTop: 30,
-    // flex: 1,
-    // alignItems: 'stretch'
-  },
   paymentButton:{
-    marginTop: 50
+    marginTop: 0
   },
   title: {
    textAlign: 'center',
     color: 'white',
     fontSize: 18,
     fontFamily: 'Kohinoor Bangla',
-    marginLeft: 37
   },
   field: {
-    backgroundColor: '#0F1C52',
+    backgroundColor: 'white',
     borderRadius: 5,
-    padding: 5,
-    paddingLeft: 15,
     margin: 30,
     marginTop: -20,
     top: 90
@@ -151,26 +143,37 @@ const styles = StyleSheet.create({
   textInput: {
     height: 40,
     fontFamily: 'Kohinoor Bangla',
-    color: '#6D768B',
+    color: 'black',
   },
   formError: {
     color: 'red'
   },
-    balanceContainer: {
+  balanceContainer: {
     borderRadius: 50,
     borderColor: 'white',
-    backgroundColor: 'rgba(53, 58, 83, .5)',
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    flexDirection: "row"
   },
-   balanceText: {
-     textAlign: 'center',
-     fontSize: 16,
-     color: 'white',
-     fontFamily: 'Kohinoor Bangla'
-   },
+  balanceText: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'white',
+    fontFamily: 'Kohinoor Bangla'
+  },
+  balanceTextField: {
+    textAlign: 'center',
+    fontSize: 11,
+    color: 'white',
+    fontFamily: 'Kohinoor Bangla',
+    marginTop: 9,
+    marginRight: 10
+  },
+  alert: {
+    marginTop: 205
+  }
 });
 
 // make this component available to the app

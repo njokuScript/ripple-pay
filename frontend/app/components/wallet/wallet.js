@@ -13,8 +13,6 @@ import {
   Clipboard
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import LinearGradient from 'react-native-linear-gradient'
 
 class Wallet extends React.Component {
   constructor(props) {
@@ -83,10 +81,10 @@ class Wallet extends React.Component {
     Clipboard.setString(string);
     Clipboard.getString().then((str)=>{
       return str;
-    })
+    });
   }
 
-  //Dynamically requiring files is not possible, so unfortunately, any time you change the addresses
+  // Dynamically requiring files is not possible, so unfortunately, any time you change the addresses
   // You will also have to change this function to match the addresses and images
   getQRCode(){
     let { cashRegister } = this.props;
@@ -104,7 +102,7 @@ class Wallet extends React.Component {
           return this.qrFive;
       }
     }
-    return ''
+    return "";
   }
   displayWallets() {
     const disabled = this.state.disabled;
@@ -116,7 +114,7 @@ class Wallet extends React.Component {
             <Text style={styles.walletFont}>{idx+1}.</Text>
             <Text style={styles.walletFont}>{wallet}</Text>
             <TouchableOpacity onPress={() => this.clipBoardCopy(wallet.toString())} style={styles.clipBoardContainer}>
-              <Icon name="clipboard" size={25} color="brown" />
+              <Icon name="clipboard" size={25} color="gray" />
             </TouchableOpacity>
           </View>
         );
@@ -124,13 +122,13 @@ class Wallet extends React.Component {
       const imageSource = this.getQRCode();
       return (
           <View style={styles.walletDisplay}>
-            <Text style={styles.walletAddress}>Wallet Address:</Text>
+
             <View style={styles.address}>
-              <Text style={styles.cashRegister}>{this.props.cashRegister}</Text>
               <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.cashRegister)} style={styles.clipBoardContainer}>
-                <Icon  name="clipboard" size={25} color="brown" />
+                <Icon  name="clipboard" size={25} color="gray" />
               </TouchableOpacity>
             </View>
+          
             <View style={styles.imageContainer}>
               <Image
                 style={styles.qrCode}
@@ -145,23 +143,23 @@ class Wallet extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.destTag}>
-              <Text style={styles.destintro}>Destination Tags:</Text>
-            </View>
-            <View style={styles.walletsContainer}>
-              {allWallets}
+          
+            <View>
+              <View style={styles.destTag}>
+                <Text style={styles.destintro}>Destination Tags:</Text>
+              </View>
+              <View style={styles.walletsContainer}>
+                {allWallets}
+              </View>
             </View>
           </View>
       );
     } else {
       return (
-        <View style={styles.noWalletContainer}>
-          <Text style={styles.noWallet}>Please get a Wallet</Text>
-          <View style={styles.noWalletsButtonsContainer}>
-            <TouchableOpacity disabled={disabled} onPress={this.generate}>
-              <Text style={disabled ? styles.redButton : styles.greenButton}>+ New Wallet</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.noWalletsButtonsContainer}>
+          <TouchableOpacity disabled={disabled} onPress={this.generate}>
+            <Text style={disabled ? styles.redButton : styles.greenButton}>+  New Wallet</Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -187,6 +185,11 @@ const styles = StyleSheet.create({
      flex: 1,
      backgroundColor: '#111F61',
     },
+  walletDisplay: {
+    flex: 1,
+    justifyContent: 'space-between',
+    marginTop: 30,
+  },
    buttonsContainer: {
      flex: 1,
      justifyContent: 'space-between',
@@ -196,9 +199,10 @@ const styles = StyleSheet.create({
      marginRight: 35,
    },
    redButton: {
+     fontFamily: 'Kohinoor Bangla',
      color: 'red',
      backgroundColor: '#0F1C52',
-     borderRadius: 50,
+     borderRadius: 25,
      padding: 16,
      width: 150,
      overflow: 'hidden',
@@ -207,8 +211,9 @@ const styles = StyleSheet.create({
     //  marginLeft: 15
    },
    greenButton: {
+     fontFamily: 'Kohinoor Bangla',
      backgroundColor: '#0F1C52',
-     borderRadius: 50,
+     borderRadius: 25,
      padding: 16,
      width: 150,
      overflow: 'hidden',
@@ -224,46 +229,30 @@ const styles = StyleSheet.create({
     walletsContainer: {
       flex: -1,
       flexDirection: 'column',
-      // borderColor: 'white',
-      // borderWidth: 1,
       marginTop: 190,
       width: 330,
-      marginLeft: 50,
-      // borderRadius: 20
+      marginLeft: 20,
     },
     walletAddress: {
       color: 'white',
       textAlign: 'center',
-      fontSize: 25,
+      fontSize: 15,
     },
     walletintro: {
       color: 'white',
       textAlign: 'center',
       fontSize: 20
     },
-    walletDisplay: {
-      top: 30,
-    },
-    noWallet: {
-      color: 'white',
-      fontSize: 25,
-      textAlign: 'center',
-      marginTop: 20
-    },
     noWalletsButtonsContainer: {
-      flex: -1,
-      justifyContent: 'space-between',
+      flex: 1,
+      justifyContent: 'center',
       alignItems: 'center',
       flexDirection: 'column',
-      marginTop: 200,
-      marginLeft: 32,
-      marginRight: 35,
     },
     destTag: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      // fontSize: 25,
       top: 180,
       padding: 15
     },
@@ -287,7 +276,6 @@ const styles = StyleSheet.create({
       justifyContent: 'space-around',
       alignItems: 'center',
       width: 370,
-      left: 25,
     },
     clipBoardContainer: {
       borderColor: 'white',
@@ -305,25 +293,20 @@ const styles = StyleSheet.create({
       borderBottomWidth: 1,
       paddingBottom: 10,
       width: 330,
-      // left: 47,
       marginTop: 10,
-      // marginBottom: 10,
-      // borderRadius: 10,
-      // backgroundColor: 'black'
     },
     imageContainer: {
       flex: 1,
       justifyContent: 'space-between',
       position: 'absolute',
       flexDirection: 'row',
-      top: 83,
-      left: 45,
+      // top: 40,
+      left: 25,
     },
     qrCode: {
       width: 140,
       height: 140,
       borderRadius: 10,
-      marginLeft: 10,
     }
 });
 
