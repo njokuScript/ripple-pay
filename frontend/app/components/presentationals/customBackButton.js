@@ -10,7 +10,7 @@ const CustomBackButton = (props) => {
     <TouchableOpacity style={props.style || {}} onPress={props.handlePress}>
       <Text><Icon name="chevron-left" size={30} color={"white"}/></Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 export default CustomBackButton;
