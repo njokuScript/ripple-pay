@@ -30,7 +30,8 @@ class SendRipple extends Component {
       toDesTag: undefined,
       amount: "",
       sendButtonDisabled: true,
-      password: ""
+      password: "",
+      // wrongEntry: false
     }
   }
 
@@ -41,14 +42,14 @@ class SendRipple extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.passwordAttempts === this.props.passwordAttempts) {
+    if (nextProps.passwordAttempts.tries <= 0) {
+      this.props.unauthUser();
+      this.starter.startSingleApplication();
+    }
+    if (nextProps.passwordAttempts.tries === this.props.passwordAttempts.tries) {
       this.setState({
         sendButtonDisabled: false
       });
-    }
-    if (nextProps.passwordAttempts === 0) {
-      this.props.unauthUser();
-      this.starter.startSingleApplication();
     }
   }
 
@@ -66,15 +67,13 @@ class SendRipple extends Component {
       this.props.addAlert("Can't Send to yourself");
     }
     else{
-      let array = Object.keys(this.state);
-      for (let i = 0; i < array.length; i++)
-      //there does not need to be a destination tag
-      {
-        if ( this.state[array[i]] === "" && array[i] !== "toDesTag")
-        {
-          this.props.addAlert("Please Try Again");
-          return;
-        }
+      if (this.state.toAddress === "") {
+        this.props.addAlert("Please Enter a destination address");
+        return;
+      }
+      if (this.state.amount === "") {
+        this.props.addAlert("Please enter an amount");
+        return;
       }
       let {toDesTag, toAddress, amount} = this.state;
       if ( parseFloat(amount) <= 0 || !amount.match(/^\d+$/) )
@@ -137,6 +136,12 @@ class SendRipple extends Component {
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}
           />
+          <CustomButton
+            performAction="Send Payment"
+            buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
+            isDisabled={this.state.sendButtonDisabled}
+            handlePress={this.sendPayment}
+          />
         <CustomInput
             placeholder="Password"
             onChangeText={
@@ -149,18 +154,13 @@ class SendRipple extends Component {
             autoCapitalize={'none'}
             secureTextEntry={true}
             keyboardAppearance={'dark'}
+            value={this.state.password}
           />
-        <Text>{this.props.passwordAttempts} password attempts remaining</Text>
+        <Text>{this.props.passwordAttempts.tries} password attempts remaining</Text>
         <CustomButton
           performAction="Enter Password"
           buttonColor="white"
           handlePress={this.enterPassword}
-        />
-        <CustomButton
-          performAction="Send Payment"
-          buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
-          isDisabled={this.state.sendButtonDisabled}
-          handlePress={this.sendPayment}
         />
         <View style={styles.fee}>
           <Text style={styles.feetext}>
