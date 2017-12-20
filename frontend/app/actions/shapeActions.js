@@ -7,7 +7,8 @@ import {
   SEND_AMOUNT_URL,
   SHAPER_URL,
   MAKESHIFT_URL,
-  GETSHIFTS_URL
+  GETSHIFTS_URL,
+  authRequest
  } from '../api';
 
 // const axios = require('axios');
@@ -17,32 +18,6 @@ exports.requestAllCoins = () => {
   return function(dispatch){
     return axios.get(COINS_URL).then((response)=>{
       dispatch(receivedCoins(response.data));
-    });
-  };
-};
-
-let authRequest = (type, url, data, ...cbs) => {
-  return function(dispatch){
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: { authorization: creds.password },
-      });
-      if (type === "POST") {
-        return authedAxios.post(url, data).then((response) => {
-          for (let i = 0; i < cbs.length; i++) {
-            let cb = cbs[i];
-            dispatch(cb(response));
-          }
-        });
-      }
-      else {
-        return authedAxios.get(url, data).then((response) => {
-          for (let i = 0; i < cbs.length; i++) {
-            let cb = cbs[i];
-            dispatch(cb(response));
-          }
-        });
-      }
     });
   };
 };
