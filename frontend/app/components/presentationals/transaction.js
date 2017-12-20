@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
   transactionDateText: {
     fontSize: 12
   },
-})
+});
 
 export default Transaction;

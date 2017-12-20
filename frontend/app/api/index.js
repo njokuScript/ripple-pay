@@ -1,7 +1,9 @@
 //This is the frontend communication with backend where we go so that we can route to specific URL's that we can go to the controller with.
 //The next file to look at is router.js
+import * as Keychain from 'react-native-keychain';
+import axios from 'axios';
 
-var API_URL = 'http://192.168.1.73:3000/v1';
+var API_URL = 'http://localhost:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
 exports.ADDR_URL = `${API_URL}/addrs`;
@@ -19,6 +21,7 @@ exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
 exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
 exports.DEL_REGISTER_URL = `${API_URL}/delRegister`;
+exports.AUTH_URL = `${API_URL}/authUrl`;
 
 // shape shift
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
@@ -27,3 +30,19 @@ exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
 exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
 exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
 exports.SHAPE_TXTSTAT_URL = `${SHAPESHIFT_URL}/txStat`;
+
+exports.authRequest = (requestType, url, data, ...cbs) => {
+    return function (dispatch) {
+        return Keychain.getGenericPassword().then((creds) => {
+            const authedAxios = axios.create({
+                headers: { authorization: creds.password },
+            });
+            return authedAxios[requestType.toLowerCase()](url, data).then((response) => {
+                for (let i = 0; i < cbs.length; i++) {
+                    let cb = cbs[i];
+                    dispatch(cb(response));
+                }
+            });
+        });
+    };
+};

@@ -19,6 +19,8 @@ router.route('/signup')
   .post(AuthenticationController.signup);
 router.route('/signin')
   .post([requireLogin, AuthenticationController.signin]);
+router.route('/authUrl')
+  .post(requireAuth, AuthenticationController.comparePassword);
 router.route('/banksend')
   .post(requireAuth, BankController.inBankSend);
 router.route('/send')
