@@ -14,7 +14,9 @@ import {
   WALLETS_URL,
   DEST_URL,
   DEL_WALLET_URL,
-  DEL_REGISTER_URL
+  DEL_REGISTER_URL,
+  AUTH_URL,
+  authRequest
 } from '../api';
 
 import { addAlert } from './alertsActions';
@@ -29,32 +31,6 @@ let finishAndBeginTimer = ()=> {
   //   theStore.dispatch(thisunauthUser);
   //   theStore.dispatch(addAlert("Session Timed Out Due to Inactivity"));
   // },9999);
-};
-
-let authRequest = (type, url, data, ...cbs) => {
-  return function(dispatch){
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: { authorization: creds.password },
-      });
-      if (type === "POST") {
-        return authedAxios.post(url, data).then((response) => {
-          for (let i = 0; i < cbs.length; i++) {
-            let cb = cbs[i];
-            dispatch(cb(response));
-          }
-        });
-      }
-      else {
-        return authedAxios.get(url, data).then((response) => {
-          for (let i = 0; i < cbs.length; i++) {
-            let cb = cbs[i];
-            dispatch(cb(response));
-          }
-        });
-      }
-    });
-  };
 };
 
 exports.loginUser = (email, password) => {
@@ -93,6 +69,17 @@ exports.signupUser = (email, password, screenName) => {
     });
   };
 };
+
+exports.comparePassword = function(password) {
+  return authRequest(
+    "POST",
+    AUTH_URL,
+    { password },
+    (response) => {
+      return updatePasswordAttempts(response.data);
+    }
+  )
+}
 
 exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
   // finishAndBeginTimer();
@@ -273,6 +260,13 @@ const receivedUsers = (users) => {
   return {
     type: 'RECEIVED_USERS',
     users
+  };
+};
+
+const updatePasswordAttempts = (data) => {
+  return {
+    type: 'UPDATE_PASSWORD_ATTEMPTS',
+    data
   };
 };
 

@@ -41,12 +41,12 @@ exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
 })
 
 exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
-  let x = req.query;
-  console.log(x);
-  let shapeShift = x['0'];
-  let date = x['1'];
-  let fromAddress = x['2']
+  let query = req.query;
+  let shapeShift = query['0'];
+  let date = query['1'];
+  let fromAddress = query['2']
   console.log(shapeShift, date);
+  // undefined could cause errors here
   let toAddress = shapeShift.match(/\w+/)[0];
   let desTag = parseInt(shapeShift.match(/\?dt=(\d+)/)[1]);
   let Rippled = require('./rippleAPI');
@@ -54,9 +54,7 @@ exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
   await (server.connect())
   let txnInfo = await (server.api.getTransactions(fromAddress, { excludeFailures: true, types: ["payment"] }));
   const manipulateTransactions = function(currTxn) {
-    console.log(currTxn);
-    if(toAddress === currTxn.specification.destination.address &&
-      desTag === currTxn.specification.destination.tag) {
+    if(toAddress === currTxn.specification.destination.address && desTag === currTxn.specification.destination.tag) {
       return currTxn.id;
     }
     else if (new Date(currTxn.outcome.timestamp).getTime() < new Date(date).getTime()) {
@@ -64,20 +62,18 @@ exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
     }
     return false;
   };
-  let transId;
+  let txnId;
   async.mapSeries(txnInfo, function (currTxn, cb) {
-    transId = manipulateTransactions(currTxn);
-    if (transId === null){
+    txnId = manipulateTransactions(currTxn);
+    if (txnId === null){
       cb(true)
     }
     else {
       cb(null, currTxn)
     }
   }, function(error, resp) {
-    //SORTING INSIDE OF THE SERVER IS BLOCKING INSTEAD THE SORTING IS DONE IN HOME.JS CLIENT-SIDE
     res.json({
-      txnId: transId
+      txnId: txnId
     })
   });
-
 })
