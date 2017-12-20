@@ -13,8 +13,8 @@ const CustomInput = (props) => {
         {props.errorText}
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   field: {
@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Kohinoor Bangla',
     color: 'white'
   },
-})
+});
 
 export default CustomInput;

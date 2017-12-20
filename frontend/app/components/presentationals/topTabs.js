@@ -8,34 +8,41 @@ import {
 
 const TopTabs = (props) => {
   const topTabContainer = {
-    borderColor: 'black',
+    borderColor: '#d3d3d3',
     width: 160,
     height: 40,
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'white'
-  }
+    backgroundColor: '#F9F9F9'
+  };
+  const topTab = {
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: 'center'
+  };
+
   return (
     <View style={styles.topTabsContainer}>
       <TouchableOpacity
         onPress={props.handleLeftPress}
         style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1})}
       >
-        <Text style={styles.topTab}>
-        Transactions
+        <Text 
+          style={Object.assign({}, topTab, { color: !props.pressed ? "#4579FB" : "black" })}>
+        transactions
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={props.handleRightPress}
         style={Object.assign({}, topTabContainer, {borderBottomWidth: props.pressed ? 2 : 1})}
       >
-        <Text style={styles.topTab}>
-        Orders
+        <Text style={Object.assign({}, topTab, { color: !props.pressed ? "black" : "#4579FB" })}>
+        orders
         </Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   topTabsContainer: {
@@ -43,25 +50,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: "center",
     justifyContent: 'space-around',
-    borderColor: 'black',
-    borderWidth: 1,
+    borderWidth: .5,
     height: 40
   },
   topTabContainerRight: {
-    borderColor: 'black',
-    borderBottomWidth: 1,
-    // borderTopWidth: 3,
+    borderColor: '#d3d3d3',
+    // borderBottomWidth: 1,
     width: 160,
     height: 40,
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'rgb(249, 249, 249)'
   },
-  topTab: {
-    fontSize: 20,
-    textAlign: 'center',
-    fontFamily: 'Kohinoor Bangla'
-  }
-})
+});
 
 export default TopTabs;

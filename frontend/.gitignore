@@ -3,8 +3,8 @@
 
 .DS_Store
 
-# Xcode
-#
+Xcode
+
 build/
 *.pbxuser
 !default.pbxuser
@@ -22,21 +22,20 @@ DerivedData23
 *.ipa
 *.xcuserstate
 project.xcworkspace
-ios/
 
-# Android/IJ
-#
+Android/IJ
+
 *.iml
 .idea
 .gradle
 local.properties
 
-# node.js
-#
+node.js# 
+
 
 npm-debug.log
 
-# BUCK
+BUCK
 buck-out/
 \.buckd/
 android/app/libs
@@ -45,6 +44,6 @@ android/keystores/debug.keystore
 frontend/ios/
 frontend/ios/build/
 node_modules/
-ios
+ios/
 android
 android/

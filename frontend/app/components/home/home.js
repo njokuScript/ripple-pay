@@ -3,7 +3,7 @@ import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import { unauthUser } from '../../actions';
-import Icon from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/Entypo.js';
 import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
 import TopTabs from '../presentationals/topTabs';
@@ -33,7 +33,7 @@ class Home extends React.Component {
       refreshing: false,
       shapeshift: false,
       showshift: ''
-    }
+    };
     this.onRefresh = this.onRefresh.bind(this);
   }
 
@@ -50,13 +50,13 @@ class Home extends React.Component {
     this.setState({refreshing: true});
     if (this.state.shapeshift) {
       this.props.requestShifts().then(() => {
-        this.setState({refreshing: false})
-      })
+        this.setState({refreshing: false});
+      });
     }
     else {
       this.props.requestTransactions().then(() => {
         this.setState({refreshing: false});
-      })
+      });
     }
   }
 
@@ -69,22 +69,22 @@ class Home extends React.Component {
     this.setState({
       shapeshift: false,
       showshift: false,
-    })
+    });
   }
 
   handleRightPress() {
     this.setState({
       shapeshift: true,
       showshift: false,
-    })
+    });
   }
 
   show(transaction, time) {
     this.setState({
       showshift: <ShapeTransactionView time={time} {...transaction}/>
-    })
+    });
   }
-  //Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
+  // Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
   displayTransactions() {
     if (this.state.showshift != '') {
       return this.state.showshift;
@@ -96,7 +96,7 @@ class Home extends React.Component {
       if (!this.state.shapeshift) {
         transactions = this.props.transactions.sort((a,b)=>{
           return new Date(b.date).getTime() - new Date(a.date).getTime();
-        })
+        });
       }
       else{
         transactions = this.props.shapeshiftTransactions;
@@ -165,13 +165,10 @@ class Home extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.logoContainer}>
-            <Text style={styles.logo}>
-              Balance & Transactions
-            </Text>
-          </View>
-
           <View style={styles.balanceContainer}>
+            <Text style={styles.balanceTextField}>
+              balance:
+            </Text>
             <Text style={styles.balanceText}>
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
@@ -211,10 +208,12 @@ const styles = StyleSheet.create({
     flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: 90,
+    height: 70,
     paddingTop: 10,
+    paddingLeft: 30,
+    paddingRight: 20
   },
   logoContainer: {
     backgroundColor: '#111F61',
@@ -228,25 +227,33 @@ const styles = StyleSheet.create({
   balanceContainer: {
     borderRadius: 50,
     borderColor: 'white',
-    backgroundColor: 'rgba(53, 58, 83, .5)',
+    // backgroundColor: 'rgba(53, 58, 83, .5)',
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 5,
-    paddingBottom: 5
+    paddingBottom: 5,
+    flexDirection: "row"
   },
    balanceText: {
      textAlign: 'center',
-     fontSize: 16,
+     fontSize: 20,
      color: 'white',
      fontFamily: 'Kohinoor Bangla'
+   },
+  balanceTextField: {
+     textAlign: 'center',
+     fontSize: 11,
+     color: 'white',
+     fontFamily: 'Kohinoor Bangla',
+     marginTop: 9,
+     marginRight: 10
    },
     signOut: {
       transform: [{ rotate: '180deg' }],
       marginBottom: 3
     },
     transactionsContainer: {
-      marginBottom: 75,
-      // marginTop: -5
+      marginBottom: 75
     },
 });
 

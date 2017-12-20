@@ -26,6 +26,19 @@ exports.signin = function(req, res) {
   });
 };
 
+exports.comparePassword = function(req, res) {
+  const user = req.user;
+  const { password } = req.body;
+  user.comparePassword(password, function (error, isMatch) {
+    if (error) { return next(error); }
+    if (!isMatch) { 
+      res.json({success: false});
+      return;
+    }
+    res.json({success: true});
+  });
+};
+
 // req.body is {email: whatever, password: whatever}
 exports.signup = function(req, res, next) {
   let email = req.body.email;
