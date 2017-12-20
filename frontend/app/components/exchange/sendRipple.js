@@ -1,5 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
+import StartApp from '../../index.js';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
@@ -22,17 +23,34 @@ class SendRipple extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
+    this.enterPassword = this.enterPassword.bind(this);
+    this.starter = new StartApp();
     this.state = {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
-      disabled: false,
+      sendButtonDisabled: true,
+      password: ""
     }
   }
 
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
+  enterPassword() {
+    const { password } = this.state;
+    this.props.comparePassword(password);
+    this.setState({password: ""});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.passwordAttempts === this.props.passwordAttempts) {
+      this.setState({
+        sendButtonDisabled: false
+      });
+    }
+    if (nextProps.passwordAttempts === 0) {
+      this.props.unauthUser();
+      this.starter.startSingleApplication();
+    }
+  }
 
   sendPayment(){
     if ( !this.props.fromAddress || !this.props.sourceTag)
@@ -64,8 +82,8 @@ class SendRipple extends Component {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;
       }
-      this.setState({disabled: true});
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag)).then(()=> this.setState({disabled: false}));
+      this.setState({sendButtonDisabled: true});
+      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
     }
   }
 
@@ -119,10 +137,29 @@ class SendRipple extends Component {
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}
           />
+        <CustomInput
+            placeholder="Password"
+            onChangeText={
+              (password) => {
+                this.setState({password: password});
+              }
+            }
+            autoCorrect={false}
+            placeholderTextColor="#6D768B"
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+            keyboardAppearance={'dark'}
+          />
+        <Text>{this.props.passwordAttempts} password attempts remaining</Text>
+        <CustomButton
+          performAction="Enter Password"
+          buttonColor="white"
+          handlePress={this.enterPassword}
+        />
         <CustomButton
           performAction="Send Payment"
-          buttonColor={this.state.disabled ? "red" : "white"}
-          isDisabled={this.state.disabled}
+          buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
+          isDisabled={this.state.sendButtonDisabled}
           handlePress={this.sendPayment}
         />
         <View style={styles.fee}>
