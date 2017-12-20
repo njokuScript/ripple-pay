@@ -16,7 +16,7 @@ var defaultState = {
   cashRegister: undefined,
   wallets: [],
   screenName: '',
-  passwordAttempts: 3
+  passwordAttempts: {tries: 3, attemptSwitch: true}
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -31,7 +31,15 @@ module.exports = (state=defaultState, action) => {
       });
       //Make the user_id undefined after logout.
     case 'UPDATE_PASSWORD_ATTEMPTS':
-      return Object.assign({}, state, {passwordAttempts: action.data.success ? state.passwordAttempts : state.passwordAttempts - 1})
+      const {passwordAttempts: {tries, attemptSwitch}} = state;
+      let passwordAttempts = null;
+      if (action.data.success) {
+        passwordAttempts = {tries: tries, attemptSwitch: !attemptSwitch};
+      } 
+      else {
+        passwordAttempts = {tries: tries - 1, attemptSwitch: !attemptSwitch};
+      }
+      return Object.assign({}, state, { passwordAttempts })
     case 'UNAUTH_USER':
       return Object.assign({}, state,
         {
@@ -42,7 +50,7 @@ module.exports = (state=defaultState, action) => {
           wallets: [],
           screenName: '',
           shapeshiftTransactions: [],
-          passwordAttempts: 3
+          passwordAttempts: {tries: 3, attemptSwitch: true}
         });
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
