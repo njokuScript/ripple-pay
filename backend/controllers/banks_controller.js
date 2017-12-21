@@ -1,4 +1,5 @@
 // const bank = require('../models/vault');
+const Auth = require('./authentication_controller');
 const User = require('../models/user');
 const {CashRegister} = require('../models/populateBank');
 const {Bank} = require('../models/populateBank');
@@ -16,7 +17,11 @@ exports.inBankSend = asynchronous(function(req, res, next){
   let sender_id = sender._id;
   if ( amount > sender.balance )
   {
-    res.json({message: "Balance Insufficient", balance: sender.balance});
+    res.json({
+      message: "Balance Insufficient", 
+      balance: sender.balance,
+      token: Auth.tokenForUser(sender)
+    });
     return;
   }
   let receiver = await (User.findOne({ screenName: receiverScreenName}))
@@ -41,11 +46,18 @@ exports.inBankSend = asynchronous(function(req, res, next){
     }
     await (User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}))
     await (User.findOneAndUpdate({ screenName: receiverScreenName }, {$set: receiverBal, $push: {transactions: receiverTransaction}}))
-    res.json({message: "Payment was Successful", balance: senderBal.balance});
+    res.json({
+      message: "Payment was Successful",
+      balance: senderBal.balance,
+      token: Auth.tokenForUser(sender)
+    });
   }
   else
   {
-    res.json({message: "Payment Unsuccessful"})
+    res.json({
+      message: "Payment Unsuccessful",
+      token: Auth.tokenForUser(sender)
+    })
   }
 })
 
@@ -58,7 +70,10 @@ exports.sendMoney = asynchronous (function(req, res, next){
   let bankAddress = Object.keys(bank)[0];
   if ( amount > existingUser.balance )
   {
-     res.json({message: "Balance Insufficient"});
+    res.json({
+      message: "Balance Insufficient",
+      token: Auth.tokenForUser(existingUser)
+    });
      return;
   }
   await (server.connect());
@@ -89,16 +104,25 @@ exports.sendMoney = asynchronous (function(req, res, next){
           await (Money.update({}, {$inc: { cost: numberFee, revenue: 0.02 + numberFee, profit: 0.02 }}));
           let result = await (server.api.submit(signedTransact));
           console.log(result);
-          res.json({message: result.resultCode});
+          res.json({
+            message: result.resultCode,
+            token: Auth.tokenForUser(existingUser)
+          });
         }
         catch (err){
           console.log(err);
-          res.json({message: "Error In submitting transaction"});
+          res.json({
+            message: "Error In submitting transaction",
+            token: Auth.tokenForUser(existingUser)
+          });
         }
       }
       else
       {
-        res.json({message: "Someone's Trying to Get into Your Wallet"});
+        res.json({
+          message: "Someone's Trying to Get into Your Wallet",
+          token: Auth.tokenForUser(existingUser)
+        });
       }
     }))
   })
@@ -225,7 +249,8 @@ exports.getTransactions = asynchronous(function (req, res, next) {
         if (err) { return next(err); }
         res.json({
           transactions: changedUser.transactions,
-          balance: changedUser.balance
+          balance: changedUser.balance,
+          token: Auth.tokenForUser(existingUser)
         });
       });
     });
@@ -234,7 +259,8 @@ exports.getTransactions = asynchronous(function (req, res, next) {
   {
     res.json({
       transactions: existingUser.transactions,
-      balance: existingUser.balance
+      balance: existingUser.balance,
+      token: Auth.tokenForUser(existingUser)
     });
   }
 })

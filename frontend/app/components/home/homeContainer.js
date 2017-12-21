@@ -1,7 +1,6 @@
 import{ connect } from 'react-redux';
 import Home from './home';
-import { unauthUser } from '../../actions';
-import { requestTransactions, requestAddressAndDesTag } from '../../actions/authActions';
+import { requestTransactions, requestAddressAndDesTag, unauthUser } from '../../actions/authActions';
 import { requestShifts } from '../../actions/shapeActions';
 
 const mapStateToProps = ({ user }) => ({
@@ -12,7 +11,7 @@ const mapStateToProps = ({ user }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  unauthUser: () => dispatch(unauthUser),
+  unauthUser: () => dispatch(unauthUser()),
   requestTransactions: (user) => dispatch(requestTransactions(user)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
   requestShifts: () => dispatch(requestShifts())

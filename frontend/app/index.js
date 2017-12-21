@@ -1,6 +1,7 @@
 import { Navigation } from 'react-native-navigation';
 import {Provider} from 'react-redux';
 import {configureStore} from './store/index';
+import Login from './components/Login';
 import SearchContainer from './components/search/searchContainer';
 import WalletContainer from './components/wallet/walletContainer';
 import ExchangeContainer from './components/exchange/exchangeContainer';
@@ -61,6 +62,7 @@ export default class StartApp {
       Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
       Navigation.registerComponent('PasswordLock', ()=> PasswordLock, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
+      Navigation.registerComponent('Login', ()=> Login, store, Provider);
     }
 
     startTabs(){

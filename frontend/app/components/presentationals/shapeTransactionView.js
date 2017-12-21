@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import {
   GETSHAPEID_URL,
-  SHAPE_TXTSTAT_URL
+  SHAPE_TXN_STAT_URL,
+  authRequest
 } from '../../api';
 import {
   StyleSheet,
@@ -22,14 +23,19 @@ export default class ShapeTransactionView extends React.Component {
   // Maybe store the transaction id in a shapeshift transaction model to prevent this action.
   componentDidMount(){
     if (this.props.from.match(/XRP/)) {
-      axios.get(GETSHAPEID_URL, {params: [this.props.shapeShiftAddress, this.props.date, this.props.refundAddress]}).then((response) => {
-        this.setState({txnId: response.data.txnId || 'Not Found'})
-      })
+      authRequest(
+        "GET",
+        GETSHAPEID_URL,
+        { params: [this.props.shapeShiftAddress, this.props.date, this.props.refundAddress] },
+        (response) => {
+          this.setState({ txnId: response.data.txnId || 'Not Found' })
+        }
+      )
     }
     else {
       this.setState({txnId: 'Check other wallet'})
     }
-    axios.get(`${SHAPE_TXTSTAT_URL}/${encodeURIComponent(this.props.shapeShiftAddress)}`).then((response) => {
+    axios.get(`${SHAPE_TXN_STAT_URL}/${encodeURIComponent(this.props.shapeShiftAddress)}`).then((response) => {
       this.setState({txStat: response.data})
     })
   }

@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import Search from './search';
-import {updateFilter} from '../../actions/filterActions';
 import {requestUsers} from '../../actions/authActions';
 
 const mapStateToProps = ({user}) => ({

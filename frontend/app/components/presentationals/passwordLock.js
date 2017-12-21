@@ -70,7 +70,7 @@ const mapStateToProps = ({ user }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    unauthUser: () => dispatch(unauthUser),
+    unauthUser: () => dispatch(unauthUser()),
     comparePassword: (password) => dispatch(comparePassword(password))
 });
 
