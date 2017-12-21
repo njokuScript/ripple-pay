@@ -7,6 +7,7 @@ import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import sendAmountContainer from './sendAmountContainer';
 import CustomButton from '../presentationals/customButton';
+import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import { makeShapeshiftTransaction } from '../../actions/authActions';
 import { clearSendAmount } from '../../actions/shapeActions';
@@ -26,6 +27,13 @@ import Icon from 'react-native-vector-icons/Octicons';
 class SendAmount extends Component {
   constructor(props){
     super(props);
+    this.toThisAmount = "";
+    this.fromThisAmount = "";
+    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
+    this.renderButton = this.renderButton.bind(this);
+    this.sendPayment = this.sendPayment.bind(this);
+    this.enableSending = this.enableSending.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       direction: true,
       fromAmount: "",
@@ -33,13 +41,8 @@ class SendAmount extends Component {
       address: "",
       pushed: false,
       time: 600000,
+      sendButtonDisabled: true
     }
-    this.toThisAmount = "";
-    this.fromThisAmount = "";
-    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
-    this.renderButton = this.renderButton.bind(this);
-    this.sendPayment = this.sendPayment.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   onNavigatorEvent(event){
@@ -63,7 +66,9 @@ class SendAmount extends Component {
       }
     }
     else if (event.id === "willDisappear"){
-      console.log('screen disappeared');
+      this.setState({
+        sendButtonDisabled: true
+      });
       this.props.clearSendAmount();
       clearInterval(this.timer);
       this.props.navigator.resetTo({
@@ -71,6 +76,12 @@ class SendAmount extends Component {
         navigatorStyle: {navBarHidden: true}
       })
     }
+  }
+
+  enableSending() {
+    this.setState({
+      sendButtonDisabled: false
+    })
   }
 
   componentWillReceiveProps(newProps){
@@ -102,12 +113,16 @@ class SendAmount extends Component {
     if ( this.props.action === 'withdraw' && this.state.pushed === false )
     {
       return(
-        <CustomButton
-          performAction="Withdraw"
-          buttonColor="white"
-          isDisabled={false}
-          handlePress={this.sendPayment}
-        />
+        <View>
+          <CustomButton
+            performAction="Withdraw"
+            buttonColor="white"
+            buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
+            isDisabled={this.state.sendButtonDisabled}
+            handlePress={this.sendPayment}
+          />
+          <PasswordLock enableSending={this.enableSending} />
+        </View>
       )
     }
   }
@@ -154,11 +169,17 @@ class SendAmount extends Component {
 // XRP withdraw address that ripplePay auto sends to on withdrawals is shown just
 // for testing purposes
   render() {
-      if ( !this.props.shape.sendamount )
-      {
+      if ( !this.props.shape.sendamount ) {
         return (
           <View>
             <Text>Error Making Transaction....</Text>
+          </View>
+        )
+      }
+      else if (this.props.shape.sendamount.error) {
+        return (
+          <View>
+            <Text>Error Making Transaction because {this.props.shape.sendamount.error}</Text>
           </View>
         )
       }
@@ -176,7 +197,6 @@ class SendAmount extends Component {
               { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit ? this.props.shape.sendamount.deposit : 'Please Wait...' }</Text> : null}
               <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
               <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Send Maximum:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.maxLimit) : this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.depositAmount) : this.truncate(this.props.fromAmount)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Withdraw Amount:   {this.truncate(this.props.amount)} {this.props.toCoin}</Text>
               <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
