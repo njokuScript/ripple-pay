@@ -58,13 +58,7 @@ class Transition extends Component {
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
 
   navSendAmount() {
-    console.log("i got pushed");
-    if ( this.state.fromAmount > this.props.shape.market.maxLimit )
-    {
-      this.props.addAlert(`Please ${this.action} less than the maximum allowed`);
-      return;
-    }
-    else if (this.state.fromAmount < this.props.shape.market.minimum){
+    if (this.state.fromAmount < this.props.shape.market.minimum){
       this.props.addAlert(`Please ${this.action} more than the minimum allowed`);
       return;
     }
@@ -189,7 +183,6 @@ class Transition extends Component {
           <View style={styles.infoContainer}>
             <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
             <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
           </View>
           <CustomButton

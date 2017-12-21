@@ -27,7 +27,7 @@ module.exports = (state=defaultState, action) => {
     case 'MARKET_INFO':
       return merge({}, state, {market: action.data})
     case 'RECEIVED_SEND_AMOUNT':
-      return Object.assign({}, state, {sendamount: action.data.success})
+      return Object.assign({}, state, { sendamount: action.data.success ? action.data.success : action.data })
     case 'RECEIVED_SHAPESHIFT':
       return Object.assign({}, state, {sendamount: action.data})
     case 'CLEARANCE':
