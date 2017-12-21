@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Keychain from 'react-native-keychain';
 import {connect} from 'react-redux';
 import { unauthUser } from '../actions/authActions';
 import StartApp from '../index';
@@ -10,12 +11,17 @@ import {
 } from 'react-native';
 
 import Login from './Login';
-import Main from './Main';
 
 export default class App extends React.Component {
   constructor(props){
     super(props);
     this.starter = new StartApp();
+  }
+
+  clearCredentials() {
+    Keychain.resetGenericPassword().then(() => {
+      console.log("jwt token deleted");
+    })
   }
 
   render() {
@@ -29,6 +35,7 @@ export default class App extends React.Component {
           </View>
         )
       } else {
+        this.clearCredentials();
         return (
           <Login />
         );
@@ -60,7 +67,7 @@ let mapStateToProps = (state) => {
 };
 let mapDispatchToProps = (dispatch) => {
   return {
-    unauthUser: () => dispatch(unauthUser)
+    unauthUser: () => dispatch(unauthUser())
   };
 };
 

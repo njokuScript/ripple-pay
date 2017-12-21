@@ -29,9 +29,9 @@ exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
 exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
 exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
 exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
-exports.SHAPE_TXTSTAT_URL = `${SHAPESHIFT_URL}/txStat`;
+exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
-exports.authRequest = (requestType, url, data, ...cbs) => {
+exports.reduxAuthRequest = (requestType, url, data, ...cbs) => {
     return function (dispatch) {
         return Keychain.getGenericPassword().then((creds) => {
             const authedAxios = axios.create({
@@ -42,7 +42,27 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
                     let cb = cbs[i];
                     dispatch(cb(response));
                 }
-            });
+            })
+            .catch((err) => {
+                // logout logic
+            })
         });
     };
+};
+
+exports.authRequest = (requestType, url, data, ...cbs) => {
+    return Keychain.getGenericPassword().then((creds) => {
+        const authedAxios = axios.create({
+            headers: { authorization: creds.password },
+        });
+        return authedAxios[requestType.toLowerCase()](url, data).then((response) => {
+            for (let i = 0; i < cbs.length; i++) {
+                let cb = cbs[i];
+                cb(response);
+            }
+        })
+        .catch((err) => {
+            // logout logic
+        })
+    });
 };

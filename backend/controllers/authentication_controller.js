@@ -2,11 +2,15 @@ const User = require('../models/user');
 const jwt = require('jwt-simple');
 const config = require('../config');
 
-function tokenForUser(user) {
-  let timestamp = new Date().getTime();
+EXPIRE_TIME = 5*60*1000 // 5 minutes
+
+exports.tokenForUser = function(user) {
+  let timeStamp = new Date().getTime();
+  let expireStamp = new Date(timeStamp + EXPIRE_TIME);
   return jwt.encode({
     sub: user.id,
-    iat: timestamp
+    iat: timestamp,
+    exp: expireStamp
   }, config.secret);
 }
 
@@ -16,10 +20,10 @@ function tokenForUser(user) {
 // formed and sent to below function
 // res.send vs res.json - res.send won't convert undefined and null but json will to JSON
 exports.signin = function(req, res) {
-  let user = req.user;
+  const user = req.user;
   res.send({
     user_id: user._id,
-    token: tokenForUser(user),
+    token: exports.tokenForUser(user),
     cashRegister: user.cashRegister,
     wallets: user.wallets,
     screenName: user.screenName
@@ -32,10 +36,10 @@ exports.comparePassword = function(req, res) {
   user.comparePassword(password, function (error, isMatch) {
     if (error) { return next(error); }
     if (!isMatch) { 
-      res.json({success: false});
+      res.json({ success: false, token: exports.tokenForUser(user)});
       return;
     }
-    res.json({success: true});
+    res.json({ success: true, token: exports.tokenForUser(user)});
   });
 };
 
@@ -59,17 +63,18 @@ exports.signup = function(req, res, next) {
     });
     user.save(function(err) {
       if (err) { return next(err); }
-      res.json({user_id: user._id, token: tokenForUser(user)});
+      res.json({user_id: user._id, token: exports.tokenForUser(user)});
     });
   });
 };
 
 exports.search = function (req, res, next) {
+  const user = req.user;
   let item = req.query;
   let key = Object.keys(item)[0];
   let reg = new RegExp(`^${item[key]}\\w*$` , 'i');
   User.find({ "screenName": reg } , function(err, users) {
     if (err) { return next(err); }
-    res.json({search: users.map((user) => user.screenName)});
+    res.json({ search: users.map((user) => user.screenName), token: exports.tokenForUser(user)});
   });
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
-import { unauthUser } from '../../actions';
+import { unauthUser } from '../../actions/authActions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
@@ -146,7 +146,7 @@ class Home extends React.Component {
     } else {
       return (
         <Transaction
-          otherParty="no transactions"
+          otherParty="no transactions - pull down to refresh"
         />
       );
     }

@@ -8,7 +8,7 @@ import {
   SHAPER_URL,
   MAKESHIFT_URL,
   GETSHIFTS_URL,
-  authRequest
+  reduxAuthRequest
  } from '../api';
 
 // const axios = require('axios');
@@ -57,7 +57,7 @@ exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
 };
 
 exports.makeShapeshiftTransaction = (from, to, otherParty, shapeShiftAddress, refundAddress, orderId) => {
-  return authRequest(
+  return reduxAuthRequest(
     "POST",
     MAKESHIFT_URL,
     {from, to, otherParty, shapeShiftAddress, refundAddress, orderId}
@@ -65,7 +65,7 @@ exports.makeShapeshiftTransaction = (from, to, otherParty, shapeShiftAddress, re
 };
 
 exports.requestShifts = () => {
-  return authRequest("GET", GETSHIFTS_URL, {}, (response) => {
+  return reduxAuthRequest("GET", GETSHIFTS_URL, {}, (response) => {
     return receivedShifts(response.data);
   });
 };

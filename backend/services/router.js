@@ -46,7 +46,8 @@ router.route('/makeshift')
   .post(requireAuth, ShapeshiftController.createShapeshiftTransaction);
 router.route('/getshifts')
   .get(requireAuth, ShapeshiftController.getShapeshiftTransactions);
-router.get('/getShapeId', ShapeshiftController.getShapeshiftTransactionId);
+router.route('/getShapeId')
+  .get(requireAuth, ShapeshiftController.getShapeshiftTransactionId);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

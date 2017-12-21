@@ -1,8 +1,6 @@
 //We made our user actions and auth actions all the same, remember this.
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
-// import {configureStore} from '../store';
-//KINDA HCKY BUT I'M IMPORTING THE ENTIRE STORE.
 import {
   SIGNIN_URL,
   SIGNUP_URL,
@@ -16,22 +14,10 @@ import {
   DEL_WALLET_URL,
   DEL_REGISTER_URL,
   AUTH_URL,
-  authRequest
+  reduxAuthRequest
 } from '../api';
 
 import { addAlert } from './alertsActions';
-
-//The following auth stuff will ensure that the slice of state of the store for the user will have his user id and not undefined.
-//Look at authreducer for defaultstate of user.
-//Log the user out after 7 minutes of inactivity.
-let timer;
-let finishAndBeginTimer = ()=> {
-  // window.clearTimeout(timer);
-  // timer = window.setTimeout(function(){
-  //   theStore.dispatch(thisunauthUser);
-  //   theStore.dispatch(addAlert("Session Timed Out Due to Inactivity"));
-  // },9999);
-};
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
@@ -41,7 +27,6 @@ exports.loginUser = (email, password) => {
       Keychain.setGenericPassword(user_id, token)
         .then(function() {
           dispatch(authUser(screenName, wallets, cashRegister));
-          // finishAndBeginTimer();
         })
       .catch((error) => {
           dispatch(addAlert("Could not log in. keychain"));
@@ -59,7 +44,6 @@ exports.signupUser = (email, password, screenName) => {
       Keychain.setGenericPassword(user_id, token)
       .then(function() {
         dispatch(authUser(screenName));
-        // finishAndBeginTimer();
       })
       .catch((error) => {
         dispatch(addAlert("Could not log in."));
@@ -71,7 +55,7 @@ exports.signupUser = (email, password, screenName) => {
 };
 
 exports.comparePassword = function(password) {
-  return authRequest(
+  return reduxAuthRequest(
     "POST",
     AUTH_URL,
     { password },
@@ -82,8 +66,7 @@ exports.comparePassword = function(password) {
 }
 
 exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
-  // finishAndBeginTimer();
-  return authRequest(
+  return reduxAuthRequest(
     "POST",
     SEND_URL,
     {amount, fromAddress, toAddress, sourceTag, toDesTag},
@@ -127,8 +110,7 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
 };
 
 exports.sendInBank = (receiverScreenName, amount) => {
-  // finishAndBeginTimer();
-  return authRequest(
+  return reduxAuthRequest(
     "POST",
     BANK_SEND_URL,
     {receiverScreenName, amount},
@@ -138,59 +120,57 @@ exports.sendInBank = (receiverScreenName, amount) => {
 };
 
 exports.delWallet = (desTag, cashRegister) => {
-  // finishAndBeginTimer();
-  return authRequest("POST", DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
+  return reduxAuthRequest("POST", DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
     return deltheWallet(response.data);
   });
 };
 
 exports.removeCashRegister = () => {
-  return authRequest("POST", DEL_REGISTER_URL, {}, (response) => {
+  return reduxAuthRequest("POST", DEL_REGISTER_URL, {}, (response) => {
     return deltheRegister();
   });
 };
 exports.requestOnlyDesTag = (cashRegister) => {
-  // finishAndBeginTimer();
-  return authRequest("POST", DEST_URL, {cashRegister}, (response) => {
+  return reduxAuthRequest("POST", DEST_URL, {cashRegister}, (response) => {
     return receivedDesTag(response.data);
   });
 };
 
 exports.requestAddress = () => {
-  // finishAndBeginTimer();
-  return authRequest("POST", ADDR_URL, {}, (response) => {
+  return reduxAuthRequest("POST", ADDR_URL, {}, (response) => {
     return receivedAddress(response.data);
   });
 };
 
 exports.requestOldAddress = () => {
-  return authRequest("GET", OLDADDR_URL, {}, (response) => {
+  return reduxAuthRequest("GET", OLDADDR_URL, {}, (response) => {
     return receivedOldAddress(response.data);
   });
 };
 
 exports.requestTransactions = () => {
-  // finishAndBeginTimer();
-  return authRequest("GET", TRANSACTIONS_URL, {}, (response) => {
+  return reduxAuthRequest("GET", TRANSACTIONS_URL, {}, (response) => {
     return receivedTransactions(response.data);
   });
 };
 
 exports.requestUsers = (item) => {
-  return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
+  return reduxAuthRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
     return receivedUsers(response.data);
   });
 };
 
 exports.requestAllWallets = () => {
-  // finishAndBeginTimer();
-  return authRequest("GET", WALLETS_URL, {}, (response) => {
+  return reduxAuthRequest("GET", WALLETS_URL, {}, (response) => {
     return receivedWallets(response.data);
   });
 };
-//Set timedlogout of the sessin to 5 minutes.
 
-// Lets change these from 'AUTH_USER' to just AUTH_USER later like we're used to so we get better errors.
+exports.unauthUser = () => {
+  return function(dispatch) {
+    dispatch(logout());
+  }
+}
 
 const authUser = (screenName, wallets, cashRegister) => {
   return {
@@ -270,10 +250,8 @@ const updatePasswordAttempts = (data) => {
   };
 };
 
-exports.unauthUser = {
-  type: 'UNAUTH_USER'
-};
-
-const thisunauthUser = {
-  type: 'UNAUTH_USER'
+const logout = () => {
+  return {
+    type: 'UNAUTH_USER'
+  }
 };
