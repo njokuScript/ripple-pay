@@ -42,14 +42,15 @@ exports.requestMarketInfo = (coin1, coin2) => {
 
 exports.sendAmount = (amount, withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
-    return axios.post(SEND_AMOUNT_URL, {amount, withdrawal, pair, returnAddress, destTag}).then((response)=>{
+    return axios.post(SEND_AMOUNT_URL, {amount, withdrawal, pair, returnAddress, destTag}).then((response) => {
       dispatch(receivedSendAmount(response.data));
     });
   };
 };
+
 exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
-    return axios.post(SHAPER_URL, { withdrawal, pair, returnAddress, destTag}).then((response)=>{
+    return axios.post(SHAPER_URL, { withdrawal, pair, returnAddress, destTag}).then( (response) => {
       dispatch(receivedShapeshift(response.data));
     });
   };

@@ -1,11 +1,12 @@
 // import liraries
 import React, { Component } from 'react';
-import StartApp from '../../index.js';
+// import StartApp from '../../index.js';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
+import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import {
   StyleSheet,
@@ -23,34 +24,28 @@ class SendRipple extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
-    this.enterPassword = this.enterPassword.bind(this);
-    this.starter = new StartApp();
+    this.enableSending = this.enableSending.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
-      sendButtonDisabled: true,
-      password: "",
-      // wrongEntry: false
+      sendButtonDisabled: true
     }
   }
 
-  enterPassword() {
-    const { password } = this.state;
-    this.props.comparePassword(password);
-    this.setState({password: ""});
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.passwordAttempts.tries <= 0) {
-      this.props.unauthUser();
-      this.starter.startSingleApplication();
-    }
-    if (nextProps.passwordAttempts.tries === this.props.passwordAttempts.tries) {
+  onNavigatorEvent(event) {
+    if (event.id === "willDisappear") {
       this.setState({
-        sendButtonDisabled: false
+        sendButtonDisabled: true
       });
     }
+  }
+
+  enableSending() {
+    this.setState({
+      sendButtonDisabled: false
+    })
   }
 
   sendPayment(){
@@ -142,26 +137,7 @@ class SendRipple extends Component {
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}
           />
-        <CustomInput
-            placeholder="Password"
-            onChangeText={
-              (password) => {
-                this.setState({password: password});
-              }
-            }
-            autoCorrect={false}
-            placeholderTextColor="#6D768B"
-            autoCapitalize={'none'}
-            secureTextEntry={true}
-            keyboardAppearance={'dark'}
-            value={this.state.password}
-          />
-        <Text>{this.props.passwordAttempts.tries} password attempts remaining</Text>
-        <CustomButton
-          performAction="Enter Password"
-          buttonColor="white"
-          handlePress={this.enterPassword}
-        />
+        <PasswordLock enableSending={this.enableSending}/>
         <View style={styles.fee}>
           <Text style={styles.feetext}>
             transaction Fee: 0.02 XRP

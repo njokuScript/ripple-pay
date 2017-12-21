@@ -9,6 +9,7 @@ import BankSendContainer from './components/banksend/banksendContainer';
 import TransitionContainer from './components/exchange/transitionContainer';
 import SendRippleContainer from './components/exchange/sendRippleContainer';
 import SendAmountContainer from './components/exchange/sendAmountContainer';
+import PasswordLock from './components/presentationals/passwordLock';
 import AlertContainer from './components/alerts/AlertContainer';
 import Alert from './components/alerts/Alert';
 import App from './components/App';
@@ -58,6 +59,7 @@ export default class StartApp {
       Navigation.registerComponent('SendAmount', ()=> SendAmountContainer, store, Provider);
       Navigation.registerComponent('Alert', ()=> Alert, store, Provider);
       Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
+      Navigation.registerComponent('PasswordLock', ()=> PasswordLock, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
     }
 
