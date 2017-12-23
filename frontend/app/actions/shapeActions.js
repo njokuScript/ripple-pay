@@ -8,7 +8,9 @@ import {
   SHAPER_URL,
   MAKESHIFT_URL,
   GETSHIFTS_URL,
-  reduxAuthRequest
+  SHAPE_TXN_STAT_URL,
+  GETSHAPEID_URL,
+  authRequest
  } from '../api';
 
 // const axios = require('axios');
@@ -57,7 +59,7 @@ exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
 };
 
 exports.makeShapeshiftTransaction = (from, to, otherParty, shapeShiftAddress, refundAddress, orderId) => {
-  return reduxAuthRequest(
+  return authRequest(
     "POST",
     MAKESHIFT_URL,
     {from, to, otherParty, shapeShiftAddress, refundAddress, orderId}
@@ -65,10 +67,29 @@ exports.makeShapeshiftTransaction = (from, to, otherParty, shapeShiftAddress, re
 };
 
 exports.requestShifts = () => {
-  return reduxAuthRequest("GET", GETSHIFTS_URL, {}, (response) => {
+  return authRequest("GET", GETSHIFTS_URL, {}, (response) => {
     return receivedShifts(response.data);
   });
 };
+
+exports.getShapeshiftTransactionStatus = (shapeShiftAddress, setShapeshiftStatus) => {
+  axios.get(`${SHAPE_TXN_STAT_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
+    const statusObject = response.data;
+    setShapeshiftStatus(statusObject);
+  })
+}
+
+exports.getShapeshiftTransactionId = (shapeShiftAddress, date, refundAddress, setTransactionId) => {
+  return authRequest(
+    "GET",
+    GETSHAPEID_URL,
+    { params: [shapeShiftAddress, date, refundAddress] },
+    (response) => {
+      setTransactionId(response.data.txnId || 'Not Found');
+      return { type: "NON_REDUX" };
+    }
+  )
+}
 
 const receivedCoins = (data) => {
   return {

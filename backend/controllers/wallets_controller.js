@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const Auth = requre('./authentication_controller');
 const {UsedWallet} = require('../models/populateBank');
 const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
 const async = require('async');
@@ -12,8 +11,7 @@ const {addresses, bank} = require('./addresses');
 // DesTags are in 32 bits/
 exports.receiveOnlyDesTag = function(req, res, next){
   let {cashRegister} = req.body;
-  const user = req.user;
-  let userId = user._id
+  let userId = req.user._id
   let newTag;
   let findthis;
   let genTagRecursion = asynchronous (function(){
@@ -31,7 +29,7 @@ exports.receiveOnlyDesTag = function(req, res, next){
         await (theNewWallet.save());
         await (User.update({_id: userId}, {$push: {wallets: newTag}}));
         findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.push(newTag))
-        res.json({ destinationTag: newTag, token: Auth.tokenForUser(user) });
+        res.json({ destinationTag: newTag });
       }
     }
   )
@@ -40,14 +38,13 @@ exports.receiveOnlyDesTag = function(req, res, next){
 
 exports.deleteWallet = asynchronous(function(req, res, next){
   let { desTag, cashRegister} = req.body;
-  const user = req.user;
-  let userId = user._id
+  let userId = req.user._id
   let findthiswallet = `${cashRegister}${desTag}`;
   findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.shift())
   await (User.update({ _id: userId }, {$pull: {wallets: desTag}}));
   await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
   res.json({
-    token: Auth.tokenForUser(user)
+
   });
 })
 
@@ -56,15 +53,15 @@ exports.findOldAddress = asynchronous(function(req, res, next){
   let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: redis-cash-register`));
   if (cacheVal) {
-    res.json({ cashRegister: cacheVal, token: Auth.tokenForUser(existingUser)});
+    res.json({cashRegister: cacheVal});
     return;
   }
   else if (cacheVal === 'none') {
-    res.json({ cashRegister: undefined, token: Auth.tokenForUser(existingUser)});
+    res.json({cashRegister: undefined});
     return;
   }
   setInCache(`${userId}: redis-cash-register`, existingUser.cashRegister);
-  res.json({ cashRegister: existingUser.cashRegister, token: Auth.tokenForUser(existingUser)});
+  res.json({cashRegister: existingUser.cashRegister});
 })
 
 exports.generateRegister = asynchronous(function(req, res, next){
@@ -94,8 +91,7 @@ exports.generateRegister = asynchronous(function(req, res, next){
           if (err) { return next(err); }
           findFromAndUpdateCache(`${userId}: redis-cash-register`, null, newregister);
           res.json({
-            cashRegister: newregister,
-            token: Auth.tokenForUser(existingUser)
+            cashRegister: newregister
           });
         });
       })
@@ -107,23 +103,22 @@ exports.receiveAllWallets = asynchronous(function(req, res, next){
   let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: redis-wallets`));
   if (cacheVal) {
-    res.json({ wallets: cacheVal, token: Auth.tokenForUser(existingUser)});
+    res.json({wallets: cacheVal});
     return;
   }
   setInCache(`${userId}: redis-wallets`, existingUser.wallets)
-  res.json({ wallets: existingUser.wallets, token: Auth.tokenForUser(existingUser)});
+  res.json({wallets: existingUser.wallets});
 })
 
 exports.removeCashRegister = function(req, res, next){
-  const user = req.user;
-  let userId = user._id
+  let userId = req.user._id
   User.findOneAndUpdate({_id: userId }, {cashRegister: undefined}, function(err){
     if (err) {
       return next(err);
     }
     findFromAndUpdateCache(`${userId}: redis-cash-register`, null, 'none');
     res.json({
-      token: Auth.tokenForUser(user)
+
     })
   })
 }

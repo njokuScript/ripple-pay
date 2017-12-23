@@ -14,17 +14,23 @@ import {
   DEL_WALLET_URL,
   DEL_REGISTER_URL,
   AUTH_URL,
-  reduxAuthRequest
+  authRequest
 } from '../api';
 
 import { addAlert } from './alertsActions';
+import starter from '../index.js';
+
+// console.log(StartApp);
+
+// const starter = new StartApp();
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
     return axios.post(SIGNIN_URL, {email, password}).then((response) => {
-      let { user_id, token, screenName, wallets, cashRegister } = response.data;
-      console.log(token);
-      Keychain.setGenericPassword(user_id, token)
+      let { token, screenName, wallets, cashRegister } = response.data;
+      const usernameCred = null;
+      const passwordCred = token;
+      Keychain.setGenericPassword(null, passwordCred)
         .then(function() {
           dispatch(authUser(screenName, wallets, cashRegister));
         })
@@ -40,8 +46,10 @@ exports.loginUser = (email, password) => {
 exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
     return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
-      let {user_id, token} = response.data;
-      Keychain.setGenericPassword(user_id, token)
+      let { token } = response.data;
+      const usernameCred = null;
+      const passwordCred = token;
+      Keychain.setGenericPassword(usernameCred, passwordCred)
       .then(function() {
         dispatch(authUser(screenName));
       })
@@ -55,7 +63,7 @@ exports.signupUser = (email, password, screenName) => {
 };
 
 exports.comparePassword = function(password) {
-  return reduxAuthRequest(
+  return authRequest(
     "POST",
     AUTH_URL,
     { password },
@@ -66,7 +74,7 @@ exports.comparePassword = function(password) {
 }
 
 exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
-  return reduxAuthRequest(
+  return authRequest(
     "POST",
     SEND_URL,
     {amount, fromAddress, toAddress, sourceTag, toDesTag},
@@ -110,7 +118,7 @@ exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
 };
 
 exports.sendInBank = (receiverScreenName, amount) => {
-  return reduxAuthRequest(
+  return authRequest(
     "POST",
     BANK_SEND_URL,
     {receiverScreenName, amount},
@@ -120,55 +128,62 @@ exports.sendInBank = (receiverScreenName, amount) => {
 };
 
 exports.delWallet = (desTag, cashRegister) => {
-  return reduxAuthRequest("POST", DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
+  return authRequest("POST", DEL_WALLET_URL, {desTag, cashRegister}, (response) => {
     return deltheWallet(response.data);
   });
 };
 
 exports.removeCashRegister = () => {
-  return reduxAuthRequest("POST", DEL_REGISTER_URL, {}, (response) => {
+  return authRequest("POST", DEL_REGISTER_URL, {}, (response) => {
     return deltheRegister();
   });
 };
 exports.requestOnlyDesTag = (cashRegister) => {
-  return reduxAuthRequest("POST", DEST_URL, {cashRegister}, (response) => {
+  return authRequest("POST", DEST_URL, {cashRegister}, (response) => {
     return receivedDesTag(response.data);
   });
 };
 
 exports.requestAddress = () => {
-  return reduxAuthRequest("POST", ADDR_URL, {}, (response) => {
+  return authRequest("POST", ADDR_URL, {}, (response) => {
     return receivedAddress(response.data);
   });
 };
 
 exports.requestOldAddress = () => {
-  return reduxAuthRequest("GET", OLDADDR_URL, {}, (response) => {
+  return authRequest("GET", OLDADDR_URL, {}, (response) => {
     return receivedOldAddress(response.data);
   });
 };
 
 exports.requestTransactions = () => {
-  return reduxAuthRequest("GET", TRANSACTIONS_URL, {}, (response) => {
+  return authRequest("GET", TRANSACTIONS_URL, {}, (response) => {
     return receivedTransactions(response.data);
   });
 };
 
 exports.requestUsers = (item) => {
-  return reduxAuthRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
+  return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
     return receivedUsers(response.data);
   });
 };
 
 exports.requestAllWallets = () => {
-  return reduxAuthRequest("GET", WALLETS_URL, {}, (response) => {
+  return authRequest("GET", WALLETS_URL, {}, (response) => {
     return receivedWallets(response.data);
   });
 };
 
 exports.unauthUser = () => {
   return function(dispatch) {
+    starter.startSingleApplication();
     dispatch(logout());
+  }
+};
+
+const logout = () => {
+  return {
+    type: 'UNAUTH_USER'
   }
 }
 
@@ -248,10 +263,4 @@ const updatePasswordAttempts = (data) => {
     type: 'UPDATE_PASSWORD_ATTEMPTS',
     data
   };
-};
-
-const logout = () => {
-  return {
-    type: 'UNAUTH_USER'
-  }
 };
