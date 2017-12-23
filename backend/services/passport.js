@@ -31,6 +31,10 @@ let jwtOptions = {
 };
 
 let jwtStrategy = new JwtStrategy(jwtOptions, function(payload, done) {
+  if (new Date().getTime() > payload.exp) {
+    const problem = "token has expired!!";
+    return done(problem);
+  }
   User.findById(payload.sub, function(err, user) {
     if (err) { return done(err, false); }
     if (user) {

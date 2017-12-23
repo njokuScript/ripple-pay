@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { unauthUser, comparePassword } from '../../actions/authActions';
 import CustomInput from './customInput';
 import CustomButton from './customButton';
-import StartApp from '../../index.js';
 import {
     StyleSheet,
     View,
@@ -14,7 +13,6 @@ class PasswordLock extends Component {
     constructor(props) {
         super(props);
         this.enterPassword = this.enterPassword.bind(this);
-        this.starter = new StartApp();
         this.state = {
             password: ""
         }
@@ -23,7 +21,6 @@ class PasswordLock extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.passwordAttempts.tries <= 0) {
             this.props.unauthUser();
-            this.starter.startSingleApplication();
         }
         if (nextProps.passwordAttempts.tries === this.props.passwordAttempts.tries) {
             this.props.enableSending();
@@ -42,9 +39,9 @@ class PasswordLock extends Component {
                 <CustomInput
                     placeholder="Password"
                     onChangeText={
-                    (password) => {
-                        this.setState({password: password});
-                    }
+                        (password) => {
+                            this.setState({password: password});
+                        }
                     }
                     autoCorrect={false}
                     placeholderTextColor="#6D768B"
@@ -70,7 +67,7 @@ const mapStateToProps = ({ user }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    unauthUser: () => dispatch(unauthUser),
+    unauthUser: () => dispatch(unauthUser()),
     comparePassword: (password) => dispatch(comparePassword(password))
 });
 

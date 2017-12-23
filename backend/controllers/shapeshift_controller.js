@@ -42,13 +42,13 @@ exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
 
 exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
   let query = req.query;
-  let shapeShift = query['0'];
+  let shapeShiftAddress = query['0'];
   let date = query['1'];
   let fromAddress = query['2']
-  console.log(shapeShift, date);
+  console.log(shapeShiftAddress, date);
   // undefined could cause errors here
-  let toAddress = shapeShift.match(/\w+/)[0];
-  let desTag = parseInt(shapeShift.match(/\?dt=(\d+)/)[1]);
+  let toAddress = shapeShiftAddress.match(/\w+/)[0];
+  let desTag = parseInt(shapeShiftAddress.match(/\?dt=(\d+)/)[1]);
   let Rippled = require('./rippleAPI');
   let server = new Rippled();
   await (server.connect())

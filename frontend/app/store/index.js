@@ -6,9 +6,10 @@ import reducer from '../reducers';
 import logger from 'redux-logger';
 
 var defaultState = {};
-// 
+// Must remove autoRehydrate and persistStore in production. Unsafe.
 exports.configureStore = (initialState=defaultState) => {
   // AsyncStorage.clear().then(() => {})
+  // do clear when the first screen appears
   var store = createStore(reducer, initialState, compose(
     applyMiddleware(thunk, logger),
     autoRehydrate()

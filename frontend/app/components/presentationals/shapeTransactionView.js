@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import axios from 'axios';
-import {
-  GETSHAPEID_URL,
-  SHAPE_TXTSTAT_URL
-} from '../../api';
+import { getShapeshiftTransactionStatus, getShapeshiftTransactionId } from '../../actions/shapeActions';
 import {
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 
-export default class ShapeTransactionView extends React.Component {
+class ShapeTransactionView extends React.Component {
   constructor(props){
     super(props);
+    this.setShapeshiftStatus = this.setShapeshiftStatus.bind(this);
+    this.setTransactionId = this.setTransactionId.bind(this);
     this.state = {
       txStat: '',
       txnId: 'Please Wait...'
@@ -21,17 +21,22 @@ export default class ShapeTransactionView extends React.Component {
 
   // Maybe store the transaction id in a shapeshift transaction model to prevent this action.
   componentDidMount(){
+    const { shapeShiftAddress, date, refundAddress } = this.props;
     if (this.props.from.match(/XRP/)) {
-      axios.get(GETSHAPEID_URL, {params: [this.props.shapeShiftAddress, this.props.date, this.props.refundAddress]}).then((response) => {
-        this.setState({txnId: response.data.txnId || 'Not Found'})
-      })
+      this.props.getShapeshiftTransactionId(shapeShiftAddress, date, refundAddress, this.setTransactionId);
     }
     else {
-      this.setState({txnId: 'Check other wallet'})
+      this.setTransactionId('Check other wallet');
     }
-    axios.get(`${SHAPE_TXTSTAT_URL}/${encodeURIComponent(this.props.shapeShiftAddress)}`).then((response) => {
-      this.setState({txStat: response.data})
-    })
+    getShapeshiftTransactionStatus(shapeShiftAddress, this.setShapeshiftStatus);
+  }
+
+  setShapeshiftStatus(statusObject) {
+    this.setState({ txStat: statusObject })
+  }
+
+  setTransactionId(txnId) {
+    this.setState({ txnId })
   }
 
   render(){
@@ -68,3 +73,12 @@ const styles = StyleSheet.create({
     // textAlign: 'center'
   }
 })
+
+const mapDispatchToProps = dispatch => ({
+  getShapeshiftTransactionId: (shapeShiftAddress, date, refundAddress, setTransactionId) =>  dispatch(getShapeshiftTransactionId(shapeShiftAddress, date, refundAddress, setTransactionId))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ShapeTransactionView);
