@@ -6,8 +6,7 @@ import { requestShifts } from '../../actions/shapeActions';
 const mapStateToProps = ({ user }) => ({
   balance: user.balance,
   transactions: user.transactions,
-  shapeshiftTransactions: user.shapeshiftTransactions,
-  user: user
+  shapeshiftTransactions: user.shapeshiftTransactions
 });
 
 const mapDispatchToProps = dispatch => ({

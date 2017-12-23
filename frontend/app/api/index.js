@@ -2,7 +2,8 @@
 //The next file to look at is router.js
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
-
+import { addAlert } from '../actions/alertsActions';
+// import { unauthUser } from '../actions/authActions';
 var API_URL = 'http://localhost:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
@@ -31,38 +32,46 @@ exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
 exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
 exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
-exports.reduxAuthRequest = (requestType, url, data, ...cbs) => {
+function resolveError(errorStatus, dispatch) {
+    return function(dispatch) {
+        const AuthActions = require('../actions/authActions');
+        const errorMap = {
+            401: {"desc": "Unauthorized", "fns": [AuthActions.unauthUser, () => addAlert("Unauthorized attempt!") ] },
+            500: {"desc": "Jwt token expired", "fns": [AuthActions.unauthUser, () => addAlert("Session Expired!") ] }
+        }
+        const errorResponse = errorMap[errorStatus];
+        if (errorResponse) {
+            errorResponse.fns.forEach((errorTask) => {
+                dispatch(errorTask());
+            });    
+        }
+    }
+}
+
+exports.authRequest = (requestType, url, data, ...cbs) => {
     return function (dispatch) {
         return Keychain.getGenericPassword().then((creds) => {
+
             const authedAxios = axios.create({
                 headers: { authorization: creds.password },
             });
-            return authedAxios[requestType.toLowerCase()](url, data).then((response) => {
-                for (let i = 0; i < cbs.length; i++) {
-                    let cb = cbs[i];
-                    dispatch(cb(response));
-                }
+
+            return authedAxios[requestType.toLowerCase()](url, data)
+            .then((response) => {
+                const token = response.data.token;
+
+                Keychain.setGenericPassword(null, token).then(() => {
+                    for (let i = 0; i < cbs.length; i++) {
+                        let cb = cbs[i];
+                        dispatch(cb(response));
+                    }
+                })
+
             })
             .catch((err) => {
-                // logout logic
+                const errorStatus = err.response.status;
+                dispatch(resolveError(errorStatus));
             })
         });
     };
-};
-
-exports.authRequest = (requestType, url, data, ...cbs) => {
-    return Keychain.getGenericPassword().then((creds) => {
-        const authedAxios = axios.create({
-            headers: { authorization: creds.password },
-        });
-        return authedAxios[requestType.toLowerCase()](url, data).then((response) => {
-            for (let i = 0; i < cbs.length; i++) {
-                let cb = cbs[i];
-                cb(response);
-            }
-        })
-        .catch((err) => {
-            // logout logic
-        })
-    });
 };

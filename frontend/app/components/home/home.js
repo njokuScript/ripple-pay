@@ -4,7 +4,6 @@ import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import { unauthUser } from '../../actions/authActions';
 import Icon from 'react-native-vector-icons/Entypo.js';
-import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
@@ -27,7 +26,6 @@ class Home extends React.Component {
     this.displayTransactions = this.displayTransactions.bind(this);
     this.handleLeftPress = this.handleLeftPress.bind(this);
     this.handleRightPress = this.handleRightPress.bind(this);
-    this.starter = new StartApp();
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       refreshing: false,
@@ -62,7 +60,6 @@ class Home extends React.Component {
 
   onLogout() {
     this.props.unauthUser();
-    this.starter.startSingleApplication();
   }
 
   handleLeftPress() {
@@ -79,7 +76,7 @@ class Home extends React.Component {
     });
   }
 
-  show(transaction, time) {
+  showShapeshiftTransaction(transaction, time) {
     this.setState({
       showshift: <ShapeTransactionView time={time} {...transaction}/>
     });
@@ -132,7 +129,7 @@ class Home extends React.Component {
               amount={transaction.from}
               toAmount={`to ${transaction.to}`}
               transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
-              handlePress={() => this.show(transaction, time)}
+              handlePress={() => this.showShapeshiftTransaction(transaction, time)}
               time={time}
             />
           );

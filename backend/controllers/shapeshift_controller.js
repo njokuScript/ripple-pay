@@ -2,7 +2,6 @@ const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
 const User = require('../models/user');
-const Auth = require('./authentication_controller');
 const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
 // from e.g. would be 'from 50 XRP'
 // to e.g. would be 'to 1 BTC'
@@ -10,8 +9,7 @@ const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../mode
 // tell user to get the TXN id in their other wallet if its a deposit transaction
 exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
   let { otherParty, from, to, shapeShiftAddress, refundAddress, orderId } = req.body;
-  const user = req.user;
-  let userId = user._id;
+  let userId = req.user._id;
   let shapeshift = {
     from,
     to,
@@ -24,7 +22,7 @@ exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
   await (User.update({ _id: userId }, {$push: {shapeshiftTransactions: shapeshift}}));
   findFromAndUpdateCache(`${userId}: shapeshift-transactions`, (val) => val.push(shapeshift));
   res.json({
-    token: Auth.tokenForUser(user)
+
   })
 })
 
@@ -33,28 +31,24 @@ exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
   let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: shapeshift-transactions`));
   if (cacheVal) {
-    res.json({
-      shapeshiftTransactions: cacheVal,
-      token: Auth.tokenForUser(existingUser);
-    });
+    res.json({shapeshiftTransactions: cacheVal});
     return;
   }
   setInCache(`${userId}: shapeshift-transactions`, existingUser.shapeshiftTransactions);
   res.json({
-    shapeshiftTransactions: existingUser.shapeshiftTransactions,
-    token: Auth.tokenForUser(existingUser);
+    shapeshiftTransactions: existingUser.shapeshiftTransactions
   })
 })
 
 exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
-  const user = req.user;
   let query = req.query;
-  let shapeShift = query['0'];
+  let shapeShiftAddress = query['0'];
   let date = query['1'];
   let fromAddress = query['2']
+  console.log(shapeShiftAddress, date);
   // undefined could cause errors here
-  let toAddress = shapeShift.match(/\w+/)[0];
-  let desTag = parseInt(shapeShift.match(/\?dt=(\d+)/)[1]);
+  let toAddress = shapeShiftAddress.match(/\w+/)[0];
+  let desTag = parseInt(shapeShiftAddress.match(/\?dt=(\d+)/)[1]);
   let Rippled = require('./rippleAPI');
   let server = new Rippled();
   await (server.connect())
@@ -79,8 +73,7 @@ exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
     }
   }, function(error, resp) {
     res.json({
-      txnId: txnId,
-      token: Auth.tokenForUser(user)
+      txnId: txnId
     })
   });
 })
