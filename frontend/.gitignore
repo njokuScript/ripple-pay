@@ -29,9 +29,9 @@ Android/IJ
 .idea/
 .gradle
 local.properties
-
 node.js# 
 
+dump.rdb
 
 npm-debug.log
 

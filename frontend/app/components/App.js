@@ -1,7 +1,7 @@
 import React from 'react';
+import * as Keychain from 'react-native-keychain';
 import {connect} from 'react-redux';
-import { unauthUser } from '../actions/authActions';
-import StartApp from '../index';
+import starter from '../index.js';
 import {
   StyleSheet,
   Text,
@@ -10,18 +10,22 @@ import {
 } from 'react-native';
 
 import Login from './Login';
-import Main from './Main';
 
 export default class App extends React.Component {
   constructor(props){
     super(props);
-    this.starter = new StartApp();
+  }
+
+  clearCredentials() {
+    Keychain.resetGenericPassword().then(() => {
+      console.log("jwt token deleted");
+    })
   }
 
   render() {
     let renderMainView = () => {
       if (this.props.screenName) {
-        this.starter.startTabs();
+        starter.startTabs();
         //Since it starts at tab-based application, it automatically knows to
         //start with the home page
         return (
@@ -29,6 +33,7 @@ export default class App extends React.Component {
           </View>
         )
       } else {
+        this.clearCredentials();
         return (
           <Login />
         );
@@ -58,10 +63,5 @@ let mapStateToProps = (state) => {
     screenName: state.user.screenName
   };
 };
-let mapDispatchToProps = (dispatch) => {
-  return {
-    unauthUser: () => dispatch(unauthUser)
-  };
-};
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(App);
+module.exports = connect(mapStateToProps, null)(App);

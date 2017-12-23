@@ -8,6 +8,8 @@ import {
   SHAPER_URL,
   MAKESHIFT_URL,
   GETSHIFTS_URL,
+  SHAPE_TXN_STAT_URL,
+  GETSHAPEID_URL,
   authRequest
  } from '../api';
 
@@ -69,6 +71,25 @@ exports.requestShifts = () => {
     return receivedShifts(response.data);
   });
 };
+
+exports.getShapeshiftTransactionStatus = (shapeShiftAddress, setShapeshiftStatus) => {
+  axios.get(`${SHAPE_TXN_STAT_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
+    const statusObject = response.data;
+    setShapeshiftStatus(statusObject);
+  })
+}
+
+exports.getShapeshiftTransactionId = (shapeShiftAddress, date, refundAddress, setTransactionId) => {
+  return authRequest(
+    "GET",
+    GETSHAPEID_URL,
+    { params: [shapeShiftAddress, date, refundAddress] },
+    (response) => {
+      setTransactionId(response.data.txnId || 'Not Found');
+      return { type: "NON_REDUX" };
+    }
+  )
+}
 
 const receivedCoins = (data) => {
   return {
