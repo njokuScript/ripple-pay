@@ -6,3 +6,5 @@ ripplePay.pem
 .DS_Store
 package-lock.json
 config.js
+
+dump.rdb
