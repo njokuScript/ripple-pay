@@ -10,6 +10,7 @@ import TransitionContainer from './components/exchange/transitionContainer';
 import SendRippleContainer from './components/exchange/sendRippleContainer';
 import SendAmountContainer from './components/exchange/sendAmountContainer';
 import PasswordLock from './components/presentationals/passwordLock';
+import ShapeTransactionView from './components/presentationals/shapeTransactionView';
 import AlertContainer from './components/alerts/AlertContainer';
 import Alert from './components/alerts/Alert';
 import App from './components/App';
@@ -17,7 +18,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 
 let store = configureStore();
 
-export default class StartApp {
+class StartApp {
     constructor() {
       this._populateIcons = this._populateIcons.bind(this);
       this.startTabs = this.startTabs.bind(this);
@@ -60,6 +61,7 @@ export default class StartApp {
       Navigation.registerComponent('Alert', ()=> Alert, store, Provider);
       Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
       Navigation.registerComponent('PasswordLock', ()=> PasswordLock, store, Provider);
+      Navigation.registerComponent('ShapeTransactionView', ()=> ShapeTransactionView, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
     }
 
@@ -122,3 +124,5 @@ export default class StartApp {
       });
     }
   }
+
+export default new StartApp();
