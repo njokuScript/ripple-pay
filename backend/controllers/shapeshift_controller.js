@@ -2,6 +2,7 @@ const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
 const User = require('../models/user');
+const { ShapeShiftTransaction } = require('../models/shapeShiftTransaction');
 const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../models/redis');
 // from e.g. would be 'from 50 XRP'
 // to e.g. would be 'to 1 BTC'
@@ -10,20 +11,22 @@ const { findFromAndUpdateCache, getFromTheCache, setInCache } = require('../mode
 exports.createShapeshiftTransaction = asynchronous (function(req, res, next) {
   let { otherParty, from, to, shapeShiftAddress, refundAddress, orderId } = req.body;
   let userId = req.user._id;
-  let shapeshift = {
+  const shapeshift = {
+    shapeShiftAddress,
+    userId,
     from,
     to,
     otherParty,
-    shapeShiftAddress,
     refundAddress,
     orderId,
     date: new Date()
-  }
-  await (User.update({ _id: userId }, {$push: {shapeshiftTransactions: shapeshift}}));
-  findFromAndUpdateCache(`${userId}: shapeshift-transactions`, (val) => val.push(shapeshift));
-  res.json({
-
+  };
+  let shapeShiftTransaction = new ShapeShiftTransaction(shapeshift);
+  shapeShiftTransaction.save(function(err) {
+    if (err) { return next(err); }
   })
+  findFromAndUpdateCache(`${userId}: shapeshift-transactions`, (val) => val.push(shapeshift));
+  return res.json({});
 })
 
 exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
@@ -31,30 +34,34 @@ exports.getShapeshiftTransactions = asynchronous (function(req, res, next) {
   let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: shapeshift-transactions`));
   if (cacheVal) {
-    res.json({shapeshiftTransactions: cacheVal});
-    return;
+    return res.json({shapeshiftTransactions: cacheVal});
   }
-  setInCache(`${userId}: shapeshift-transactions`, existingUser.shapeshiftTransactions);
-  res.json({
-    shapeshiftTransactions: existingUser.shapeshiftTransactions
-  })
+  const shapeshiftTransactions = await (ShapeShiftTransaction.find({ userId }));
+  setInCache(`${userId}: shapeshift-transactions`, shapeshiftTransactions);
+  res.json({ shapeshiftTransactions });
 })
 
 exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
+  const existingUser = req.user;
+  const userId = existingUser._id;
   let query = req.query;
   let shapeShiftAddress = query['0'];
   let date = query['1'];
-  let fromAddress = query['2']
-  console.log(shapeShiftAddress, date);
-  // undefined could cause errors here
+  let fromAddress = query['2'];
+  const shapeShiftTransaction = await (ShapeShiftTransaction.findOne({ userId, shapeShiftAddress, date }));
+
+  if (shapeShiftTransaction.txnId) {
+    return res.json({ txnId: shapeShiftTransaction.txnId });
+  }
+  // if i don't have txnId for this shapeshift transaction, I will go to ripple ledger to find it.
   let toAddress = shapeShiftAddress.match(/\w+/)[0];
-  let desTag = parseInt(shapeShiftAddress.match(/\?dt=(\d+)/)[1]);
+  let destTag = parseInt(shapeShiftAddress.match(/\?dt=(\d+)/)[1]);
   let Rippled = require('./rippleAPI');
   let server = new Rippled();
-  await (server.connect())
+  await (server.connect());
   let txnInfo = await (server.api.getTransactions(fromAddress, { excludeFailures: true, types: ["payment"] }));
   const manipulateTransactions = function(currTxn) {
-    if(toAddress === currTxn.specification.destination.address && desTag === currTxn.specification.destination.tag) {
+    if(toAddress === currTxn.specification.destination.address && destTag === currTxn.specification.destination.tag) {
       return currTxn.id;
     }
     else if (new Date(currTxn.outcome.timestamp).getTime() < new Date(date).getTime()) {
@@ -66,14 +73,21 @@ exports.getShapeshiftTransactionId = asynchronous (function(req, res, next) {
   async.mapSeries(txnInfo, function (currTxn, cb) {
     txnId = manipulateTransactions(currTxn);
     if (txnId === null){
-      cb(true)
+      cb(true);
     }
     else {
-      cb(null, currTxn)
+      cb(null, currTxn);
     }
   }, function(error, resp) {
-    res.json({
-      txnId: txnId
-    })
+    if (txnId) {
+        shapeShiftTransaction.txnId = txnId;
+        return shapeShiftTransaction.save(function(err){
+          if (err) { return next(err) }
+          res.json({ txnId })
+        }); 
+    }
+    if (!txnId) {
+      return res.json({ txnId });
+    }
   });
-})
+});

@@ -40,16 +40,6 @@ var userSchema = new Schema({
     amount: Number,
     otherParty: String
   }],
-  shapeshiftTransactions: [{
-    txnId: String,
-    date: Date,
-    otherParty: String,
-    from: String,
-    to: String,
-    shapeShiftAddress: String,
-    refundAddress: String,
-    orderId: String
-  }],
   lastTransactionId: {
     type: String,
     default: ''

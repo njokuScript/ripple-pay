@@ -20,9 +20,27 @@ import {
 import { addAlert } from './alertsActions';
 import starter from '../index.js';
 
-// console.log(StartApp);
+const ERRORS = {
+  "LOGIN": [
+    { regex: /Wrong\ email\/password\ combination/, msg: "Wrong email/password combination!" }
+  ],
+  "SIGNUP": [
+    { regex: /MongoError.+duplicate\ key\ error.+screenName/, msg: "Screen name already exists. Please try again" },
+    { regex: /MongoError.+duplicate\ key\ error.+email/, msg: "Email already exists. Please try again" },
+    { regex: /ValidationError.+screenName/, msg: "Please enter a valid screen name (no symbols)" },
+    { regex: /ValidationError.+email/, msg: "Please enter a valid email" }
+  ]
+} 
 
-// const starter = new StartApp();
+function resolveError(action, errorData) {
+  for (let index = 0; index < ERRORS[action].length; index++) {
+    const type = ERRORS[action][index];
+    if (errorData.match(type.regex)) {
+      return type.msg;
+    } 
+  }
+  return null;
+}
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
@@ -35,10 +53,13 @@ exports.loginUser = (email, password) => {
           dispatch(authUser(screenName, wallets, cashRegister));
         })
       .catch((error) => {
-          dispatch(addAlert("Could not log in. keychain"));
+          dispatch(addAlert("Could not log in. keychain issue."));
         });
     }).catch((error) => {
-      dispatch(addAlert("Could not log in. axios"));
+      console.log(error.response);
+      
+      const errorMessage = resolveError("LOGIN", error.response.data);
+      errorMessage ? dispatch(addAlert(errorMessage)) : dispatch(addAlert("Could not log in"));
     });
   };
 };
@@ -54,10 +75,11 @@ exports.signupUser = (email, password, screenName) => {
         dispatch(authUser(screenName));
       })
       .catch((error) => {
-        dispatch(addAlert("Could not log in."));
+        dispatch(addAlert("Could not sign up. keychain issue."));
       });
     }).catch((error) => {
-      dispatch(addAlert("Could not sign up."));
+      const errorMessage = resolveError("SIGNUP", error.response.data);
+      errorMessage ? dispatch(addAlert(errorMessage)) : dispatch(addAlert("Could not sign up"));
     });
   };
 };

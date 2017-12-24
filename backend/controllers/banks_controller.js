@@ -16,36 +16,35 @@ exports.inBankSend = asynchronous(function(req, res, next){
   let sender_id = sender._id;
   if ( amount > sender.balance )
   {
-    res.json({message: "Balance Insufficient", balance: sender.balance});
-    return;
+    return res.json({message: "Balance Insufficient", balance: sender.balance});
   }
-  let receiver = await (User.findOne({ screenName: receiverScreenName}))
+  let receiver = await (User.findOne({ screenName: receiverScreenName}));
   if ( sender && receiver )
   {
     let trTime = new Date;
     let senderBal = {
       balance: sender.balance - amount
-    }
+    };
     let senderTransaction = {
       date: trTime,
       amount: -amount,
       otherParty: receiver.screenName
-    }
+    };
     let receiverBal = {
       balance: receiver.balance + amount
-    }
+    };
     let receiverTransaction = {
       date: trTime,
       amount: amount,
       otherParty: sender.screenName
-    }
-    await (User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}))
-    await (User.findOneAndUpdate({ screenName: receiverScreenName }, {$set: receiverBal, $push: {transactions: receiverTransaction}}))
+    };
+    await (User.update({_id: sender_id}, {$set: senderBal, $push: {transactions: senderTransaction}}));
+    await (User.findOneAndUpdate({ screenName: receiverScreenName }, {$set: receiverBal, $push: {transactions: receiverTransaction}}));
     res.json({message: "Payment was Successful", balance: senderBal.balance});
   }
   else
   {
-    res.json({message: "Payment Unsuccessful"})
+    res.json({message: "Payment Unsuccessful"});
   }
 })
 
