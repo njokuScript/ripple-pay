@@ -36,6 +36,7 @@
     "react-native-keychain": "^2.0.0-rc",
     "redis": "^2.8.0",
     "ripple-lib": "^0.17.7",
+    "twilio": "^3.11.0",
     "uuid": "^2.0.2"
   },
   "repository": {

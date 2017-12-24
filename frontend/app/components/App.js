@@ -2,6 +2,7 @@ import React from 'react';
 import * as Keychain from 'react-native-keychain';
 import {connect} from 'react-redux';
 import starter from '../index.js';
+import Example from './twoFactorAuth/smsVerification';
 import {
   StyleSheet,
   Text,
@@ -36,7 +37,8 @@ export default class App extends React.Component {
         // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
         // this.clearCredentials();
         return (
-          <Login />
+          <Example />
+          // <Login />
         );
       }
     };

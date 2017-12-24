@@ -2,10 +2,10 @@ const jwt = require('jwt-simple');
 const config = require('../config');
 
 // Use the following expire time in production
-EXPIRE_TIME = 5 * 60 * 1000 // 5 minutes
+// EXPIRE_TIME = 5 * 60 * 1000 // 5 minutes
 
 // use the following expire time while debugging / on local machine
-// EXPIRE_TIME = 100000000
+EXPIRE_TIME = 10000000
 
 exports.tokenForUser = function (user) {
     let timeStamp = new Date().getTime();

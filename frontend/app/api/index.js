@@ -6,6 +6,7 @@ import { addAlert } from '../actions/alertsActions';
 // import { unauthUser } from '../actions/authActions';
 var API_URL = 'http://localhost:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
+// change the API_URL to the production one later.
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
