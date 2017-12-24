@@ -30,6 +30,7 @@ exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
 exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
 exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
 exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
+exports.TIME_URL = `${SHAPESHIFT_URL}/timeremaining`;
 exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
 function resolveError(errorStatus, dispatch) {

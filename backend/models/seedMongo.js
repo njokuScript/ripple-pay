@@ -8,6 +8,7 @@ const async = require('async');
 const {CashRegister} = require('./populateBank');
 const {Bank} = require('./populateBank');
 const {Money} = require('./populateBank');
+const {ShapeShiftTransaction} = require('./shapeShiftTransaction');
 
 mongoose.Promise = global.Promise;
 const bodyParser = require('body-parser');
@@ -34,6 +35,7 @@ mongoose.connection.once('connected', () => {
     mongoose.connection.db.dropCollection('money');
     //The following will create several B-trees with MongoDB and will help our database scale and helps make search in logn time
     mongoose.connection.db.collection("cashregisters").createIndex({address: 1}, {background: true});
+  mongoose.connection.db.collection("shapeshifttransactions").createIndex({ userId: 1, shapeShiftAddress: 1, date: 1}, {background: true});
     mongoose.connection.db.collection("users").createIndex({screenName: 1}, {background: true});
     mongoose.connection.db.collection("users").createIndex({email: 1}, {background: true});
     mongoose.connection.db.collection("usedwallets").createIndex({wallet: 1}, {background: true});
@@ -85,4 +87,8 @@ server.connect().then(()=>{
 let cash = new Money;
 cash.save(function(err){
 
-})
+});
+let shapeShiftTransaction = new ShapeShiftTransaction;
+shapeShiftTransaction.save(function(err){
+
+});

@@ -17,7 +17,7 @@ exports.receiveOnlyDesTag = function(req, res, next){
   let genTagRecursion = asynchronous (function(){
       newTag = parseInt(Math.floor(Math.random()*4294967294));
       findthis = `${cashRegister}${newTag}`;
-      let existingWallet = await (UsedWallet.findOne({wallet: findthis}))
+      let existingWallet = await (UsedWallet.findOne({wallet: findthis}));
       if ( existingWallet )
       {
         // console.log("same address and dest tag not allowed");
@@ -28,7 +28,7 @@ exports.receiveOnlyDesTag = function(req, res, next){
         let theNewWallet = new UsedWallet({wallet: findthis});
         await (theNewWallet.save());
         await (User.update({_id: userId}, {$push: {wallets: newTag}}));
-        findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.push(newTag))
+        findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.push(newTag));
         res.json({ destinationTag: newTag });
       }
     }
@@ -38,14 +38,12 @@ exports.receiveOnlyDesTag = function(req, res, next){
 
 exports.deleteWallet = asynchronous(function(req, res, next){
   let { desTag, cashRegister} = req.body;
-  let userId = req.user._id
+  let userId = req.user._id;
   let findthiswallet = `${cashRegister}${desTag}`;
-  findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.shift())
+  findFromAndUpdateCache(`${userId}: redis-wallets`, (val) => val.shift());
   await (User.update({ _id: userId }, {$pull: {wallets: desTag}}));
   await (UsedWallet.findOneAndRemove({wallet: findthiswallet}));
-  res.json({
-
-  });
+  res.json({});
 })
 
 exports.findOldAddress = asynchronous(function(req, res, next){
@@ -53,12 +51,10 @@ exports.findOldAddress = asynchronous(function(req, res, next){
   let userId = existingUser._id;
   let cacheVal = await (getFromTheCache(`${userId}: redis-cash-register`));
   if (cacheVal) {
-    res.json({cashRegister: cacheVal});
-    return;
+    return res.json({cashRegister: cacheVal});
   }
   else if (cacheVal === 'none') {
-    res.json({cashRegister: undefined});
-    return;
+    return res.json({cashRegister: undefined});
   }
   setInCache(`${userId}: redis-cash-register`, existingUser.cashRegister);
   res.json({cashRegister: existingUser.cashRegister});
@@ -83,7 +79,7 @@ exports.generateRegister = asynchronous(function(req, res, next){
   function(error, resp){
     //THIS SORT IS THREADSAFE and NON-BLOCKING
     async.sortBy(allbals, function(single, cb){
-      cb(null, single[0])
+      cb(null, single[0]);
     },function(err, respo){
       let newregister = respo[Math.floor(allbals.length/2)][1];
       User.update({_id: existingUser._id}, {cashRegister: newregister},
@@ -111,14 +107,12 @@ exports.receiveAllWallets = asynchronous(function(req, res, next){
 })
 
 exports.removeCashRegister = function(req, res, next){
-  let userId = req.user._id
+  let userId = req.user._id;
   User.findOneAndUpdate({_id: userId }, {cashRegister: undefined}, function(err){
     if (err) {
       return next(err);
     }
     findFromAndUpdateCache(`${userId}: redis-cash-register`, null, 'none');
-    res.json({
-
-    })
+    res.json({});
   })
 }

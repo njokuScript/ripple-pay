@@ -26,7 +26,7 @@ class ShapeTransactionView extends React.Component {
       this.props.getShapeshiftTransactionId(shapeShiftAddress, date, refundAddress, this.setTransactionId);
     }
     else {
-      this.setTransactionId('Check other wallet');
+      this.setTransactionId('Non-XRP deposit. Check other wallet.');
     }
     getShapeshiftTransactionStatus(shapeShiftAddress, this.setShapeshiftStatus);
   }
@@ -44,6 +44,7 @@ class ShapeTransactionView extends React.Component {
     return (
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>Status:  {this.state.txStat.status ? this.state.txStat.status : 'Please Wait...'}</Text>
+        <Text style={styles.infoText}>Other Party:  {this.props.otherParty}</Text>
         <Text style={styles.infoText}>Date:  {`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${this.props.time}`}</Text>
         <Text style={styles.infoText}>{this.props.from.match(/XRP/) ? "Withdraw" : "Deposit"} {this.props.from} to {this.props.to}</Text>
         {this.state.txStat.error ? <Text style={styles.infoText}>Error:  {this.state.txStat.error}</Text> : null}
@@ -51,7 +52,6 @@ class ShapeTransactionView extends React.Component {
         <Text style={styles.infoText}>txnId:  {this.state.txnId}</Text>
         <Text style={styles.infoText}>Shapeshift Deposit Address:  {this.props.shapeShiftAddress}</Text>
         <Text style={styles.infoText}>Refund Address:  {this.props.refundAddress}</Text>
-        <Text style={styles.infoText}>Other Party:  {this.props.otherParty}</Text>
       </View>
     )
   }
