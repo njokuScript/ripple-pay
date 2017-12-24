@@ -211,8 +211,8 @@ class SendAmount extends Component {
             <ScrollView style={styles.infoContainer}>
               { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit ? this.props.shape.sendamount.deposit : 'Please Wait...' }</Text> : null}
               <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
-              <Text style={styles.whitetext}>{this.action} Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>{this.action} Maximum:   {this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Send Maximum:   {this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.depositAmount) : this.truncate(this.props.fromAmount)} {this.props.fromCoin}</Text>
               <Text style={styles.whitetext}>Withdraw Amount:   {this.truncate(this.props.amount)} {this.props.toCoin}</Text>
               <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
