@@ -33,7 +33,8 @@ export default class App extends React.Component {
           </View>
         )
       } else {
-        this.clearCredentials();
+        // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
+        // this.clearCredentials();
         return (
           <Login />
         );

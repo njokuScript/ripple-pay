@@ -10,6 +10,7 @@ import {
   GETSHIFTS_URL,
   SHAPE_TXN_STAT_URL,
   GETSHAPEID_URL,
+  TIME_URL,
   authRequest
  } from '../api';
 
@@ -76,6 +77,13 @@ exports.getShapeshiftTransactionStatus = (shapeShiftAddress, setShapeshiftStatus
   axios.get(`${SHAPE_TXN_STAT_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
     const statusObject = response.data;
     setShapeshiftStatus(statusObject);
+  })
+}
+
+exports.getTimeRemaining = (shapeShiftAddress, setTimeRemaining) => {
+  axios.get(`${TIME_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
+    const timeRemaining = response.data.seconds_remaining*1000;
+    setTimeRemaining(timeRemaining);
   })
 }
 
