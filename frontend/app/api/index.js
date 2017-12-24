@@ -4,8 +4,10 @@ import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
 import { addAlert } from '../actions/alertsActions';
 // import { unauthUser } from '../actions/authActions';
+// currently using localhost. but change to production server later.
 var API_URL = 'http://localhost:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
+var COINCAP_URL = 'https://coincap.io';
 // var API_URL = 'https://fathomless-reef-57802.herokuapp.com/v1';
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
@@ -32,6 +34,9 @@ exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
 exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
 exports.TIME_URL = `${SHAPESHIFT_URL}/timeremaining`;
 exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
+
+// coin cap
+exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
 
 function resolveError(errorStatus, dispatch) {
     return function(dispatch) {
