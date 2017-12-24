@@ -190,8 +190,8 @@ class Transition extends Component {
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-            <Text style={styles.whitetext}>{this.action} Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>{this.action} Maximum:   {this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Send Maximum:   {this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {this.truncate(this.props.shape.market.rate)} {this.props.toCoin}/{this.props.fromCoin}</Text>
           </View>
           <CustomButton

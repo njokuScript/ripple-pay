@@ -1,5 +1,3 @@
-const express = require('express');
-const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
@@ -11,23 +9,14 @@ const {Money} = require('./populateBank');
 const {ShapeShiftTransaction} = require('./shapeShiftTransaction');
 
 mongoose.Promise = global.Promise;
-const bodyParser = require('body-parser');
-var app = express();
 
 var router = require('../services/router');
 
-mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
-
-app.use(morgan('combined'));
-app.use(bodyParser.json());
-app.use('/v1', router);
-// app.disable('etag');
-
-var PORT = process.env.PORT || 3000;
-var HOST = process.env.HOST || '127.0.0.1';
-
-console.log('Listening on', HOST, PORT);
-app.listen(PORT, HOST);
+if (process.env.NODE_ENV == 'production') {
+  mongoose.connect(process.env.MONGO_URL);
+} else {
+  mongoose.connect('mongodb://localhost:ripplePay/ripplePay');
+}
 
 mongoose.connection.once('connected', () => {
     mongoose.connection.db.dropCollection('vaults');
