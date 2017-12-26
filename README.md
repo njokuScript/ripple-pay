@@ -78,18 +78,28 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 * The user does not have to worry about copy and pasting the Shapeshift address and destination tag and sending to that address to start the conversion because ripplePay handles all of that internally.
 * To receive Bitcoin, Shapeshift will give the user one of their Bitcoin addresses to send to and because ripplePay has linked the user's wallet to this transaction, the user will receive Ripple when they send Bitcoin or any other cryptocurrency into the app. This will show up in their balance.
 
-## Current Security Features
-* Passwords are never stored, instead a hashed password is stored with bcrypt
-* Logging off of the Ripple API server every time a transaction is signed through ripple API, thus secret keys are never transmitted
-* Session Timeout after 10 minutes of inactivity
-* Addresses and secret keys are on a remote computer
+## Current Backend Security Features
+* Passwords are never stored, instead a bcrypt-hashed password is stored and compared with user input password each time a user logs in.
+* Disconnect from Ripple API server every time a transaction is signed with ripple API, thus secret keys are never used while application is connected to the rippled server.
+* Jwt token check before allowing any activity that accesses ripplePay servers. 
+* Session Timeout after 3 minutes of inactivity with jwt sliding sessions, issuing a new token with 3-minute expiry each time ripplePay servers are accessed.
 * Secret Keys are stored in the database using Bcrypt and then compared every time a transaction is made
+* npm helmet
+
+## Current Frontend Security Features
+* Re-entry of password is required before sending any payments.
+* Storage of jwt token inside of secure keychain storage implemented with react-native-keychain.
+* Automatic sign-out if jwt token mismatch or if jwt token expired.
 
 ## Security Features to be implemented
 * Private Rippled Server
-* Making sure that users are on the correct domain to use RipplePay
 * Limited time for a person's address (cash Register) and destination Tag
-* Multi Signing on transactions so multiple secret keys are require to make one transaction
+* Multi-signing on transactions so multiple secret keys are require to make one transaction
+* Prevent sign-on on multpile devices and device recognition.
+* Cryptographic encryption of ripplePay secret keys. Probably using npm cryptex.
+* Maybe implement a hardware security module for storing secret keys.
+* Pin numbers
+* AWS firewall to restrict port access
 
 ### Frontend Technology
 * Javascript
@@ -118,19 +128,7 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 
 ## The Future of ripplePay
 * Improved UI/UX design
-* QR Codes to allow for users to easily send and receive from addresses
-* Number Pad for the sending and receiving of money
-* Shapeshift Transactions Page allowing users to see the result of their shapeshift transaction and whether or not they need to contact Shapeshift to get a refund
 * Business Plan related to fees
-* AWS Strategy to allow scalability of the app in case of increased server load
 * Rippled Server
-* Multisigning of transactions through ripple's API
-* Probably: Allow user's to link their bank account to store USD using the Gatehub ripple USD address
-* Secret Phrase that is used to unlock account
-* Increased Security Features
-* Seek funding and investment
 * Deployment to Iphone app store and Google Play for Android
 * Reliable Transactions implementation from Ripple website
-* Database Sharding
-* Addition of Firewall using AWS Services
-* Ask for PIN numbers before making transactions

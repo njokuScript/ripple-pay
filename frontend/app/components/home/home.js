@@ -59,6 +59,9 @@ class Home extends React.Component {
         this.setState({refreshing: false});
       });
     }
+    if (this.props.balance) {
+      getXRPtoUSD(this.props.balance, this.setUSD);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

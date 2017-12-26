@@ -47,10 +47,11 @@ exports.signup = function(req, res, next) {
 };
 
 exports.search = function (req, res, next) {
+  const user = req.user;
   let item = req.query;
   let key = Object.keys(item)[0];
   let reg = new RegExp(`^${item[key]}\\w*$` , 'i');
-  User.find({ "screenName": reg } , function(err, users) {
+  User.find({ "screenName": { "$regex": reg, "$ne": user.screenName } }, function(err, users) {
     if (err) { return next(err); }
     res.json({search: users.map((user) => user.screenName)});
   });

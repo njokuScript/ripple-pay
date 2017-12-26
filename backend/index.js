@@ -25,7 +25,7 @@ const { tokenForUser } = require('./services/token');
 if (process.env.NODE_ENV=='production') {
   mongoose.connect(process.env.MONGO_URL);
 } else {
-  mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
+  mongoose.connect('mongodb://localhost:ripplePay/ripplePay');
 }
 app.use(helmet());
 app.use(morgan('combined'));
