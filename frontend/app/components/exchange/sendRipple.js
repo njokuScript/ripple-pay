@@ -23,6 +23,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 class SendRipple extends Component {
   constructor(props){
     super(props);
+    this.prepareTransaction = this.prepareTransaction.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -35,6 +36,9 @@ class SendRipple extends Component {
   }
 
   onNavigatorEvent(event) {
+    if (event.id === "willAppear") {
+      this.props.clearTransaction();
+    }
     if (event.id === "willDisappear") {
       this.setState({
         sendButtonDisabled: true
@@ -48,7 +52,17 @@ class SendRipple extends Component {
     })
   }
 
-  sendPayment(){
+  sendPayment() {
+    this.setState({ sendButtonDisabled: true });
+    const { amount } = this.props.transaction;
+    if (amount) {
+      this.props.signAndSend(this.props.fromAddress, parseFloat(amount));
+    } else {
+      this.props.clearTransaction();
+    }
+  }
+
+  prepareTransaction(){
     if ( !this.props.fromAddress || !this.props.sourceTag)
     {
       this.props.addAlert("Please get a wallet first")
@@ -76,12 +90,26 @@ class SendRipple extends Component {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;
       }
-      this.setState({sendButtonDisabled: true});
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
+      this.props.preparePayment(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
     }
   }
 
   render() {
+    const { toAddress, toDesTag, fee, amount } = this.props.transaction;
+    const readyToSend = Boolean(toAddress && fee && amount);
+    const transaction = () => {
+      if (readyToSend) {
+        return (
+          <View>
+            <Text>To address: {toAddress}</Text>
+            <Text>To Destination Tag: {toDesTag}</Text>
+            <Text>Amount: {amount}</Text>
+            <Text>Fee: {fee}</Text>
+          </View>
+        )
+      }
+      return null;
+    }
     return (
       <View style={styles.container}>
         <AlertContainer />
@@ -132,11 +160,12 @@ class SendRipple extends Component {
             keyboardAppearance={'dark'}
           />
           <CustomButton
-            performAction="Send Payment"
+            performAction={readyToSend ? "Send Payment" : "Prepare Payment"}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={this.sendPayment}
+            handlePress={readyToSend ? this.sendPayment : this.prepareTransaction}
           />
+          { transaction() }
         <PasswordLock enableSending={this.enableSending}/>
         <View style={styles.fee}>
           <Text style={styles.feetext}>

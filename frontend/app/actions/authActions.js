@@ -13,6 +13,7 @@ import {
   DEST_URL,
   DEL_WALLET_URL,
   DEL_REGISTER_URL,
+  PREPARE_PAYMENT_URL,
   AUTH_URL,
   authRequest
 } from '../api';
@@ -31,6 +32,14 @@ const ERRORS = {
     { regex: /ValidationError.+email/, msg: "Please enter a valid email" }
   ]
 } 
+
+const RIPPLE_MESSAGES = {
+  "tesSuccess": "Payment was successful",
+  "terQUEUED": "Payment placed in Queue. Please wait.",
+  "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to this address",
+  "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
+  "tefMAX_LEDGER": "Payment was submitted too late"
+}
 
 function resolveError(action, errorData) {
   for (let index = 0; index < ERRORS[action].length; index++) {
@@ -56,8 +65,6 @@ exports.loginUser = (email, password) => {
           dispatch(addAlert("Could not log in. keychain issue."));
         });
     }).catch((error) => {
-      console.log(error.response);
-      
       const errorMessage = resolveError("LOGIN", error.response.data);
       errorMessage ? dispatch(addAlert(errorMessage)) : dispatch(addAlert("Could not log in"));
     });
@@ -95,47 +102,35 @@ exports.comparePassword = function(password) {
   )
 }
 
-exports.signAndSend = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
+exports.signAndSend = (fromAddress, amount) => {
   return authRequest(
     "POST",
     SEND_URL,
-    {amount, fromAddress, toAddress, sourceTag, toDesTag},
+    { fromAddress, amount },
     (response) => {
-      let {message} = response.data;
-      let respMessage;
-      if ( message === "tesSUCCESS" )
-      {
-        respMessage = "Payment was Successful";
+      let { message } = response.data;
+      const alert = RIPPLE_MESSAGES[message];
+      if (alert) {
+        return addAlert(alert)
       }
-      else if (message === "terQUEUED")
-      {
-        respMessage = "Payment placed in Queue";
-      }
-      else if (message === "tecNO_DST_INSUF_XRP")
-      {
-        respMessage = "Must send at least 20 ripple to this address";
-      }
-      else if (message === "tecDST_TAG_NEEDED")
-      {
-        respMessage = "Sending address requires a destination tag";
-      }
-      else if (message === "Balance Insufficient")
-      {
-        respMessage = "Balance Insufficient";
-      }
-      else if (message === "Someone's Trying to Get into Your Wallet")
-      {
-        respMessage = "Someone's Trying to Get into Your Wallet";
-      }
-      else if (message === "Refill and Send Successful"){
-        respMessage = "Refill and Send Successful";
-      }
-      else
-      {
-        respMessage = "Payment Unsuccessful";
-      }
-      return addAlert(respMessage);
+      return addAlert("Payment was unsuccessful");
+    },
+    () => {
+      return exports.clearTransaction();
     }
+  );
+};
+
+exports.preparePayment = (amount, fromAddress, toAddress, sourceTag, toDesTag) => {
+  return authRequest(
+    "POST",
+    PREPARE_PAYMENT_URL,
+    { amount, fromAddress, toAddress, sourceTag, toDesTag },
+    (response) => {
+      const fee = response.data.fee;
+      const transaction = { toAddress, toDesTag, amount, fee }
+      return receivedTransaction(transaction);
+    } 
   );
 };
 
@@ -257,6 +252,18 @@ const receivedOldAddress = (data) => {
   };
 };
 
+const receivedTransaction = (data) => {
+  return  {
+    type: 'RECEIVED_TRANSACTION',
+    data
+  }
+}
+
+exports.clearTransaction = () => {
+  return {
+    type: 'CLEAR_TRANSACTION',
+  }
+}
 
 // After we have received transactions from the backend, we can move along with this data
 const receivedTransactions = (data) => {
