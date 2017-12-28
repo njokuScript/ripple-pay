@@ -34,7 +34,7 @@ const ERRORS = {
 } 
 
 const RIPPLE_MESSAGES = {
-  "tesSuccess": "Payment was successful",
+  "tesSUCCESS": "Payment was successful",
   "terQUEUED": "Payment placed in Queue. Please wait.",
   "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to this address",
   "tecDST_TAG_NEEDED": "Sending address requires a destination tag",

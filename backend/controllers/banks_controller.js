@@ -120,8 +120,6 @@ exports.getTransactions = asynchronous(function (req, res, next) {
     const registerBalance = await (Ripple.getBalance(existingUser.cashRegister));
     await (CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, { balance: registerBalance }, {upsert: false}));
     const transactions = await (Ripple.getSuccessfulTransactions(existingUser.cashRegister));
-    console.log(transactions);
-    
     // console.log(txnInfo);
     let userObject = {
       _id: existingUser._id,
