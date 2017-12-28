@@ -43,6 +43,6 @@
     "url": "git://github.com/jonchaney/ripple-pay.git"
   },
   "engines": {
-    "node": "8.7.0"
+    "node": "6.10.1"
   }
 }
