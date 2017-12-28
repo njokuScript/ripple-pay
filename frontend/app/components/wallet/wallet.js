@@ -122,13 +122,12 @@ class Wallet extends React.Component {
       const imageSource = this.getQRCode();
       return (
           <View style={styles.walletDisplay}>
-
+          
             <View style={styles.address}>
               <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.cashRegister)} style={styles.clipBoardContainer}>
                 <Icon  name="clipboard" size={25} color="gray" />
               </TouchableOpacity>
             </View>
-          
             <View style={styles.imageContainer}>
               <Image
                 style={styles.qrCode}
@@ -143,7 +142,6 @@ class Wallet extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-          
             <View>
               <View style={styles.destTag}>
                 <Text style={styles.destintro}>Destination Tags:</Text>
