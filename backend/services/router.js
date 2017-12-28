@@ -19,6 +19,8 @@ router.route('/signup')
   .post(AuthenticationController.signup);
 router.route('/signin')
   .post([requireLogin, AuthenticationController.signin]);
+router.route('/authUrl')
+  .post(requireAuth, AuthenticationController.comparePassword);
 router.route('/banksend')
   .post(requireAuth, BankController.inBankSend);
 router.route('/send')
@@ -44,7 +46,8 @@ router.route('/makeshift')
   .post(requireAuth, ShapeshiftController.createShapeshiftTransaction);
 router.route('/getshifts')
   .get(requireAuth, ShapeshiftController.getShapeshiftTransactions);
-router.get('/getShapeId', ShapeshiftController.getShapeshiftTransactionId);
+router.route('/getShapeId')
+  .get(requireAuth, ShapeshiftController.getShapeshiftTransactionId);
 
 // xxx Routes
 // -----------------------------------------------------------------------------

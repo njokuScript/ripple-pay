@@ -7,7 +7,11 @@ import {
   SEND_AMOUNT_URL,
   SHAPER_URL,
   MAKESHIFT_URL,
-  GETSHIFTS_URL
+  GETSHIFTS_URL,
+  SHAPE_TXN_STAT_URL,
+  GETSHAPEID_URL,
+  TIME_URL,
+  authRequest
  } from '../api';
 
 // const axios = require('axios');
@@ -17,32 +21,6 @@ exports.requestAllCoins = () => {
   return function(dispatch){
     return axios.get(COINS_URL).then((response)=>{
       dispatch(receivedCoins(response.data));
-    });
-  };
-};
-
-let authRequest = (type, url, data, ...cbs) => {
-  return function(dispatch){
-    return Keychain.getGenericPassword().then((creds) => {
-      const authedAxios = axios.create({
-        headers: { authorization: creds.password },
-      });
-      if (type === "POST") {
-        return authedAxios.post(url, data).then((response) => {
-          for (let i = 0; i < cbs.length; i++) {
-            let cb = cbs[i];
-            dispatch(cb(response));
-          }
-        });
-      }
-      else {
-        return authedAxios.get(url, data).then((response) => {
-          for (let i = 0; i < cbs.length; i++) {
-            let cb = cbs[i];
-            dispatch(cb(response));
-          }
-        });
-      }
     });
   };
 };
@@ -67,14 +45,15 @@ exports.requestMarketInfo = (coin1, coin2) => {
 
 exports.sendAmount = (amount, withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
-    return axios.post(SEND_AMOUNT_URL, {amount, withdrawal, pair, returnAddress, destTag}).then((response)=>{
+    return axios.post(SEND_AMOUNT_URL, {amount, withdrawal, pair, returnAddress, destTag}).then((response) => {
       dispatch(receivedSendAmount(response.data));
     });
   };
 };
+
 exports.shapeshift = ( withdrawal, pair, returnAddress, destTag = "") => {
   return function(dispatch){
-    return axios.post(SHAPER_URL, { withdrawal, pair, returnAddress, destTag}).then((response)=>{
+    return axios.post(SHAPER_URL, { withdrawal, pair, returnAddress, destTag}).then( (response) => {
       dispatch(receivedShapeshift(response.data));
     });
   };
@@ -93,6 +72,32 @@ exports.requestShifts = () => {
     return receivedShifts(response.data);
   });
 };
+
+exports.getShapeshiftTransactionStatus = (shapeShiftAddress, setShapeshiftStatus) => {
+  axios.get(`${SHAPE_TXN_STAT_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
+    const statusObject = response.data;
+    setShapeshiftStatus(statusObject);
+  })
+}
+
+exports.getTimeRemaining = (shapeShiftAddress, setTimeRemaining) => {
+  axios.get(`${TIME_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
+    const timeRemaining = response.data.seconds_remaining*1000;
+    setTimeRemaining(timeRemaining);
+  })
+}
+
+exports.getShapeshiftTransactionId = (shapeShiftAddress, date, refundAddress, setTransactionId) => {
+  return authRequest(
+    "GET",
+    GETSHAPEID_URL,
+    { params: [shapeShiftAddress, date, refundAddress] },
+    (response) => {
+      setTransactionId(response.data.txnId || 'Not Found');
+      return { type: "NON_REDUX" };
+    }
+  )
+}
 
 const receivedCoins = (data) => {
   return {

@@ -65,16 +65,13 @@ class Search extends React.Component {
     {
       theUsers = this.props.users.sort()
       .map((screenName, idx) => {
-        if ( screenName !== this.props.user.screenName )
-        {
-          return (
-              <TouchableOpacity key={idx} style={styles.resultItem} onPress={() => { this.navBankSend(screenName); }}>
-                <View style={styles.username}>
-                  <Text style={styles.resultItemText}>{screenName}</Text>
-                </View>
-              </TouchableOpacity>
-          );
-        }
+        return (
+            <TouchableOpacity key={idx} style={styles.resultItem} onPress={() => { this.navBankSend(screenName); }}>
+              <View style={styles.username}>
+                <Text style={styles.resultItemText}>{screenName}</Text>
+              </View>
+            </TouchableOpacity>
+        );
       });
       return (
         <ScrollView style={styles.resultsContainer}>

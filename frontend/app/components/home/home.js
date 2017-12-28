@@ -2,9 +2,9 @@ import React from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
-import { unauthUser } from '../../actions';
+import { unauthUser } from '../../actions/authActions';
+import { getXRPtoUSD } from '../../actions/coincapActions';
 import Icon from 'react-native-vector-icons/Entypo.js';
-import StartApp from '../../index.js';
 import Transaction from '../presentationals/transaction';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
@@ -27,12 +27,13 @@ class Home extends React.Component {
     this.displayTransactions = this.displayTransactions.bind(this);
     this.handleLeftPress = this.handleLeftPress.bind(this);
     this.handleRightPress = this.handleRightPress.bind(this);
-    this.starter = new StartApp();
+    this.setUSD = this.setUSD.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       refreshing: false,
       shapeshift: false,
-      showshift: ''
+      showshift: '',
+      usd: 0
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
@@ -58,11 +59,19 @@ class Home extends React.Component {
         this.setState({refreshing: false});
       });
     }
+    if (this.props.balance) {
+      getXRPtoUSD(this.props.balance, this.setUSD);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.balance) {
+      getXRPtoUSD(nextProps.balance, this.setUSD);
+    }
   }
 
   onLogout() {
     this.props.unauthUser();
-    this.starter.startSingleApplication();
   }
 
   handleLeftPress() {
@@ -79,7 +88,11 @@ class Home extends React.Component {
     });
   }
 
-  show(transaction, time) {
+  setUSD(usd) {
+    this.setState({ usd })
+  }
+
+  showShapeshiftTransaction(transaction, time) {
     this.setState({
       showshift: <ShapeTransactionView time={time} {...transaction}/>
     });
@@ -132,7 +145,7 @@ class Home extends React.Component {
               amount={transaction.from}
               toAmount={`to ${transaction.to}`}
               transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
-              handlePress={() => this.show(transaction, time)}
+              handlePress={() => this.showShapeshiftTransaction(transaction, time)}
               time={time}
             />
           );
@@ -146,7 +159,7 @@ class Home extends React.Component {
     } else {
       return (
         <Transaction
-          otherParty="no transactions"
+          otherParty="no transactions - pull down to refresh"
         />
       );
     }
@@ -171,6 +184,9 @@ class Home extends React.Component {
             </Text>
             <Text style={styles.balanceText}>
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+            </Text>
+            <Text style={styles.balanceText}>
+              $ {this.state.usd}
             </Text>
           </View>
       </View>

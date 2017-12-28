@@ -3,6 +3,7 @@
 
 .DS_Store
 
+
 # Xcode
 #
 build/
@@ -25,17 +26,19 @@ project.xcworkspace
 
 # Android/IJ
 #
-*.iml
-# .idea
-# .gradle
-# local.properties
 
-# node.js# 
-#
+*.iml
+.idea/
+.gradle
+local.properties
+node.js# 
+
+dump.rdb
 
 npm-debug.log
 
 # BUCK
+
 buck-out/
 \.buckd/
 android/app/libs
@@ -45,5 +48,6 @@ frontend/ios/
 frontend/ios/build/
 node_modules/
 ios
+
 android
 android/
