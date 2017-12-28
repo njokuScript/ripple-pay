@@ -64,7 +64,7 @@ exports.getSuccessfulTransactions = async(function(address) {
 
 exports.getTransactionInfo = async(function(fromAddress, toAddress, value, sourceTag, destTag, userId) {
   const paymentObject = exports.preparePayment(fromAddress, toAddress, destTag, sourceTag, value);
-  const txnInfo = await(api.preparePayment(fromAddress, paymentObject, { maxLedgerVersionOffset: 100 }));
+  const txnInfo = await(api.preparePayment(fromAddress, paymentObject, { maxLedgerVersionOffset: 1000 }));
 
   if (userId) {
     await (Redis.setInCache("prepared-transaction", userId, txnInfo));
