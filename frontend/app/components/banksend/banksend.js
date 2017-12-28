@@ -7,6 +7,7 @@ import ExchangeContainer from '../exchange/exchangeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
+import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import {
   StyleSheet,
@@ -22,22 +23,29 @@ class BankSend extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
+    this.enableSending = this.enableSending.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
-      disabled: false
+      sendButtonDisabled: true
     }
-    // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  // onNavigatorEvent(event){
-  //   if ( event.id === "bottomTabSelected" )
-  //   {
-  //     this.props.navigator.resetTo({
-  //       screen: 'Search',
-  //       navigatorStyle: {navBarHidden: true}
-  //     });
-  //   }
-  // }
+  onNavigatorEvent(event){
+    if ( event.id === "willDisappear")
+    {
+      this.setState({
+        sendButtonDisabled: true
+      })
+    }
+  }
+
+  enableSending() {
+    this.setState({
+      sendButtonDisabled: false
+    })
+  }
+
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
   //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
   //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
@@ -51,10 +59,8 @@ class BankSend extends Component {
       this.props.addAlert("Can't send 0 or less Ripple");
       return;
     }
-    this.setState({disabled: true});
-    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount)).then(() => {
-      this.setState({disabled: false});
-    });
+    this.setState({sendButtonDisabled: true});
+    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
   }
 
   render() {
@@ -91,14 +97,15 @@ class BankSend extends Component {
         <View style={styles.paymentButton}>
           <CustomButton
             performAction={`pay ${this.props.receiverScreenName}`}
-            buttonColor={this.state.disabled ? "red" : "white"}
-            isDisabled={this.state.disabled}
+            buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
+            isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}
           />
           <View style={styles.alert}>
             <AlertContainer />
           </View>
         </View>
+        <PasswordLock enableSending={this.enableSending} />
       </View>
     );
   }

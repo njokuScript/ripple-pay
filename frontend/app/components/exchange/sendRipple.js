@@ -1,10 +1,12 @@
 // import liraries
 import React, { Component } from 'react';
+// import StartApp from '../../index.js';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
+import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import {
   StyleSheet,
@@ -22,17 +24,29 @@ class SendRipple extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
+    this.enableSending = this.enableSending.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
-      disabled: false,
+      sendButtonDisabled: true
     }
   }
 
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
+  onNavigatorEvent(event) {
+    if (event.id === "willDisappear") {
+      this.setState({
+        sendButtonDisabled: true
+      });
+    }
+  }
+
+  enableSending() {
+    this.setState({
+      sendButtonDisabled: false
+    })
+  }
 
   sendPayment(){
     if ( !this.props.fromAddress || !this.props.sourceTag)
@@ -48,15 +62,13 @@ class SendRipple extends Component {
       this.props.addAlert("Can't Send to yourself");
     }
     else{
-      let array = Object.keys(this.state);
-      for (let i = 0; i < array.length; i++)
-      //there does not need to be a destination tag
-      {
-        if ( this.state[array[i]] === "" && array[i] !== "toDesTag")
-        {
-          this.props.addAlert("Please Try Again");
-          return;
-        }
+      if (this.state.toAddress === "") {
+        this.props.addAlert("Please Enter a destination address");
+        return;
+      }
+      if (this.state.amount === "") {
+        this.props.addAlert("Please enter an amount");
+        return;
       }
       let {toDesTag, toAddress, amount} = this.state;
       if ( parseFloat(amount) <= 0 || !amount.match(/^\d+$/) )
@@ -64,8 +76,8 @@ class SendRipple extends Component {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;
       }
-      this.setState({disabled: true});
-      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag)).then(()=> this.setState({disabled: false}));
+      this.setState({sendButtonDisabled: true});
+      this.props.signAndSend(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
     }
   }
 
@@ -119,12 +131,13 @@ class SendRipple extends Component {
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}
           />
-        <CustomButton
-          performAction="Send Payment"
-          buttonColor={this.state.disabled ? "red" : "white"}
-          isDisabled={this.state.disabled}
-          handlePress={this.sendPayment}
-        />
+          <CustomButton
+            performAction="Send Payment"
+            buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
+            isDisabled={this.state.sendButtonDisabled}
+            handlePress={this.sendPayment}
+          />
+        <PasswordLock enableSending={this.enableSending}/>
         <View style={styles.fee}>
           <Text style={styles.feetext}>
             transaction Fee: 0.02 XRP

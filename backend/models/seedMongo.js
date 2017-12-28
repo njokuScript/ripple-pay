@@ -1,5 +1,3 @@
-const express = require('express');
-const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt-nodejs');
@@ -8,25 +6,17 @@ const async = require('async');
 const {CashRegister} = require('./populateBank');
 const {Bank} = require('./populateBank');
 const {Money} = require('./populateBank');
+const {ShapeShiftTransaction} = require('./shapeShiftTransaction');
 
 mongoose.Promise = global.Promise;
-const bodyParser = require('body-parser');
-var app = express();
 
 var router = require('../services/router');
 
-mongoose.connect('mongodb://localhost:introToAuth/introToAuth');
-
-app.use(morgan('combined'));
-app.use(bodyParser.json());
-app.use('/v1', router);
-// app.disable('etag');
-
-var PORT = process.env.PORT || 3000;
-var HOST = process.env.HOST || '127.0.0.1';
-
-console.log('Listening on', HOST, PORT);
-app.listen(PORT, HOST);
+if (process.env.NODE_ENV == 'production') {
+  mongoose.connect(process.env.MONGO_URL);
+} else {
+  mongoose.connect('mongodb://localhost:ripplePay/ripplePay');
+}
 
 mongoose.connection.once('connected', () => {
     mongoose.connection.db.dropCollection('vaults');
@@ -34,6 +24,7 @@ mongoose.connection.once('connected', () => {
     mongoose.connection.db.dropCollection('money');
     //The following will create several B-trees with MongoDB and will help our database scale and helps make search in logn time
     mongoose.connection.db.collection("cashregisters").createIndex({address: 1}, {background: true});
+  mongoose.connection.db.collection("shapeshifttransactions").createIndex({ userId: 1, shapeShiftAddress: 1, date: 1}, {background: true});
     mongoose.connection.db.collection("users").createIndex({screenName: 1}, {background: true});
     mongoose.connection.db.collection("users").createIndex({email: 1}, {background: true});
     mongoose.connection.db.collection("usedwallets").createIndex({wallet: 1}, {background: true});
@@ -85,4 +76,8 @@ server.connect().then(()=>{
 let cash = new Money;
 cash.save(function(err){
 
-})
+});
+let shapeShiftTransaction = new ShapeShiftTransaction;
+shapeShiftTransaction.save(function(err){
+
+});

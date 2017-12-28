@@ -58,14 +58,12 @@ class Transition extends Component {
   //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
 
   navSendAmount() {
-    console.log("i got pushed");
-    if ( this.state.fromAmount > this.props.shape.market.maxLimit )
-    {
-      this.props.addAlert(`Please ${this.action} less than the maximum allowed`);
+    if (this.state.fromAmount < this.props.shape.market.minimum){
+      this.props.addAlert(`Please ${this.action} more than the minimum allowed`);
       return;
     }
-    else if (this.state.fromAmount < this.props.shape.market.minimum){
-      this.props.addAlert(`Please ${this.action} more than the minimum allowed`);
+    if (this.state.fromAmount > this.props.shape.market.maxLimit){
+      this.props.addAlert(`Please ${this.action} less than the maximum allowed`);
       return;
     }
     if ( this.action === "deposit" )
@@ -133,6 +131,10 @@ class Transition extends Component {
   toggleQuoted(){
     this.setState({quoted: !this.state.quoted})
   }
+
+  truncate(num) {
+    return num ? parseFloat(num).toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
+  }
 //Maybe give these the indexes that they are suppose to have.
   render() {
     return (
@@ -188,9 +190,9 @@ class Transition extends Component {
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-            <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Send Maximum:   {this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Rate:   {this.truncate(this.props.shape.market.rate)} {this.props.toCoin}/{this.props.fromCoin}</Text>
           </View>
           <CustomButton
             performAction={this.action === 'withdraw' ? 'Continue withdrawal...' : 'Continue deposit...'}

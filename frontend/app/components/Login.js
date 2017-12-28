@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { loginUser, signupUser, addAlert } from '../actions';
+import { loginUser, signupUser } from '../actions/authActions';
+import { addAlert } from '../actions/alertsActions';
 
 class Login extends React.Component {
   constructor(props) {

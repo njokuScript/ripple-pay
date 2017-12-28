@@ -14,10 +14,10 @@ let localStrategy = new LocalStrategy(localOptions, function(email, password, do
   // Verify this username and password
   User.findOne({email: email.toLowerCase()}, function(err, user) {
     if (err) { return done(err); }
-    if (!user) { return done(null, false); }
+    if (!user) { return done("Wrong email/password combination"); }
     user.comparePassword(password, function(error, isMatch) {
       if (error) { return done(error); }
-      if (!isMatch) { return done(null, false); }
+      if (!isMatch) { return done("Wrong email/password combination"); }
       // after this is done, returning the following will return the user object to
       // the authentication controller signin method.
       return done(null, user);
@@ -31,6 +31,10 @@ let jwtOptions = {
 };
 
 let jwtStrategy = new JwtStrategy(jwtOptions, function(payload, done) {
+  if (new Date().getTime() > payload.exp) {
+    const problem = "token has expired!!";
+    return done(problem);
+  }
   User.findById(payload.sub, function(err, user) {
     if (err) { return done(err, false); }
     if (user) {
