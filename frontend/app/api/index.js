@@ -5,16 +5,21 @@ import axios from 'axios';
 import { addAlert } from '../actions/alertsActions';
 // import { unauthUser } from '../actions/authActions';
 // currently using localhost. but change to production server later.
-var API_URL = 'http://localhost:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
-// var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
+
+// local
+// var API_URL = 'http://localhost:3000/v1';
+// prod
+var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
+
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.SEARCH_USERS_URL = `${API_URL}/search`;
 exports.SEND_URL = `${API_URL}/send`;
+exports.PREPARE_PAYMENT_URL = `${API_URL}/payment`;
 exports.WALLETS_URL = `${API_URL}/wallets`;
 exports.DEST_URL = `${API_URL}/dest`;
 exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
@@ -50,6 +55,9 @@ function resolveError(errorStatus, dispatch) {
             errorResponse.fns.forEach((errorTask) => {
                 dispatch(errorTask());
             });    
+        }
+        else {
+            dispatch(addAlert("Error making request"));
         }
     }
 }
