@@ -13,7 +13,15 @@ mongoose.Promise = global.Promise;
 var redis = require("redis");
 let bluebird = require('bluebird');
 bluebird.promisifyAll(redis.RedisClient.prototype);
-let client = redis.createClient();
+
+let client;
+
+if (process.env.NODE_ENV=='production') {
+  client = redis.createClient(process.env.REDISCLOUD_URL);
+} else {
+  client = redis.createClient(); 
+}
+
 client.on("error", function (err) {
   console.log("Error " + err);
 });

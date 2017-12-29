@@ -1,4 +1,3 @@
-// const bank = require('../models/vault');
 const User = require('../models/user');
 const {CashRegister} = require('../models/populateBank');
 const {Bank} = require('../models/populateBank');
@@ -7,8 +6,15 @@ const Redis = require('../models/redis');
 const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
-const {addresses, bank} = require('./addresses');
-// const bcrypt = require('bcrypt-nodejs');
+
+let addresses, bank;
+if (process.env.NODE_ENV=='production') {
+  addresses = JSON.parse(process.env.REGISTERS);
+  bank = JSON.parse(process.env.BANK);
+} else {
+  addresses = require('./addresses').addresses;
+  bank = require('./addresses').bank;
+}
 
 exports.BANK_NAME = "ripplePay";
 
