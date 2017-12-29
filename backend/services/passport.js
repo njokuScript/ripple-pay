@@ -31,11 +31,7 @@ let localStrategy = new LocalStrategy(localOptions, function(email, password, do
 });
 
 let jwtOptions = {
-<<<<<<< HEAD
-  secretOrKey: config.secret,
-=======
   secretOrKey: secret,
->>>>>>> 08e62146a673cea9d67ca770521ed8667d0c4e07
   jwtFromRequest: ExtractJwt.fromHeader('authorization')
 };
 
