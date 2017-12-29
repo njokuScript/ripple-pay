@@ -10,7 +10,7 @@ exports.signin = function(req, res) {
   });
 };
 
-exports.comparePassword = function(req, res) {
+exports.comparePassword = function(req, res, next) {
   const user = req.user;
   const { password } = req.body;
   user.comparePassword(password, function (error, isMatch) {
@@ -51,7 +51,7 @@ exports.search = function (req, res, next) {
   let item = req.query;
   let key = Object.keys(item)[0];
   let reg = new RegExp(`^${item[key]}\\w*$` , 'i');
-  User.find({ "screenName": { "$regex": reg, "$ne": user.screenName } }, function(err, users) {
+  User.find({ 'screenName': { '$regex': reg, '$ne': user.screenName } }, function(err, users) {
     if (err) { return next(err); }
     res.json({search: users.map((user) => user.screenName)});
   });
