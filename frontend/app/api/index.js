@@ -5,10 +5,14 @@ import axios from 'axios';
 import { addAlert } from '../actions/alertsActions';
 // import { unauthUser } from '../actions/authActions';
 // currently using localhost. but change to production server later.
-var API_URL = 'http://localhost:3000/v1';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
-// var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
+
+// local
+// var API_URL = 'http://localhost:3000/v1';
+// prod
+var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
+
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
