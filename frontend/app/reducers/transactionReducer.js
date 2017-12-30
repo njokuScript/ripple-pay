@@ -12,7 +12,7 @@ module.exports = (state = defaultState, action) => {
     Object.freeze(state);
     switch (action.type) {
         case 'RECEIVED_TRANSACTION':
-            return Object.assign({}, state, action.data)
+            return Object.assign({}, state, action.data);
         case 'CLEAR_TRANSACTION':
             return Object.assign({}, state, { toAddress: null, toDesTag: null, fee: null, amount: null })
         default:
