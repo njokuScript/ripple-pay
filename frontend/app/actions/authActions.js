@@ -127,6 +127,9 @@ exports.preparePayment = (amount, fromAddress, toAddress, sourceTag, toDesTag) =
     PREPARE_PAYMENT_URL,
     { amount, fromAddress, toAddress, sourceTag, toDesTag },
     (response) => {
+      if (response.data.message) {
+        return addAlert(response.data.message);
+      }
       const fee = response.data.fee;
       const transaction = { toAddress, toDesTag, amount, fee }
       return receivedTransaction(transaction);
