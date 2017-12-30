@@ -1,10 +1,20 @@
 node_modules/
+<<<<<<< HEAD
 controllers/addresses.js
+=======
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
 controllers/ripplePay.pem
 ripplePay.pem
 
 .DS_Store
 package-lock.json
+<<<<<<< HEAD
 config.js
 
 dump.rdb
+=======
+
+dump.rdb
+
+configs/
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
