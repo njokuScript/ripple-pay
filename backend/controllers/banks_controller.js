@@ -1,25 +1,22 @@
-const User = require('../models/user');
-const {CashRegister} = require('../models/populateBank');
-const {Bank} = require('../models/populateBank');
-const {Money} = require('../models/populateBank');
-const Redis = require('../models/redis');
 const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
+const User = require('../models/user');
+const { CashRegister, BANK_NAME } = require('../models/moneyStorage');
+const Redis = require('../services/redis');
 const Encryption = require('../services/encryption');
 const Decryption = require('../services/decryption');
-
+const RippledServer = require('../services/rippleAPI');
+const rippledServer = new RippledServer();
 
 let encryptedAddresses, encryptedBank;
 if (process.env.NODE_ENV=='production') {
   encryptedAddresses = JSON.parse(process.env.REGISTERS);
   encryptedBank = JSON.parse(process.env.BANK);
 } else {
-  encryptedAddresses = require('./addresses').encryptedAddresses;
-  encryptedBank = require('./addresses').encryptedBank;
+  encryptedAddresses = require('../configs/addresses').encryptedAddresses;
+  encryptedBank = require('../configs/addresses').encryptedBank;
 }
-
-exports.BANK_NAME = "ripplePay";
 
 exports.inBankSend = asynchronous(function(req, res, next){
   let {receiverScreenName, amount} = req.body;
@@ -60,7 +57,10 @@ exports.inBankSend = asynchronous(function(req, res, next){
 })
 
 exports.preparePayment = asynchronous(function(req, res, next) {
+<<<<<<< HEAD
   const Ripple = require('../services/rippleAPI');
+=======
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
   let { amount, fromAddress, toAddress, sourceTag, toDesTag } = req.body;
   let existingUser = req.user;
   let userId = existingUser._id;
@@ -68,7 +68,11 @@ exports.preparePayment = asynchronous(function(req, res, next) {
     res.json({ message: "Balance Insufficient" });
     return;
   }
+<<<<<<< HEAD
   const txnInfo = await(Ripple.getTransactionInfo(fromAddress, toAddress, amount, sourceTag, toDesTag, userId));
+=======
+  const txnInfo = await(rippledServer.getTransactionInfo(fromAddress, toAddress, amount, sourceTag, toDesTag, userId));
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
   const fee = txnInfo.instructions.fee;
   res.json({
     fee: txnInfo.instructions.fee
@@ -76,6 +80,7 @@ exports.preparePayment = asynchronous(function(req, res, next) {
 })
 
 exports.signAndSend = asynchronous (function(req, res, next){
+<<<<<<< HEAD
   const Ripple = require('../services/rippleAPI');
   const { fromAddress, amount } = req.body;
 
@@ -85,10 +90,19 @@ exports.signAndSend = asynchronous (function(req, res, next){
 
   const registerAddress = fromAddress;
   const registerBalance = await(Ripple.getBalance(registerAddress));
+=======
+  const { fromAddress, amount } = req.body;
+  const existingUser = req.user;
+  const userId = existingUser._id;
+
+  const registerAddress = fromAddress;
+  const registerBalance = await(rippledServer.getBalance(registerAddress));
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
 
   const masterKey = await(Decryption.getMasterKey());
   
   let sendMoney = asynchronous (function(){
+<<<<<<< HEAD
     const encryptedRegisterAddress = Encryption.encrypt(masterKey, registerAddress);
     const encryptedRegisterSecret = encryptedAddresses[encryptedRegisterAddress];
     const registerSecret = Decryption.decrypt(masterKey, encryptedRegisterSecret);
@@ -115,6 +129,41 @@ exports.signAndSend = asynchronous (function(req, res, next){
 
   const amountToSend = amount;
 
+=======
+
+      const encryptedRegisterAddress = Encryption.encrypt(masterKey, registerAddress);
+      const encryptedRegisterSecret = encryptedAddresses[encryptedRegisterAddress];
+      const registerSecret = Decryption.decrypt(masterKey, encryptedRegisterSecret);
+
+      const result = await(rippledServer.signAndSend(registerAddress, registerSecret, userId));
+
+      if (result) {
+        console.log(result);
+        res.json({message: result.resultCode});
+      }
+      else {
+        res.json({message: "Transaction Failed"});
+      }
+
+  })
+
+  let refillCashRegisterAndSend = asynchronous(function(){
+
+      const encryptedBankAddress = Object.keys(encryptedBank)[0];
+      const encryptedBankSecret = encryptedBank[encryptedBankAddress];
+      const bankAddress = Decryption.decrypt(masterKey, encryptedBankAddress);
+      const bankSecret = Decryption.decrypt(masterKey, encryptedBankSecret);
+      
+      // refilling by 20 for now until we find a better wallet refill algorithm
+      const txnInfo = await(rippledServer.getTransactionInfo(bankAddress, registerAddress, 20, 0, null, null));
+      const result = await(rippledServer.signAndSend(bankAddress, bankSecret, BANK_NAME, txnInfo));
+      console.log(result);
+      sendMoney();
+
+  })
+
+  const amountToSend = amount;
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
   if ( registerBalance - amountToSend < 20 ) {
     refillCashRegisterAndSend();
   } else {
@@ -127,14 +176,23 @@ exports.signAndSend = asynchronous (function(req, res, next){
 // Last Transaction ID is reset to the first transaction ID that matches
 // A user's address and destination tag
 exports.getTransactions = asynchronous(function (req, res, next) {
+<<<<<<< HEAD
   const Ripple = require('../services/rippleAPI');
+=======
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
   const existingUser = req.user;
   const userId = existingUser._id;
   if (existingUser.cashRegister)
   {
+<<<<<<< HEAD
     const registerBalance = await (Ripple.getBalance(existingUser.cashRegister));
     await (CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, { balance: registerBalance }, {upsert: false}));
     const transactions = await (Ripple.getSuccessfulTransactions(existingUser.cashRegister));
+=======
+    const registerBalance = await (rippledServer.getBalance(existingUser.cashRegister));
+    await (CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, { balance: registerBalance }, {upsert: false}));
+    const transactions = await (rippledServer.getSuccessfulTransactions(existingUser.cashRegister));
+>>>>>>> 3eaaaa00ee6e3e34e73fcf3a9b855cc829cdbf15
     // console.log(txnInfo);
     let userObject = {
       _id: existingUser._id,
