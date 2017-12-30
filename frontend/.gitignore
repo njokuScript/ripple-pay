@@ -51,3 +51,5 @@ ios
 
 android
 android/
+
+package-lock.json
