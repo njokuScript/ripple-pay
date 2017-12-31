@@ -31,7 +31,7 @@ const ERRORS = {
     { regex: /ValidationError.+screenName/, msg: "Please enter a valid screen name (no symbols)" },
     { regex: /ValidationError.+email/, msg: "Please enter a valid email" }
   ]
-} 
+}; 
 
 const RIPPLE_MESSAGES = {
   "tesSUCCESS": "Payment was successful",
@@ -39,7 +39,7 @@ const RIPPLE_MESSAGES = {
   "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to this address",
   "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
   "tefMAX_LEDGER": "Payment was submitted too late"
-}
+};
 
 function resolveError(action, errorData) {
   for (let index = 0; index < ERRORS[action].length; index++) {
@@ -99,8 +99,8 @@ exports.comparePassword = function(password) {
     (response) => {
       return updatePasswordAttempts(response.data);
     }
-  )
-}
+  );
+};
 
 exports.signAndSend = (fromAddress, amount) => {
   return authRequest(
@@ -160,6 +160,9 @@ exports.removeCashRegister = () => {
 };
 exports.requestOnlyDesTag = (cashRegister) => {
   return authRequest("POST", DEST_URL, {cashRegister}, (response) => {
+    if (response.data.message) {
+      return addAlert(response.data.message);
+    }
     return receivedDesTag(response.data);
   });
 };
@@ -198,14 +201,14 @@ exports.unauthUser = () => {
   return function(dispatch) {
     starter.startSingleApplication();
     dispatch(logout());
-  }
+  };
 };
 
 const logout = () => {
   return {
     type: 'UNAUTH_USER'
-  }
-}
+  };
+};
 
 const authUser = (screenName, wallets, cashRegister) => {
   return {
@@ -259,14 +262,14 @@ const receivedTransaction = (data) => {
   return  {
     type: 'RECEIVED_TRANSACTION',
     data
-  }
-}
+  };
+};
 
 exports.clearTransaction = () => {
   return {
     type: 'CLEAR_TRANSACTION',
-  }
-}
+  };
+};
 
 // After we have received transactions from the backend, we can move along with this data
 const receivedTransactions = (data) => {
