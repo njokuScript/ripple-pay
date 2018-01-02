@@ -42,7 +42,6 @@ exports.getMasterKey = async(function() {
             masterKey.push(byte);
         }
     });
-    
     // Final key required for encryption/decryption of encrypted address-secrets stored in heroku config vars
     // A hacker must compromise heroku, redis, and mongo to receive masterKey
     return masterKey;
