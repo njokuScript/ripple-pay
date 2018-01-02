@@ -36,9 +36,10 @@ const ERRORS = {
 const RIPPLE_MESSAGES = {
   "tesSUCCESS": "Payment was successful",
   "terQUEUED": "Payment placed in Queue. Please wait.",
-  "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to this address",
+  "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to new ripple address",
   "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
-  "tefMAX_LEDGER": "Payment was submitted too late"
+  "tefMAX_LEDGER": "Payment was submitted too late",
+  "tecUNFUNDED_PAYMENT": "Insufficient XRP to send payment",
 };
 
 function resolveError(action, errorData) {
