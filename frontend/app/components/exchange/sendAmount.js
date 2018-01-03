@@ -131,7 +131,6 @@ class SendAmount extends Component {
         <View>
           <CustomButton
             performAction="Withdraw"
-            buttonColor="white"
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}

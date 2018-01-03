@@ -6,6 +6,7 @@ import { unauthUser } from '../../actions/authActions';
 import { getXRPtoUSD } from '../../actions/coincapActions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
+import CustomButton from '../presentationals/customButton';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
 
@@ -89,7 +90,15 @@ class Home extends React.Component {
   }
 
   setUSD(usd) {
-    this.setState({ usd })
+    this.setState({ usd });
+  }
+
+  loadNextTransactions(minDate) {
+    this.props.loadNextTransactions(minDate);
+  }
+
+  loadNextShapeShiftTransactions(minDate) {
+    this.props.loadNextShapeShiftTransactions(minDate);
   }
 
   showShapeshiftTransaction(transaction, time) {
@@ -104,23 +113,20 @@ class Home extends React.Component {
     }
     if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
       (!this.state.shapeshift && this.props.transactions.length > 0)) {
-      let ndate;
       let transactions;
-      if (!this.state.shapeshift) {
-        transactions = this.props.transactions.sort((a,b)=>{
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
-      }
-      else{
+      if (this.state.shapeshift) { 
         transactions = this.props.shapeshiftTransactions;
       }
+      else{
+        transactions = this.props.transactions;
+      }
       transactions = transactions.map((transaction, idx) => {
-        ndate = new Date(transaction.date);
+        const date = new Date(transaction.date);
         let time;
-        if (ndate.getHours() > 12) {
-          time = `${ndate.getHours() - 12}:${ndate.getMinutes()} PM` ;
+        if (date.getHours() > 12) {
+          time = `${date.getHours() - 12}:${date.getMinutes()} PM` ;
         } else {
-          time = `${ndate.getHours()}:${ndate.getMinutes()} AM`;
+          time = `${date.getHours()}:${date.getMinutes()} AM`;
         }
         if (!this.state.shapeshift) {
           return (
@@ -128,7 +134,7 @@ class Home extends React.Component {
             shapeshift={false}
             key={idx}
             otherParty={transaction.otherParty}
-            ndate={ndate}
+            date={date}
             amount={`${transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ`}
             transactionColor={transaction.amount < 0 ? "red" : "green"}
             time={time}
@@ -141,7 +147,7 @@ class Home extends React.Component {
               shapeshift={true}
               key={idx}
               otherParty={`${transaction.otherParty.slice(0,17)}...`}
-              ndate={ndate}
+              date={date}
               amount={transaction.from}
               toAmount={`to ${transaction.to}`}
               transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
@@ -168,6 +174,15 @@ class Home extends React.Component {
 // THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
   render()
   {
+    let minDate;
+    if (this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) {
+      const { shapeshiftTransactions } = this.props;
+      minDate = shapeshiftTransactions[shapeshiftTransactions.length - 1].date;
+    }
+    if (!this.state.shapeshift && this.props.transactions.length > 0) {
+      const { transactions } = this.props;
+      minDate = transactions[transactions.length-1].date;
+    }
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
@@ -207,6 +222,12 @@ class Home extends React.Component {
         contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
       </ScrollView>
+      <CustomButton
+        performAction="Load next 25 Transactions"
+        buttonColor="white"
+        isDisabled={false}
+        handlePress={this.state.shapeshift ? (minDate) => this.loadNextTransactions(minDate) : (minDate) => this.loadNextShapeShiftTransactions(minDate)}
+      />
       </View>
     );
   }

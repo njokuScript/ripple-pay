@@ -10,7 +10,7 @@ import {
 // Pass down props.otherParty,
 // the color of transaction is either green or red based on neg or pos
 const Transaction = (props) => {
-  const { otherParty, ndate, amount, transactionColor, toAmount, time } = props;
+  const { otherParty, date, amount, transactionColor, toAmount, time } = props;
   let transactionDate;
   let transactionAmount;
   if (amount) {
@@ -19,14 +19,14 @@ const Transaction = (props) => {
       fontWeight: "600",
       fontSize: 14,
       color: transactionColor,
-    }
+    };
     transactionDate = (
       <View style={styles.transactionDate}>
         <Text style={styles.transactionDateText}>
-          {`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${time}`}
+          {`${date.toLocaleString("en-us", { month: "short" })} ${date.getDate()}, ${date.getFullYear()} ${time}`}
         </Text>
       </View>
-    )
+    );
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
@@ -36,7 +36,7 @@ const Transaction = (props) => {
           { toAmount }
         </Text>
       </View>
-    )
+    );
   }
   const transactionData = (
     <View style={styles.transactionInfo}>
@@ -47,14 +47,14 @@ const Transaction = (props) => {
       </View>
       { transactionDate }
     </View>
-  )
+  );
   if (props.shapeshift) {
     return (
       <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
       { transactionData }
       { transactionAmount }
       </TouchableOpacity>
-    )
+    );
   }
   else {
     return (
@@ -62,9 +62,9 @@ const Transaction = (props) => {
       { transactionData }
       { transactionAmount }
       </View>
-    )
+    );
   }
-}
+};
 
 const styles = StyleSheet.create({
   transaction: {
