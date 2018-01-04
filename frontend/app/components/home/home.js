@@ -26,6 +26,8 @@ class Home extends React.Component {
     super(props);
     this.onLogout = this.onLogout.bind(this);
     this.displayTransactions = this.displayTransactions.bind(this);
+    this.loadNextTransactions = this.loadNextTransactions.bind(this);
+    this.loadNextShapeShiftTransactions = this.loadNextShapeShiftTransactions.bind(this);
     this.handleLeftPress = this.handleLeftPress.bind(this);
     this.handleRightPress = this.handleRightPress.bind(this);
     this.setUSD = this.setUSD.bind(this);
@@ -45,10 +47,13 @@ class Home extends React.Component {
     {
       this.props.requestTransactions();
       this.props.requestShifts();
+      this.props.refreshShouldLoadMoreValues();
     }
   }
 
   onRefresh(){
+    this.props.refreshShouldLoadMoreValues();
+    
     this.setState({refreshing: true});
     if (this.state.shapeshift) {
       this.props.requestShifts().then(() => {
@@ -56,6 +61,7 @@ class Home extends React.Component {
       });
     }
     else {
+
       this.props.requestTransactions().then(() => {
         this.setState({refreshing: false});
       });
@@ -93,12 +99,24 @@ class Home extends React.Component {
     this.setState({ usd });
   }
 
-  loadNextTransactions(minDate) {
-    this.props.loadNextTransactions(minDate);
+  loadNextTransactions() {
+    if (this.props.shouldLoadMoreTransactions) {
+      const { transactions } = this.props;
+      const lastTransaction = transactions[transactions.length - 1];
+      if (lastTransaction) {
+        this.props.loadNextTransactions(lastTransaction.date);
+      }
+    }
   }
 
-  loadNextShapeShiftTransactions(minDate) {
-    this.props.loadNextShapeShiftTransactions(minDate);
+  loadNextShapeShiftTransactions() {
+    if (this.props.shouldLoadMoreShapeShiftTransactions) {
+      const { shapeshiftTransactions } = this.props;
+      const lastShapeShiftTransaction = shapeshiftTransactions[shapeshiftTransactions.length - 1];
+      if (lastShapeShiftTransaction) {
+        this.props.loadNextShapeShiftTransactions(lastShapeShiftTransaction.date);
+      }   
+    }
   }
 
   showShapeshiftTransaction(transaction, time) {
@@ -174,15 +192,6 @@ class Home extends React.Component {
 // THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
   render()
   {
-    let minDate;
-    if (this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) {
-      const { shapeshiftTransactions } = this.props;
-      minDate = shapeshiftTransactions[shapeshiftTransactions.length - 1].date;
-    }
-    if (!this.state.shapeshift && this.props.transactions.length > 0) {
-      const { transactions } = this.props;
-      minDate = transactions[transactions.length-1].date;
-    }
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
@@ -226,7 +235,7 @@ class Home extends React.Component {
         performAction="Load next 25 Transactions"
         buttonColor="white"
         isDisabled={false}
-        handlePress={this.state.shapeshift ? (minDate) => this.loadNextTransactions(minDate) : (minDate) => this.loadNextShapeShiftTransactions(minDate)}
+        handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
       />
       </View>
     );
