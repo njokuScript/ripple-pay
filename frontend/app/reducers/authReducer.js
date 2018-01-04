@@ -8,7 +8,9 @@ var defaultState = {
   cashRegister: undefined,
   wallets: [],
   screenName: '',
-  passwordAttempts: {tries: 3, attemptSwitch: true}
+  passwordAttempts: {tries: 3, attemptSwitch: true},
+  shouldLoadMoreShapeShiftTransactions: true,
+  shouldLoadMoreTransactions: true
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -42,18 +44,22 @@ module.exports = (state=defaultState, action) => {
           wallets: [],
           screenName: '',
           shapeshiftTransactions: [],
-          passwordAttempts: {tries: 3, attemptSwitch: true}
+          passwordAttempts: {tries: 3, attemptSwitch: true},
+          shouldLoadMoreShapeShiftTransactions: true,
+          shouldLoadMoreTransactions: true
         });
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
     case 'RECEIVED_NEXT_TRANSACTIONS':
       const currentTransactions = state.transactions.slice(0);
       const totalTransactions = currentTransactions.concat(action.data.nextTransactions);
-      return Object.assign({}, state, { transactions: totalTransactions });
+      return Object.assign({}, state, { transactions: totalTransactions, shouldLoadMoreTransactions: action.data.shouldLoadMoreTransactions });
     case 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS':
-      const currentShapeShiftTransactions = state.shapeShiftTransactions.slice(0);
+      const currentShapeShiftTransactions = state.shapeshiftTransactions.slice(0);
       const totalShapeShiftTransactions = currentShapeShiftTransactions.concat(action.data.nextShapeShiftTransactions);
-      return Object.assign({}, state, { shapeShiftTransactions: totalShapeShiftTransactions });
+      return Object.assign({}, state, { shapeshiftTransactions: totalShapeShiftTransactions, shouldLoadMoreShapeShiftTransactions: action.data.shouldLoadMoreShapeShiftTransactions });
+    case 'REFRESH_LOAD_MORE':
+      return Object.assign({}, state, { shouldLoadMoreShapeShiftTransactions: true, shouldLoadMoreTransactions: true });
     case 'RECEIVED_BALANCE':
       return Object.assign({}, state, {balance: action.data.balance});
     case 'RECEIVED_USERS':

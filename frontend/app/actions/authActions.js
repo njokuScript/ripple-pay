@@ -188,17 +188,17 @@ exports.requestTransactions = () => {
   });
 };
 
-exports.loadNextTransactions = (minDate) {
-  return authRequest("GET", NEXT_TRANSACTIONS_URL, {params: [minDate]}, (response) => {
+exports.loadNextTransactions = (maxDate) => {
+  return authRequest("GET", NEXT_TRANSACTIONS_URL, {params: [maxDate]}, (response) => {
     return receivedNextTransactions(response.data);
   });
-}
+};
 
-exports.loadNextShapeShiftTransactions = (minDate) {
-  return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, {params: [minDate]}, (response) => {
+exports.loadNextShapeShiftTransactions = (maxDate) => {
+  return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, {params: [maxDate]}, (response) => {
     return receivedNextShapeShiftTransactions(response.data);
   });
-}
+};
 
 exports.requestUsers = (item) => {
   return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
@@ -306,6 +306,10 @@ const receivedNextShapeShiftTransactions = (data) => {
     type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
     data
   };
+};
+
+exports.refreshShouldLoadMoreValues = {
+    type: 'REFRESH_LOAD_MORE'
 };
 
 const receivedBalance = (data) => {
