@@ -15,6 +15,8 @@ import {
   DEL_REGISTER_URL,
   PREPARE_PAYMENT_URL,
   AUTH_URL,
+  NEXT_TRANSACTIONS_URL,
+  NEXT_SHAPESHIFT_TRANSACTIONS_URL,
   authRequest
 } from '../api';
 
@@ -31,15 +33,16 @@ const ERRORS = {
     { regex: /ValidationError.+screenName/, msg: "Please enter a valid screen name (no symbols)" },
     { regex: /ValidationError.+email/, msg: "Please enter a valid email" }
   ]
-} 
+}; 
 
 const RIPPLE_MESSAGES = {
   "tesSUCCESS": "Payment was successful",
   "terQUEUED": "Payment placed in Queue. Please wait.",
-  "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to this address",
+  "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to new ripple address",
   "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
-  "tefMAX_LEDGER": "Payment was submitted too late"
-}
+  "tefMAX_LEDGER": "Payment was submitted too late",
+  "tecUNFUNDED_PAYMENT": "Insufficient XRP to send payment",
+};
 
 function resolveError(action, errorData) {
   for (let index = 0; index < ERRORS[action].length; index++) {
@@ -99,8 +102,8 @@ exports.comparePassword = function(password) {
     (response) => {
       return updatePasswordAttempts(response.data);
     }
-  )
-}
+  );
+};
 
 exports.signAndSend = (fromAddress, amount) => {
   return authRequest(
@@ -160,6 +163,9 @@ exports.removeCashRegister = () => {
 };
 exports.requestOnlyDesTag = (cashRegister) => {
   return authRequest("POST", DEST_URL, {cashRegister}, (response) => {
+    if (response.data.message) {
+      return addAlert(response.data.message);
+    }
     return receivedDesTag(response.data);
   });
 };
@@ -182,6 +188,18 @@ exports.requestTransactions = () => {
   });
 };
 
+exports.loadNextTransactions = (maxDate) => {
+  return authRequest("GET", NEXT_TRANSACTIONS_URL, {params: [maxDate]}, (response) => {
+    return receivedNextTransactions(response.data);
+  });
+};
+
+exports.loadNextShapeShiftTransactions = (maxDate) => {
+  return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, {params: [maxDate]}, (response) => {
+    return receivedNextShapeShiftTransactions(response.data);
+  });
+};
+
 exports.requestUsers = (item) => {
   return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
     return receivedUsers(response.data);
@@ -198,14 +216,14 @@ exports.unauthUser = () => {
   return function(dispatch) {
     starter.startSingleApplication();
     dispatch(logout());
-  }
+  };
 };
 
 const logout = () => {
   return {
     type: 'UNAUTH_USER'
-  }
-}
+  };
+};
 
 const authUser = (screenName, wallets, cashRegister) => {
   return {
@@ -259,14 +277,14 @@ const receivedTransaction = (data) => {
   return  {
     type: 'RECEIVED_TRANSACTION',
     data
-  }
-}
+  };
+};
 
 exports.clearTransaction = () => {
   return {
     type: 'CLEAR_TRANSACTION',
-  }
-}
+  };
+};
 
 // After we have received transactions from the backend, we can move along with this data
 const receivedTransactions = (data) => {
@@ -274,6 +292,24 @@ const receivedTransactions = (data) => {
     type: 'RECEIVED_TRANSACTIONS',
     data
   };
+};
+
+const receivedNextTransactions = (data) => {
+  return {
+    type: 'RECEIVED_NEXT_TRANSACTIONS',
+    data
+  };
+};
+
+const receivedNextShapeShiftTransactions = (data) => {
+  return {
+    type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
+    data
+  };
+};
+
+exports.refreshShouldLoadMoreValues = {
+    type: 'REFRESH_LOAD_MORE'
 };
 
 const receivedBalance = (data) => {

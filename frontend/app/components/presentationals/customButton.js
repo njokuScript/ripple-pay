@@ -15,7 +15,7 @@ const CustomButton = (props) => {
     color: props.buttonColor,
     fontFamily: 'Kohinoor Bangla',
     textAlign: 'center'
-  }
+  };
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity onPress={props.handlePress} disabled={props.isDisabled} style={styles.touchableButton}>
@@ -24,8 +24,8 @@ const CustomButton = (props) => {
         </Text>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   buttonContainer: {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     width: 250,
     overflow: 'hidden',
   },
-})
+});
 
 // buttonColor, isDisabled, performAction, and handlePress have to be passed down as props.
 // Color should be either red or green based on parent's state

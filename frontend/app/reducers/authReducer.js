@@ -1,13 +1,5 @@
 import { merge } from 'lodash';
 
-//This is our default state of the user.
-//Because of this, our User will have a default of all of this.
-//Once they are signed in, they will have a user_id and the other stuff will stay the same.
-//When they have navigated to the Home page rather than the login Page, Then we go through
-//Component did mount in the home component, in which we render default values first, and then AFTER home component is mounted
-//we will make a thunk action creator called 'requestTransactions(user_id)'. This will go to the backend and get the transactions AND balance
-//and then this will force a re-rendering of the home page with those database values. Look at the authactions for followup documentation
-
 var defaultState = {
   transactions: [],
   shapeshiftTransactions: [],
@@ -16,7 +8,9 @@ var defaultState = {
   cashRegister: undefined,
   wallets: [],
   screenName: '',
-  passwordAttempts: {tries: 3, attemptSwitch: true}
+  passwordAttempts: {tries: 3, attemptSwitch: true},
+  shouldLoadMoreShapeShiftTransactions: true,
+  shouldLoadMoreTransactions: true
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -39,7 +33,7 @@ module.exports = (state=defaultState, action) => {
       else {
         passwordAttempts = {tries: tries - 1, attemptSwitch: !attemptSwitch};
       }
-      return Object.assign({}, state, { passwordAttempts })
+      return Object.assign({}, state, { passwordAttempts });
     case 'UNAUTH_USER':
       return Object.assign({}, state,
         {
@@ -50,12 +44,24 @@ module.exports = (state=defaultState, action) => {
           wallets: [],
           screenName: '',
           shapeshiftTransactions: [],
-          passwordAttempts: {tries: 3, attemptSwitch: true}
+          passwordAttempts: {tries: 3, attemptSwitch: true},
+          shouldLoadMoreShapeShiftTransactions: true,
+          shouldLoadMoreTransactions: true
         });
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
+    case 'RECEIVED_NEXT_TRANSACTIONS':
+      const currentTransactions = state.transactions.slice(0);
+      const totalTransactions = currentTransactions.concat(action.data.nextTransactions);
+      return Object.assign({}, state, { transactions: totalTransactions, shouldLoadMoreTransactions: action.data.shouldLoadMoreTransactions });
+    case 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS':
+      const currentShapeShiftTransactions = state.shapeshiftTransactions.slice(0);
+      const totalShapeShiftTransactions = currentShapeShiftTransactions.concat(action.data.nextShapeShiftTransactions);
+      return Object.assign({}, state, { shapeshiftTransactions: totalShapeShiftTransactions, shouldLoadMoreShapeShiftTransactions: action.data.shouldLoadMoreShapeShiftTransactions });
+    case 'REFRESH_LOAD_MORE':
+      return Object.assign({}, state, { shouldLoadMoreShapeShiftTransactions: true, shouldLoadMoreTransactions: true });
     case 'RECEIVED_BALANCE':
-      return Object.assign({}, state, {balance: action.data.balance})
+      return Object.assign({}, state, {balance: action.data.balance});
     case 'RECEIVED_USERS':
     console.log(action);
       return Object.assign({}, state, {users: action.users.search});
