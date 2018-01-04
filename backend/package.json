@@ -18,6 +18,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "express-mung": "^0.4.6",
+    "fs": "0.0.1-security",
     "helmet": "^3.9.0",
     "jwt-simple": "^0.5.0",
     "koa-ratelimit": "^4.0.0",
@@ -32,7 +33,7 @@
     "passport-local": "^1.0.0",
     "pbkdf2": "^3.0.14",
     "redis": "^2.8.0",
-    "ripple-lib": "^0.17.7",
+    "ripple-lib": "^0.17.9",
     "uuid": "^2.0.2"
   },
   "repository": {

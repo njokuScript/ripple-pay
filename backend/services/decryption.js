@@ -42,7 +42,6 @@ exports.getMasterKey = async(function() {
             masterKey.push(byte);
         }
     });
-
     // Final key required for encryption/decryption of encrypted address-secrets stored in heroku config vars
     // A hacker must compromise heroku, redis, and mongo to receive masterKey
     return masterKey;
@@ -55,3 +54,15 @@ exports.decrypt = function(masterKey, encryptedHex) {
     const decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
     return decryptedText;
 }
+
+exports.decryptAllAddresses = function (masterKey, encryptedAddresses) {
+    const cryptAddresses = Object.keys(encryptedAddresses);
+    return cryptAddresses.map((cryptAddress) => exports.decrypt(masterKey, cryptAddress));
+};
+
+// const fn = async(function() {
+//     const masterKey = await(exports.getMasterKey());
+//     console.log(exports.decryptAllAddresses(masterKey, encryptedAddresses));
+// })
+
+// fn()
