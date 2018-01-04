@@ -15,6 +15,8 @@ import {
   DEL_REGISTER_URL,
   PREPARE_PAYMENT_URL,
   AUTH_URL,
+  NEXT_TRANSACTIONS_URL,
+  NEXT_SHAPESHIFT_TRANSACTIONS_URL,
   authRequest
 } from '../api';
 
@@ -186,6 +188,18 @@ exports.requestTransactions = () => {
   });
 };
 
+exports.loadNextTransactions = (maxDate) => {
+  return authRequest("GET", NEXT_TRANSACTIONS_URL, {params: [maxDate]}, (response) => {
+    return receivedNextTransactions(response.data);
+  });
+};
+
+exports.loadNextShapeShiftTransactions = (maxDate) => {
+  return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, {params: [maxDate]}, (response) => {
+    return receivedNextShapeShiftTransactions(response.data);
+  });
+};
+
 exports.requestUsers = (item) => {
   return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
     return receivedUsers(response.data);
@@ -278,6 +292,24 @@ const receivedTransactions = (data) => {
     type: 'RECEIVED_TRANSACTIONS',
     data
   };
+};
+
+const receivedNextTransactions = (data) => {
+  return {
+    type: 'RECEIVED_NEXT_TRANSACTIONS',
+    data
+  };
+};
+
+const receivedNextShapeShiftTransactions = (data) => {
+  return {
+    type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
+    data
+  };
+};
+
+exports.refreshShouldLoadMoreValues = {
+    type: 'REFRESH_LOAD_MORE'
 };
 
 const receivedBalance = (data) => {
