@@ -1,12 +1,14 @@
 import{ connect } from 'react-redux';
 import Home from './home';
-import { requestTransactions, requestAddressAndDesTag, unauthUser, loadNextTransactions, loadNextShapeShiftTransactions } from '../../actions/authActions';
+import { requestTransactions, requestAddressAndDesTag, unauthUser, loadNextTransactions, loadNextShapeShiftTransactions, refreshShouldLoadMoreValues } from '../../actions/authActions';
 import { requestShifts } from '../../actions/shapeActions';
 
 const mapStateToProps = ({ user }) => ({
   balance: user.balance,
   transactions: user.transactions,
-  shapeshiftTransactions: user.shapeshiftTransactions
+  shapeshiftTransactions: user.shapeshiftTransactions,
+  shouldLoadMoreShapeShiftTransactions: user.shouldLoadMoreShapeShiftTransactions,
+  shouldLoadMoreTransactions: user.shouldLoadMoreTransactions
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -15,7 +17,8 @@ const mapDispatchToProps = dispatch => ({
   loadNextTransactions: (minDate) => dispatch(loadNextTransactions(minDate)),
   loadNextShapeShiftTransactions: (minDate) => dispatch(loadNextShapeShiftTransactions(minDate)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
-  requestShifts: () => dispatch(requestShifts())
+  requestShifts: () => dispatch(requestShifts()),
+  refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues)
 });
 
 export default connect(
