@@ -19,7 +19,7 @@ export default class App extends React.Component {
   clearCredentials() {
     Keychain.resetGenericPassword().then(() => {
       console.log("jwt token deleted");
-    })
+    });
   }
 
   render() {
@@ -30,8 +30,9 @@ export default class App extends React.Component {
         //start with the home page
         return (
           <View>
+            {/* <StatusBar barStyle="light-content" /> */}
           </View>
-        )
+        );
       } else {
         // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
         // this.clearCredentials();
@@ -42,7 +43,7 @@ export default class App extends React.Component {
     };
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         {renderMainView()}
       </View>
     );

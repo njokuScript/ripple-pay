@@ -53,7 +53,7 @@ class Search extends React.Component {
       animation: true,
       animationType: 'fade',
       navigatorStyle: {
-        navBarHidden: true,
+        navBarHidden: true, statusBarTextColorScheme: 'light'
       },
     });
   }

@@ -79,7 +79,7 @@ class StartApp {
         screen: {
           screen: 'App',
           title: 'App',
-          navigatorStyle: {navBarHidden: true},
+          navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},
         }
       });
     }
@@ -94,7 +94,7 @@ class StartApp {
             icon: this.homeIcon,
             selectedIcon: this.homeIcon,
             title: 'Home',
-            navigatorStyle: {navBarHidden: true},
+            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'},
           },
           {
             label: 'Search',
@@ -102,7 +102,7 @@ class StartApp {
             icon: this.searchIcon,
             selectedIcon: this.searchIcon,
             title: 'Search',
-            navigatorStyle: {navBarHidden: true}
+            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'}
           },
           {
             label: 'Wallet',
@@ -110,7 +110,7 @@ class StartApp {
             icon: this.walletIcon,
             selectedIcon: this.walletIcon,
             title: 'Wallet',
-            navigatorStyle: {navBarHidden: true}
+            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'}
           },
           {
             label: 'Exchange',
@@ -118,7 +118,7 @@ class StartApp {
             icon: this.exchangeIcon,
             selectedIcon: this.exchangeIcon,
             title: 'Exchange',
-            navigatorStyle: {navBarHidden: true}
+            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'}
           }
         ]
       });

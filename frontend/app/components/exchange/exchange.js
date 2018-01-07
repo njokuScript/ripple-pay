@@ -62,8 +62,8 @@ class Exchange extends Component {
   navWallet(){
     this.props.navigator.push({
       screen: 'Wallet',
-      navigatorStyle: {navBarHidden: true}
-    })
+      navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: "light"}
+    });
   }
 
   navSendRipple() {
@@ -92,7 +92,6 @@ class Exchange extends Component {
     }
     this.props.navigator.push({
       screen: 'Transition',
-      // navigatorStyle: {navBarHidden: true},
       passProps: {toCoin: toCoin, fromCoin: fromCoin},
       animation: true,
       animationType: 'fade',
