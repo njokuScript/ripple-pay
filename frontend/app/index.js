@@ -87,6 +87,9 @@ class StartApp {
     startTabApplication() {
   // this will start our app
       Navigation.startTabBasedApp({
+        appStyle: {
+          statusBarTextColorScheme: 'light'
+        },
         tabs: [
           {
             label: 'Home',
@@ -94,7 +97,7 @@ class StartApp {
             icon: this.homeIcon,
             selectedIcon: this.homeIcon,
             title: 'Home',
-            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'},
+            navigatorStyle: {navBarHidden: true},
           },
           {
             label: 'Search',
@@ -102,7 +105,7 @@ class StartApp {
             icon: this.searchIcon,
             selectedIcon: this.searchIcon,
             title: 'Search',
-            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'}
+            navigatorStyle: {navBarHidden: true}
           },
           {
             label: 'Wallet',
@@ -110,7 +113,7 @@ class StartApp {
             icon: this.walletIcon,
             selectedIcon: this.walletIcon,
             title: 'Wallet',
-            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'}
+            navigatorStyle: {navBarHidden: true}
           },
           {
             label: 'Exchange',
@@ -118,7 +121,7 @@ class StartApp {
             icon: this.exchangeIcon,
             selectedIcon: this.exchangeIcon,
             title: 'Exchange',
-            navigatorStyle: {navBarHidden: true, statusBarTextColorScheme: 'light'}
+            navigatorStyle: {navBarHidden: true}
           }
         ]
       });
