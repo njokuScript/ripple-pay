@@ -19,7 +19,7 @@ export default class App extends React.Component {
   clearCredentials() {
     Keychain.resetGenericPassword().then(() => {
       console.log("jwt token deleted");
-    })
+    });
   }
 
   render() {
@@ -31,7 +31,7 @@ export default class App extends React.Component {
         return (
           <View>
           </View>
-        )
+        );
       } else {
         // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
         // this.clearCredentials();

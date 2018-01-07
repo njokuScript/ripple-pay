@@ -45,6 +45,9 @@ const RIPPLE_MESSAGES = {
 };
 
 function resolveError(action, errorData) {
+  if (typeof errorData === 'object') {
+    return errorData.message || errorData.error;
+  }
   for (let index = 0; index < ERRORS[action].length; index++) {
     const type = ERRORS[action][index];
     if (errorData.match(type.regex)) {
@@ -56,7 +59,8 @@ function resolveError(action, errorData) {
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
-    return axios.post(SIGNIN_URL, {email, password}).then((response) => {
+    return axios.post(SIGNIN_URL, {email, password})
+    .then((response) => {
       let { token, screenName, wallets, cashRegister } = response.data;
       const usernameCred = null;
       const passwordCred = token;
@@ -67,7 +71,8 @@ exports.loginUser = (email, password) => {
       .catch((error) => {
           dispatch(addAlert("Could not log in. keychain issue."));
         });
-    }).catch((error) => {
+    })
+    .catch((error) => {
       const errorMessage = resolveError("LOGIN", error.response.data);
       errorMessage ? dispatch(addAlert(errorMessage)) : dispatch(addAlert("Could not log in"));
     });
@@ -76,7 +81,8 @@ exports.loginUser = (email, password) => {
 
 exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
-    return axios.post(SIGNUP_URL, {email, password, screenName}).then((response) => {
+    return axios.post(SIGNUP_URL, {email, password, screenName})
+    .then((response) => {
       let { token } = response.data;
       const usernameCred = null;
       const passwordCred = token;
@@ -87,9 +93,23 @@ exports.signupUser = (email, password, screenName) => {
       .catch((error) => {
         dispatch(addAlert("Could not sign up. keychain issue."));
       });
-    }).catch((error) => {
+    })
+    .catch((error) => {
       const errorMessage = resolveError("SIGNUP", error.response.data);
-      errorMessage ? dispatch(addAlert(errorMessage)) : dispatch(addAlert("Could not sign up"));
+
+      if (errorMessage.constructor === String) {
+        dispatch(addAlert(errorMessage));
+        return;
+      }
+
+      if (errorMessage.constructor === Array) {
+        errorMessage.forEach((message) => {
+          dispatch(addAlert(message));
+        });
+        return;
+      }
+
+      dispatch(addAlert("Could not sign up"));
     });
   };
 };
