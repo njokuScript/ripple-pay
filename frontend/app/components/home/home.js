@@ -244,14 +244,13 @@ class Home extends React.Component {
 
 // define your styles
 const { width, height } = Dimensions.get('window');
+let aspectRatio = width/height;
+
 const styles = StyleSheet.create({
   mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
      backgroundColor: 'white'
    },
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -259,21 +258,10 @@ const styles = StyleSheet.create({
     height: height/10,
     paddingTop: 10,
     paddingLeft: width/20,
-    width: width,
-  },
-  logoContainer: {
-    backgroundColor: '#111F61',
-  },
-  logo: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'Kohinoor Bangla'
   },
   balanceContainer: {
     borderRadius: 50,
     borderColor: 'white',
-    // backgroundColor: 'rgba(53, 58, 83, .5)',
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 5,
