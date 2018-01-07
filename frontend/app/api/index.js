@@ -45,16 +45,17 @@ exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 // coin cap
 exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
 
-function resolveError(errorStatus, dispatch) {
+function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
         const AuthActions = require('../actions/authActions');
         const errorMap = {
             401: {"desc": "Unauthorized", "fns": [AuthActions.unauthUser, () => addAlert("Unauthorized attempt!") ] },
+            429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
             500: {"desc": "Jwt token expired", "fns": [AuthActions.unauthUser, () => addAlert("Session Expired!") ] }
         };
-        const errorResponse = errorMap[errorStatus];
-        if (errorResponse) {
-            errorResponse.fns.forEach((errorTask) => {
+        const errorResolution = errorMap[errorResponse.status];
+        if (errorResolution) {
+            errorResolution.fns.forEach((errorTask) => {
                 dispatch(errorTask());
             });    
         }
@@ -85,8 +86,7 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
 
             })
             .catch((err) => {
-                const errorStatus = err.response.status;
-                dispatch(resolveError(errorStatus));
+                dispatch(resolveError(err.response));
             });
         });
     };
