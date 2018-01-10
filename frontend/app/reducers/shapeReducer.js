@@ -23,15 +23,15 @@ module.exports = (state=defaultState, action) => {
       return merge({}, state, {coins: action.data});
       //Make the user_id undefined after logout.
     case 'RECEIVED_RATE':
-      return merge({}, state, {rates: {[action.coin]: action.data.rate}})
+      return merge({}, state, {rates: {[action.coin]: action.data.rate}});
     case 'MARKET_INFO':
-      return merge({}, state, {market: action.data})
+      return merge({}, state, {market: action.data});
     case 'RECEIVED_SEND_AMOUNT':
-      return Object.assign({}, state, { sendamount: action.data.success ? action.data.success : action.data })
+      return Object.assign({}, state, { sendamount: action.data.success ? action.data.success : action.data });
     case 'RECEIVED_SHAPESHIFT':
-      return Object.assign({}, state, {sendamount: action.data})
+      return Object.assign({}, state, {sendamount: action.data});
     case 'CLEARANCE':
-      return Object.assign({}, state, {sendamount: {}})
+      return Object.assign({}, state, {sendamount: {}});
     default:
       return state;
   }
