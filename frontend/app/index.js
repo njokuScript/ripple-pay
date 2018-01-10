@@ -88,7 +88,7 @@ class StartApp {
   // this will start our app
       Navigation.startTabBasedApp({
         appStyle: {
-          statusBarTextColorScheme: 'light'
+          TextColorScheme: 'light'
         },
         tabs: [
           {
