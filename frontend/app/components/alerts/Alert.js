@@ -33,14 +33,11 @@ class Alert extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#f2dede',
     borderColor: '#ebccd1',
-    borderTopWidth: 2
   },
   text: {
-    color: "#a94442"
+    color: "red",
+    textAlign: "center"
   }
 });
 

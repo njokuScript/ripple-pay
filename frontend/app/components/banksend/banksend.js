@@ -14,7 +14,8 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -101,9 +102,9 @@ class BankSend extends Component {
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}
           />
-          <View style={styles.alert}>
+          <KeyboardAvoidingView style={styles.alert}>
             <AlertContainer />
-          </View>
+          </KeyboardAvoidingView>
         </View>
         {/* <PasswordLock enableSending={this.enableSending} /> */}
       </View>
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   alert: {
-    marginTop: 205
+    // marginTop: 300
   }
 });
 
