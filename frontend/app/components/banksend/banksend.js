@@ -54,7 +54,7 @@ class BankSend extends Component {
 
 
   sendPayment(){
-    if (parseFloat(this.state.amount) <= 0 || !this.state.amount.match(/^\d+$/))
+    if (!parseFloat(this.state.amount) || parseFloat(this.state.amount) <= 0 || !this.state.amount.match(/\d+/))
     {
       this.props.addAlert("Can't send 0 or less Ripple");
       return;

@@ -85,7 +85,7 @@ class SendRipple extends Component {
         return;
       }
       let {toDesTag, toAddress, amount} = this.state;
-      if ( parseFloat(amount) <= 0 || !amount.match(/^\d+$/) )
+      if ( !parseFloat(amount) || parseFloat(amount) <= 0 || !amount.match(/\d+/) )
       {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;

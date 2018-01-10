@@ -10,21 +10,21 @@ import Alert from './Alert';
 
 class AlertContainer extends React.Component {
   constructor(props){
-    super(props)
+    super(props);
   }
   render() {
     let renderAlerts = () => {
       return this.props.alerts.map((alert) => {
         return (
           <Alert alert={alert} key={alert.id}/>
-        )
+        );
       });
-    }
+    };
     return (
       <View style={styles.container}>
         {renderAlerts()}
       </View>
-    )
+    );
   }
 }
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 var mapStateToProps = (state) => {
   return {
     alerts: state.alerts
-  }
-}
+  };
+};
 
 module.exports = connect(mapStateToProps)(AlertContainer);
