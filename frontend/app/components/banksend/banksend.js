@@ -27,8 +27,8 @@ class BankSend extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
-      sendButtonDisabled: true
-    }
+      sendButtonDisabled: false
+    };
   }
 
   onNavigatorEvent(event){
@@ -36,14 +36,14 @@ class BankSend extends Component {
     {
       this.setState({
         sendButtonDisabled: true
-      })
+      });
     }
   }
 
   enableSending() {
     this.setState({
       sendButtonDisabled: false
-    })
+    });
   }
 
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
@@ -105,7 +105,7 @@ class BankSend extends Component {
             <AlertContainer />
           </View>
         </View>
-        <PasswordLock enableSending={this.enableSending} />
+        {/* <PasswordLock enableSending={this.enableSending} /> */}
       </View>
     );
   }
@@ -114,13 +114,12 @@ class BankSend extends Component {
 // define your styles
 const styles = StyleSheet.create({
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 70,
-    paddingTop: 10,
+    paddingTop: 20,
     paddingLeft: 30,
     paddingRight: 20
   },
