@@ -82,7 +82,7 @@ module.exports = (state=defaultState, action) => {
     case 'RECEIVED_OLD_ADDRESS':
       return Object.assign({}, state, { cashRegister: action.data.cashRegister });
     case 'RECEIVED_SHAPESHIFTS':
-      return Object.assign({}, state, { shapeshiftTransactions: action.data.shapeshiftTransactions.reverse()})
+      return Object.assign({}, state, { shapeshiftTransactions: action.data.shapeshiftTransactions });
     default:
       return state;
   }

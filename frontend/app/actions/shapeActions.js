@@ -20,7 +20,7 @@ import {
 exports.requestAllCoins = () => {
   return function(dispatch){
     return axios.get(COINS_URL).then((response)=>{
-      dispatch(receivedCoins(response.data));
+      return dispatch(receivedCoins(response.data));
     });
   };
 };
