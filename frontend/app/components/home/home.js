@@ -232,7 +232,7 @@ class Home extends React.Component {
         {this.displayTransactions()}
       </ScrollView>
       <CustomButton
-        performAction="Load next 25 Transactions"
+        performAction="Load more transactions"
         buttonColor="white"
         isDisabled={false}
         handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
