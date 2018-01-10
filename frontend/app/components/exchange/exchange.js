@@ -24,10 +24,7 @@ class Exchange extends Component {
     super(props);
     this.state = {
       direction: true,
-      getRates: true,
-    }
-    this.allCoins = this.allCoins.bind(this);
-    this.finishAndBeginExchange = this.finishAndBeginExchange.bind(this);
+    };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -36,37 +33,41 @@ class Exchange extends Component {
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestAllCoins();
+      this.props.requestAllCoins().then(() => {
+
+        this.getRates();
+
+        this.timer = window.setInterval(() => {
+          this.getRates();
+        }, 10000);
+
+      });
     }
     else if (event.id === "didDisappear")
     {
       window.clearTimeout(this.timer);
     }
   }
-  finishAndBeginExchange() {
-    let that = this;
-    this.setState({getRates: false});
-    window.clearTimeout(this.timer);
-    this.timer = window.setTimeout(function(){
-      that.setState({getRates: true});
-    },20000);
+
+  getRates() {
+    let allCoins = this.props.shape.coins;
+    if (allCoins) {
+      Object.keys(allCoins).filter((coin) => allCoins[coin].status === "available" && !['NXT', 'XRP'].includes(coin)).forEach((coin) => {
+        this.props.requestRate(coin);
+      });
+    }
   }
 
-  // componentWillUnmount(){
-  //   window.clearTimeout(this.timer);
-  // }
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
   navWallet(){
+    window.clearTimeout(this.timer);
     this.props.navigator.push({
       screen: 'Wallet',
       navigatorStyle: {navBarHidden: true}
-    })
+    });
   }
 
   navSendRipple() {
+    window.clearTimeout(this.timer);
     this.props.navigator.push({
       screen: 'SendRipple',
       animation: true,
@@ -78,6 +79,7 @@ class Exchange extends Component {
   }
 
   navTransition(coin, dir) {
+    window.clearTimeout(this.timer);
     let toCoin;
     let fromCoin;
     if ( dir === 'send' )
@@ -102,17 +104,6 @@ class Exchange extends Component {
     });
   }
 
-  // componentDidUpdate(oldProps, oldState){
-  //   let alltheCoins = this.props.shape.coins;
-  //   if ( alltheCoins && this.state.getRates )
-  //   {
-  //     Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
-  //       this.props.requestRate(coin);
-  //     })
-      // this.finishAndBeginExchange();
-  //   }
-  // }
-
 //Maybe give these the indexes that they are suppose to have.
   allCoins() {
     const myCoins = this.props.shape.coins;
@@ -128,7 +119,7 @@ class Exchange extends Component {
         receiveFunction={this.navWallet.bind(this)}
         rate=""
       />
-    )
+    );
     if ( myCoins )
     {
       Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
@@ -180,7 +171,7 @@ class Exchange extends Component {
   }
 
   truncate(num){
-    return num ? num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0] : "";
+    return num ? num.toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
   }
 
   render() {
@@ -208,8 +199,6 @@ class Exchange extends Component {
     );
   }
 }
-
-// define your styles
 
 const styles = StyleSheet.create({
   mainContainer: {
