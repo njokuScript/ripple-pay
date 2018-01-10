@@ -62,11 +62,7 @@ class Exchange extends Component {
     window.clearTimeout(this.timer);
     this.props.navigator.push({
       screen: 'Wallet',
-<<<<<<< HEAD
-      navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: "light"}
-=======
       navigatorStyle: {navBarHidden: true}
->>>>>>> 9bc1e5dff1eb6f22fdc9ee8a77fc237d55f09dd3
     });
   }
 

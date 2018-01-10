@@ -203,9 +203,6 @@ class Home extends React.Component {
           </View>
 
           <View style={styles.balanceContainer}>
-            {/* <Text style={styles.balanceTextField}>
-              balance:
-            </Text> */}
             <Text style={styles.balanceText}>
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
@@ -231,7 +228,7 @@ class Home extends React.Component {
         contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
       </ScrollView>
-      <CustomButton
+      {/* <CustomButton
         performAction="Load more transactions"
         buttonColor="white"
         isDisabled={false}

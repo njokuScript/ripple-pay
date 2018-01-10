@@ -142,7 +142,7 @@ class Search extends React.Component {
      fontSize: 15
    },
     resultsContainer: {
-      flex: 1,
+      // flex: 1,
       marginBottom: 75
     },
     resultsInfo: {
@@ -161,8 +161,8 @@ class Search extends React.Component {
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
       backgroundColor: 'white',
-      width: 345,
-      marginLeft: 15
+      width: width,
+      paddingLeft: 15,
     },
     sendText: {
       marginRight: 3
