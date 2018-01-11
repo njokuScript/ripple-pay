@@ -11,3 +11,9 @@ exports.removeAlert = (id) => {
     id
   };
 };
+
+exports.clearAlerts = (id) => {
+  return {
+    type: 'CLEAR_ALERTS'
+  };
+};

@@ -27,7 +27,8 @@ module.exports = (state=defaultState, action) => {
           return true;
         }
       });
-
+    case 'CLEAR_ALERTS':
+      return defaultState;
     default:
       return state;
   }

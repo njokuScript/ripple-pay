@@ -15,7 +15,9 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Dimensions,
+  Keyboard
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -28,8 +30,13 @@ class BankSend extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
-      sendButtonDisabled: false
+      sendButtonDisabled: false,
+      keyboardHeight: 0
     };
+  }
+
+  componentDidMount() {
+    this.props.clearAlerts();
   }
 
   onNavigatorEvent(event){
@@ -64,6 +71,19 @@ class BankSend extends Component {
     this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
   }
 
+  renderAlerts() {
+    if (this.props.alerts.length > 0) {
+      let alerts = this.props.alerts.map((alert, idx) => {
+        return (
+          <View key={idx}>{alert}</View>
+          );
+        });
+        return alerts;
+      } else {
+        return;
+      }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -89,8 +109,8 @@ class BankSend extends Component {
               }
             }
             autoCorrect={false}
-            placeholderTextColor="#6D768B"
             autoFocus={true}
+            placeholderTextColor="#6D768B"
             autoCapitalize={'none'}
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}/>
@@ -102,17 +122,18 @@ class BankSend extends Component {
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}
           />
-          <KeyboardAvoidingView style={styles.alert}>
-            <AlertContainer />
-          </KeyboardAvoidingView>
         </View>
         {/* <PasswordLock enableSending={this.enableSending} /> */}
+        <View style={{marginBottom: this.state.keyboardHeight}}>
+          {this.renderAlerts()}
+        </View>
       </View>
     );
   }
 }
 
 // define your styles
+const { width, height } = Dimensions.get('screen');
 const styles = StyleSheet.create({
   topContainer: {
     backgroundColor: '#111F61',
@@ -178,10 +199,6 @@ const styles = StyleSheet.create({
     marginTop: 9,
     marginRight: 10
   },
-  alert: {
-    // marginTop: 300
-  }
 });
 
-// make this component available to the app
 export default BankSend;
