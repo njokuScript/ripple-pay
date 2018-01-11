@@ -10,6 +10,7 @@ var COINCAP_URL = 'https://coincap.io';
 
 // local
 var API_URL = 'http://localhost:3000/v1';
+
 // prod
 // var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
 
