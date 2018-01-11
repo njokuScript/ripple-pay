@@ -75,8 +75,15 @@ class BankSend extends Component {
   renderAlerts() {
     if (this.props.alerts.length > 0) {
       let alerts = this.props.alerts.map((alert, idx) => {
+        let alertText = {
+          color: "red",
+          textAlign: "center"
+        };
+        if (alert.text === "Payment was Successful") {
+          alertText.color = "white";
+        } 
         return (
-          <Text style={styles.alertText} key={idx}>{alert.text}</Text>
+          <Text style={alertText} key={idx}>{alert.text}</Text>
           );
         });
         return alerts[alerts.length-1];
@@ -202,10 +209,6 @@ const styles = StyleSheet.create({
   },
   alert: {
 
-  },
-  alertText: {
-    color: "white",
-    textAlign: "center"
   }
 });
 
