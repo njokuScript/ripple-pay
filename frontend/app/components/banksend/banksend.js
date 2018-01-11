@@ -71,14 +71,15 @@ class BankSend extends Component {
     this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
   }
 
+  // custom alert styling
   renderAlerts() {
     if (this.props.alerts.length > 0) {
       let alerts = this.props.alerts.map((alert, idx) => {
         return (
-          <View key={idx}>{alert}</View>
+          <Text style={styles.alertText} key={idx}>{alert.text}</Text>
           );
         });
-        return alerts;
+        return alerts[alerts.length-1];
       } else {
         return;
       }
@@ -124,7 +125,7 @@ class BankSend extends Component {
           />
         </View>
         {/* <PasswordLock enableSending={this.enableSending} /> */}
-        <View style={{marginBottom: this.state.keyboardHeight}}>
+        <View style={styles.alert}>
           {this.renderAlerts()}
         </View>
       </View>
@@ -199,6 +200,13 @@ const styles = StyleSheet.create({
     marginTop: 9,
     marginRight: 10
   },
+  alert: {
+
+  },
+  alertText: {
+    color: "red",
+    textAlign: "center"
+  }
 });
 
 export default BankSend;
