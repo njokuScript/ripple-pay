@@ -30,7 +30,7 @@ class BankSend extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
-      sendButtonDisabled: false,
+      sendButtonDisabled: true,
       keyboardHeight: 0
     };
   }
@@ -129,7 +129,7 @@ class BankSend extends Component {
             handlePress={this.sendPayment}
           />
         </View>
-        {/* <PasswordLock enableSending={this.enableSending} /> */}
+        <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
           {this.renderAlerts()}
         </View>
