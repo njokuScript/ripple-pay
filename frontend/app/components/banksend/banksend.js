@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
 
   },
   alertText: {
-    color: "red",
+    color: "white",
     textAlign: "center"
   }
 });
