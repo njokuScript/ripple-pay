@@ -203,14 +203,11 @@ class Home extends React.Component {
           </View>
 
           <View style={styles.balanceContainer}>
-            <Text style={styles.balanceTextField}>
-              balance:
-            </Text>
             <Text style={styles.balanceText}>
               {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
             </Text>
-            <Text style={styles.balanceText}>
-              $ {this.state.usd}
+            <Text style={styles.usdText}>
+              (${this.state.usd.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]})
             </Text>
           </View>
       </View>
@@ -244,36 +241,24 @@ class Home extends React.Component {
 
 // define your styles
 const { width, height } = Dimensions.get('window');
+let aspectRatio = width/height;
+
 const styles = StyleSheet.create({
   mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
      backgroundColor: 'white'
    },
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 70,
+    height: height/10,
     paddingTop: 10,
-    paddingLeft: 30,
-    paddingRight: 20
-  },
-  logoContainer: {
-    backgroundColor: '#111F61',
-  },
-  logo: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'Kohinoor Bangla'
+    paddingLeft: width/20,
   },
   balanceContainer: {
     borderRadius: 50,
     borderColor: 'white',
-    // backgroundColor: 'rgba(53, 58, 83, .5)',
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 5,
@@ -282,9 +267,17 @@ const styles = StyleSheet.create({
   },
    balanceText: {
      textAlign: 'center',
-     fontSize: 20,
+     fontSize: 25,
      color: 'white',
      fontFamily: 'Kohinoor Bangla'
+   },
+   usdText: {
+     textAlign: 'center',
+     fontSize: 13,
+     color: 'white',
+     fontFamily: 'Kohinoor Bangla',
+     paddingTop: 12,
+     paddingLeft: 5
    },
   balanceTextField: {
      textAlign: 'center',

@@ -30,6 +30,7 @@ export default class App extends React.Component {
         //start with the home page
         return (
           <View>
+            {/* <StatusBar barStyle="light-content" /> */}
           </View>
         );
       } else {
@@ -42,7 +43,7 @@ export default class App extends React.Component {
     };
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         {renderMainView()}
       </View>
     );

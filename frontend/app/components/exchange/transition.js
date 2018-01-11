@@ -100,7 +100,7 @@ class Transition extends Component {
     }
     this.props.navigator.push({
       screen: 'SendAmount',
-      navigatorStyle: {navBarHidden: true},
+      navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},
       passProps: {
                  withdrawal: this.withdrawalAddress,
                  returnAddress: this.returnAddress,

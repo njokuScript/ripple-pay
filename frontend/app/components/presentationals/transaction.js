@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 
 // Pass down props.otherParty,
@@ -66,6 +67,7 @@ const Transaction = (props) => {
   }
 };
 
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   transaction: {
     flex: 1,
@@ -73,16 +75,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 2,
     paddingLeft: 15,
+    paddingRight: 15,
     paddingTop: 15.65,
     paddingBottom: 15.65,
     borderBottomWidth: 1,
     borderColor: '#d3d3d3',
     backgroundColor: 'white',
-    width: 345,
-    marginLeft: 15
+    width: width,
   },
   transactionInfo: {
-    marginLeft: -15
+    // marginRight: -15
   },
   transactionOtherPartyText: {
     fontWeight: "600",
