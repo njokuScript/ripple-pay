@@ -6,6 +6,7 @@ const mung = require('express-mung');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const csp = require('helmet-csp');
 // require db
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -38,6 +39,11 @@ if (process.env.NODE_ENV=='production') {
   mongoose.connect('mongodb://localhost/ripplePay', { useMongoClient: true });
 }
 app.use(helmet());
+app.use(csp({
+  directives: {
+    defaultSrc: ["'self'"],
+  }
+}));
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 
