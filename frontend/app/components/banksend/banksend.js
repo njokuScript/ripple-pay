@@ -35,18 +35,14 @@ class BankSend extends Component {
     };
   }
 
-  onNavigatorEvent(event) {
-    if (event.id === "willAppear") {
-      this.props.clearAlerts();
-    }
-  }
-
   onNavigatorEvent(event){
     if ( event.id === "willDisappear")
     {
       this.setState({
         sendButtonDisabled: true
       });
+    } else if (event.id === "willAppear") {
+      this.props.clearAlerts();
     }
   }
 
