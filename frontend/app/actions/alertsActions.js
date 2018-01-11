@@ -12,7 +12,7 @@ exports.removeAlert = (id) => {
   };
 };
 
-exports.clearAlerts = (id) => {
+exports.clearAlerts = () => {
   return {
     type: 'CLEAR_ALERTS'
   };

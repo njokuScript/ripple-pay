@@ -15,7 +15,7 @@ class PasswordLock extends Component {
         this.enterPassword = this.enterPassword.bind(this);
         this.state = {
             password: ""
-        }
+        };
     }
     
     componentWillReceiveProps(nextProps) {

@@ -20,7 +20,7 @@ import {
   authRequest
 } from '../api';
 
-import { addAlert } from './alertsActions';
+import { addAlert, clearAlerts } from './alertsActions';
 import starter from '../index.js';
 
 const ERRORS = {
@@ -235,6 +235,7 @@ exports.requestAllWallets = () => {
 exports.unauthUser = () => {
   return function(dispatch) {
     starter.startSingleApplication();
+    dispatch(clearAlerts());
     dispatch(logout());
   };
 };
