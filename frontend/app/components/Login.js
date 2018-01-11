@@ -27,8 +27,10 @@ class Login extends React.Component {
     this.toggleField = this.toggleField.bind(this);
   }
 
-  componentDidMount() {
-    this.props.dispatch(clearAlerts());
+  onNavigatorEvent(event) {
+    if (event.id === "willAppear") {
+      this.props.clearAlerts();
+    }
   }
 
   onSignIn() {

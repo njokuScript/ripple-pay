@@ -228,12 +228,12 @@ class Home extends React.Component {
         contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
       </ScrollView>
-      {/* <CustomButton
+      <CustomButton
         performAction="Load more transactions"
         buttonColor="white"
         isDisabled={false}
         handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
-      /> */}
+      />
       </View>
     );
   }

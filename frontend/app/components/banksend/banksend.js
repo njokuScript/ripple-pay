@@ -35,8 +35,10 @@ class BankSend extends Component {
     };
   }
 
-  componentDidMount() {
-    this.props.clearAlerts();
+  onNavigatorEvent(event) {
+    if (event.id === "willAppear") {
+      this.props.clearAlerts();
+    }
   }
 
   onNavigatorEvent(event){
