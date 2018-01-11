@@ -79,7 +79,7 @@ class StartApp {
         screen: {
           screen: 'App',
           title: 'App',
-          navigatorStyle: {navBarHidden: true},
+          navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},
         }
       });
     }
@@ -87,6 +87,9 @@ class StartApp {
     startTabApplication() {
   // this will start our app
       Navigation.startTabBasedApp({
+        appStyle: {
+          TextColorScheme: 'light'
+        },
         tabs: [
           {
             label: 'Home',

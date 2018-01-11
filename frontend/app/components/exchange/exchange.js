@@ -94,7 +94,6 @@ class Exchange extends Component {
     }
     this.props.navigator.push({
       screen: 'Transition',
-      // navigatorStyle: {navBarHidden: true},
       passProps: {toCoin: toCoin, fromCoin: fromCoin},
       animation: true,
       animationType: 'fade',

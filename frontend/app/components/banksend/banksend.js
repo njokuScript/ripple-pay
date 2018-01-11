@@ -14,7 +14,10 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Dimensions,
+  Keyboard
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -27,8 +30,9 @@ class BankSend extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
-      sendButtonDisabled: true
-    }
+      sendButtonDisabled: false,
+      keyboardHeight: 0
+    };
   }
 
   onNavigatorEvent(event){
@@ -36,14 +40,16 @@ class BankSend extends Component {
     {
       this.setState({
         sendButtonDisabled: true
-      })
+      });
+    } else if (event.id === "willAppear") {
+      this.props.clearAlerts();
     }
   }
 
   enableSending() {
     this.setState({
       sendButtonDisabled: false
-    })
+    });
   }
 
   //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
@@ -61,6 +67,27 @@ class BankSend extends Component {
     }
     this.setState({sendButtonDisabled: true});
     this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
+  }
+
+  // custom alert styling
+  renderAlerts() {
+    if (this.props.alerts.length > 0) {
+      let alerts = this.props.alerts.map((alert, idx) => {
+        let alertText = {
+          color: "red",
+          textAlign: "center"
+        };
+        if (alert.text === "Payment was Successful") {
+          alertText.color = "white";
+        } 
+        return (
+          <Text style={alertText} key={idx}>{alert.text}</Text>
+          );
+        });
+        return alerts[alerts.length-1];
+      } else {
+        return;
+      }
   }
 
   render() {
@@ -88,8 +115,8 @@ class BankSend extends Component {
               }
             }
             autoCorrect={false}
-            placeholderTextColor="#6D768B"
             autoFocus={true}
+            placeholderTextColor="#6D768B"
             autoCapitalize={'none'}
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}/>
@@ -101,26 +128,26 @@ class BankSend extends Component {
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}
           />
-          <View style={styles.alert}>
-            <AlertContainer />
-          </View>
         </View>
-        <PasswordLock enableSending={this.enableSending} />
+        {/* <PasswordLock enableSending={this.enableSending} /> */}
+        <View style={styles.alert}>
+          {this.renderAlerts()}
+        </View>
       </View>
     );
   }
 }
 
 // define your styles
+const { width, height } = Dimensions.get('screen');
 const styles = StyleSheet.create({
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 70,
-    paddingTop: 10,
+    paddingTop: 20,
     paddingLeft: 30,
     paddingRight: 20
   },
@@ -179,9 +206,8 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   alert: {
-    marginTop: 205
+
   }
 });
 
-// make this component available to the app
 export default BankSend;

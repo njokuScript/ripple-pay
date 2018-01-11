@@ -9,9 +9,10 @@ var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
 
 // local
-var API_URL = 'http://localhost:3000/v1';
+// var API_URL = 'http://localhost:3000/v1';
+
 // prod
-// var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
+var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
 
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
