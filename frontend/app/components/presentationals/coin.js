@@ -9,7 +9,7 @@ import {
 
 const Coin = (props) => {
   return (
-    <View style={styles.coin} key={'rippleOne'}>
+    <View style={styles.coin}>
       <Image
           style={{width: 40, height: 40}}
           source={props.imageSource}
@@ -31,8 +31,8 @@ const Coin = (props) => {
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   coin: {

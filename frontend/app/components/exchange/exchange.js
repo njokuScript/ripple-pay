@@ -9,6 +9,8 @@ import Coin from '../presentationals/coin';
 import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Font from 'react-native-vector-icons/FontAwesome';
+import Promise from 'bluebird';
+
 import {
   StyleSheet,
   Text,
@@ -36,30 +38,32 @@ class Exchange extends Component {
       this.props.requestAllCoins().then(() => {
 
         this.getRates();
-
+        // get rates every minute
         this.timer = window.setInterval(() => {
           this.getRates();
-        }, 10000);
+        }, 60000);
 
       });
     }
     else if (event.id === "didDisappear")
     {
-      window.clearTimeout(this.timer);
+      window.clearInterval(this.timer);
     }
   }
 
   getRates() {
     let allCoins = this.props.shape.coins;
     if (allCoins) {
-      Object.keys(allCoins).filter((coin) => allCoins[coin].status === "available" && !['NXT', 'XRP'].includes(coin)).forEach((coin) => {
-        this.props.requestRate(coin);
+      Promise.each(Object.keys(allCoins), (coin) => {
+        if (allCoins[coin].status === "available" && !['NXT', 'XRP'].includes(coin)) {
+          return this.props.requestRate(coin);
+        }
       });
     }
   }
 
   navWallet(){
-    window.clearTimeout(this.timer);
+    window.clearInterval(this.timer);
     this.props.navigator.push({
       screen: 'Wallet',
       navigatorStyle: {navBarHidden: true}
@@ -67,7 +71,7 @@ class Exchange extends Component {
   }
 
   navSendRipple() {
-    window.clearTimeout(this.timer);
+    window.clearInterval(this.timer);
     this.props.navigator.push({
       screen: 'SendRipple',
       animation: true,
@@ -79,7 +83,7 @@ class Exchange extends Component {
   }
 
   navTransition(coin, dir) {
-    window.clearTimeout(this.timer);
+    window.clearInterval(this.timer);
     let toCoin;
     let fromCoin;
     if ( dir === 'send' )
@@ -130,6 +134,7 @@ class Exchange extends Component {
         {
           line = `${this.truncate(1/this.props.shape.rates[coin])} ${myCoins[coin].symbol}/XRP`;
         }
+        // this won't be good if ethereum moves in position
         if ( coin === "ETH" )
         {
           showCoins.splice(2,0, (
