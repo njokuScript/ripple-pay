@@ -19,8 +19,12 @@ import {
 
 exports.requestAllCoins = () => {
   return function(dispatch){
-    return axios.get(COINS_URL).then((response)=>{
+    return axios.get(COINS_URL)
+    .then((response)=>{
       return dispatch(receivedCoins(response.data));
+    })
+    .catch((err) => {
+      return err;
     });
   };
 };
@@ -30,7 +34,10 @@ exports.requestAllCoins = () => {
 exports.requestRate = (coin) => {
   return function(dispatch){
     return axios.get(`${RATE_URL}/${coin}_xrp`).then((response)=>{
-      dispatch(receivedRate(response.data, coin));
+      return dispatch(receivedRate(response.data, coin));
+    })
+    .catch((err) => {
+      return err;
     });
   };
 };
