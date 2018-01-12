@@ -8,6 +8,8 @@ import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
+import Util from '../../utils/util';
+
 import {
   StyleSheet,
   Text,
@@ -32,7 +34,7 @@ class SendRipple extends Component {
       toDesTag: undefined,
       amount: "",
       sendButtonDisabled: true
-    }
+    };
   }
 
   onNavigatorEvent(event) {
@@ -49,7 +51,7 @@ class SendRipple extends Component {
   enableSending() {
     this.setState({
       sendButtonDisabled: false
-    })
+    });
   }
 
   sendPayment() {
@@ -68,7 +70,7 @@ class SendRipple extends Component {
       this.props.addAlert("Please get a wallet first")
     }
     //This is the REGEX to validate a Ripple Address
-    else if(!this.state.toAddress.match(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/))
+    else if(!Util.validRippleAddress(this.state.toAddress))
     {
       this.props.addAlert("Invalid Ripple Address");
     }
@@ -85,7 +87,7 @@ class SendRipple extends Component {
         return;
       }
       let {toDesTag, toAddress, amount} = this.state;
-      if ( !parseFloat(amount) || parseFloat(amount) <= 0 || !amount.match(/\d+/) )
+      if (!Util.validMoneyEntry(amount))
       {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;
@@ -106,7 +108,7 @@ class SendRipple extends Component {
             <Text>Amount: {amount}</Text>
             <Text>Fee: {fee}</Text>
           </View>
-        )
+        );
       }
       return null;
     }

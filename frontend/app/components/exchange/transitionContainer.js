@@ -1,8 +1,11 @@
 import { connect } from 'react-redux';
 import Transition from './transition';
-import { requestMarketInfo } from '../../actions/shapeActions';
-import { addAlert } from '../../actions/alertsActions';
-import { requestAllWallets, requestOldAddress } from '../../actions/authActions';
+import { 
+  requestMarketInfo, 
+  addAlert,
+  requestAllWallets, 
+  requestOldAddress 
+} from '../../actions';
 
 const mapStateToProps = ({ shape, user }) => ({
   shape: shape,

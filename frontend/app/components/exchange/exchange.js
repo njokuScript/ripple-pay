@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Font from 'react-native-vector-icons/FontAwesome';
 import Promise from 'bluebird';
+import Util from '../../utils/util';
 
 import {
   StyleSheet,
@@ -128,11 +129,11 @@ class Exchange extends Component {
       Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
         if ( this.state.direction )
         {
-          line = `${this.truncate(this.props.shape.rates[coin])} XRP/${myCoins[coin].symbol}`;
+          line = `${Util.truncate(this.props.shape.rates[coin], 5)} XRP/${myCoins[coin].symbol}`;
         }
         else
         {
-          line = `${this.truncate(1/this.props.shape.rates[coin])} ${myCoins[coin].symbol}/XRP`;
+          line = `${Util.truncate( (1/this.props.shape.rates[coin]), 5 )} ${myCoins[coin].symbol}/XRP`;
         }
         // this won't be good if ethereum moves in position
         if ( coin === "ETH" )
@@ -172,10 +173,6 @@ class Exchange extends Component {
         {showCoins}
       </ScrollView>
     );
-  }
-
-  truncate(num){
-    return num ? num.toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
   }
 
   render() {
