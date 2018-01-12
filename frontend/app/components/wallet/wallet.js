@@ -144,6 +144,7 @@ class Wallet extends React.Component {
             </View>
             <View>
               <View style={styles.destTag}>
+              <Text style={styles.walletFont}>{this.props.cashRegister}</Text>
                 <Text style={styles.destintro}>Destination Tags:</Text>
               </View>
               <View style={styles.walletsContainer}>

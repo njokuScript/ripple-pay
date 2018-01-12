@@ -1,7 +1,12 @@
 import { connect } from 'react-redux';
 import SendRipple from './sendRipple';
-import { preparePayment, signAndSend, requestTransactions, clearTransaction } from '../../actions/authActions';
-import { addAlert } from '../../actions/alertsActions';
+import { 
+  preparePayment, 
+  signAndSend, 
+  requestTransactions, 
+  clearTransaction,
+  addAlert 
+} from '../../actions';
 
 const mapStateToProps = ({ user, transaction }) => ({
   fromAddress: user.cashRegister,

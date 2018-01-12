@@ -1,8 +1,11 @@
 import { connect } from 'react-redux';
 import BankSend from './banksend';
-import { sendInBank } from '../../actions/authActions';
-import { addAlert, clearAlerts } from '../../actions/alertsActions';
-import { requestTransactions } from '../../actions/authActions';
+import { 
+  sendInBank, 
+  addAlert, 
+  clearAlerts, 
+  requestTransactions 
+} from '../../actions';
 
 const mapStateToProps = ({user, alerts}) => ({
   balance: user.balance,

@@ -7,8 +7,7 @@ import {
   makeShapeshiftTransaction,
   clearSendAmount
  } from '../../actions/shapeActions';
-import { addAlert } from '../../actions/alertsActions';
-import { signAndSend } from '../../actions/authActions';
+import { addAlert, signAndSend } from '../../actions';
 
 const mapStateToProps = ({ shape }) => ({
   shape: shape,
