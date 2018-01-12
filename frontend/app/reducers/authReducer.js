@@ -63,7 +63,6 @@ module.exports = (state=defaultState, action) => {
     case 'RECEIVED_BALANCE':
       return Object.assign({}, state, {balance: action.data.balance});
     case 'RECEIVED_USERS':
-    console.log(action);
       return Object.assign({}, state, {users: action.users.search});
     case 'RECEIVED_WALLETS':
       return Object.assign({}, state, {wallets: action.data.wallets});
