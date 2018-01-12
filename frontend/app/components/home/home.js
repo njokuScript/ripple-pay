@@ -9,6 +9,7 @@ import Transaction from '../presentationals/transaction';
 import CustomButton from '../presentationals/customButton';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
+import AlertContainer from '../alerts/AlertContainer';
 
 import {
     ScrollView,
@@ -234,6 +235,7 @@ class Home extends React.Component {
         isDisabled={false}
         handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
       />
+      <AlertContainer />
       </View>
     );
   }
