@@ -2,13 +2,14 @@ import React from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
-import { unauthUser } from '../../actions/authActions';
-import { getXRPtoUSD } from '../../actions/coincapActions';
+import { getXRPtoUSD, unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
 import CustomButton from '../presentationals/customButton';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
+import AlertContainer from '../alerts/AlertContainer';
+import Util from '../../utils/util';
 
 import {
     ScrollView,
@@ -124,11 +125,11 @@ class Home extends React.Component {
       showshift: <ShapeTransactionView time={time} {...transaction}/>
     });
   }
-  // Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
+
   displayTransactions() {
-    if (this.state.showshift != '') {
-      return this.state.showshift;
-    }
+
+    if (this.state.showshift != '') { return this.state.showshift; }
+
     if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
       (!this.state.shapeshift && this.props.transactions.length > 0)) {
       let transactions;
@@ -153,7 +154,7 @@ class Home extends React.Component {
             key={idx}
             otherParty={transaction.otherParty}
             date={date}
-            amount={`${transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ`}
+            amount={`${Util.truncate(transaction.amount, 2)} Ʀ`}
             transactionColor={transaction.amount < 0 ? "red" : "green"}
             time={time}
             />
@@ -166,9 +167,9 @@ class Home extends React.Component {
               key={idx}
               otherParty={`${transaction.otherParty.slice(0,17)}...`}
               date={date}
-              amount={transaction.from}
-              toAmount={`to ${transaction.to}`}
-              transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
+              amount={`${transaction.from.fromAmount} ${transaction.from.fromCoin}`}
+              toAmount={`${transaction.to.toAmount} ${transaction.to.toCoin}`}
+              transactionColor={transaction.from.fromCoin === "XRP" ? "red" : "green"}
               handlePress={() => this.showShapeshiftTransaction(transaction, time)}
               time={time}
             />
@@ -204,10 +205,10 @@ class Home extends React.Component {
 
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>
-              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+              {Util.truncate(this.props.balance, 2)} Ʀ
             </Text>
             <Text style={styles.usdText}>
-              (${this.state.usd.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]})
+              (${Util.truncate(this.state.usd, 2)})
             </Text>
           </View>
       </View>
@@ -234,6 +235,7 @@ class Home extends React.Component {
         isDisabled={false}
         handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
       />
+      <AlertContainer />
       </View>
     );
   }

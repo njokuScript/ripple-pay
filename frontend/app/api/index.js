@@ -2,8 +2,7 @@
 //The next file to look at is router.js
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
-import { addAlert } from '../actions/alertsActions';
-// import { unauthUser } from '../actions/authActions';
+import { addAlert, unauthUser } from '../actions';
 // currently using localhost. but change to production server later.
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
@@ -48,21 +47,32 @@ exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
 
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
-        const AuthActions = require('../actions/authActions');
-        const errorMap = {
-            401: {"desc": "Unauthorized", "fns": [AuthActions.unauthUser, () => addAlert("Unauthorized attempt!") ] },
+        const errorStatusMap = {
+            401: {"desc": "Unauthorized", "fns": [unauthUser, () => addAlert("Unauthorized attempt!") ] },
             429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
-            500: {"desc": "Jwt token expired", "fns": [AuthActions.unauthUser, () => addAlert("Session Expired!") ] }
         };
-        const errorResolution = errorMap[errorResponse.status];
-        if (errorResolution) {
-            errorResolution.fns.forEach((errorTask) => {
+
+        const errorStatusResolution = errorStatusMap[errorResponse.status]; 
+        if (errorStatusResolution) {
+            errorStatusResolution.fns.forEach((errorTask) => {
                 dispatch(errorTask());
-            });    
+            }); 
+            return true;   
         }
-        else {
-            dispatch(addAlert("Error making request"));
+
+        const errorDataMap = [
+            { "regex": /token\ has\ expired/, "desc": "Session Expired!", "fns": [unauthUser, () => addAlert("Session Expired!")] },
+        ];
+
+        const errorDataResolution = errorDataMap.find((data) => errorResponse.data.match(data.regex));
+        if (errorDataResolution) {
+            errorDataResolution.fns.forEach((errorTask) => {
+                dispatch(errorTask());
+            });
+            return true;
         }
+
+        return dispatch(addAlert("Error making request"));
     };
 }
 
@@ -84,10 +94,10 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
                         dispatch(cb(response));
                     }
                 });
-
+                return true;
             })
             .catch((err) => {
-                dispatch(resolveError(err.response));
+                return dispatch(resolveError(err.response));
             });
         });
     };

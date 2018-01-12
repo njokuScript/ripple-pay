@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { loginUser, signupUser } from '../actions/authActions';
+import { loginUser, signupUser } from '../actions';
 
 class Login extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class Login extends React.Component {
 
   onSignIn() {
     let { dispatch, fields: { email, password } } = this.props;
-    dispatch(loginUser(email.value, password.value))
+    dispatch(loginUser(email.value, password.value));
   }
 
   onSignUp() {

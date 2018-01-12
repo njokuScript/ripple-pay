@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 
-import { removeAlert } from '../../actions/alertsActions';
+import { removeAlert } from '../../actions';
 
 class Alert extends React.Component {
   constructor(props){
