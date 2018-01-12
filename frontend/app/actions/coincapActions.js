@@ -6,5 +6,5 @@ exports.getXRPtoUSD = (xrpBalance, setUSD) => {
         const usdPerXRP = response.data.price;
         const usdBalance = usdPerXRP*xrpBalance;
         setUSD(usdBalance);
-    })
-}
+    });
+};

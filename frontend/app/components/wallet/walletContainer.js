@@ -8,7 +8,7 @@ import {
   requestAddress,
   delWallet,
   removeCashRegister,
-} from '../../actions/authActions';
+} from '../../actions';
 
 
 const mapStateToProps = ({user}) => ({

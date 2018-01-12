@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { unauthUser, comparePassword } from '../../actions/authActions';
+import { unauthUser, comparePassword } from '../../actions';
 import CustomInput from './customInput';
 import CustomButton from './customButton';
 import {

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Keychain from 'react-native-keychain';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import starter from '../index.js';
 import {
   StyleSheet,

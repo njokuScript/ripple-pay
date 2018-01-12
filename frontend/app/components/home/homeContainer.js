@@ -1,7 +1,15 @@
 import{ connect } from 'react-redux';
 import Home from './home';
-import { requestTransactions, requestAddressAndDesTag, unauthUser, loadNextTransactions, loadNextShapeShiftTransactions, refreshShouldLoadMoreValues } from '../../actions/authActions';
-import { requestShifts } from '../../actions/shapeActions';
+
+import { 
+  requestTransactions, 
+  requestAddressAndDesTag, 
+  unauthUser, 
+  loadNextTransactions, 
+  loadNextShapeShiftTransactions, 
+  refreshShouldLoadMoreValues, 
+  requestShifts 
+} from '../../actions';
 
 const mapStateToProps = ({ user }) => ({
   balance: user.balance,
