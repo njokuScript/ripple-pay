@@ -2,8 +2,7 @@
 //The next file to look at is router.js
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
-import { addAlert } from '../actions/alertsActions';
-// import { unauthUser } from '../actions/authActions';
+import { addAlert, unauthUser } from '../actions';
 // currently using localhost. but change to production server later.
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
@@ -48,9 +47,8 @@ exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
 
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
-        const AuthActions = require('../actions/authActions');
         const errorStatusMap = {
-            401: {"desc": "Unauthorized", "fns": [AuthActions.unauthUser, () => addAlert("Unauthorized attempt!") ] },
+            401: {"desc": "Unauthorized", "fns": [unauthUser, () => addAlert("Unauthorized attempt!") ] },
             429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
         };
 
@@ -63,7 +61,7 @@ function resolveError(errorResponse, dispatch) {
         }
 
         const errorDataMap = [
-            { "regex": /token\ has\ expired/, "desc": "Session Expired!", "fns": [AuthActions.unauthUser, () => addAlert("Session Expired!")] },
+            { "regex": /token\ has\ expired/, "desc": "Session Expired!", "fns": [unauthUser, () => addAlert("Session Expired!")] },
         ];
 
         const errorDataResolution = errorDataMap.find((data) => errorResponse.data.match(data.regex));
@@ -99,8 +97,6 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
                 return true;
             })
             .catch((err) => {
-                console.log(err);
-                
                 return dispatch(resolveError(err.response));
             });
         });

@@ -9,6 +9,8 @@ import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
+import Util from '../../utils/util';
+
 import {
   StyleSheet,
   Text,
@@ -60,7 +62,7 @@ class BankSend extends Component {
 
 
   sendPayment(){
-    if (!parseFloat(this.state.amount) || parseFloat(this.state.amount) <= 0 || !this.state.amount.match(/\d+/))
+    if (!Util.validMoneyEntry(this.state.amount))
     {
       this.props.addAlert("Can't send 0 or less Ripple");
       return;
@@ -102,7 +104,7 @@ class BankSend extends Component {
               balance:
             </Text>
             <Text style={styles.balanceText}>
-              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
+              {Util.truncate(this.props.balance, 2)} Ʀ
             </Text>
           </View>
         </View>
