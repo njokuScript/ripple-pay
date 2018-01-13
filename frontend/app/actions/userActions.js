@@ -1,6 +1,8 @@
 //We made our user actions and auth actions all the same, remember this.
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
+import { apiKey } from '../../apiKey';
+
 import {
   SIGNIN_URL,
   SIGNUP_URL,
@@ -39,7 +41,10 @@ function resolveError(action, errorData) {
 
 exports.loginUser = (email, password) => {
   return function(dispatch) {
-    return axios.post(SIGNIN_URL, {email, password})
+    const authedAxios = axios.create({
+      headers: { apiKey },
+    });
+    return authedAxios.post(SIGNIN_URL, {email, password})
     .then((response) => {
       let { token, screenName, wallets, cashRegister } = response.data;
       const usernameCred = null;
@@ -61,7 +66,10 @@ exports.loginUser = (email, password) => {
 
 exports.signupUser = (email, password, screenName) => {
   return function(dispatch) {
-    return axios.post(SIGNUP_URL, {email, password, screenName})
+    const authedAxios = axios.create({
+      headers: { apiKey },
+    });
+    return authedAxios.post(SIGNUP_URL, {email, password, screenName})
     .then((response) => {
       let { token } = response.data;
       const usernameCred = null;
