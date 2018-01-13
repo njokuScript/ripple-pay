@@ -3,6 +3,7 @@
 import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
 import { addAlert, unauthUser } from '../actions';
+import { apiKey } from '../../apiKey';
 // currently using localhost. but change to production server later.
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
@@ -81,7 +82,7 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
         return Keychain.getGenericPassword().then((creds) => {
 
             const authedAxios = axios.create({
-                headers: { authorization: creds.password },
+                headers: { authorization: creds.password, apiKey: apiKey },
             });
 
             return authedAxios[requestType.toLowerCase()](url, data)
