@@ -5,7 +5,7 @@ import ExchangeContainer from '../exchange/exchangeContainer';
 import { getXRPtoUSD, unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
-import CustomButton from '../presentationals/customButton';
+import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
 import AlertContainer from '../alerts/AlertContainer';
@@ -184,7 +184,7 @@ class Home extends React.Component {
     } else {
       return (
         <Transaction
-          otherParty="no transactions - pull down to refresh"
+          otherParty="no transactions"
         />
       );
     }
@@ -228,14 +228,16 @@ class Home extends React.Component {
         automaticallyAdjustContentInsets={false}
         contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
+      <View style={styles.loadTransactions}>
+        <LoadMoreDataButton
+          performAction="load more transactions"
+          buttonColor="#4579FB"
+          isDisabled={false}
+          handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
+        />
+      </View>
       </ScrollView>
-      <CustomButton
-        performAction="Load more transactions"
-        buttonColor="white"
-        isDisabled={false}
-        handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
-      />
-      <AlertContainer />
+      {/* <AlertContainer /> */}
       </View>
     );
   }
@@ -293,8 +295,8 @@ const styles = StyleSheet.create({
       transform: [{ rotate: '180deg' }],
       marginBottom: 3
     },
-    transactionsContainer: {
-      marginBottom: 75
+  loadTransactions: {
+      marginBottom: height/6
     },
 });
 
