@@ -176,6 +176,22 @@ class Home extends React.Component {
           );
         }
       });
+      if (transactions.length >= 10) {
+        let performAction = "load more transactions";
+        if (!this.props.shouldLoadMoreTransactions) {
+          performAction = "no more transactions";
+        }
+        transactions.push(
+          <View key={123} style={styles.loadTransactions}>
+            <LoadMoreDataButton
+              performAction={performAction}
+              buttonColor="#4579FB"
+              isDisabled={false}
+              handlePress={this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions}
+            />
+          </View>
+        );
+      }
       return (
         <ScrollView style={styles.transactionsContainer}>
           {transactions}
@@ -228,16 +244,8 @@ class Home extends React.Component {
         automaticallyAdjustContentInsets={false}
         contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
-      <View style={styles.loadTransactions}>
-        <LoadMoreDataButton
-          performAction="load more transactions"
-          buttonColor="#4579FB"
-          isDisabled={false}
-          handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
-        />
-      </View>
       </ScrollView>
-      {/* <AlertContainer /> */}
+      <AlertContainer />
       </View>
     );
   }
