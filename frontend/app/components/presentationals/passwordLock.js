@@ -50,9 +50,11 @@ class PasswordLock extends Component {
                     keyboardAppearance={'dark'}
                     value={this.state.password}
                 />
-                <Text>{this.props.passwordAttempts.tries} password attempts remaining</Text>
+                <View>
+                    <Text style={{color: "white", textAlign: "center"}}>{this.props.passwordAttempts.tries} password attempts remaining</Text>
+                </View>
                 <CustomButton
-                    performAction="Enter Password"
+                    performAction="enter password"
                     buttonColor="white"
                     handlePress={this.enterPassword}
                 />

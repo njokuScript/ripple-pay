@@ -79,7 +79,7 @@ class BankSend extends Component {
           color: "red",
           textAlign: "center"
         };
-        if (alert.text === "Payment was Successful") {
+        if (alert.text === "Payment was Successful!") {
           alertText.color = "white";
         } 
         return (
@@ -92,36 +92,59 @@ class BankSend extends Component {
       }
   }
 
-  render() {
+  topContainer() {
+    return (
+      <View style={styles.topContainer}>
+        <CustomBackButton handlePress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })} />
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceTextField}>
+            balance:
+            </Text>
+          <Text style={styles.balanceText}>
+            {Util.truncate(this.props.balance, 2)} Ʀ
+            </Text>
+        </View>
+      </View>
+    );
+  }
+
+  passwordLock() {
     return (
       <View style={styles.container}>
-        <View style={styles.topContainer}>
-          <CustomBackButton handlePress={() => this.props.navigator.pop({
-            animationType: 'fade'
-          })}/>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balanceTextField}>
-              balance:
-            </Text>
-            <Text style={styles.balanceText}>
-              {Util.truncate(this.props.balance, 2)} Ʀ
-            </Text>
-          </View>
+        {this.topContainer()}
+        <PasswordLock enableSending={this.enableSending} />
+        <View style={styles.alert}>
+          {this.renderAlerts()}
         </View>
+      </View>
+    );
+  }
+
+  render() {
+    if (this.state.sendButtonDisabled === true) {
+      return (
+          this.passwordLock()
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+        {this.topContainer()}
         <View style={styles.amount}>
           <CustomInput
             placeholder="Amount"
             onChangeText={
               (amt) => {
-                this.setState({amount: amt});
+                this.setState({ amount: amt });
               }
             }
             autoCorrect={false}
             autoFocus={true}
             placeholderTextColor="#6D768B"
             autoCapitalize={'none'}
-            keyboardType={'number-pad'}
-            keyboardAppearance={'dark'}/>
+            keyboardType={'decimal-pad'}
+            keyboardAppearance={'dark'} />
         </View>
         <View style={styles.paymentButton}>
           <CustomButton
@@ -131,12 +154,12 @@ class BankSend extends Component {
             handlePress={this.sendPayment}
           />
         </View>
-        <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
           {this.renderAlerts()}
         </View>
       </View>
-    );
+      );
+    }
   }
 }
 
