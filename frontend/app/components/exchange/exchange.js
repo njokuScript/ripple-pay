@@ -5,6 +5,7 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
+import CustomButton from '../presentationals/customButton';
 import Coin from '../presentationals/coin';
 import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
@@ -108,7 +109,7 @@ class Exchange extends Component {
     });
   }
 
-//Maybe give these the indexes that they are suppose to have.
+// Maybe give these the indexes that they are suppose to have.
   allCoins() {
     const myCoins = this.props.shape.coins;
     let theCoins;
@@ -175,22 +176,34 @@ class Exchange extends Component {
     );
   }
 
+  direction() {
+    if (this.state.direction) {
+      return (
+        <View style={styles.conversionContainer}>
+          <Text style={styles.directions}>Ʀ</Text>
+          <Font name="long-arrow-right" size={20} color="white" />
+          <Font name="bitcoin" size={20} color="white" />
+        </View>
+      );
+    } else {
+      return (
+      <View style={styles.conversionContainer}>
+        <Font name="bitcoin" size={20} color="white" />
+        <Font name="long-arrow-right" size={20} color="white" />
+        <Text style={styles.directions}>Ʀ</Text>
+      </View>
+      );
+    }
+  }
+
   render() {
     return (
       <View style={styles.mainContainer}>
 
       <View style={styles.topContainer}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>
-            Exchange
-          </Text>
-        </View>
-
-        <View style={styles.conversionContainer}>
           <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-            <Text style={styles.directions}>reverse conversion</Text>
+            {this.direction()}
           </TouchableOpacity>
-        </View>
       </View>
 
       <ScrollView>
@@ -210,11 +223,11 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: -1,
     backgroundColor: '#111F61',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     height: 90,
-    paddingTop: 20,
+    paddingTop: 35
   },
   container: {
     flex: 1,
@@ -225,6 +238,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     backgroundColor: '#111F61',
+    paddingLeft: 15
   },
   logo: {
     textAlign: 'center',
@@ -232,10 +246,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Kohinoor Bangla'
   },
+  conversionContainer: {
+    width: 80,
+    paddingRight: 15,
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
   directions: {
     textAlign: 'center',
     color: 'white',
-    fontSize: 13,
+    fontSize: 20,
     fontFamily: 'Kohinoor Bangla'
   },
   formError: {
