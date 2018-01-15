@@ -95,7 +95,6 @@ class Search extends React.Component {
                 this.setState({query: query});
               }
             }
-            autoFocus={true}
             placeholder="Enter Username"
             placeholderTextColor="#6D768B"
             keyboardAppearance={'dark'}

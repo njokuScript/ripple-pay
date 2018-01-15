@@ -76,6 +76,7 @@ class PasswordLock extends Component {
                     secureTextEntry={true}
                     keyboardAppearance={'dark'}
                     value={this.state.password}
+                    autoFocus={true}
                 />
                 <View style={{marginTop: 15, marginBottom: -15}}>
                     <Text style={{color: "white", textAlign: "center", fontSize: 12}}>{this.props.passwordAttempts.tries} password attempts remaining</Text>
