@@ -270,9 +270,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: height/10,
-    paddingTop: 10,
-    paddingLeft: width/20,
+    height: height/8,
+    paddingTop: 45,
+    paddingLeft: 15
   },
   balanceContainer: {
     borderRadius: 50,

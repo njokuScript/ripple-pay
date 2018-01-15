@@ -20,7 +20,8 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native';
 // create a Component
 class Exchange extends Component {
@@ -213,7 +214,7 @@ class Exchange extends Component {
     );
   }
 }
-
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
@@ -226,25 +227,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    height: 90,
-    paddingTop: 35
+    height: height/8,
+    paddingTop: 45
   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 0,
     backgroundColor: '#111F61'
   },
   logoContainer: {
     backgroundColor: '#111F61',
     paddingLeft: 15
-  },
-  logo: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'Kohinoor Bangla'
   },
   conversionContainer: {
     width: 80,
