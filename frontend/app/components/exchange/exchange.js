@@ -200,21 +200,21 @@ class Exchange extends Component {
   render() {
     return (
       <View style={styles.mainContainer}>
+        <View style={styles.topContainer}>
+            <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
+              {this.direction()}
+            </TouchableOpacity>
+        </View>
 
-      <View style={styles.topContainer}>
-          <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-            {this.direction()}
-          </TouchableOpacity>
+        <ScrollView>
+          {this.allCoins()}
+        </ScrollView>
       </View>
-
-      <ScrollView>
-        {this.allCoins()}
-      </ScrollView>
-     </View>
     );
   }
 }
 const { width, height } = Dimensions.get('window');
+const aspectRatio = width/height;
 const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
@@ -228,17 +228,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     height: height/8,
-    paddingTop: 45
+    paddingTop: (height/8)/2
   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     backgroundColor: '#111F61'
-  },
-  logoContainer: {
-    backgroundColor: '#111F61',
-    paddingLeft: 15
   },
   conversionContainer: {
     width: 80,

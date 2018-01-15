@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: height/8,
-    paddingTop: 45,
+    paddingTop: (height / 8) / 2,
     paddingLeft: 15
   },
   balanceContainer: {
