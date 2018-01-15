@@ -49,6 +49,7 @@ class Home extends React.Component {
       this.props.requestTransactions();
       this.props.requestShifts();
       this.props.refreshShouldLoadMoreValues();
+      this.props.clearAlerts();
     }
   }
 

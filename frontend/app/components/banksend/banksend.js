@@ -23,7 +23,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
-// I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
 class BankSend extends Component {
   constructor(props){
     super(props);
@@ -46,29 +45,30 @@ class BankSend extends Component {
     } else if (event.id === "willAppear") {
       this.props.clearAlerts();
     }
+    if (event.id === "bottomTabSelected") {
+      this.props.navigator.popToRoot();
+    }
   }
 
   enableSending() {
+    this.props.clearAlerts();
     this.setState({
       sendButtonDisabled: false
     });
   }
 
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-
-  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
-
-
   sendPayment(){
+    this.props.clearAlerts();
     if (!Util.validMoneyEntry(this.state.amount))
     {
-      this.props.addAlert("Can't send 0 or less Ripple");
-      return;
+      this.props.addAlert("cannot send 0 or less ripple");
+    } else if (this.state.amount > this.props.balance) {
+      this.props.addAlert("balance insufficient");
+    } else {
+      this.props.addAlert("sending payment...");
+      this.setState({sendButtonDisabled: true});
+      this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
     }
-    this.setState({sendButtonDisabled: true});
-    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
   }
 
   // custom alert styling
@@ -79,16 +79,16 @@ class BankSend extends Component {
           color: "red",
           textAlign: "center"
         };
-        if (alert.text === "Payment was Successful!") {
-          alertText.color = "white";
-        } 
+        if (alert.text === "Payment was Successful") {
+          alertText.color = "lightgreen";
+        } else if (alert.text === "sending payment...") {
+          alertText.color = "gray";
+        }
         return (
-          <Text style={alertText} key={idx}>{alert.text}</Text>
+          <Text style={alertText} key={idx}>{alert.text.toLowerCase() + "!"}</Text>
           );
         });
         return alerts[alerts.length-1];
-      } else {
-        return;
       }
   }
 
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   alert: {
-
+    marginTop: -10
   }
 });
 
