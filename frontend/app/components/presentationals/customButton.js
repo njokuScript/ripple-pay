@@ -11,7 +11,7 @@ const CustomButton = (props) => {
   const buttonStyle = {
     backgroundColor: 'transparent',
     fontWeight: '400',
-    fontSize: 20,
+    fontSize: 18,
     color: props.buttonColor,
     fontFamily: 'Kohinoor Bangla',
     textAlign: 'center'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { unauthUser, comparePassword } from '../../actions';
+import { unauthUser, comparePassword, clearAlerts } from '../../actions';
 import CustomInput from './customInput';
 import CustomButton from './customButton';
 import {
@@ -14,7 +14,8 @@ class PasswordLock extends Component {
         super(props);
         this.enterPassword = this.enterPassword.bind(this);
         this.state = {
-            password: ""
+            password: "",
+            isDisabled: false
         };
     }
     
@@ -25,12 +26,38 @@ class PasswordLock extends Component {
         if (nextProps.passwordAttempts.tries === this.props.passwordAttempts.tries) {
             this.props.enableSending();
         }
+        if (nextProps.passwordAttempts.tries === this.props.passwordAttempts.tries-1) {
+            this.setState({ isDisabled: false });
+        }
     }
 
     enterPassword() {
         const { password } = this.state;
-        this.props.comparePassword(password);
-        this.setState({ password: "" });
+        this.props.comparePassword(password).then(() => this.setState({ password: "" }));
+        this.setState({ isDisabled: true });
+    }
+
+    button() {
+        if (this.state.isDisabled) {
+            return (
+                <CustomButton
+                    performAction="checking password..."
+                    buttonColor="gray"
+                    handlePress={this.enterPassword}
+                    isDisabled={this.state.isDisabled}
+                />
+            );
+        } else {
+            return (
+                <CustomButton
+                    performAction="enter password"
+                    buttonColor="white"
+                    handlePress={this.enterPassword}
+                    isDisabled={this.state.isDisabled}
+                />
+            );
+        }
+
     }
 
     render() {
@@ -50,16 +77,12 @@ class PasswordLock extends Component {
                     keyboardAppearance={'dark'}
                     value={this.state.password}
                 />
-                <View>
-                    <Text style={{color: "white", textAlign: "center"}}>{this.props.passwordAttempts.tries} password attempts remaining</Text>
+                <View style={{marginTop: 15, marginBottom: -15}}>
+                    <Text style={{color: "white", textAlign: "center", fontSize: 12}}>{this.props.passwordAttempts.tries} password attempts remaining</Text>
                 </View>
-                <CustomButton
-                    performAction="enter password"
-                    buttonColor="white"
-                    handlePress={this.enterPassword}
-                />
+                {this.button()}
             </View>
-        )
+        );
     }
 
 }
