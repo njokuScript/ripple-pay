@@ -95,7 +95,6 @@ class Search extends React.Component {
                 this.setState({query: query});
               }
             }
-            autoFocus={true}
             placeholder="Enter Username"
             placeholderTextColor="#6D768B"
             keyboardAppearance={'dark'}
@@ -124,8 +123,8 @@ class Search extends React.Component {
    },
    topContainer: {
      backgroundColor: '#111F61',
-     height: 90,
-     paddingTop: 10,
+     height: height/8,
+     paddingTop: 10
    },
     title: {
       color: 'white',
