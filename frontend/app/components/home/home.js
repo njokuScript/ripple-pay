@@ -128,7 +128,6 @@ class Home extends React.Component {
   }
 
   displayTransactions() {
-
     if (this.state.showshift != '') { return this.state.showshift; }
 
     if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
@@ -143,10 +142,16 @@ class Home extends React.Component {
       transactions = transactions.map((transaction, idx) => {
         const date = new Date(transaction.date);
         let time;
-        if (date.getHours() > 12) {
-          time = `${date.getHours() - 12}:${date.getMinutes()} PM` ;
+        let minutes;
+        if (date.getMinutes() < 10) {
+          minutes = "0" + date.getMinutes();
         } else {
-          time = `${date.getHours()}:${date.getMinutes()} AM`;
+          minutes = date.getMinutes();
+        }
+        if (date.getHours() > 12) {
+          time = `${date.getHours() - 12}:${minutes} PM` ;
+        } else {
+          time = `${date.getHours()}:${minutes} AM`;
         }
         if (!this.state.shapeshift) {
           return (
