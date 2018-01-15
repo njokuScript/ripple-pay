@@ -85,7 +85,7 @@ class BankSend extends Component {
           alertText.color = "gray";
         }
         return (
-          <Text style={alertText} key={idx}>{alert.text.toLowerCase() + "!"}</Text>
+          <Text style={alertText} key={idx}>{alert.text.toLowerCase()}</Text>
           );
         });
         return alerts[alerts.length-1];
