@@ -5,7 +5,7 @@ import ExchangeContainer from '../exchange/exchangeContainer';
 import { getXRPtoUSD, unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
-import CustomButton from '../presentationals/customButton';
+import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
 import AlertContainer from '../alerts/AlertContainer';
@@ -49,6 +49,7 @@ class Home extends React.Component {
       this.props.requestTransactions();
       this.props.requestShifts();
       this.props.refreshShouldLoadMoreValues();
+      this.props.clearAlerts();
     }
   }
 
@@ -127,7 +128,6 @@ class Home extends React.Component {
   }
 
   displayTransactions() {
-
     if (this.state.showshift != '') { return this.state.showshift; }
 
     if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
@@ -142,10 +142,16 @@ class Home extends React.Component {
       transactions = transactions.map((transaction, idx) => {
         const date = new Date(transaction.date);
         let time;
-        if (date.getHours() > 12) {
-          time = `${date.getHours() - 12}:${date.getMinutes()} PM` ;
+        let minutes;
+        if (date.getMinutes() < 10) {
+          minutes = "0" + date.getMinutes();
         } else {
-          time = `${date.getHours()}:${date.getMinutes()} AM`;
+          minutes = date.getMinutes();
+        }
+        if (date.getHours() > 12) {
+          time = `${date.getHours() - 12}:${minutes} PM` ;
+        } else {
+          time = `${date.getHours()}:${minutes} AM`;
         }
         if (!this.state.shapeshift) {
           return (
@@ -176,6 +182,22 @@ class Home extends React.Component {
           );
         }
       });
+      if (transactions.length >= 10) {
+        let performAction = "load more transactions";
+        if (!this.props.shouldLoadMoreTransactions) {
+          performAction = "no more transactions";
+        }
+        transactions.push(
+          <View key={123} style={styles.loadTransactions}>
+            <LoadMoreDataButton
+              performAction={performAction}
+              buttonColor="#4579FB"
+              isDisabled={false}
+              handlePress={this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions}
+            />
+          </View>
+        );
+      }
       return (
         <ScrollView style={styles.transactionsContainer}>
           {transactions}
@@ -184,7 +206,7 @@ class Home extends React.Component {
     } else {
       return (
         <Transaction
-          otherParty="no transactions - pull down to refresh"
+          otherParty="no transactions"
         />
       );
     }
@@ -229,12 +251,6 @@ class Home extends React.Component {
         contentContainerStyle={styles.scrollViewContainer}>
         {this.displayTransactions()}
       </ScrollView>
-      <CustomButton
-        performAction="Load more transactions"
-        buttonColor="white"
-        isDisabled={false}
-        handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
-      />
       <AlertContainer />
       </View>
     );
@@ -254,9 +270,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: height/10,
-    paddingTop: 10,
-    paddingLeft: width/20,
+    height: height/8,
+    paddingTop: (height / 8) / 2,
+    paddingLeft: 15
   },
   balanceContainer: {
     borderRadius: 50,
@@ -293,8 +309,8 @@ const styles = StyleSheet.create({
       transform: [{ rotate: '180deg' }],
       marginBottom: 3
     },
-    transactionsContainer: {
-      marginBottom: 75
+  loadTransactions: {
+      marginBottom: height/6
     },
 });
 
