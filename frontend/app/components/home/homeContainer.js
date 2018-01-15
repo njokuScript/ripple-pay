@@ -8,7 +8,8 @@ import {
   loadNextTransactions, 
   loadNextShapeShiftTransactions, 
   refreshShouldLoadMoreValues, 
-  requestShifts 
+  requestShifts,
+  clearAlerts
 } from '../../actions';
 
 const mapStateToProps = ({ user }) => ({
@@ -26,7 +27,8 @@ const mapDispatchToProps = dispatch => ({
   loadNextShapeShiftTransactions: (minDate) => dispatch(loadNextShapeShiftTransactions(minDate)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
   requestShifts: () => dispatch(requestShifts()),
-  refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues)
+  refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues),
+  clearAlerts: () => dispatch(clearAlerts())
 });
 
 export default connect(

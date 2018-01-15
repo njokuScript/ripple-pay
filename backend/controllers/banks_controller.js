@@ -67,10 +67,10 @@ exports.inBankSend = asynchronous(function(req, res, next){
       }
     });
     
-    res.json({message: "Payment was Successful", balance: updatedSender.balance});
+    res.json({message: "payment was successful", balance: updatedSender.balance});
   }
   else {
-    res.json({message: "Payment Unsuccessful"});
+    res.json({message: "payment unsuccessful"});
   }
 })
 

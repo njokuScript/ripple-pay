@@ -23,7 +23,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
-// I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
 class BankSend extends Component {
   constructor(props){
     super(props);
@@ -46,29 +45,30 @@ class BankSend extends Component {
     } else if (event.id === "willAppear") {
       this.props.clearAlerts();
     }
+    if (event.id === "bottomTabSelected") {
+      this.props.navigator.popToRoot();
+    }
   }
 
   enableSending() {
+    this.props.clearAlerts();
     this.setState({
       sendButtonDisabled: false
     });
   }
 
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-
-  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
-
-
   sendPayment(){
+    this.props.clearAlerts();
     if (!Util.validMoneyEntry(this.state.amount))
     {
-      this.props.addAlert("Can't send 0 or less Ripple");
-      return;
+      this.props.addAlert("cannot send 0 or less ripple");
+    } else if (this.state.amount > this.props.balance) {
+      this.props.addAlert("balance insufficient");
+    } else {
+      this.props.addAlert("sending payment...");
+      this.setState({sendButtonDisabled: true});
+      this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
     }
-    this.setState({sendButtonDisabled: true});
-    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
   }
 
   // custom alert styling
@@ -80,48 +80,71 @@ class BankSend extends Component {
           textAlign: "center"
         };
         if (alert.text === "Payment was Successful") {
-          alertText.color = "white";
-        } 
+          alertText.color = "lightgreen";
+        } else if (alert.text === "sending payment...") {
+          alertText.color = "gray";
+        }
         return (
-          <Text style={alertText} key={idx}>{alert.text}</Text>
+          <Text style={alertText} key={idx}>{alert.text.toLowerCase()}</Text>
           );
         });
         return alerts[alerts.length-1];
-      } else {
-        return;
       }
   }
 
-  render() {
+  topContainer() {
+    return (
+      <View style={styles.topContainer}>
+        <CustomBackButton handlePress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })} />
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceTextField}>
+            balance:
+            </Text>
+          <Text style={styles.balanceText}>
+            {Util.truncate(this.props.balance, 2)} Ʀ
+            </Text>
+        </View>
+      </View>
+    );
+  }
+
+  passwordLock() {
     return (
       <View style={styles.container}>
-        <View style={styles.topContainer}>
-          <CustomBackButton handlePress={() => this.props.navigator.pop({
-            animationType: 'fade'
-          })}/>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balanceTextField}>
-              balance:
-            </Text>
-            <Text style={styles.balanceText}>
-              {Util.truncate(this.props.balance, 2)} Ʀ
-            </Text>
-          </View>
+        {this.topContainer()}
+        <PasswordLock enableSending={this.enableSending} />
+        <View style={styles.alert}>
+          {this.renderAlerts()}
         </View>
+      </View>
+    );
+  }
+
+  render() {
+    if (this.state.sendButtonDisabled === true) {
+      return (
+          this.passwordLock()
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+        {this.topContainer()}
         <View style={styles.amount}>
           <CustomInput
             placeholder="Amount"
             onChangeText={
               (amt) => {
-                this.setState({amount: amt});
+                this.setState({ amount: amt });
               }
             }
             autoCorrect={false}
             autoFocus={true}
             placeholderTextColor="#6D768B"
             autoCapitalize={'none'}
-            keyboardType={'number-pad'}
-            keyboardAppearance={'dark'}/>
+            keyboardType={'decimal-pad'}
+            keyboardAppearance={'dark'} />
         </View>
         <View style={styles.paymentButton}>
           <CustomButton
@@ -131,12 +154,12 @@ class BankSend extends Component {
             handlePress={this.sendPayment}
           />
         </View>
-        <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
           {this.renderAlerts()}
         </View>
       </View>
-    );
+      );
+    }
   }
 }
 
@@ -208,7 +231,7 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   alert: {
-
+    marginTop: -10
   }
 });
 
