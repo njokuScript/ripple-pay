@@ -28,7 +28,9 @@ class Settings extends React.Component {
   render() {
     return (
       <View style={styles.mainContainer}>
-        <Text style={styles.text}>Settings</Text>
+          <TouchableOpacity onPress={this.props.unauthUser}>
+            <Text style={styles.text}>Logout</Text>
+          </TouchableOpacity>
       </View>
     );
   }
