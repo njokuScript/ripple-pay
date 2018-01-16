@@ -183,15 +183,15 @@ class Home extends React.Component {
         }
       });
       if (transactions.length >= 10) {
-        let performAction = "load more transactions";
+        let performAction = "load more";
         if (!this.props.shouldLoadMoreTransactions) {
           performAction = "no more transactions";
         }
         transactions.push(
           <View key={123} style={styles.loadTransactions}>
             <LoadMoreDataButton
-              performAction={performAction}
-              buttonColor="#4579FB"
+              performAction="caret-down"
+              iconColor="#2A4CED"
               isDisabled={false}
               handlePress={this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions}
             />
@@ -218,28 +218,21 @@ class Home extends React.Component {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-
-          {/* <View style={styles.signOut}>
-            <TouchableOpacity onPress={this.onLogout}>
-              <Icon name="log-out" size={20} color="white"/>
-            </TouchableOpacity>
-          </View> */}
-
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>
-              {Util.truncate(this.props.balance, 2)} Ʀ
+              Ʀ{Util.truncate(this.props.balance, 2)}
             </Text>
             <Text style={styles.usdText}>
-              (${Util.truncate(this.state.usd, 2)})
+              ${Util.truncate(this.state.usd, 2)}
             </Text>
           </View>
       </View>
 
-      <TopTabs
+      {/* <TopTabs
         handleLeftPress={this.handleLeftPress}
         handleRightPress={this.handleRightPress}
         pressed={this.state.shapeshift}
-      />
+      /> */}
 
       <ScrollView
         refreshControl={
@@ -267,48 +260,22 @@ const styles = StyleSheet.create({
    },
   topContainer: {
     backgroundColor: '#111F61',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    height: height/8,
-    paddingTop: (height / 8) / 2,
-    paddingLeft: 15
-  },
-  balanceContainer: {
-    borderRadius: 50,
-    borderColor: 'white',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
-    flexDirection: "row"
+    height: height/5.5,
+    justifyContent: "center"
   },
    balanceText: {
      textAlign: 'center',
-     fontSize: 25,
+     fontSize: 30,
      color: 'white',
-     fontFamily: 'Kohinoor Bangla'
+     fontFamily: 'AppleSDGothicNeo-Light'
    },
    usdText: {
      textAlign: 'center',
-     fontSize: 13,
+     fontSize: 15,
      color: 'white',
-     fontFamily: 'Kohinoor Bangla',
-     paddingTop: 12,
-     paddingLeft: 5
+     fontFamily: 'AppleSDGothicNeo-Light',
    },
-  balanceTextField: {
-     textAlign: 'center',
-     fontSize: 11,
-     color: 'white',
-     fontFamily: 'Kohinoor Bangla',
-     marginTop: 9,
-     marginRight: 10
-   },
-    signOut: {
-      transform: [{ rotate: '180deg' }],
-      marginBottom: 3
-    },
   loadTransactions: {
       marginBottom: height/6
     },

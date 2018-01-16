@@ -105,19 +105,19 @@ class StartApp {
             navigatorStyle: {navBarHidden: true},
           },
           {
-            label: 'Search',
-            screen: 'Search',
-            icon: this.searchIcon,
-            selectedIcon: this.searchIcon,
-            title: 'Search',
-            navigatorStyle: {navBarHidden: true}
-          },
-          {
             label: 'Wallet',
             screen: 'Wallet',
             icon: this.walletIcon,
             selectedIcon: this.walletIcon,
             title: 'Wallet',
+            navigatorStyle: {navBarHidden: true}
+          },
+          {
+            label: 'Search',
+            screen: 'Search',
+            icon: this.searchIcon,
+            selectedIcon: this.searchIcon,
+            title: 'Search',
             navigatorStyle: {navBarHidden: true}
           },
           {
@@ -138,7 +138,7 @@ class StartApp {
           }
         ],
         tabsStyle: {
-          tabBarSelectedButtonColor: "#111F61"
+          tabBarSelectedButtonColor: "#2A4CED"
         }
       });
     }
