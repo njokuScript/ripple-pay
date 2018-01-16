@@ -228,11 +228,11 @@ class Home extends React.Component {
           </View>
       </View>
 
-      {/* <TopTabs
+      <TopTabs
         handleLeftPress={this.handleLeftPress}
         handleRightPress={this.handleRightPress}
         pressed={this.state.shapeshift}
-      /> */}
+      />
 
       <ScrollView
         refreshControl={
