@@ -4,7 +4,9 @@ import {
   View,
   TouchableOpacity,
   Text,
+  Dimensions
 } from 'react-native';
+import Font from 'react-native-vector-icons/FontAwesome';
 
 const LoadMoreDataButton = (props) => {
   // determines whether button is red or white based on disabled
@@ -19,9 +21,7 @@ const LoadMoreDataButton = (props) => {
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity onPress={props.handlePress} disabled={props.isDisabled} style={styles.touchableButton}>
-        <Text style={buttonStyle}>
-          {props.performAction}
-        </Text>
+        <Font name={props.performAction} size={30} color={props.iconColor} />
       </TouchableOpacity>
     </View>
   );

@@ -28,7 +28,7 @@ const TopTabs = (props) => {
         style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1})}
       >
         <Text 
-          style={Object.assign({}, topTab, { color: !props.pressed ? "#4579FB" : "black" })}>
+          style={Object.assign({}, topTab, { color: !props.pressed ? "#2A4CED" : "black" })}>
         transactions
         </Text>
       </TouchableOpacity>
@@ -36,7 +36,7 @@ const TopTabs = (props) => {
         onPress={props.handleRightPress}
         style={Object.assign({}, topTabContainer, {borderBottomWidth: props.pressed ? 2 : 1})}
       >
-        <Text style={Object.assign({}, topTab, { color: !props.pressed ? "black" : "#4579FB" })}>
+        <Text style={Object.assign({}, topTab, { color: !props.pressed ? "black" : "#2A4CED" })}>
         orders
         </Text>
       </TouchableOpacity>
