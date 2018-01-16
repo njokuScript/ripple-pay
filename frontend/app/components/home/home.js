@@ -219,11 +219,11 @@ class Home extends React.Component {
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
 
-          <View style={styles.signOut}>
+          {/* <View style={styles.signOut}>
             <TouchableOpacity onPress={this.onLogout}>
               <Icon name="log-out" size={20} color="white"/>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           <View style={styles.balanceContainer}>
             <Text style={styles.balanceText}>
