@@ -17,6 +17,7 @@ import { View,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
+
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -101,7 +102,6 @@ class Search extends React.Component {
           />
         </View>
        </View>
-
         <ScrollView>
           {/* i made a conditional in this results to try to print the results only when they are in the state,
               not working, but close i think  */}
@@ -114,17 +114,15 @@ class Search extends React.Component {
  const {width, height} = Dimensions.get('window');
  const styles=StyleSheet.create({
    mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
      backgroundColor: 'white'
-   },
-   nav: {
-    marginLeft: 10
    },
    topContainer: {
      backgroundColor: '#111F61',
-     height: height/8,
-     paddingTop: 10
+     height: height / 5.5,
+   },
+   searchContainer: {
+    justifyContent: "center",
+    flex: 1,
    },
     title: {
       color: 'white',
@@ -132,18 +130,9 @@ class Search extends React.Component {
       justifyContent: 'center',
       fontFamily: 'Kohinoor Bangla',
     },
-    instructions: {
-     textAlign: 'center',
-     color: '#333333',
-     marginBottom: 5,
-     fontSize: 15
-   },
     resultsContainer: {
-      // flex: 1,
-      marginBottom: 75
-    },
-    resultsInfo: {
       flex: 1,
+      marginBottom: 75
     },
     resultItemText: {
       fontWeight: "600",
@@ -161,9 +150,6 @@ class Search extends React.Component {
       width: width,
       paddingLeft: 15,
     },
-    sendText: {
-      marginRight: 3
-    }
  });
 
  export default Search;

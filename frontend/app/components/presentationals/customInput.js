@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
   field: {
     backgroundColor: '#0F1C52',
     borderRadius: 5,
-    padding: 0,
     paddingLeft: 15,
     marginLeft: 30,
     marginRight: 30,

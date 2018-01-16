@@ -23,7 +23,8 @@ import {
   ScrollView,
   Dimensions
 } from 'react-native';
-// create a Component
+
+const { width, height } = Dimensions.get('window');
 class Exchange extends Component {
   constructor(props){
     super(props);
@@ -182,15 +183,15 @@ class Exchange extends Component {
       return (
         <View style={styles.conversionContainer}>
           <Text style={styles.directions}>Ʀ</Text>
-          <Font name="long-arrow-right" size={20} color="white" />
-          <Font name="bitcoin" size={20} color="white" />
+          <Font name="long-arrow-right" size={width/20} color="white" />
+          <Font name="bitcoin" size={width/20} color="white" />
         </View>
       );
     } else {
       return (
       <View style={styles.conversionContainer}>
-        <Font name="bitcoin" size={20} color="white" />
-        <Font name="long-arrow-right" size={20} color="white" />
+        <Font name="bitcoin" size={width/20} color="white" />
+        <Font name="long-arrow-right" size={width/20} color="white" />
         <Text style={styles.directions}>Ʀ</Text>
       </View>
       );
@@ -201,9 +202,9 @@ class Exchange extends Component {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-            <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-              {this.direction()}
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
+            {this.direction()}
+          </TouchableOpacity>
         </View>
 
         <ScrollView>
@@ -213,58 +214,29 @@ class Exchange extends Component {
     );
   }
 }
-const { width, height } = Dimensions.get('window');
-const aspectRatio = width/height;
+
 const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
-     justifyContent: 'center',
-     backgroundColor: 'white'
+     backgroundColor: 'white',
    },
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    height: height/8,
-    paddingTop: (height/8)/2
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    backgroundColor: '#111F61'
+    height: height / 5.5,
   },
   conversionContainer: {
-    width: 80,
-    paddingRight: 15,
+    width: width/6,
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   directions: {
-    textAlign: 'center',
     color: 'white',
-    fontSize: 20,
+    fontSize: width/20,
     fontFamily: 'Kohinoor Bangla'
-  },
-  formError: {
-    color: 'red'
-  },
-  tabFont: {
-    fontFamily: 'Kohinoor Bangla',
-  },
-  tabs: {
-    backgroundColor: '#111F61',
-    borderColor: '#d3d3d3',
-    position: 'absolute',
-    paddingTop: 15,
-    paddingBottom: 10,
-    height: 75
-  },
+  }
 });
-
-// make this component available to the app
 
 export default Exchange;
