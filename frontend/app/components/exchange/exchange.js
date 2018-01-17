@@ -7,6 +7,7 @@ import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
 import CustomButton from '../presentationals/customButton';
 import Coin from '../presentationals/coin';
+import LoadingIcon from '../presentationals/loadingIcon';
 import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Font from 'react-native-vector-icons/FontAwesome';
@@ -21,7 +22,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -168,7 +170,7 @@ class Exchange extends Component {
     else
     {
       showCoins = (
-        <View><Text>Loading...</Text></View>
+          <LoadingIcon size="large" color="#0000ff" />
       );
     }
     return (

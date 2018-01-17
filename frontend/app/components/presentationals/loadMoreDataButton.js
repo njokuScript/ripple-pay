@@ -19,11 +19,11 @@ const LoadMoreDataButton = (props) => {
     textAlign: 'center'
   };
   return (
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={props.handlePress} disabled={props.isDisabled} style={styles.touchableButton}>
-        <Font name={props.performAction} size={30} color={props.iconColor} />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={props.handlePress} disabled={props.isDisabled} style={styles.touchableButton}>
+      <View style={styles.buttonContainer}>
+          <Font name={props.performAction} size={30} color={props.iconColor} />
+      </View>
+    </TouchableOpacity>
   );
 };
 
