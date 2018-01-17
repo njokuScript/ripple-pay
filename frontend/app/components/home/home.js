@@ -10,6 +10,7 @@ import LoadingIcon from '../presentationals/loadingIcon';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
 import AlertContainer from '../alerts/AlertContainer';
+import Promise from 'bluebird';
 import Util from '../../utils/util';
 
 import {
@@ -39,6 +40,7 @@ class Home extends React.Component {
       refreshing: false,
       shapeshift: false,
       showshift: null,
+      showScreen: false,
       usd: 0
     };
     this.onRefresh = this.onRefresh.bind(this);
@@ -48,10 +50,21 @@ class Home extends React.Component {
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestTransactions();
-      this.props.requestShifts();
-      this.props.refreshShouldLoadMoreValues();
-      this.props.clearAlerts();
+      const initializations = [];
+      initializations.push(this.props.requestTransactions());
+      initializations.push(this.props.requestShifts());
+      initializations.push(this.props.refreshShouldLoadMoreValues());
+      initializations.push(this.props.clearAlerts());
+      return Promise.all(initializations).then(() => {
+        this.setState({
+          showScreen: true
+        });
+      });
+    }
+    if (event.id === "didDisappear") {
+      this.setState({
+        showScreen: false
+      });
     }
   }
 
@@ -217,7 +230,7 @@ class Home extends React.Component {
 // THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
   render()
   {
-    if (this.props.transactions.length === 0) {
+    if (!this.state.showScreen) {
       return (
         <LoadingIcon size="large" color="black"/>
       );
