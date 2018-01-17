@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
   },
   topTabContainerRight: {
     borderColor: '#d3d3d3',
-    // borderBottomWidth: 1,
     width: 160,
     height: 40,
     justifyContent: 'center',
