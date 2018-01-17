@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions
+  Dimensions,
+  ScrollView,
+  RefreshControl
 } from 'react-native';
 
 class ShapeTransactionView extends React.Component {
@@ -50,25 +52,17 @@ class ShapeTransactionView extends React.Component {
       status = "complete";
     } 
     return (
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>{fromCoin === "XRP" ? "send" : "deposit"} {fromAmount} {fromCoin} as {toAmount} {toCoin}</Text>
-
-        <Text style={styles.infoText}>status:  {status ? status : 'please wait...'}</Text>
-
-        <Text style={styles.infoText}>sent to: {this.props.otherParty}</Text>
-        
-        <Text style={styles.infoText}>{`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${this.props.time}`}</Text>
-        
-        {this.state.txStat.error ? <Text style={styles.infoText}>Error:  {this.state.txStat.error}</Text> : null}
-        
-        <Text style={styles.infoText}>order id:  {this.props.orderId}</Text>
-        
-        <Text style={styles.infoText}>transaction id:  {this.state.txnId}</Text>
-        
-        <Text style={styles.infoText}>shapeshift deposit address:  {this.props.shapeShiftAddress}</Text>
-        
-        <Text style={styles.infoText}>refund address:  {this.props.refundAddress}</Text>
-      </View>
+      <ScrollView style={styles.infoContainer}>
+          <Text style={styles.infoText}>{fromCoin === "XRP" ? "send" : "deposit"} {fromAmount} {fromCoin} as {toAmount} {toCoin}</Text>
+          <Text style={styles.infoText}>status:  {status ? status : 'please wait...'}</Text>
+          <Text style={styles.infoText}>sent to: {this.props.otherParty}</Text>
+          <Text style={styles.infoText}>{`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${this.props.time}`}</Text>
+          {this.state.txStat.error ? <Text style={styles.infoText}>Error:  {this.state.txStat.error}</Text> : null}
+          <Text style={styles.infoText}>order id:  {this.props.orderId}</Text>
+          <Text style={styles.infoText}>transaction id:  {this.state.txnId}</Text>
+          <Text style={styles.infoText}>shapeshift deposit address:  {this.props.shapeShiftAddress}</Text>
+          <Text style={styles.infoText}>refund address:  {this.props.refundAddress}</Text>
+      </ScrollView>
     );
   }
 }
@@ -76,7 +70,7 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   infoContainer: {
     width: width,
-    paddingBottom: height/4.1
+    marginBottom: height/12
   },
   infoText: {
     fontSize: 13,
