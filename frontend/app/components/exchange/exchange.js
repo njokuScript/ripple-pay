@@ -21,7 +21,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -168,7 +169,9 @@ class Exchange extends Component {
     else
     {
       showCoins = (
-        <View><Text>Loading...</Text></View>
+        <View>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
       );
     }
     return (

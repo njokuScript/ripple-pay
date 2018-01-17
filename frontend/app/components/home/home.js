@@ -6,6 +6,7 @@ import { getXRPtoUSD, unauthUser } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
 import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
+import LoadingIcon from '../presentationals/loadingIcon';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
 import AlertContainer from '../alerts/AlertContainer';
@@ -19,7 +20,8 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    RefreshControl
+    RefreshControl,
+    ActivityIndicator
   } from 'react-native';
 
 class Home extends React.Component {
@@ -36,7 +38,7 @@ class Home extends React.Component {
     this.state = {
       refreshing: false,
       shapeshift: false,
-      showshift: '',
+      showshift: null,
       usd: 0
     };
     this.onRefresh = this.onRefresh.bind(this);
@@ -128,7 +130,7 @@ class Home extends React.Component {
   }
 
   displayTransactions() {
-    if (this.state.showshift != '') { return this.state.showshift; }
+    if (this.state.showshift) { return this.state.showshift; }
 
     if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
       (!this.state.shapeshift && this.props.transactions.length > 0)) {
@@ -215,39 +217,45 @@ class Home extends React.Component {
 // THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
   render()
   {
-    return (
-      <View style={styles.mainContainer}>
-        <View style={styles.topContainer}>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balanceText}>
-              Ʀ{Util.truncate(this.props.balance, 2)}
-            </Text>
-            <Text style={styles.usdText}>
-              ${Util.truncate(this.state.usd, 2)}
-            </Text>
-          </View>
-      </View>
+    if (this.props.transactions.length === 0) {
+      return (
+          <LoadingIcon size="large" color="black"/>
+      );
+    } else {
+      return (
+        <View style={styles.mainContainer}>
+          <View style={styles.topContainer}>
+            <View style={styles.balanceContainer}>
+              <Text style={styles.balanceText}>
+                Ʀ{Util.truncate(this.props.balance, 2)}
+              </Text>
+              <Text style={styles.usdText}>
+                ${Util.truncate(this.state.usd, 2)}
+              </Text>
+            </View>
+        </View>
 
-      <TopTabs
-        handleLeftPress={this.handleLeftPress}
-        handleRightPress={this.handleRightPress}
-        pressed={this.state.shapeshift}
-      />
+        <TopTabs
+          handleLeftPress={this.handleLeftPress}
+          handleRightPress={this.handleRightPress}
+          pressed={this.state.shapeshift}
+        />
 
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}/>
-        }
-        automaticallyAdjustContentInsets={false}
-        contentContainerStyle={styles.scrollViewContainer}>
-        {this.displayTransactions()}
-      </ScrollView>
-      <AlertContainer />
-      </View>
-    );
-  }
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}/>
+          }
+          automaticallyAdjustContentInsets={false}
+          contentContainerStyle={styles.scrollViewContainer}>
+          {this.displayTransactions()}
+        </ScrollView>
+        <AlertContainer />
+        </View>
+      );
+    }
+}
 }
 
 // define your styles
@@ -258,6 +266,9 @@ const styles = StyleSheet.create({
   mainContainer: {
      backgroundColor: 'white'
    },
+  scrollViewContainer: {
+    height: height/1.3
+  },
   topContainer: {
     backgroundColor: '#111F61',
     alignItems: 'center',
@@ -277,7 +288,7 @@ const styles = StyleSheet.create({
      fontFamily: 'AppleSDGothicNeo-Light',
    },
   loadTransactions: {
-      marginBottom: height/6
+      marginBottom: height/12
     },
 });
 
