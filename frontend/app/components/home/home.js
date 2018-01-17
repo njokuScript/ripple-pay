@@ -219,7 +219,7 @@ class Home extends React.Component {
   {
     if (this.props.transactions.length === 0) {
       return (
-          <LoadingIcon size="large" color="black"/>
+        <LoadingIcon size="large" color="black"/>
       );
     } else {
       return (
