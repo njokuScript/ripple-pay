@@ -36,7 +36,6 @@ exports.refreshShouldLoadMoreValues = TransactionActions.refreshShouldLoadMoreVa
 
 // WALLET ACTIONS
 exports.delWallet = WalletActions.delWallet;
-exports.removeCashRegister = WalletActions.removeCashRegister;
 exports.requestOnlyDesTag = WalletActions.requestOnlyDesTag;
 exports.requestAddress = WalletActions.requestAddress;
 exports.requestOldAddress = WalletActions.requestOldAddress;

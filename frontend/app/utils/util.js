@@ -1,5 +1,5 @@
 exports.truncate = function(num, decimalPlaces) {
-    if (!num) {
+    if (!num && num !== 0) {
       return "";  
     }
     const numString = num.toString();

@@ -7,7 +7,6 @@ import {
   requestOnlyDesTag,
   requestAddress,
   delWallet,
-  removeCashRegister,
 } from '../../actions';
 
 
@@ -24,7 +23,6 @@ const mapDispatchToProps = dispatch => ({
   requestAddress: () => dispatch(requestAddress()),
   delWallet: (desTag, cashRegister) => dispatch(delWallet(desTag, cashRegister)),
   requestOldAddress: () => dispatch(requestOldAddress()),
-  removeCashRegister: () => dispatch(removeCashRegister())
 });
 
 export default connect(

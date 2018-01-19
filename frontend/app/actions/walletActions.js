@@ -4,9 +4,10 @@ import {
     WALLETS_URL,
     DEST_URL,
     DEL_WALLET_URL,
-    DEL_REGISTER_URL,
     authRequest
 } from '../api';
+
+import { addAlert } from '../actions';
 
 exports.delWallet = (desTag, cashRegister) => {
     return authRequest("POST", DEL_WALLET_URL, { desTag, cashRegister }, (response) => {
@@ -14,11 +15,6 @@ exports.delWallet = (desTag, cashRegister) => {
     });
 };
 
-exports.removeCashRegister = () => {
-    return authRequest("POST", DEL_REGISTER_URL, {}, (response) => {
-        return deltheRegister();
-    });
-};
 exports.requestOnlyDesTag = (cashRegister) => {
     return authRequest("POST", DEST_URL, { cashRegister }, (response) => {
         if (response.data.message) {
