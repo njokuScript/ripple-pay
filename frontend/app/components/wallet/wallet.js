@@ -2,6 +2,7 @@ import React from 'react';
 import HomeContainer from '../home/homeContainer';
 import SearchContainer from '../search/searchContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
+import AlertContainer from '../alerts/AlertContainer';
 
 import {
   View,
@@ -47,9 +48,6 @@ class Wallet extends React.Component {
       .then(() => this.props.delWallet(this.props.wallets[0], this.props.cashRegister))
       .then(()=> this.setState({disabled: false}));
     }
-    if (this.props.wallets.length === 1) {
-      this.props.removeCashRegister();
-    }
   }
 
   //We have to disable the button so they can't generate more than 5 desTags
@@ -59,16 +57,15 @@ class Wallet extends React.Component {
     if ( alltheWallets.length >= 0 && alltheWallets.length < 5 )
     {
       this.setState({disabled: true});
-      if ( alltheWallets.length === 0 )
+      if (this.props.cashRegister)
+      {
+        this.props.requestOnlyDesTag(this.props.cashRegister).then(()=> this.setState({disabled: false}));
+      }
+      else
       {
         this.props.requestAddress()
         .then(()=> this.props.requestOnlyDesTag(this.props.cashRegister))
         .then(()=> this.setState({disabled: false}));
-      }
-      else
-      {
-        console.log(this.props.requestOnlyDesTag);
-        this.props.requestOnlyDesTag(this.props.cashRegister).then(()=> this.setState({disabled: false}));
       }
     }
     else
@@ -106,8 +103,7 @@ class Wallet extends React.Component {
   }
   displayWallets() {
     const disabled = this.state.disabled;
-    if (this.props.wallets && this.props.cashRegister && this.props.wallets.length > 0) {
-      //Jon - You were talking about some way to allow scrolling here so you can scroll through the wallets.
+    if (this.props.cashRegister) {
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (
           <View style={styles.wallet} key={idx}>
@@ -153,7 +149,8 @@ class Wallet extends React.Component {
             </View>
           </View>
       );
-    } else {
+    } 
+    else {
       return (
         <View style={styles.noWalletsButtonsContainer}>
           <TouchableOpacity disabled={disabled} onPress={this.generate}>
@@ -163,15 +160,12 @@ class Wallet extends React.Component {
       );
     }
   }
-  // <Text style={styles.title}>{this.props.cashRegister}</Text>
-  // <Text style={styles.title}>{this.props.destinationTag}</Text>
-
-  //I am removing wallets form earliest to latest. We can change this to just the one we click on later if we desire.
 
   render()
   {
     return (
       <View style={styles.mainContainer}>
+          <AlertContainer />
           {this.displayWallets()}
       </View>
     );

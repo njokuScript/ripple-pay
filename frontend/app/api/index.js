@@ -31,7 +31,6 @@ exports.OLDADDR_URL = `${API_URL}/old`;
 exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
 exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
-exports.DEL_REGISTER_URL = `${API_URL}/delRegister`;
 exports.AUTH_URL = `${API_URL}/authUrl`;
 
 // shape shift
