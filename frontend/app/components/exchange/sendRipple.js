@@ -96,7 +96,29 @@ class SendRipple extends Component {
     }
   }
 
+  displayBackButton() {
+    return (
+      <View style={styles.topContainer}>
+        <TouchableOpacity onPress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })}>
+          <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   render() {
+    if (this.state.sendButtonDisabled) {
+      return (
+        <View style={styles.container}>
+          <AlertContainer />
+          { this.displayBackButton() }
+          <PasswordLock enableSending={this.enableSending} />
+        </View>
+      );
+    }
+
     const { toAddress, toDesTag, fee, amount } = this.props.transaction;
     const readyToSend = Boolean(toAddress && fee && amount);
     const transaction = () => {
@@ -111,17 +133,11 @@ class SendRipple extends Component {
         );
       }
       return null;
-    }
+    };
     return (
       <View style={styles.container}>
         <AlertContainer />
-        <View style={styles.topContainer}>
-          <TouchableOpacity onPress={() => this.props.navigator.pop({
-            animationType: 'fade'
-            })}>
-            <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
-          </TouchableOpacity>
-        </View>
+        { this.displayBackButton() }
         <CustomInput
             placeholder="Destination Address"
             onChangeText={
@@ -168,7 +184,6 @@ class SendRipple extends Component {
             handlePress={readyToSend ? this.sendPayment : this.prepareTransaction}
           />
           { transaction() }
-        <PasswordLock enableSending={this.enableSending}/>
         <View style={styles.fee}>
           <Text style={styles.feetext}>
             transaction Fee: 0.02 XRP
