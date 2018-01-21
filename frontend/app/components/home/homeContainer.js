@@ -9,15 +9,19 @@ import {
   loadNextShapeShiftTransactions, 
   refreshShouldLoadMoreValues, 
   requestShifts,
+  getPersonalAddressTransactions,
   clearAlerts
 } from '../../actions';
 
 const mapStateToProps = ({ user }) => ({
   balance: user.balance,
+  personalBalance: user.personalBalance,
   transactions: user.transactions,
+  personalTransactions: user.personalTransactions,
   shapeshiftTransactions: user.shapeshiftTransactions,
   shouldLoadMoreShapeShiftTransactions: user.shouldLoadMoreShapeShiftTransactions,
-  shouldLoadMoreTransactions: user.shouldLoadMoreTransactions
+  shouldLoadMoreTransactions: user.shouldLoadMoreTransactions,
+  activeWallet: user.activeWallet
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -28,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
   requestShifts: () => dispatch(requestShifts()),
   refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues),
+  getPersonalAddressTransactions: () => dispatch(getPersonalAddressTransactions()),
   clearAlerts: () => dispatch(clearAlerts())
 });
 

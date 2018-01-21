@@ -4,15 +4,10 @@ import * as Keychain from 'react-native-keychain';
 import axios from 'axios';
 import { addAlert, unauthUser } from '../actions';
 import { apiKey } from '../../apiKey';
+import { API_URL } from '../config_enums';
 // currently using localhost. but change to production server later.
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
-
-// local
-var API_URL = 'http://localhost:3000/v1';
-
-// prod
-// var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
 
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
@@ -32,6 +27,11 @@ exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
 exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
 exports.AUTH_URL = `${API_URL}/authUrl`;
+exports.GEN_PERSONAL_URL = `${API_URL}/personal`;
+exports.REMOVE_PERSONAL_URL = `${API_URL}/delpersonal`;
+exports.PERSONAL_TRANSACTIONS_URL = `${API_URL}/personaltrans`;
+exports.PREPARE_PAYMENT_PERSONAL_URL = `${API_URL}/personalpayment`;
+exports.SEND_PAYMENT_PERSONAL_URL = `${API_URL}/sendpersonal`;
 
 // shape shift
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
