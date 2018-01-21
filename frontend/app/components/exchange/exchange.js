@@ -119,7 +119,7 @@ class Exchange extends Component {
     let theCoins;
     let line;
     let showCoins = [];
-    showCoins.unshift(
+    showCoins.push(
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
@@ -129,6 +129,7 @@ class Exchange extends Component {
         rate=""
       />
     );
+
     if ( myCoins )
     {
       Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
@@ -166,13 +167,12 @@ class Exchange extends Component {
           />
         );
       });
-    }
-    else
-    {
-      showCoins = (
-          <LoadingIcon size="large" color="#0000ff" />
+    } else {
+      showCoins.push(
+        <LoadingIcon key="loadIcon" size="large" color="#0000ff" />
       );
     }
+    
     return (
       <ScrollView style={styles.coinsContainer}>
         {showCoins}

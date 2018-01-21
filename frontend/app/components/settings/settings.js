@@ -4,6 +4,7 @@ import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import BankSendContainer from '../banksend/banksendContainer';
 import CustomInput from '../presentationals/customInput';
+import Config from '../../config_enums';
 
 import {
   View,
@@ -24,10 +25,17 @@ class Settings extends React.Component {
     // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-
   render() {
     return (
       <View style={styles.mainContainer}>
+          <Text style={styles.text}>
+            { this.props.activeWallet === Config.WALLETS.BANK_WALLET ? "Using Bank Wallet" : "Using Personal Wallet" }
+          </Text>
+          <TouchableOpacity onPress={this.props.changeWallet}>
+            <Text style={styles.text}>
+              { this.props.activeWallet === Config.WALLETS.BANK_WALLET ? "Change to Personal Wallet" : "Change to Bank Wallet" }
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={this.props.unauthUser}>
             <Text style={styles.text}>Logout</Text>
           </TouchableOpacity>

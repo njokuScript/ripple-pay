@@ -1,7 +1,4 @@
 import React from 'react';
-import HomeContainer from '../home/homeContainer';
-import SearchContainer from '../search/searchContainer';
-import ExchangeContainer from '../exchange/exchangeContainer';
 import AlertContainer from '../alerts/AlertContainer';
 
 import {
@@ -20,24 +17,15 @@ class Wallet extends React.Component {
     super(props);
     this.state = {
       address: undefined,
-      destTag: undefined
+      destTag: undefined,
     };
     this.generate = this.generate.bind(this);
     this.remove = this.remove.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.qrOne = require('./QRcodes/one.jpg');
     this.qrTwo = require('./QRcodes/two.jpg');
     this.qrThree = require('./QRcodes/three.jpg');
     this.qrFour = require('./QRcodes/four.jpg');
     this.qrFive = require('./QRcodes/five.jpg');
-  }
-
-  onNavigatorEvent(event){
-    if ( event.id === "willAppear" )
-    {
-      this.props.requestOldAddress();
-      this.props.requestAllWallets();
-    }
   }
 
   remove(){
@@ -101,6 +89,7 @@ class Wallet extends React.Component {
     }
     return "";
   }
+
   displayWallets() {
     const disabled = this.state.disabled;
     if (this.props.cashRegister) {
@@ -140,7 +129,7 @@ class Wallet extends React.Component {
             </View>
             <View>
               <View style={styles.destTag}>
-              <Text style={styles.walletFont}>{this.props.cashRegister}</Text>
+                <Text style={styles.walletFont}>Cash Register: {this.props.cashRegister}</Text>
                 <Text style={styles.destintro}>Destination Tags:</Text>
               </View>
               <View style={styles.walletsContainer}>
@@ -256,7 +245,7 @@ const styles = StyleSheet.create({
     walletFont: {
       color: 'white',
       textAlign: 'center',
-      fontSize: 18,
+      fontSize: 15,
     },
     cashRegister: {
       marginTop: 10,
