@@ -119,7 +119,7 @@ class Exchange extends Component {
     let theCoins;
     let line;
     let showCoins = [];
-    showCoins.unshift(
+    showCoins.push(
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
@@ -129,10 +129,6 @@ class Exchange extends Component {
         rate=""
       />
     );
-    
-    if (!myCoins) {
-      showCoins = <LoadingIcon size="large" color="#0000ff" />;
-    }
 
     if ( myCoins )
     {
@@ -171,6 +167,10 @@ class Exchange extends Component {
           />
         );
       });
+    } else {
+      showCoins.push(
+        <LoadingIcon key="loadIcon" size="large" color="#0000ff" />
+      );
     }
     
     return (
