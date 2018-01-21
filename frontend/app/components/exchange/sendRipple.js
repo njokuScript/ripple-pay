@@ -9,6 +9,7 @@ import CustomButton from '../presentationals/customButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import Config from '../../config_enums';
 
 import {
   StyleSheet,
@@ -33,6 +34,7 @@ class SendRipple extends Component {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
+      secret: "",
       sendButtonDisabled: true
     };
   }
@@ -43,7 +45,8 @@ class SendRipple extends Component {
     }
     if (event.id === "willDisappear") {
       this.setState({
-        sendButtonDisabled: true
+        sendButtonDisabled: true,
+        secret: ""
       });
     }
   }
@@ -58,7 +61,12 @@ class SendRipple extends Component {
     this.setState({ sendButtonDisabled: true });
     const { amount } = this.props.transaction;
     if (amount) {
-      this.props.signAndSend(this.props.fromAddress, parseFloat(amount));
+      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+        this.props.signAndSend(this.props.fromAddress, parseFloat(amount));
+      }
+      else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+        this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
+      }
     } else {
       this.props.clearTransaction();
     }
@@ -67,7 +75,7 @@ class SendRipple extends Component {
   prepareTransaction(){
     if ( !this.props.fromAddress || !this.props.sourceTag)
     {
-      this.props.addAlert("Please get a wallet first")
+      this.props.addAlert("Please get a wallet first");
     }
     //This is the REGEX to validate a Ripple Address
     else if(!Util.validRippleAddress(this.state.toAddress))
@@ -106,6 +114,26 @@ class SendRipple extends Component {
         </TouchableOpacity>
       </View>
     );
+  }
+
+  renderSecretField() {
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      return (
+        <CustomInput
+          placeholder="Secret Key"
+          onChangeText={
+            (secret) => {
+              this.setState({ secret: secret });
+            }
+          }
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          placeholderTextColor="#6D768B"
+          keyboardAppearance={'dark'}
+        /> 
+      );
+    }
+    return null;
   }
 
   render() {
@@ -177,6 +205,7 @@ class SendRipple extends Component {
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}
           />
+          {this.renderSecretField()}
           <CustomButton
             performAction={readyToSend ? "Send Payment" : "Prepare Payment"}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}

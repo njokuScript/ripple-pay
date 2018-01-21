@@ -1,16 +1,22 @@
 import { merge } from 'lodash';
 
-var defaultState = {
+import Config from '../config_enums';
+
+let defaultState = {
   transactions: [],
+  personalTransactions: [],
   shapeshiftTransactions: [],
   users: [],
   balance: 0,
+  personalBalance: 0,
   cashRegister: undefined,
+  personalAddress: undefined,
   wallets: [],
   screenName: '',
   passwordAttempts: {tries: 3, attemptSwitch: true},
   shouldLoadMoreShapeShiftTransactions: true,
-  shouldLoadMoreTransactions: true
+  shouldLoadMoreTransactions: true,
+  activeWallet: Config.WALLETS.BANK_WALLET
 };
 
 //We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
@@ -21,7 +27,8 @@ module.exports = (state=defaultState, action) => {
       return merge({}, state, {
         screenName: action.screenName,
         wallets: action.wallets,
-        cashRegister: action.cashRegister
+        cashRegister: action.cashRegister,
+        personalAddress: action.personalAddress
       });
       //Make the user_id undefined after logout.
     case 'UPDATE_PASSWORD_ATTEMPTS':
@@ -38,15 +45,19 @@ module.exports = (state=defaultState, action) => {
       return Object.assign({}, state,
         {
           transactions: [],
+          personalTransactions: [],
           users: [],
           balance: 0,
+          personalBalance: 0,
           cashRegister: undefined,
           wallets: [],
           screenName: '',
           shapeshiftTransactions: [],
           passwordAttempts: {tries: 3, attemptSwitch: true},
           shouldLoadMoreShapeShiftTransactions: true,
-          shouldLoadMoreTransactions: true
+          shouldLoadMoreTransactions: true,
+          personalAddress: undefined,
+          activeWallet: Config.WALLETS.BANK_WALLET 
         });
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
@@ -80,8 +91,16 @@ module.exports = (state=defaultState, action) => {
       return Object.assign({}, state, {cashRegister: action.data.cashRegister});
     case 'RECEIVED_OLD_ADDRESS':
       return Object.assign({}, state, { cashRegister: action.data.cashRegister });
+    case 'RECEIVED_PERSONAL_ADDRESS':
+      return Object.assign({}, state, { personalAddress: action.data.personalAddress });
+    case 'REMOVED_PERSONAL_ADDRESS':
+      return Object.assign({}, state, { personalAddress: undefined });
+    case 'RECEIVED_PERSONAL_TRANSACTIONS':
+      return Object.assign({}, state, { personalBalance: action.personalBalance, personalTransactions: action.personalTransactions });
     case 'RECEIVED_SHAPESHIFTS':
       return Object.assign({}, state, { shapeshiftTransactions: action.data.shapeshiftTransactions });
+    case 'CHANGE_WALLET':
+      return Object.assign({}, state, { activeWallet: state.activeWallet === Config.WALLETS.BANK_WALLET ? Config.WALLETS.PERSONAL_WALLET : Config.WALLETS.BANK_WALLET });
     default:
       return state;
   }
