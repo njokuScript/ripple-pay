@@ -26,19 +26,12 @@ export default class App extends React.Component {
     let renderMainView = () => {
       if (this.props.screenName) {
         starter.startTabs();
-        //Since it starts at tab-based application, it automatically knows to
-        //start with the home page
-        return (
-          <View>
-            {/* <StatusBar barStyle="light-content" /> */}
-          </View>
-        );
-      } else {
+        return null;
+      } 
+      else {
         // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
         // this.clearCredentials();
-        return (
-          <Login />
-        );
+        return <Login />;
       }
     };
     return (

@@ -55,19 +55,16 @@ class Home extends React.Component {
     {
       const initializations = [];
       if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
-        initializations.push(this.props.requestTransactions());
+        this.props.requestTransactions()
+          .then(() => this.setState({showScreen: true}));
       }
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
-        initializations.push(this.props.getPersonalAddressTransactions());
+        this.props.getPersonalAddressTransactions()
+          .then(() => this.setState({showScreen: true}));
       }
-      initializations.push(this.props.requestShifts());
-      initializations.push(this.props.refreshShouldLoadMoreValues());
-      initializations.push(this.props.clearAlerts());
-      return Promise.all(initializations).then(() => {
-        this.setState({
-          showScreen: true
-        });
-      });
+      this.props.requestShifts();
+      this.props.refreshShouldLoadMoreValues();
+      this.props.clearAlerts();
     }
     if (event.id === "didDisappear") {
       this.setState({
@@ -77,10 +74,10 @@ class Home extends React.Component {
   }
   
   componentWillReceiveProps(nextProps) {
-    if (nextProps.activeWallet === Config.WALLETS.BANK_WALLET && nextProps.balance) {
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && nextProps.balance) {
       getXRPtoUSD(nextProps.balance, this.setUSD);
     }
-    if (nextProps.activeWallet === Config.WALLETS.PERSONAL_WALLET && nextProps.personalBalance) {
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET && nextProps.personalBalance) {
       getXRPtoUSD(nextProps.personalBalance, this.setUSD);
     }
   }
