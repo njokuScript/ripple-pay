@@ -80,3 +80,7 @@ const receivedOldAddress = (data) => {
         data
     };
 };
+
+exports.changeWallet = {
+    type: 'CHANGE_WALLET'
+};

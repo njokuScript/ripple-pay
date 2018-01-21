@@ -3,7 +3,9 @@ import {Provider} from 'react-redux';
 import {configureStore} from './store/index';
 import SearchContainer from './components/search/searchContainer';
 import SettingsContainer from './components/settings/settingsContainer';
-import WalletContainer from './components/wallet/walletContainer';
+import Wallets from './components/wallet/wallets';
+import Wallet from './components/wallet/walletContainer';
+import PersonalWallet from './components/wallet/personalWalletContainer';
 import ExchangeContainer from './components/exchange/exchangeContainer';
 import HomeContainer from './components/home/homeContainer';
 import BankSendContainer from './components/banksend/banksendContainer';
@@ -56,7 +58,9 @@ class StartApp {
     makeRegistrations(){
       Navigation.registerComponent('Search', ()=> SearchContainer, store, Provider);
       Navigation.registerComponent('Settings', ()=> SettingsContainer, store, Provider);
-      Navigation.registerComponent('Wallet', ()=> WalletContainer, store, Provider);
+      Navigation.registerComponent('Wallets', ()=> Wallets, store, Provider);
+      Navigation.registerComponent('Wallet', ()=> Wallet, store, Provider);
+      Navigation.registerComponent('PersonalWallet', ()=> PersonalWallet, store, Provider);
       Navigation.registerComponent('Exchange', ()=> ExchangeContainer, store, Provider);
       Navigation.registerComponent('Home', ()=> HomeContainer, store, Provider);
       Navigation.registerComponent('Banksend', ()=> BankSendContainer, store, Provider);
@@ -105,8 +109,8 @@ class StartApp {
             navigatorStyle: {navBarHidden: true},
           },
           {
-            label: 'Wallet',
-            screen: 'Wallet',
+            label: 'Wallets',
+            screen: 'Wallets',
             icon: this.walletIcon,
             selectedIcon: this.walletIcon,
             title: 'Wallet',

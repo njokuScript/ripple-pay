@@ -50,7 +50,7 @@ exports.preparePayment = (amount, fromAddress, toAddress, sourceTag, toDesTag) =
             }
             const fee = response.data.fee;
             const transaction = { toAddress, toDesTag, amount, fee };
-            return receivedTransaction(transaction);
+            return exports.receivedTransaction(transaction);
         }
     );
 };
@@ -83,7 +83,7 @@ exports.loadNextShapeShiftTransactions = (maxDate) => {
     });
 };
 
-const receivedTransaction = (data) => {
+exports.receivedTransaction = (data) => {
     return {
         type: 'RECEIVED_TRANSACTION',
         data
