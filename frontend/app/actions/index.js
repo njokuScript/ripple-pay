@@ -4,6 +4,7 @@ import CoinCapActions from './coincapActions';
 import ShapeActions from './shapeActions';
 import TransactionActions from './transactionActions';
 import WalletActions from './walletActions';
+import PersonalWalletActions from './personalWalletActions';
 
 // USER ACTIONS
 exports.loginUser = UserActions.loginUser;
@@ -40,6 +41,14 @@ exports.requestOnlyDesTag = WalletActions.requestOnlyDesTag;
 exports.requestAddress = WalletActions.requestAddress;
 exports.requestOldAddress = WalletActions.requestOldAddress;
 exports.requestAllWallets = WalletActions.requestAllWallets;
+exports.changeWallet = WalletActions.changeWallet;
+
+// PERSONAL WALLET ACTIONS
+exports.genPersonalAddress = PersonalWalletActions.genPersonalAddress;
+exports.removePersonalAddress = PersonalWalletActions.removePersonalAddress;
+exports.getPersonalAddressTransactions = PersonalWalletActions.getPersonalAddressTransactions;
+exports.preparePaymentWithPersonalAddress = PersonalWalletActions.preparePaymentWithPersonalAddress;
+exports.sendPaymentWithPersonalAddress = PersonalWalletActions.sendPaymentWithPersonalAddress;
 
 // COINCAP ACTIONS
 exports.getXRPtoUSD = CoinCapActions.getXRPtoUSD;
@@ -48,4 +57,3 @@ exports.getXRPtoUSD = CoinCapActions.getXRPtoUSD;
 exports.addAlert = AlertsActions.addAlert;
 exports.removeAlert = AlertsActions.removeAlert;
 exports.clearAlerts = AlertsActions.clearAlerts;
-

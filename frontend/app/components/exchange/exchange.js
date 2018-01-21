@@ -129,6 +129,11 @@ class Exchange extends Component {
         rate=""
       />
     );
+    
+    if (!myCoins) {
+      showCoins = <LoadingIcon size="large" color="#0000ff" />;
+    }
+
     if ( myCoins )
     {
       Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
@@ -167,12 +172,7 @@ class Exchange extends Component {
         );
       });
     }
-    else
-    {
-      showCoins = (
-          <LoadingIcon size="large" color="#0000ff" />
-      );
-    }
+    
     return (
       <ScrollView style={styles.coinsContainer}>
         {showCoins}
