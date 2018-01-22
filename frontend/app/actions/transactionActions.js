@@ -29,7 +29,7 @@ exports.signAndSend = (fromAddress, amount) => {
             let { message } = response.data;
             const alert = RIPPLE_MESSAGES[message];
             if (alert) {
-                return addAlert(alert)
+                return addAlert(alert);
             }
             return addAlert("Payment was unsuccessful");
         },
