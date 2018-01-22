@@ -13,6 +13,7 @@ const mapStateToProps = ({user, transaction, alerts}) => ({
   balance: user.balance,
   personalBalance: user.personalBalance,
   activeWallet: user.activeWallet,
+  personalAddress: user.personalAddress,
   transaction: transaction,
   alerts: alerts
 });
