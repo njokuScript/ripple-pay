@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Keychain from 'react-native-keychain';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import starter from '../index.js';
 import {
   StyleSheet,
@@ -19,30 +19,24 @@ export default class App extends React.Component {
   clearCredentials() {
     Keychain.resetGenericPassword().then(() => {
       console.log("jwt token deleted");
-    })
+    });
   }
 
   render() {
     let renderMainView = () => {
       if (this.props.screenName) {
         starter.startTabs();
-        //Since it starts at tab-based application, it automatically knows to
-        //start with the home page
-        return (
-          <View>
-          </View>
-        )
-      } else {
+        return null;
+      } 
+      else {
         // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
         // this.clearCredentials();
-        return (
-          <Login />
-        );
+        return <Login />;
       }
     };
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         {renderMainView()}
       </View>
     );

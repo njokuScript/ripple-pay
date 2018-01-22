@@ -2,13 +2,17 @@ import React from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
-import { unauthUser } from '../../actions/authActions';
-import { getXRPtoUSD } from '../../actions/coincapActions';
+import { getXRPtoUSD, unauthUser, addAlert } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
-import CustomButton from '../presentationals/customButton';
+import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
+import LoadingIcon from '../presentationals/loadingIcon';
 import TopTabs from '../presentationals/topTabs';
 import ShapeTransactionView from '../presentationals/shapeTransactionView';
+import AlertContainer from '../alerts/AlertContainer';
+import Promise from 'bluebird';
+import Util from '../../utils/util';
+import Config from '../../config_enums';
 
 import {
     ScrollView,
@@ -18,7 +22,8 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    RefreshControl
+    RefreshControl,
+    ActivityIndicator
   } from 'react-native';
 
 class Home extends React.Component {
@@ -35,19 +40,45 @@ class Home extends React.Component {
     this.state = {
       refreshing: false,
       shapeshift: false,
-      showshift: '',
-      usd: 0
+      showshift: null,
+      showScreen: false,
+      usd: 0,
+      usdPerXRP: 0
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
 
   //Once this screen appears, all the of transactions are requested
+  // YOU'RE GOING TO HAVE TO USE THE RIPPLE API TO LOAD TRANSACTIONS A LITTLE AT A TIME!!!
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestTransactions();
+      const initializations = [];
+      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+        this.props.requestTransactions()
+          .then(() => this.setState({showScreen: true}));
+      }
+      else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+        this.props.getPersonalAddressTransactions()
+          .then(() => this.setState({showScreen: true}));
+      }
       this.props.requestShifts();
       this.props.refreshShouldLoadMoreValues();
+      this.props.clearAlerts();
+    }
+    if (event.id === "didDisappear") {
+      this.setState({
+        showScreen: false
+      });
+    }
+  }
+  
+  componentWillReceiveProps(nextProps) {
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && nextProps.balance) {
+      getXRPtoUSD(nextProps.balance, this.setUSD);
+    }
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET && nextProps.personalBalance) {
+      getXRPtoUSD(nextProps.personalBalance, this.setUSD);
     }
   }
 
@@ -55,25 +86,28 @@ class Home extends React.Component {
     this.props.refreshShouldLoadMoreValues();
     
     this.setState({refreshing: true});
-    if (this.state.shapeshift) {
+    if (this.showShapeShiftTransactions()) {
       this.props.requestShifts().then(() => {
         this.setState({refreshing: false});
       });
     }
-    else {
-
-      this.props.requestTransactions().then(() => {
-        this.setState({refreshing: false});
-      });
-    }
-    if (this.props.balance) {
-      getXRPtoUSD(this.props.balance, this.setUSD);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.balance) {
-      getXRPtoUSD(nextProps.balance, this.setUSD);
+    else if (this.showNormalTransactions()) {
+      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+        this.props.requestTransactions().then(() => {
+          this.setState({refreshing: false});
+          if (this.props.balance) {
+            getXRPtoUSD(this.props.balance, this.setUSD);
+          }
+        });
+      }
+      else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+        this.props.getPersonalAddressTransactions().then(() => {
+          this.setState({ refreshing: false });
+          if (this.props.personalBalance) {
+            getXRPtoUSD(this.props.personalBalance, this.setUSD);
+          }
+        });
+      }
     }
   }
 
@@ -95,8 +129,8 @@ class Home extends React.Component {
     });
   }
 
-  setUSD(usd) {
-    this.setState({ usd });
+  setUSD(usd, usdPerXRP) {
+    this.setState({ usd, usdPerXRP});
   }
 
   loadNextTransactions() {
@@ -119,187 +153,203 @@ class Home extends React.Component {
     }
   }
 
+  showShapeShiftTransactions() {
+    return this.state.shapeshift;
+  }
+
+  showNormalTransactions() {
+    return !this.state.shapeshift;
+  }
+
   showShapeshiftTransaction(transaction, time) {
     this.setState({
       showshift: <ShapeTransactionView time={time} {...transaction}/>
     });
   }
-  // Before we were checking if this was ===0 but this is always falsey in javascript so i did > 0 instead
-  displayTransactions() {
-    if (this.state.showshift != '') {
-      return this.state.showshift;
+
+  determineTransactions() {
+    let transactions = [];
+
+    if (this.showShapeShiftTransactions() && this.props.shapeshiftTransactions.length > 0) {
+      transactions = this.props.shapeshiftTransactions;
     }
-    if ((this.state.shapeshift && this.props.shapeshiftTransactions.length > 0) ||
-      (!this.state.shapeshift && this.props.transactions.length > 0)) {
-      let transactions;
-      if (this.state.shapeshift) { 
-        transactions = this.props.shapeshiftTransactions;
+    if (this.showNormalTransactions()) {
+
+      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+        if (this.props.transactions.length > 0) {
+          transactions = this.props.transactions;
+        }
       }
-      else{
-        transactions = this.props.transactions;
+
+      if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+        if (this.props.personalTransactions.length > 0) {
+          transactions = this.props.personalTransactions;
+        }
       }
-      transactions = transactions.map((transaction, idx) => {
-        const date = new Date(transaction.date);
-        let time;
-        if (date.getHours() > 12) {
-          time = `${date.getHours() - 12}:${date.getMinutes()} PM` ;
-        } else {
-          time = `${date.getHours()}:${date.getMinutes()} AM`;
-        }
-        if (!this.state.shapeshift) {
-          return (
-            <Transaction
-            shapeshift={false}
-            key={idx}
-            otherParty={transaction.otherParty}
-            date={date}
-            amount={`${transaction.amount.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ`}
-            transactionColor={transaction.amount < 0 ? "red" : "green"}
-            time={time}
-            />
-          );
-        }
-        else {
-          return (
-            <Transaction
-              shapeshift={true}
-              key={idx}
-              otherParty={`${transaction.otherParty.slice(0,17)}...`}
-              date={date}
-              amount={transaction.from}
-              toAmount={`to ${transaction.to}`}
-              transactionColor={transaction.from.match(/XRP/) ? "red" : "green"}
-              handlePress={() => this.showShapeshiftTransaction(transaction, time)}
-              time={time}
-            />
-          );
-        }
-      });
-      return (
-        <ScrollView style={styles.transactionsContainer}>
-          {transactions}
-        </ScrollView>
-      );
-    } else {
+
+    }
+    return transactions;
+  }
+
+  displayTransactions() {
+    if (this.state.showshift) { return this.state.showshift; }
+
+    const transactions = this.determineTransactions();
+
+    if (transactions.length === 0) {
       return (
         <Transaction
-          otherParty="no transactions - pull down to refresh"
+          otherParty="no transactions"
         />
       );
     }
+
+    const transactionComponents = transactions.map((transaction, idx) => {
+      const date = new Date(transaction.date);
+      let time;
+      let minutes;
+      if (date.getMinutes() < 10) {
+        minutes = "0" + date.getMinutes();
+      } else {
+        minutes = date.getMinutes();
+      }
+      if (date.getHours() > 12) {
+        time = `${date.getHours() - 12}:${minutes} PM` ;
+      } else {
+        time = `${date.getHours()}:${minutes} AM`;
+      }
+      if (this.showNormalTransactions()) {
+        return (
+          <Transaction
+          shapeshift={false}
+          key={idx}
+          otherParty={transaction.otherParty}
+          date={date}
+          amount={`${Util.truncate(transaction.amount, 2)} Ʀ`}
+          transactionColor={transaction.amount < 0 ? "red" : "green"}
+          time={time}
+          />
+        );
+      }
+      if (this.showShapeShiftTransactions()) {
+        return (
+          <Transaction
+            shapeshift={true}
+            key={idx}
+            otherParty={`${transaction.otherParty.slice(0,17)}...`}
+            date={date}
+            amount={`${transaction.from.fromAmount} ${transaction.from.fromCoin}`}
+            toAmount={`${transaction.to.toAmount} ${transaction.to.toCoin}`}
+            transactionColor={transaction.from.fromCoin === "XRP" ? "red" : "green"}
+            handlePress={() => this.showShapeshiftTransaction(transaction, time)}
+            time={time}
+          />
+        );
+      }
+    });
+    if (transactionComponents.length >= 10) {
+      let performAction = "load more";
+      if (!this.props.shouldLoadMoreTransactions) {
+        performAction = "no more transactions";
+      }
+      transactionComponents.push(
+        <View key={"7t8ui"} style={styles.loadTransactions}>
+          <LoadMoreDataButton
+            performAction="caret-down"
+            iconColor="#2A4CED"
+            isDisabled={false}
+            handlePress={this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions}
+          />
+        </View>
+      );
+    }
+    return (
+      <ScrollView style={styles.transactionsContainer}>
+        { transactionComponents }
+      </ScrollView>
+    );
   }
 
 // THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
+
+// JON, GET THE ALERTS TO SHOW UP HERE!
   render()
   {
-    return (
-      <View style={styles.mainContainer}>
-        <View style={styles.topContainer}>
-
-          <View style={styles.signOut}>
-            <TouchableOpacity onPress={this.onLogout}>
-              <Icon name="log-out" size={20} color="white"/>
-            </TouchableOpacity>
+    if (!this.state.showScreen) {
+      return (
+        <LoadingIcon size="large" color="black"/>
+      );
+    } else {
+      return (
+        <View style={styles.mainContainer}>
+          <View style={styles.topContainer}>
+            <View style={styles.balanceContainer}>
+              <Text style={styles.balanceText}>
+                Ʀ{this.props.activeWallet === Config.WALLETS.BANK_WALLET ? Util.truncate(this.props.balance, 2) : Util.truncate(this.props.personalBalance, 2)}
+              </Text>
+              <Text style={styles.usdText}>
+                ${Util.truncate(this.state.usd, 2)}
+              </Text>
+              <Text style={styles.usdText}>
+                ${Util.truncate(this.state.usdPerXRP, 2)} = 1 XRP
+              </Text>
+            </View>
           </View>
 
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balanceTextField}>
-              balance:
-            </Text>
-            <Text style={styles.balanceText}>
-              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
-            </Text>
-            <Text style={styles.balanceText}>
-              $ {this.state.usd}
-            </Text>
-          </View>
-      </View>
+          <TopTabs
+            handleLeftPress={this.handleLeftPress}
+            handleRightPress={this.handleRightPress}
+            pressed={this.state.shapeshift}
+          />
 
-      <TopTabs
-        handleLeftPress={this.handleLeftPress}
-        handleRightPress={this.handleRightPress}
-        pressed={this.state.shapeshift}
-      />
-
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}/>
-        }
-        automaticallyAdjustContentInsets={false}
-        contentContainerStyle={styles.scrollViewContainer}>
-        {this.displayTransactions()}
-      </ScrollView>
-      <CustomButton
-        performAction="Load next 25 Transactions"
-        buttonColor="white"
-        isDisabled={false}
-        handlePress={ this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions }
-      />
-      </View>
-    );
-  }
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.onRefresh}/>
+            }
+            automaticallyAdjustContentInsets={false}
+            contentContainerStyle={styles.scrollViewContainer}>
+            {this.displayTransactions()}
+          </ScrollView>
+          <AlertContainer />
+        </View>
+      );
+    }
+}
 }
 
 // define your styles
 const { width, height } = Dimensions.get('window');
+let aspectRatio = width/height;
+
 const styles = StyleSheet.create({
   mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
      backgroundColor: 'white'
    },
+  scrollViewContainer: {
+    height: height/1.3
+  },
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    height: 70,
-    paddingTop: 10,
-    paddingLeft: 30,
-    paddingRight: 20
-  },
-  logoContainer: {
-    backgroundColor: '#111F61',
-  },
-  logo: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'Kohinoor Bangla'
-  },
-  balanceContainer: {
-    borderRadius: 50,
-    borderColor: 'white',
-    // backgroundColor: 'rgba(53, 58, 83, .5)',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 5,
-    paddingBottom: 5,
-    flexDirection: "row"
+    height: height/5.5,
+    justifyContent: "center"
   },
    balanceText: {
      textAlign: 'center',
-     fontSize: 20,
+     fontSize: 30,
      color: 'white',
-     fontFamily: 'Kohinoor Bangla'
+     fontFamily: 'AppleSDGothicNeo-Light'
    },
-  balanceTextField: {
+   usdText: {
      textAlign: 'center',
-     fontSize: 11,
+     fontSize: 15,
      color: 'white',
-     fontFamily: 'Kohinoor Bangla',
-     marginTop: 9,
-     marginRight: 10
+     fontFamily: 'AppleSDGothicNeo-Light',
    },
-    signOut: {
-      transform: [{ rotate: '180deg' }],
-      marginBottom: 3
-    },
-    transactionsContainer: {
-      marginBottom: 75
+  loadTransactions: {
+      marginBottom: height/12
     },
 });
 

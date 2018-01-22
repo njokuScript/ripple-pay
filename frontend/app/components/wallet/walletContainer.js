@@ -7,14 +7,16 @@ import {
   requestOnlyDesTag,
   requestAddress,
   delWallet,
-  removeCashRegister,
-} from '../../actions/authActions';
+  genPersonalAddress,
+  removePersonalAddress
+} from '../../actions';
 
 
 const mapStateToProps = ({user}) => ({
   user: user,
   cashRegister: user.cashRegister,
-  wallets: user.wallets
+  wallets: user.wallets,
+  personalAddress: user.personalAddress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -24,7 +26,8 @@ const mapDispatchToProps = dispatch => ({
   requestAddress: () => dispatch(requestAddress()),
   delWallet: (desTag, cashRegister) => dispatch(delWallet(desTag, cashRegister)),
   requestOldAddress: () => dispatch(requestOldAddress()),
-  removeCashRegister: () => dispatch(removeCashRegister())
+  genPersonalAddress: (setSecret) => dispatch(genPersonalAddress(setSecret)),
+  removePersonalAddress: () => dispatch(removePersonalAddress())
 });
 
 export default connect(

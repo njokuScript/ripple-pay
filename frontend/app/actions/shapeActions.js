@@ -19,8 +19,12 @@ import {
 
 exports.requestAllCoins = () => {
   return function(dispatch){
-    return axios.get(COINS_URL).then((response)=>{
-      dispatch(receivedCoins(response.data));
+    return axios.get(COINS_URL)
+    .then((response)=>{
+      return dispatch(receivedCoins(response.data));
+    })
+    .catch((err) => {
+      return err;
     });
   };
 };
@@ -30,7 +34,10 @@ exports.requestAllCoins = () => {
 exports.requestRate = (coin) => {
   return function(dispatch){
     return axios.get(`${RATE_URL}/${coin}_xrp`).then((response)=>{
-      dispatch(receivedRate(response.data, coin));
+      return dispatch(receivedRate(response.data, coin));
+    })
+    .catch((err) => {
+      return err;
     });
   };
 };
@@ -77,15 +84,15 @@ exports.getShapeshiftTransactionStatus = (shapeShiftAddress, setShapeshiftStatus
   axios.get(`${SHAPE_TXN_STAT_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
     const statusObject = response.data;
     setShapeshiftStatus(statusObject);
-  })
-}
+  });
+};
 
 exports.getTimeRemaining = (shapeShiftAddress, setTimeRemaining) => {
   axios.get(`${TIME_URL}/${encodeURIComponent(shapeShiftAddress)}`).then((response) => {
     const timeRemaining = response.data.seconds_remaining*1000;
     setTimeRemaining(timeRemaining);
-  })
-}
+  });
+};
 
 exports.getShapeshiftTransactionId = (shapeShiftAddress, date, refundAddress, setTransactionId) => {
   return authRequest(
@@ -96,8 +103,8 @@ exports.getShapeshiftTransactionId = (shapeShiftAddress, date, refundAddress, se
       setTransactionId(response.data.txnId || 'Not Found');
       return { type: "NON_REDUX" };
     }
-  )
-}
+  );
+};
 
 const receivedCoins = (data) => {
   return {

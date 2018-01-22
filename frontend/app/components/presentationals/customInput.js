@@ -8,7 +8,7 @@ import {
 const CustomInput = (props) => {
   return (
     <View style={styles.field}>
-      <TextInput style={styles.textInput} {...props} />
+      <TextInput style={styles.textInput} autoCapitalize="none" {...props} />
       <View>
         {props.errorText}
       </View>
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
   field: {
     backgroundColor: '#0F1C52',
     borderRadius: 5,
-    padding: 0,
     paddingLeft: 15,
     marginLeft: 30,
     marginRight: 30,

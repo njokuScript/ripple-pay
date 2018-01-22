@@ -4,12 +4,13 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Dimensions
 } from 'react-native';
-
+const { width, height } = Dimensions.get('window');
 const TopTabs = (props) => {
   const topTabContainer = {
     borderColor: '#d3d3d3',
-    width: 160,
+    width: width,
     height: 40,
     flex: 1,
     justifyContent: 'center',
@@ -28,7 +29,7 @@ const TopTabs = (props) => {
         style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1})}
       >
         <Text 
-          style={Object.assign({}, topTab, { color: !props.pressed ? "#4579FB" : "black" })}>
+          style={Object.assign({}, topTab, { color: !props.pressed ? "#2A4CED" : "black" })}>
         transactions
         </Text>
       </TouchableOpacity>
@@ -36,7 +37,7 @@ const TopTabs = (props) => {
         onPress={props.handleRightPress}
         style={Object.assign({}, topTabContainer, {borderBottomWidth: props.pressed ? 2 : 1})}
       >
-        <Text style={Object.assign({}, topTab, { color: !props.pressed ? "black" : "#4579FB" })}>
+        <Text style={Object.assign({}, topTab, { color: !props.pressed ? "black" : "#2A4CED" })}>
         orders
         </Text>
       </TouchableOpacity>
@@ -52,15 +53,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     borderWidth: .5,
     height: 40
-  },
-  topTabContainerRight: {
-    borderColor: '#d3d3d3',
-    // borderBottomWidth: 1,
-    width: 160,
-    height: 40,
-    justifyContent: 'center',
-    flex: 1,
-    backgroundColor: 'rgb(249, 249, 249)'
   },
 });
 

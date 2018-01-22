@@ -3,10 +3,9 @@ const { RippleAPI } = require('ripple-lib');
 let async = require('asyncawait/async');
 let await = require('asyncawait/await');
 const Redis = require('../services/redis');
-const { CashRegister, Money, BANK_NAME } = require('../models/moneyStorage');
 
 // This is the min ledger version that personal rippled server has from beginning of its time.
-exports.MIN_LEDGER_VERSION = 35550104;
+// exports.MIN_LEDGER_VERSION = 35550104;
 
 const RippledServer = function() {
   this.api = new RippleAPI({
@@ -29,7 +28,6 @@ const RippledServer = function() {
 RippledServer.prototype.preparePayment = function(fromAddress, toAddress, desTag, sourceTag, value){
   let source = {
     "address": fromAddress,
-    "tag": sourceTag,
     "maxAmount": {
       "value": `${value}`,
       "currency": "XRP"
@@ -43,6 +41,9 @@ RippledServer.prototype.preparePayment = function(fromAddress, toAddress, desTag
     }
   };
 
+  if (sourceTag) {
+    source = Object.assign({}, source, { "tag": sourceTag });
+  }
 
   if (desTag) {
     destination = Object.assign({}, destination, {"tag": desTag});
@@ -54,8 +55,17 @@ RippledServer.prototype.preparePayment = function(fromAddress, toAddress, desTag
 
 RippledServer.prototype.getBalance = async(function(address) {
   await(this.api.connect());
-  const balInfo = await (this.api.getBalances(address));
-  // console.log(balInfo, "IT WORKED!!!");
+  let balInfo;
+  let error = null;
+  // Check if a new wallet has at least 20 balance.
+  try {
+    balInfo = await (this.api.getBalances(address));
+  } catch (err) {
+    error = err;
+  }
+  if (error) {
+    return 0;
+  }
   return balInfo[0] ? parseFloat(balInfo[0].value) : 0;
 });
 
@@ -73,19 +83,32 @@ RippledServer.prototype.getServerInfo = async(function(){
 RippledServer.prototype.getTransactions = async(function(address) {
   await(this.api.connect());
   const serverInfo = await(this.api.getServerInfo());
-  const completeLedgers = serverInfo.completeLedgers.match(/\d+/g);
-  const minLedgerVersion = parseInt(completeLedgers[0]);
-  const maxLedgerVersion = parseInt(completeLedgers[1]);
-  console.log(minLedgerVersion, maxLedgerVersion);
+  // console.log(serverInfo);
+  const completeLedgers = serverInfo.completeLedgers.match(/(\d+)\-(\d+)/g);
+  const transactions = [];
   
-  const transactions = await(this.api.getTransactions(address, { minLedgerVersion: minLedgerVersion, maxLedgerVersion: maxLedgerVersion, types: ["payment"]}));
+  completeLedgers.forEach((combo) => {
+    const minMax = combo.match(/\d+/g);
+    const minLedgerVersion = parseInt(minMax[0]);
+    const maxLedgerVersion = parseInt(minMax[1]);
+    const nextTransactions = await(this.api.getTransactions(address, { minLedgerVersion: minLedgerVersion, maxLedgerVersion: maxLedgerVersion, types: ["payment"]}));
+    transactions.push(...nextTransactions);
+  });
+  // console.log(minLedgerVersion, maxLedgerVersion);
   return transactions;
+});
+
+RippledServer.prototype.getTrustlines = async(function(address) {
+  await(this.api.connect());
+  const trustLines = await(this.api.getTrustlines(address));
+  console.log(trustLines);
+  return trustLines
 });
 
 RippledServer.prototype.getTransactionInfo = async(function(fromAddress, toAddress, value, sourceTag, destTag, userId) {
   await(this.api.connect());
   const paymentObject = this.preparePayment(fromAddress, toAddress, destTag, sourceTag, value);
-  const txnInfo = await(this.api.preparePayment(fromAddress, paymentObject, { maxLedgerVersionOffset: 1000 }));
+  const txnInfo = await(this.api.preparePayment(fromAddress, paymentObject, { maxLedgerVersionOffset: 250 }));
 
   if (userId) {
     await (Redis.setInCache("prepared-transaction", userId, txnInfo));
@@ -93,18 +116,20 @@ RippledServer.prototype.getTransactionInfo = async(function(fromAddress, toAddre
   return txnInfo;
 });
 
-function senderIsUser(id) {
-  return id !== BANK_NAME;
-}
-
-RippledServer.prototype.signAndSend = async(function(address, secret, userId, txnInfo) {
+RippledServer.prototype.generateAddress = async(function(){
   await(this.api.connect());
 
-  if (senderIsUser(userId) && !txnInfo) {
-    txnInfo = await(Redis.getFromTheCache("prepared-transaction", userId));
-    if (!txnInfo) {
-      return null;
-    }
+  const addressObject = await(this.api.generateAddress());  
+  return addressObject;
+});
+
+
+RippledServer.prototype.signAndSend = async(function(address, secret, userId) {
+  await(this.api.connect());
+
+  txnInfo = await(Redis.getFromTheCache("prepared-transaction", userId));
+  if (!txnInfo) {
+    return null;
   }
   console.log(txnInfo);
 
@@ -112,22 +137,19 @@ RippledServer.prototype.signAndSend = async(function(address, secret, userId, tx
   const signature = this.api.sign(txnInfo.txJSON, secret);
   const txnBlob = signature.signedTransaction;
 
-  if (senderIsUser(userId)) {
-    await(Money.update({}, { '$inc': { cost: fee, revenue: 0.02 + fee, profit: 0.02 } }));  
-  } else {
-    await(Money.update({}, { '$inc': { cost: fee, revenue: 0, profit: -fee } })); 
-  }
-
   const result = await(this.api.submit(txnBlob));
-  await (Redis.removeFromCache("prepared-transaction", userId));
+  Redis.removeFromCache("prepared-transaction", userId);
+
   return result;
 });
 
 module.exports = RippledServer;
 
 // const ripple = new RippledServer();
-
+// ripple.generateAddress();
 // ripple.getServerInfo();
 // ripple.getTransactions("r9bxkP88S17EudmfbgdZsegEaaM76pHiW6");
+// ripple.api.getTrustlines()
+// ripple.getTrustlines("raa6pjF59F5DrFLcpbTVskjSVGnbWTYMXL")
 
 // Run node rippleAPI.js to run this file for testing

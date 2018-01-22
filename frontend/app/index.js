@@ -2,7 +2,10 @@ import { Navigation } from 'react-native-navigation';
 import {Provider} from 'react-redux';
 import {configureStore} from './store/index';
 import SearchContainer from './components/search/searchContainer';
-import WalletContainer from './components/wallet/walletContainer';
+import SettingsContainer from './components/settings/settingsContainer';
+import Wallets from './components/wallet/wallets';
+import Wallet from './components/wallet/walletContainer';
+import PersonalWallet from './components/wallet/personalWalletContainer';
 import ExchangeContainer from './components/exchange/exchangeContainer';
 import HomeContainer from './components/home/homeContainer';
 import BankSendContainer from './components/banksend/banksendContainer';
@@ -15,6 +18,7 @@ import AlertContainer from './components/alerts/AlertContainer';
 import Alert from './components/alerts/Alert';
 import App from './components/App';
 import Icon from 'react-native-vector-icons/Entypo';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 
 let store = configureStore();
 
@@ -34,13 +38,15 @@ class StartApp {
             Icon.getImageSource('home', 30),
             Icon.getImageSource('magnifying-glass', 30),
             Icon.getImageSource('wallet', 30),
-            Icon.getImageSource('swap', 30)
+            Icon.getImageSource('swap', 30),
+            Icon2.getImageSource('ios-settings', 30),
           ]
         ).then((values) => {
           this.homeIcon = values[0];
           this.searchIcon = values[1];
           this.walletIcon = values[2];
           this.exchangeIcon = values[3];
+          this.settingsIcon = values[4];
           resolve(true);
         }).catch((error) => {
           console.log(error);
@@ -51,7 +57,10 @@ class StartApp {
 
     makeRegistrations(){
       Navigation.registerComponent('Search', ()=> SearchContainer, store, Provider);
-      Navigation.registerComponent('Wallet', ()=> WalletContainer, store, Provider);
+      Navigation.registerComponent('Settings', ()=> SettingsContainer, store, Provider);
+      Navigation.registerComponent('Wallets', ()=> Wallets, store, Provider);
+      Navigation.registerComponent('Wallet', ()=> Wallet, store, Provider);
+      Navigation.registerComponent('PersonalWallet', ()=> PersonalWallet, store, Provider);
       Navigation.registerComponent('Exchange', ()=> ExchangeContainer, store, Provider);
       Navigation.registerComponent('Home', ()=> HomeContainer, store, Provider);
       Navigation.registerComponent('Banksend', ()=> BankSendContainer, store, Provider);
@@ -79,7 +88,7 @@ class StartApp {
         screen: {
           screen: 'App',
           title: 'App',
-          navigatorStyle: {navBarHidden: true},
+          navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},
         }
       });
     }
@@ -87,6 +96,9 @@ class StartApp {
     startTabApplication() {
   // this will start our app
       Navigation.startTabBasedApp({
+        appStyle: {
+          TextColorScheme: 'light'
+        },
         tabs: [
           {
             label: 'Home',
@@ -97,19 +109,19 @@ class StartApp {
             navigatorStyle: {navBarHidden: true},
           },
           {
+            label: 'Wallets',
+            screen: 'Wallets',
+            icon: this.walletIcon,
+            selectedIcon: this.walletIcon,
+            title: 'Wallet',
+            navigatorStyle: {navBarHidden: true}
+          },
+          {
             label: 'Search',
             screen: 'Search',
             icon: this.searchIcon,
             selectedIcon: this.searchIcon,
             title: 'Search',
-            navigatorStyle: {navBarHidden: true}
-          },
-          {
-            label: 'Wallet',
-            screen: 'Wallet',
-            icon: this.walletIcon,
-            selectedIcon: this.walletIcon,
-            title: 'Wallet',
             navigatorStyle: {navBarHidden: true}
           },
           {
@@ -119,8 +131,19 @@ class StartApp {
             selectedIcon: this.exchangeIcon,
             title: 'Exchange',
             navigatorStyle: {navBarHidden: true}
+          },
+          {
+            label: 'Settings',
+            screen: 'Settings',
+            icon: this.settingsIcon,
+            selectedIcon: this.settingsIcon,
+            title: 'Settings',
+            navigatorStyle: {navBarHidden: true}
           }
-        ]
+        ],
+        tabsStyle: {
+          tabBarSelectedButtonColor: "#2A4CED"
+        }
       });
     }
   }

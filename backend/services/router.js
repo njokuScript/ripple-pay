@@ -1,65 +1,93 @@
-// We can use our URL's to the backend and then make promises that will start controller actions.
-// Go to authenticationController next.
-
 const passport = require('passport');
 
-const AuthenticationController = require('../controllers/authentication_controller');
+const UserController = require('../controllers/user_controller');
 const BankController = require('../controllers/banks_controller');
 const WalletController = require('../controllers/wallets_controller');
 const ShapeshiftController = require('../controllers/shapeshift_controller');
+const PersonalWalletController = require('../controllers/personal_wallet_controller');
+const rateLimit = require('./rateLimit');
 // the following will take passport and will make some requirements on it
 const passportService = require('./passport');
 
 let requireAuth = passport.authenticate('jwt', {session: false});
 let requireLogin = passport.authenticate('local', {session: false});
 let router = require('express').Router();
+
+let apiKey;
+
+if (process.env.NODE_ENV === 'production') {
+  apiKey = process.env.APIKEY;
+} else {
+  apiKey = require('../configs/config').APIKEY;
+}
+
+function requireAPIKey(req, res, next) {
+  if (req.headers.apikey !== apiKey) {
+    throw "Invalid API Key";
+  }
+  next();
+}
 // Auth Routes`
 // -----------------------------------------------------------------------------
+// USER CONTROLLER
 router.route('/signup')
-  .post(AuthenticationController.signup);
+  .post([requireAPIKey, rateLimit.userCreateLimiter, UserController.signup]);
 router.route('/signin')
-  .post([requireLogin, AuthenticationController.signin]);
+  .post([requireAPIKey, rateLimit.loginLimiter, requireLogin, UserController.signin]);
 router.route('/authUrl')
-  .post(requireAuth, AuthenticationController.comparePassword);
-  router.route('/search')
-    .get(requireAuth, AuthenticationController.search);
+  .post(requireAPIKey, requireAuth, UserController.comparePassword);
+router.route('/search')
+  .get(requireAPIKey, requireAuth, UserController.search);
+
+// BANK CONTROLLER
 router.route('/banksend')
-  .post(requireAuth, BankController.inBankSend);
+  .post(requireAPIKey, requireAuth, BankController.inBankSend);
 router.route('/send')
-  .post(requireAuth, BankController.signAndSend);
+  .post(requireAPIKey, requireAuth, BankController.signAndSend);
 router.route('/payment')
-  .post(requireAuth, BankController.preparePayment);
+  .post(requireAPIKey, requireAuth, BankController.preparePayment);
 router.route('/transactions')
-  .get(requireAuth, BankController.getTransactions);
+  .get(requireAPIKey, rateLimit.ledgerLookupLimiter, requireAuth, BankController.getTransactions);
 router.route('/nextTransactions')
-  .get(requireAuth, BankController.loadNextTransactions);
+  .get(requireAPIKey, requireAuth, BankController.loadNextTransactions);
   
+// WALLETS CONTROLLER
   router.route('/delwallet')
-  .post([requireAuth, WalletController.deleteWallet]);
-  router.route('/delRegister')
-  .post(requireAuth, WalletController.removeCashRegister);
+  .post([requireAPIKey, requireAuth, WalletController.deleteWallet]);
   router.route('/dest')
-  .post(requireAuth, WalletController.receiveOnlyDesTag);
+    .post(requireAPIKey, requireAuth, WalletController.receiveOnlyDesTag);
   router.route('/addrs')
-  .post(requireAuth, WalletController.generateRegister);
+    .post(requireAPIKey, requireAuth, WalletController.generateRegister);
   router.route('/wallets')
-  .get(requireAuth, WalletController.receiveAllWallets);
+  .get(requireAPIKey, requireAuth, WalletController.receiveAllWallets);
   router.route('/old')
-  .get(requireAuth, WalletController.findOldAddress);
+    .get(requireAPIKey, requireAuth, WalletController.findOldAddress);
+
+// PERSONAL WALLET CONTROLLER
+  router.route('/personal')
+  .post([requireAPIKey, requireAuth, PersonalWalletController.generatePersonalAddress]);
+  router.route('/personaltrans')
+    .get(requireAPIKey, requireAuth, PersonalWalletController.getPersonalAddressTransactions);
+  router.route('/delpersonal')
+    .post(requireAPIKey, requireAuth, PersonalWalletController.removePersonalAddress);
+  router.route('/personalpayment')
+  .post(requireAPIKey, requireAuth, PersonalWalletController.preparePaymentWithPersonalAddress);
+  router.route('/sendpersonal')
+    .post(requireAPIKey, requireAuth, PersonalWalletController.sendPaymentWithPersonalAddress);
+  router.route('/preparePersonalToBank')
+    .post(requireAPIKey, requireAuth, PersonalWalletController.prepareTransactionPersonalToBank);
+
+// SHAPESHIFT CONTROLLER
   router.route('/makeshift')
-  .post(requireAuth, ShapeshiftController.createShapeshiftTransaction);
+    .post(requireAPIKey, requireAuth, ShapeshiftController.createShapeshiftTransaction);
   router.route('/getshifts')
-  .get(requireAuth, ShapeshiftController.getShapeshiftTransactions);
+    .get(requireAPIKey, requireAuth, ShapeshiftController.getShapeshiftTransactions);
   router.route('/nextShapeShiftTransactions')
-    .get(requireAuth, ShapeshiftController.loadNextShapeShiftTransactions);
+    .get(requireAPIKey, requireAuth, ShapeshiftController.loadNextShapeShiftTransactions);
   router.route('/getShapeId')
-  .get(requireAuth, ShapeshiftController.getShapeshiftTransactionId);
+    .get(requireAPIKey, rateLimit.ledgerLookupLimiter, requireAuth, ShapeshiftController.getShapeshiftTransactionId);
 
-// xxx Routes
-// -----------------------------------------------------------------------------
-// router.route('/protected')
-//   .get(requireAuth, protected);
 
-// Ripple API
+
 
 module.exports = router;

@@ -5,11 +5,12 @@ import {
   Text,
   View,
   Image,
+  Dimensions
 } from 'react-native';
 
 const Coin = (props) => {
   return (
-    <View style={styles.coin} key={'rippleOne'}>
+    <View style={styles.coin}>
       <Image
           style={{width: 40, height: 40}}
           source={props.imageSource}
@@ -31,22 +32,22 @@ const Coin = (props) => {
         </View>
       </View>
     </View>
-  )
-}
-
+  );
+};
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   coin: {
       flex: 1,
       flexDirection: 'row',
       justifyContent: 'space-between',
       padding: 2,
+      paddingLeft: 15,
       paddingTop: 15.65,
       paddingBottom: 15.65,
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
       backgroundColor: 'white',
-      width: 345,
-      marginLeft: 15
+      width: width
   },
   coinAmount: {
      fontSize: 12
@@ -65,9 +66,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   receive: {
-    paddingLeft: 20
+    paddingLeft: 20,
+    paddingRight: 15
   }
-})
+});
 
 export default Coin;
 // Need to pass down imageSource, coinName, sendFunction, and receiveFunction, and rate as props
