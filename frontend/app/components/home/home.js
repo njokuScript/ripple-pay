@@ -253,7 +253,7 @@ class Home extends React.Component {
         performAction = "no more transactions";
       }
       transactionComponents.push(
-        <View key={123} style={styles.loadTransactions}>
+        <View key={"7t8ui"} style={styles.loadTransactions}>
           <LoadMoreDataButton
             performAction="caret-down"
             iconColor="#2A4CED"
