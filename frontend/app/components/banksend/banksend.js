@@ -30,7 +30,7 @@ class BankSend extends Component {
     super(props);
     this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
-    this.sendPersonalPayment = this.sendPersonalPayment.bind(this);
+    // this.sendPersonalPayment = this.sendPersonalPayment.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
@@ -49,6 +49,7 @@ class BankSend extends Component {
         sendButtonDisabled: true
       });
     } else if (event.id === "willAppear") {
+      getXRPtoUSD(this.props.balance, this.setUSD);
       this.props.clearAlerts();
     }
     if (event.id === "bottomTabSelected") {
@@ -114,11 +115,8 @@ class BankSend extends Component {
             balance:
             </Text>
           <Text style={styles.balanceText}>
-            {Util.truncate(this.props.balance, 2)} Ʀ
-            </Text>
-          <View style={styles.usdContainer}>
-            <Text style={styles.usd}>${this.state.usdPerXRP * this.state.amount}</Text>
-          </View>
+            Ʀ{Util.truncate(this.props.balance, 2)}
+          </Text>
         </View>
       </View>
     );
@@ -128,6 +126,9 @@ class BankSend extends Component {
     return (
       <View style={styles.container}>
         {this.topContainer()}
+        <View style={styles.usdContainer}>
+          <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+        </View>
         <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
           {this.renderAlerts()}
@@ -162,9 +163,22 @@ class BankSend extends Component {
           this.passwordLock()
       );
     } else {
+      const usd = (
+        <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+      );
+      if (this.state.amount) {
+        usd = (
+          <View>
+            <Text style={styles.usd}>${Util.truncate(this.state.usdPerXRP * this.state.amount, 2)}</Text>
+          </View>
+        );
+      }
       return (
         <View style={styles.container}>
         {this.topContainer()}
+          <View style={styles.usdContainer}>
+            {usd}
+          </View>
         <View style={styles.amount}>
           <CustomInput
             placeholder="Amount"
@@ -270,11 +284,10 @@ const styles = StyleSheet.create({
     marginTop: -10
   },
   usdContainer: {
-    justifyContent: "center",
-    paddingLeft: 35,
-    paddingTop: 10
+    paddingRight: 35,
   },
   usd: {
+    textAlign: "right",
     fontFamily: 'Kohinoor Bangla',
     fontSize: 16,
     color: "white"
