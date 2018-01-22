@@ -34,6 +34,7 @@ exports.loadNextTransactions = TransactionActions.loadNextTransactions;
 exports.loadNextShapeShiftTransactions = TransactionActions.loadNextShapeShiftTransactions;
 exports.clearTransaction = TransactionActions.clearTransaction;
 exports.refreshShouldLoadMoreValues = TransactionActions.refreshShouldLoadMoreValues;
+exports.receivedTransaction = TransactionActions.receivedTransaction;
 
 // WALLET ACTIONS
 exports.delWallet = WalletActions.delWallet;
@@ -49,6 +50,7 @@ exports.removePersonalAddress = PersonalWalletActions.removePersonalAddress;
 exports.getPersonalAddressTransactions = PersonalWalletActions.getPersonalAddressTransactions;
 exports.preparePaymentWithPersonalAddress = PersonalWalletActions.preparePaymentWithPersonalAddress;
 exports.sendPaymentWithPersonalAddress = PersonalWalletActions.sendPaymentWithPersonalAddress;
+exports.preparePersonalToBank = PersonalWalletActions.preparePersonalToBank;
 
 // COINCAP ACTIONS
 exports.getXRPtoUSD = CoinCapActions.getXRPtoUSD;

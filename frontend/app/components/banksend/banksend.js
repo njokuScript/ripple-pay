@@ -32,6 +32,7 @@ class BankSend extends Component {
     this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.preparePersonal = this.preparePersonal.bind(this);
+    this.sendPersonal = this.sendPersonal.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
@@ -196,18 +197,19 @@ class BankSend extends Component {
       const readyToSend = Boolean(toAddress && fee && amount);
       if (readyToSend) {
         Alert.alert(
-          'Alert Title',
-          'My Alert Msg',
+          'Send Ripple:',
+          'Transaction Details:',
           [
             { text: `Sending to ${this.props.receiverScreenName}`},
             { text: `To Address: ${toAddress}`},
             { text: `To Destination Tag: ${toDesTag}`},
             { text: `Amount: ${amount}`},
             { text: `Fee: ${fee}`},
+            { text: `Send Payment!`, onPress: this.sendPersonal},
           ],
           { cancelable: false }
         );
-    }
+      }
       const usd = (
         <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
       );
