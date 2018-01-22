@@ -10,6 +10,7 @@ import CustomBackButton from '../presentationals/customBackButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import { getXRPtoUSD } from '../../actions';
 import Config from '../../config_enums';
 
 import {
@@ -28,6 +29,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 class BankSend extends Component {
   constructor(props){
     super(props);
+    this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.preparePersonal = this.preparePersonal.bind(this);
     this.enableSending = this.enableSending.bind(this);
@@ -36,7 +38,9 @@ class BankSend extends Component {
       amount: "",
       secret: "",
       sendButtonDisabled: true,
-      keyboardHeight: 0
+      keyboardHeight: 0,
+      usd: 0,
+      usdPerXRP: 0
     };
   }
 
@@ -46,6 +50,7 @@ class BankSend extends Component {
         sendButtonDisabled: true
       });
     } else if (event.id === "willAppear") {
+      getXRPtoUSD(this.props.balance, this.setUSD);
       this.props.clearAlerts();
     }
     if (event.id === "bottomTabSelected") {
@@ -103,6 +108,10 @@ class BankSend extends Component {
     }
   }
 
+  setUSD(usd, usdPerXRP) {
+    this.setState({ usd, usdPerXRP });
+  }
+
   // custom alert styling
   renderAlerts() {
     if (this.props.alerts.length > 0) {
@@ -135,7 +144,7 @@ class BankSend extends Component {
             balance:
             </Text>
           <Text style={styles.balanceText}>
-            {Util.truncate(this.props.balance, 2)} Ʀ
+            Ʀ{Util.truncate(this.props.balance, 2)}
           </Text>
         </View>
       </View>
@@ -146,6 +155,9 @@ class BankSend extends Component {
     return (
       <View style={styles.container}>
         {this.topContainer()}
+        <View style={styles.usdContainer}>
+          <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+        </View>
         <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
           {this.renderAlerts()}
@@ -179,8 +191,7 @@ class BankSend extends Component {
       return (
           this.passwordLock()
       );
-    } 
-    else {
+    } else {
       const { toAddress, toDesTag, fee, amount } = this.props.transaction;
       const readyToSend = Boolean(toAddress && fee && amount);
       if (readyToSend) {
@@ -196,15 +207,29 @@ class BankSend extends Component {
           ],
           { cancelable: false }
         );
+    }
+      const usd = (
+        <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+      );
+      if (this.state.amount) {
+        usd = (
+          <View>
+            <Text style={styles.usd}>${Util.truncate(this.state.usdPerXRP * this.state.amount, 2)}</Text>
+          </View>
+        );
       }
       return (
         <View style={styles.container}>
         {this.topContainer()}
+          <View style={styles.usdContainer}>
+            {usd}
+          </View>
         <View style={styles.amount}>
           <CustomInput
             placeholder="Amount"
             onChangeText={
               (amt) => {
+                getXRPtoUSD(this.props.balance, this.setUSD);
                 this.setState({ amount: amt });
               }
             }
@@ -254,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   paymentButton:{
-    marginTop: 0
+    marginTop: -20
   },
   title: {
    textAlign: 'center',
@@ -302,6 +327,15 @@ const styles = StyleSheet.create({
   },
   alert: {
     marginTop: -10
+  },
+  usdContainer: {
+    paddingRight: 35,
+  },
+  usd: {
+    textAlign: "right",
+    fontFamily: 'Kohinoor Bangla',
+    fontSize: 16,
+    color: "white"
   }
 });
 
