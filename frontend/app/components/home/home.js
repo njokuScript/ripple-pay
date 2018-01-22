@@ -247,12 +247,12 @@ class Home extends React.Component {
         );
       }
     });
-    if (transactions.length >= 10) {
+    if (transactionComponents.length >= 10) {
       let performAction = "load more";
       if (!this.props.shouldLoadMoreTransactions) {
         performAction = "no more transactions";
       }
-      transactions.push(
+      transactionComponents.push(
         <View key={123} style={styles.loadTransactions}>
           <LoadMoreDataButton
             performAction="caret-down"
