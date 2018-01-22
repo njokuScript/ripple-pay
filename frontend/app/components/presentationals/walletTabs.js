@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   Dimensions
 } from 'react-native';
-const { width, height } = Dimensions.get('window');
-const TopTabs = (props) => {
+
+const WalletTabs = (props) => {
   const topTabContainer = {
     borderColor: '#d3d3d3',
     width: width,
@@ -19,41 +19,37 @@ const TopTabs = (props) => {
   const topTab = {
     fontSize: 13,
     fontWeight: "600",
-    textAlign: 'center'
+    textAlign: 'center',
+    color: "black"
   };
-
+  console.log(props.disabled);
   return (
     <View style={styles.topTabsContainer}>
       <TouchableOpacity
         onPress={props.handleLeftPress}
-        style={Object.assign({}, topTabContainer, {borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1})}
+        style={Object.assign({}, topTabContainer, { borderRightWidth: 2, borderBottomWidth: !props.pressed ? 2 : 1 })}
       >
-        <Text 
-          style={Object.assign({}, topTab, { color: !props.pressed ? "#2A4CED" : "black" })}>
-        transactions
+        <Text style={Object.assign({}, topTab, { color: !props.disabled ? "black" : "gray" })}>
+          add destination tag
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={props.handleRightPress}
-        style={Object.assign({}, topTabContainer, {borderBottomWidth: props.pressed ? 2 : 1})}
+        style={Object.assign({}, topTabContainer, { borderBottomWidth: props.pressed ? 2 : 1 })}
       >
-        <Text style={Object.assign({}, topTab, { color: !props.pressed ? "black" : "#2A4CED" })}>
-        orders
+        <Text style={Object.assign({}, topTab, { color: !props.disabled ? "black" : "gray" })}>
+          remove destination tag
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
-
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   topTabsContainer: {
     flex: -1,
-    flexDirection: 'row',
-    alignItems: "center",
-    justifyContent: 'space-around',
-    borderWidth: .5,
-    height: 40
+    flexDirection: 'row'
   },
 });
 
-export default TopTabs;
+export default WalletTabs;
