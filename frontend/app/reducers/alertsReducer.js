@@ -1,6 +1,8 @@
 import uuid from 'uuid';
+import { _ } from 'lodash';
 
 let defaultState = [];
+let initialState = _.cloneDeep(defaultState);
 
 module.exports = (state=defaultState, action) => {
   switch(action.type) {
@@ -28,7 +30,7 @@ module.exports = (state=defaultState, action) => {
         }
       });
     case 'CLEAR_ALERTS':
-      return defaultState;
+      return initialState;
     default:
       return state;
   }
