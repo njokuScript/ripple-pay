@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Exchange from './exchange'
-import { requestAllCoins, requestRate } from '../../actions/shapeActions';
+import { requestAllCoins, requestRate } from '../../actions';
 
 const mapStateToProps = ({ shape }) => ({
   shape: shape

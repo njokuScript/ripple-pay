@@ -5,8 +5,6 @@ import ExchangeContainer from '../exchange/exchangeContainer';
 import BankSendContainer from '../banksend/banksendContainer';
 import CustomInput from '../presentationals/customInput';
 
-import { reduxForm } from 'redux-form';
-
 import { View,
   Text,
   StyleSheet,
@@ -19,6 +17,7 @@ import { View,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Entypo';
+
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -53,7 +52,7 @@ class Search extends React.Component {
       animation: true,
       animationType: 'fade',
       navigatorStyle: {
-        navBarHidden: true,
+        navBarHidden: true, statusBarTextColorScheme: 'light'
       },
     });
   }
@@ -97,14 +96,12 @@ class Search extends React.Component {
                 this.setState({query: query});
               }
             }
-            autoFocus={true}
             placeholder="Enter Username"
             placeholderTextColor="#6D768B"
             keyboardAppearance={'dark'}
           />
         </View>
        </View>
-
         <ScrollView>
           {/* i made a conditional in this results to try to print the results only when they are in the state,
               not working, but close i think  */}
@@ -117,17 +114,15 @@ class Search extends React.Component {
  const {width, height} = Dimensions.get('window');
  const styles=StyleSheet.create({
    mainContainer: {
-     flex: 1,
-     justifyContent: 'center',
      backgroundColor: 'white'
-   },
-   nav: {
-    marginLeft: 10
    },
    topContainer: {
      backgroundColor: '#111F61',
-     height: 90,
-     paddingTop: 10,
+     height: height / 5.5,
+   },
+   searchContainer: {
+    justifyContent: "center",
+    flex: 1,
    },
     title: {
       color: 'white',
@@ -135,18 +130,9 @@ class Search extends React.Component {
       justifyContent: 'center',
       fontFamily: 'Kohinoor Bangla',
     },
-    instructions: {
-     textAlign: 'center',
-     color: '#333333',
-     marginBottom: 5,
-     fontSize: 15
-   },
     resultsContainer: {
       flex: 1,
       marginBottom: 75
-    },
-    resultsInfo: {
-      flex: 1,
     },
     resultItemText: {
       fontWeight: "600",
@@ -161,12 +147,9 @@ class Search extends React.Component {
       borderBottomWidth: 1,
       borderColor: '#d3d3d3',
       backgroundColor: 'white',
-      width: 345,
-      marginLeft: 15
+      width: width,
+      paddingLeft: 15,
     },
-    sendText: {
-      marginRight: 3
-    }
  });
 
  export default Search;

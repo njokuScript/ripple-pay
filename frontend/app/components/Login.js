@@ -12,9 +12,9 @@ import {
   KeyboardAvoidingView
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Config from '../config_enums';
 
-import { loginUser, signupUser } from '../actions/authActions';
-import { addAlert } from '../actions/alertsActions';
+import { loginUser, signupUser } from '../actions';
 
 class Login extends React.Component {
   constructor(props) {
@@ -26,15 +26,26 @@ class Login extends React.Component {
     this.onSignUp = this.onSignUp.bind(this);
     this.toggleField = this.toggleField.bind(this);
   }
+  // THIS CONFIG STUFF IS LEFT IN HERE SOLELY FOR DEBUGGING PURPOSES AND MUST BE REMOVED LATER.
+  // ALL THE CONFIG STUFF HAS TO BE REMOVED LATER.
+  componentDidMount() {
+    if (Config.email && Config.password) {
+      this.onSignIn();
+    }
+  }
 
   onSignIn() {
     let { dispatch, fields: { email, password } } = this.props;
-    dispatch(loginUser(email.value, password.value))
+    if (Config.email && Config.password) {
+      email.value = Config.email;
+      password.value = Config.password;
+    }
+    dispatch(loginUser(email.value, password.value));
   }
 
   onSignUp() {
     let { dispatch, fields: { email, password, screenName } } = this.props;
-    dispatch(signupUser(email.value, password.value, screenName.value))
+    dispatch(signupUser(email.value, password.value, screenName.value));
   }
 
   renderButton(screenName, renderError) {
@@ -89,7 +100,6 @@ class Login extends React.Component {
 
   render() {
     let { fields: { email, password, screenName } } = this.props;
-
     let renderError = (field) => {
       if (field.touched && field.error) {
         return (

@@ -1,14 +1,27 @@
 import{ connect } from 'react-redux';
 import Home from './home';
-import { requestTransactions, requestAddressAndDesTag, unauthUser, loadNextTransactions, loadNextShapeShiftTransactions, refreshShouldLoadMoreValues } from '../../actions/authActions';
-import { requestShifts } from '../../actions/shapeActions';
+
+import { 
+  requestTransactions, 
+  requestAddressAndDesTag, 
+  unauthUser, 
+  loadNextTransactions, 
+  loadNextShapeShiftTransactions, 
+  refreshShouldLoadMoreValues, 
+  requestShifts,
+  getPersonalAddressTransactions,
+  clearAlerts
+} from '../../actions';
 
 const mapStateToProps = ({ user }) => ({
   balance: user.balance,
+  personalBalance: user.personalBalance,
   transactions: user.transactions,
+  personalTransactions: user.personalTransactions,
   shapeshiftTransactions: user.shapeshiftTransactions,
   shouldLoadMoreShapeShiftTransactions: user.shouldLoadMoreShapeShiftTransactions,
-  shouldLoadMoreTransactions: user.shouldLoadMoreTransactions
+  shouldLoadMoreTransactions: user.shouldLoadMoreTransactions,
+  activeWallet: user.activeWallet
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -18,7 +31,9 @@ const mapDispatchToProps = dispatch => ({
   loadNextShapeShiftTransactions: (minDate) => dispatch(loadNextShapeShiftTransactions(minDate)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
   requestShifts: () => dispatch(requestShifts()),
-  refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues)
+  refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues),
+  getPersonalAddressTransactions: () => dispatch(getPersonalAddressTransactions()),
+  clearAlerts: () => dispatch(clearAlerts())
 });
 
 export default connect(

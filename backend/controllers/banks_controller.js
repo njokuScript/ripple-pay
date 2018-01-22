@@ -2,7 +2,7 @@ const async = require('async');
 let asynchronous = require('asyncawait/async');
 let await = require('asyncawait/await');
 const User = require('../models/user');
-const { CashRegister, BANK_NAME } = require('../models/moneyStorage');
+const { CashRegister, Money } = require('../models/moneyStorage');
 const { Transaction } = require('../models/transaction');
 const Encryption = require('../services/encryption');
 const Decryption = require('../services/decryption');
@@ -19,22 +19,27 @@ if (process.env.NODE_ENV=='production') {
 }
 
 const TXN_LIMIT = 10;
+const MINIMUM_RIPPLE_ADDRESS_BALANCE = 20;
 
 exports.inBankSend = asynchronous(function(req, res, next){
   let { receiverScreenName, amount } = req.body;
+  amount = parseFloat(amount);
   let sender = req.user;
   let senderId = sender._id;
+
   if ( amount > sender.balance ) {
     return res.json({message: "Balance Insufficient", balance: sender.balance});
   }
-  let receiver = await (User.findOne({ screenName: receiverScreenName}));
+  
+  if (amount <= 0) {
+    return res.json({message: "Cant send 0 or less XRP"})
+  }
+
+  let receiver = await (User.findOne({ screenName: receiverScreenName }));
   let receiverId = receiver._id;
   if ( sender && receiver ) {
+    
     let trTime = new Date().getTime();
-
-    let senderBal = {
-      balance: sender.balance - amount
-    };
 
     let senderTransaction = new Transaction({
       userId: senderId,
@@ -43,10 +48,6 @@ exports.inBankSend = asynchronous(function(req, res, next){
       otherParty: receiver.screenName
     });
 
-    let receiverBal = {
-      balance: receiver.balance + amount
-    };
-
     let receiverTransaction = new Transaction({
       userId: receiverId,
       date: trTime,
@@ -54,12 +55,21 @@ exports.inBankSend = asynchronous(function(req, res, next){
       otherParty: sender.screenName
     });
 
-    await (User.update({ _id: senderId}, { '$set': senderBal }));
-    await (User.update({ _id: receiverId }, { '$set': receiverBal }));
-    await (senderTransaction.save());
-    await (receiverTransaction.save());
+    let updatedSender = await(User.findOneAndUpdate({ _id: senderId }, { '$inc': { balance: -amount } }, { returnNewDocument: true }));
+    await (User.findOneAndUpdate({ _id: receiverId }, { '$inc': { balance: amount } }));
 
-    res.json({message: "Payment was Successful", balance: senderBal.balance});
+    senderTransaction.save(function(err) {
+      if (err) {
+        console.log(err, "saving sender transaction failed!");
+      }
+    });
+    receiverTransaction.save(function(err) {
+      if (err) {
+        console.log(err, "saving receiver transaction failed!");
+      }
+    });
+    
+    res.json({message: "Payment was Successful", balance: updatedSender.balance});
   }
   else {
     res.json({message: "Payment Unsuccessful"});
@@ -68,19 +78,25 @@ exports.inBankSend = asynchronous(function(req, res, next){
 
 exports.preparePayment = asynchronous(function(req, res, next) {
   let { amount, fromAddress, toAddress, sourceTag, toDesTag } = req.body;
+  amount = parseFloat(amount);
   let existingUser = req.user;
   let userId = existingUser._id;
+
   if (amount > existingUser.balance) {
-    res.json({ message: "Balance Insufficient" });
-    return;
+    return res.json({ message: "Balance Insufficient" });
+  }
+
+  if (amount <= 0) {
+    return res.json({ message: "Cant send 0 or less XRP"});
   }
 
   const masterKey = await(Decryption.getMasterKey());
   const ripplePayAddresses = Decryption.decryptAllAddresses(masterKey, encryptedAddresses);
 
-  if (ripplePayAddresses.includes(toAddress)) {
-    return res.json({ message: "Send with no fee to a ripplePay user!"});
-  }
+  // LEAVE THIS OUT TO ALLOW FOR TESTING
+  // if (ripplePayAddresses.includes(toAddress)) {
+  //   return res.json({ message: "Send with no fee to a ripplePay user!"});
+  // }
 
   const txnInfo = await(rippledServer.getTransactionInfo(fromAddress, toAddress, amount, sourceTag, toDesTag, userId));
   const fee = txnInfo.instructions.fee;
@@ -90,9 +106,19 @@ exports.preparePayment = asynchronous(function(req, res, next) {
 })
 
 exports.signAndSend = asynchronous (function(req, res, next){
-  const { fromAddress, amount } = req.body;
+  let { fromAddress, amount } = req.body;
+  amount = parseFloat(amount);
   const existingUser = req.user;
   const userId = existingUser._id;
+
+  if (amount > existingUser.balance) {
+    res.json({ message: "Balance Insufficient" });
+    return;
+  }
+
+  if (amount <= 0) {
+    return res.json({ message: "Cant send 0 or less XRP" });
+  }
 
   const registerAddress = fromAddress;
   const registerBalance = await(rippledServer.getBalance(registerAddress));
@@ -106,7 +132,6 @@ exports.signAndSend = asynchronous (function(req, res, next){
       const registerSecret = Decryption.decrypt(masterKey, encryptedRegisterSecret);
 
       const result = await(rippledServer.signAndSend(registerAddress, registerSecret, userId));
-
       if (result) {
         console.log(result);
         res.json({message: result.resultCode});
@@ -116,25 +141,11 @@ exports.signAndSend = asynchronous (function(req, res, next){
       }
 
   })
-  // STILL NEED TO FIX THIS FUNCTION WITH SOME KIND OF LEARNING ALGORITHM
-  let refillCashRegisterAndSend = asynchronous(function(){
-
-      const encryptedBankAddress = Object.keys(encryptedBank)[0];
-      const encryptedBankSecret = encryptedBank[encryptedBankAddress];
-      const bankAddress = Decryption.decrypt(masterKey, encryptedBankAddress);
-      const bankSecret = Decryption.decrypt(masterKey, encryptedBankSecret);
-      
-      // refilling by 20 for now until we find a better wallet refill algorithm
-      const txnInfo = await(rippledServer.getTransactionInfo(bankAddress, registerAddress, 20, 0, null, null));
-      const result = await(rippledServer.signAndSend(bankAddress, bankSecret, BANK_NAME, txnInfo));
-      console.log(result);
-      sendMoney();
-
-  })
 
   const amountToSend = amount;
-  if ( registerBalance - amountToSend < 20 ) {
-    refillCashRegisterAndSend();
+  // Cash register should never be empty if code reaches this point
+  if ( registerBalance - amountToSend < MINIMUM_RIPPLE_ADDRESS_BALANCE ) {
+    res.json({message: "Cash Register Empty Error. Please report this to ripplePay@gmail.com"});
   } else {
     sendMoney();
   }
@@ -149,12 +160,15 @@ exports.getTransactions = asynchronous(function (req, res, next) {
   const userId = existingUser._id;
   if (existingUser.cashRegister) {
     const registerBalance = await (rippledServer.getBalance(existingUser.cashRegister));
-    await (CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, { balance: registerBalance }, {upsert: false}));
+    CashRegister.findOneAndUpdate({ address: existingUser.cashRegister }, { balance: registerBalance }, {upsert: false}, function(err, doc) {
+      if (err) {
+        console.log(err, "updating cash register failed!");
+      }
+    });
     const transactions = await (rippledServer.getTransactions(existingUser.cashRegister));
     // console.log(txnInfo);
-    let userObject = {
-      _id: existingUser._id,
-      balance: existingUser.balance,
+    let userChanges = {
+      balance: 0,
       lastTransactionId: null
     };
 
@@ -162,7 +176,7 @@ exports.getTransactions = asynchronous(function (req, res, next) {
     const userAddress = existingUser.cashRegister;
     let userTransactions = [];
 
-    const processTransaction = asynchronous(function(currTxn, setLastTransaction, stopIteration) {
+    const processTransaction = function(currTxn, setLastTransaction, stopIteration) {
 
       const destAddress = currTxn.specification.destination.address;
       const destTag = currTxn.specification.destination.tag;
@@ -174,7 +188,7 @@ exports.getTransactions = asynchronous(function (req, res, next) {
       if ( (destTagIdx !== -1 && destAddress === userAddress) || (sourceTagIdx !== -1 && sourceAddress === userAddress) ) {
         if ( setLastTransaction )
         {
-          userObject.lastTransactionId = currTxn.id;
+          userChanges.lastTransactionId = currTxn.id;
           setLastTransaction = false;
         }
         if (currTxn.id === existingUser.lastTransactionId) {
@@ -182,13 +196,15 @@ exports.getTransactions = asynchronous(function (req, res, next) {
           return [setLastTransaction, stopIteration];
         }
 
-        let counterParty, tag;
+        let counterParty, tag, counterPartyTag;
 
         if (destAddress === userAddress) {
           counterParty = sourceAddress;
+          counterPartyTag = sourceTag;
           tag = destTag;
         } else {
           counterParty = destAddress;
+          counterPartyTag = destTag;
           tag = sourceTag;
         }
 
@@ -198,9 +214,16 @@ exports.getTransactions = asynchronous(function (req, res, next) {
         {
           // ripplePay fee for outgoing txn
           balanceChange -= 0.02;
+          const fee = currTxn.outcome.fee;
+
+          Money.update({}, { '$inc': { cost: fee, revenue: 0.02 + fee, profit: 0.02 } }, function (err, doc) {
+            if (err) {
+              console.log(err, "error updating money!");
+            }
+          });  
         }
         // apply ripple ledger fee
-        userObject.balance += balanceChange;
+        userChanges.balance += balanceChange;
         // add to user transactions only if its a successful transaction
         if (currTxn.outcome.result === "tesSUCCESS") {
           let newTxn = new Transaction({
@@ -209,19 +232,24 @@ exports.getTransactions = asynchronous(function (req, res, next) {
             tag: tag,
             date: new Date(currTxn.outcome.timestamp).getTime(),
             amount: balanceChange,
-            otherParty: counterParty
+            otherParty: counterParty,
+            otherPartyTag: counterPartyTag
           });
-          await(newTxn.save());
+          newTxn.save(function(err) {
+            if (err) {
+              console.log(err, "saving new transaction failed!");
+            }
+          });
         }
       }
       return [setLastTransaction, stopIteration];
-    });
+    };
     // map over transactions asynchronously
     let setLastTransaction = true;
     let stopIteration = false;
     // Stop at a user's last transaction ID and reset the last TID.
     async.mapSeries(transactions, asynchronous(function (currTxn, cb) {
-      [setLastTransaction, stopIteration] = await(processTransaction(currTxn, setLastTransaction, stopIteration));
+      [setLastTransaction, stopIteration] = processTransaction(currTxn, setLastTransaction, stopIteration);
       if ( !stopIteration )
       {
         cb(null, currTxn);
@@ -231,12 +259,16 @@ exports.getTransactions = asynchronous(function (req, res, next) {
       }
     }), function(error, resp) {
       userTransactions = await(Transaction.find({ userId }).sort({ date: -1 }).limit(TXN_LIMIT));
-      User.update({_id: existingUser._id}, userObject, function (err) {
-        if (err) { return next(err); }
-        res.json({
-          transactions: userTransactions,
-          balance: userObject.balance
-        });
+      let updatedUser = await(
+        User.findOneAndUpdate(
+          {_id: existingUser._id}, 
+          {'$set': { lastTransactionId: userChanges.lastTransactionId }, '$inc': { balance: userChanges.balance }},
+          { returnNewDocument: true } 
+        )
+      );
+      res.json({
+        transactions: userTransactions,
+        balance: updatedUser.balance
       });
     });
   }
@@ -250,12 +282,13 @@ exports.getTransactions = asynchronous(function (req, res, next) {
   }
 })
 
-// $lt instead of $lte because transaction happening at same exact millisecond for user is highly unlikely. But maybe change later.
 exports.loadNextTransactions = asynchronous(function(req, res, next) {
   const user = req.user;
   const userId = user._id;
   const maxDate = req.query[0];
-  const nextTransactions = await(Transaction.find({ userId: userId, date: { '$lt': maxDate } }).sort({ date: -1 }).limit(TXN_LIMIT));
+  let nextTransactions = await(Transaction.find({ userId: userId, date: { '$lte': maxDate } }).sort({ date: -1 }).limit(TXN_LIMIT+1));
+  // remove the first since that will have already been counted.
+  nextTransactions = nextTransactions.slice(1);
   const shouldLoadMoreTransactions = nextTransactions.length >= TXN_LIMIT ? true : false;
   res.json({ nextTransactions, shouldLoadMoreTransactions });
 });

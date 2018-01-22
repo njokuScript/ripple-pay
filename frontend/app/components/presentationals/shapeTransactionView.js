@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { getShapeshiftTransactionStatus, getShapeshiftTransactionId } from '../../actions/shapeActions';
+import { getShapeshiftTransactionStatus, getShapeshiftTransactionId } from '../../actions';
 import {
   StyleSheet,
   Text,
   View,
+  Dimensions,
+  ScrollView,
+  RefreshControl
 } from 'react-native';
 
 class ShapeTransactionView extends React.Component {
@@ -15,14 +18,14 @@ class ShapeTransactionView extends React.Component {
     this.setTransactionId = this.setTransactionId.bind(this);
     this.state = {
       txStat: '',
-      txnId: 'Please Wait...'
-    }
+      txnId: 'please wait...'
+    };
   }
 
   // Maybe store the transaction id in a shapeshift transaction model to prevent this action.
   componentDidMount(){
     const { shapeShiftAddress, date, refundAddress } = this.props;
-    if (this.props.from.match(/XRP/)) {
+    if (this.props.from.fromCoin === "XRP") {
       this.props.getShapeshiftTransactionId(shapeShiftAddress, date, refundAddress, this.setTransactionId);
     }
     else {
@@ -32,47 +35,51 @@ class ShapeTransactionView extends React.Component {
   }
 
   setShapeshiftStatus(statusObject) {
-    this.setState({ txStat: statusObject })
+    this.setState({ txStat: statusObject });
   }
 
   setTransactionId(txnId) {
-    this.setState({ txnId })
+    this.setState({ txnId });
   }
 
   render(){
     let ndate = new Date(this.props.date);
+    let { from, to} = this.props;
+    let { fromAmount, fromCoin } = from;
+    let { toAmount, toCoin } = to;
+    let status = "no deposit has been made";
+    if (!this.state.txStat.status === "no_deposits") {
+      status = "complete";
+    } 
     return (
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>Status:  {this.state.txStat.status ? this.state.txStat.status : 'Please Wait...'}</Text>
-        <Text style={styles.infoText}>Other Party:  {this.props.otherParty}</Text>
-        <Text style={styles.infoText}>Date:  {`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${this.props.time}`}</Text>
-        <Text style={styles.infoText}>{this.props.from.match(/XRP/) ? "Withdraw" : "Deposit"} {this.props.from} to {this.props.to}</Text>
-        {this.state.txStat.error ? <Text style={styles.infoText}>Error:  {this.state.txStat.error}</Text> : null}
-        <Text style={styles.infoText}>orderId:  {this.props.orderId}</Text>
-        <Text style={styles.infoText}>txnId:  {this.state.txnId}</Text>
-        <Text style={styles.infoText}>Shapeshift Deposit Address:  {this.props.shapeShiftAddress}</Text>
-        <Text style={styles.infoText}>Refund Address:  {this.props.refundAddress}</Text>
-      </View>
-    )
+      <ScrollView style={styles.infoContainer}>
+          <Text style={styles.infoText}>{fromCoin === "XRP" ? "send" : "deposit"} {fromAmount} {fromCoin} as {toAmount} {toCoin}</Text>
+          <Text style={styles.infoText}>status:  {status ? status : 'please wait...'}</Text>
+          <Text style={styles.infoText}>sent to: {this.props.otherParty}</Text>
+          <Text style={styles.infoText}>{`${ndate.toLocaleString("en-us", { month: "short" })} ${ndate.getDate()}, ${ndate.getFullYear()} ${this.props.time}`}</Text>
+          {this.state.txStat.error ? <Text style={styles.infoText}>Error:  {this.state.txStat.error}</Text> : null}
+          <Text style={styles.infoText}>order id:  {this.props.orderId}</Text>
+          <Text style={styles.infoText}>transaction id:  {this.state.txnId}</Text>
+          <Text style={styles.infoText}>shapeshift deposit address:  {this.props.shapeShiftAddress}</Text>
+          <Text style={styles.infoText}>refund address:  {this.props.refundAddress}</Text>
+      </ScrollView>
+    );
   }
 }
-
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   infoContainer: {
-    // marginTop: 10,
-    // marginLeft: 35,
-    // width: 340
+    width: width,
+    marginBottom: height/12
   },
   infoText: {
-    fontSize: 16,
-    textAlign: 'center',
-    // marginLeft: 30,
-    borderWidth: 1,
+    fontSize: 13,
+    borderWidth: .5,
     borderColor: '#d3d3d3',
-    padding: 20
-    // textAlign: 'center'
+    padding: 20,
+    fontWeight: "500"
   }
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   getShapeshiftTransactionId: (shapeShiftAddress, date, refundAddress, setTransactionId) =>  dispatch(getShapeshiftTransactionId(shapeShiftAddress, date, refundAddress, setTransactionId))

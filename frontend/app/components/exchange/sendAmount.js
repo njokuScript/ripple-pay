@@ -1,6 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
@@ -9,9 +9,9 @@ import sendAmountContainer from './sendAmountContainer';
 import CustomButton from '../presentationals/customButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
-import { makeShapeshiftTransaction } from '../../actions/authActions';
-import { clearSendAmount, getTimeRemaining } from '../../actions/shapeActions';
-import { addAlert } from '../../actions/alertsActions';
+import { makeShapeshiftTransaction, clearSendAmount, getTimeRemaining, addAlert } from '../../actions';
+import Util from '../../utils/util';
+
 import {
   StyleSheet,
   Text,
@@ -107,8 +107,8 @@ class SendAmount extends Component {
       otherParty = otherParty === '' ? 'Not Entered' : otherParty;
       let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
       newProps.makeShapeshiftTransaction(
-        `${this.truncate(newProps.shape.sendamount.depositAmount)} ${newProps.fromCoin}`,
-        `${this.truncate(newProps.amount)} ${newProps.toCoin}`,
+        { fromAmount: newProps.shape.sendamount.depositAmount, fromCoin: newProps.fromCoin },
+        { toAmount: newProps.amount, toCoin: newProps.toCoin },
         otherParty,
         newProps.shape.sendamount.deposit,
         returnAddress,
@@ -118,10 +118,6 @@ class SendAmount extends Component {
         getTimeRemaining(newProps.shape.sendamount.deposit, this.setTimer);  
       }
     }
-  }
-
-  truncate(num){
-    return num ? num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0] : "";
   }
 
   renderButton(){
@@ -175,10 +171,6 @@ class SendAmount extends Component {
     this.props.clearSendAmount();
   }
 
-  truncate(num){
-    return num ? parseFloat(num).toString().match(/^-?\d+(?:\.\d{0,5})?/)[0] : "";
-  }
-
 //Maybe give these the indexes that they are suppose to have.
 // XRP withdraw address that ripplePay auto sends to on withdrawals is shown just
 // for testing purposes
@@ -210,10 +202,10 @@ class SendAmount extends Component {
             <ScrollView style={styles.infoContainer}>
               { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit ? this.props.shape.sendamount.deposit : 'Please Wait...' }</Text> : null}
               <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
-              <Text style={styles.whitetext}>Send Minimum:   {this.truncate(this.props.shape.market.minimum)} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Send Maximum:   {this.truncate(this.props.shape.market.maxLimit)} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.truncate(this.props.shape.sendamount.depositAmount) : this.truncate(this.props.fromAmount)} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Withdraw Amount:   {this.truncate(this.props.amount)} {this.props.toCoin}</Text>
+              { !this.props.quoted ? <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text> : null }
+              { !this.props.quoted ? <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text> : null }
+              <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
+              <Text style={styles.whitetext}>Withdraw Amount:   {this.props.amount} {this.props.toCoin}</Text>
               <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
               {this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text> : null}
               <Text style={styles.whitetext}>Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>

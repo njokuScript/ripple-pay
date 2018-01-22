@@ -5,10 +5,15 @@ import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
+import CustomButton from '../presentationals/customButton';
 import Coin from '../presentationals/coin';
+import LoadingIcon from '../presentationals/loadingIcon';
 import Icon from 'react-native-vector-icons/Entypo';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Font from 'react-native-vector-icons/FontAwesome';
+import Promise from 'bluebird';
+import Util from '../../utils/util';
+
 import {
   StyleSheet,
   Text,
@@ -16,18 +21,18 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
-// create a Component
+
+const { width, height } = Dimensions.get('window');
 class Exchange extends Component {
   constructor(props){
     super(props);
     this.state = {
       direction: true,
-      getRates: true,
-    }
-    this.allCoins = this.allCoins.bind(this);
-    this.finishAndBeginExchange = this.finishAndBeginExchange.bind(this);
+    };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -36,37 +41,43 @@ class Exchange extends Component {
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestAllCoins();
+      this.props.requestAllCoins().then(() => {
+
+        this.getRates();
+        // get rates every minute
+        this.timer = window.setInterval(() => {
+          this.getRates();
+        }, 60000);
+
+      });
     }
     else if (event.id === "didDisappear")
     {
-      window.clearTimeout(this.timer);
+      window.clearInterval(this.timer);
     }
   }
-  finishAndBeginExchange() {
-    let that = this;
-    this.setState({getRates: false});
-    window.clearTimeout(this.timer);
-    this.timer = window.setTimeout(function(){
-      that.setState({getRates: true});
-    },20000);
+
+  getRates() {
+    let allCoins = this.props.shape.coins;
+    if (allCoins) {
+      Promise.each(Object.keys(allCoins), (coin) => {
+        if (allCoins[coin].status === "available" && !['NXT', 'XRP'].includes(coin)) {
+          return this.props.requestRate(coin);
+        }
+      });
+    }
   }
 
-  // componentWillUnmount(){
-  //   window.clearTimeout(this.timer);
-  // }
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
   navWallet(){
+    window.clearInterval(this.timer);
     this.props.navigator.push({
       screen: 'Wallet',
       navigatorStyle: {navBarHidden: true}
-    })
+    });
   }
 
   navSendRipple() {
+    window.clearInterval(this.timer);
     this.props.navigator.push({
       screen: 'SendRipple',
       animation: true,
@@ -78,6 +89,7 @@ class Exchange extends Component {
   }
 
   navTransition(coin, dir) {
+    window.clearInterval(this.timer);
     let toCoin;
     let fromCoin;
     if ( dir === 'send' )
@@ -92,7 +104,6 @@ class Exchange extends Component {
     }
     this.props.navigator.push({
       screen: 'Transition',
-      // navigatorStyle: {navBarHidden: true},
       passProps: {toCoin: toCoin, fromCoin: fromCoin},
       animation: true,
       animationType: 'fade',
@@ -102,24 +113,13 @@ class Exchange extends Component {
     });
   }
 
-  // componentDidUpdate(oldProps, oldState){
-  //   let alltheCoins = this.props.shape.coins;
-  //   if ( alltheCoins && this.state.getRates )
-  //   {
-  //     Object.keys(alltheCoins).filter((cn)=> alltheCoins[cn].status === "available" && cn !== "NXT").forEach((coin)=>{
-  //       this.props.requestRate(coin);
-  //     })
-      // this.finishAndBeginExchange();
-  //   }
-  // }
-
-//Maybe give these the indexes that they are suppose to have.
+// Maybe give these the indexes that they are suppose to have.
   allCoins() {
     const myCoins = this.props.shape.coins;
     let theCoins;
     let line;
     let showCoins = [];
-    showCoins.unshift(
+    showCoins.push(
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
@@ -128,18 +128,20 @@ class Exchange extends Component {
         receiveFunction={this.navWallet.bind(this)}
         rate=""
       />
-    )
+    );
+
     if ( myCoins )
     {
       Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
         if ( this.state.direction )
         {
-          line = `${this.truncate(this.props.shape.rates[coin])} XRP/${myCoins[coin].symbol}`;
+          line = `${Util.truncate(this.props.shape.rates[coin], 5)} XRP/${myCoins[coin].symbol}`;
         }
         else
         {
-          line = `${this.truncate(1/this.props.shape.rates[coin])} ${myCoins[coin].symbol}/XRP`;
+          line = `${Util.truncate( (1/this.props.shape.rates[coin]), 5 )} ${myCoins[coin].symbol}/XRP`;
         }
+        // this won't be good if ethereum moves in position
         if ( coin === "ETH" )
         {
           showCoins.splice(2,0, (
@@ -165,13 +167,12 @@ class Exchange extends Component {
           />
         );
       });
-    }
-    else
-    {
-      showCoins = (
-        <View><Text>Loading...</Text></View>
+    } else {
+      showCoins.push(
+        <LoadingIcon key="loadIcon" size="large" color="black" />
       );
     }
+    
     return (
       <ScrollView style={styles.coinsContainer}>
         {showCoins}
@@ -179,91 +180,65 @@ class Exchange extends Component {
     );
   }
 
-  truncate(num){
-    return num ? num.toString().match(/^-?\d+(?:\.\d{0,3})?/)[0] : "";
+  direction() {
+    if (this.state.direction) {
+      return (
+        <View style={styles.conversionContainer}>
+          <Text style={styles.directions}>Ʀ</Text>
+          <Font name="long-arrow-right" size={width/20} color="white" />
+          <Font name="bitcoin" size={width/20} color="white" />
+        </View>
+      );
+    } else {
+      return (
+      <View style={styles.conversionContainer}>
+        <Font name="bitcoin" size={width/20} color="white" />
+        <Font name="long-arrow-right" size={width/20} color="white" />
+        <Text style={styles.directions}>Ʀ</Text>
+      </View>
+      );
+    }
   }
 
   render() {
     return (
       <View style={styles.mainContainer}>
-
-      <View style={styles.topContainer}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>
-            Exchange
-          </Text>
-        </View>
-
-        <View style={styles.conversionContainer}>
+        <View style={styles.topContainer}>
           <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
-            <Text style={styles.directions}>reverse conversion</Text>
+            {this.direction()}
           </TouchableOpacity>
         </View>
-      </View>
 
-      <ScrollView>
-        {this.allCoins()}
-      </ScrollView>
-     </View>
+        <ScrollView>
+          {this.allCoins()}
+        </ScrollView>
+      </View>
     );
   }
 }
 
-// define your styles
-
 const styles = StyleSheet.create({
   mainContainer: {
      flex: 1,
-     justifyContent: 'center',
-     backgroundColor: 'white'
+     backgroundColor: 'white',
    },
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
     alignItems: 'center',
-    height: 90,
-    paddingTop: 20,
+    height: height / 5.5,
   },
-  container: {
+  conversionContainer: {
+    width: width/6,
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    paddingTop: 0,
-    backgroundColor: '#111F61'
-  },
-  logoContainer: {
-    backgroundColor: '#111F61',
-  },
-  logo: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'Kohinoor Bangla'
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
   },
   directions: {
-    textAlign: 'center',
     color: 'white',
-    fontSize: 13,
+    fontSize: width/20,
     fontFamily: 'Kohinoor Bangla'
-  },
-  formError: {
-    color: 'red'
-  },
-  tabFont: {
-    fontFamily: 'Kohinoor Bangla',
-  },
-  tabs: {
-    backgroundColor: '#111F61',
-    borderColor: '#d3d3d3',
-    position: 'absolute',
-    paddingTop: 15,
-    paddingBottom: 10,
-    height: 75
-  },
+  }
 });
-
-// make this component available to the app
 
 export default Exchange;

@@ -9,118 +9,267 @@ import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
+import Util from '../../utils/util';
+import { getXRPtoUSD } from '../../actions';
+import Config from '../../config_enums';
+
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Dimensions,
+  Keyboard,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
-// I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
 class BankSend extends Component {
   constructor(props){
     super(props);
+    this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
+    this.preparePersonal = this.preparePersonal.bind(this);
+    this.sendPersonal = this.sendPersonal.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
-      sendButtonDisabled: true
-    }
+      secret: "",
+      sendButtonDisabled: true,
+      keyboardHeight: 0,
+      usd: 0,
+      usdPerXRP: 0
+    };
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "willDisappear")
-    {
+    if ( event.id === "willDisappear") {
       this.setState({
         sendButtonDisabled: true
-      })
+      });
+    } else if (event.id === "willAppear") {
+      getXRPtoUSD(this.props.balance, this.setUSD);
+      this.props.clearAlerts();
+    }
+    if (event.id === "bottomTabSelected") {
+      this.props.navigator.popToRoot();
     }
   }
 
   enableSending() {
+    this.props.clearAlerts();
     this.setState({
       sendButtonDisabled: false
-    })
+    });
   }
 
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-
-  //I am not required to do request transactions here because this will happen automatically from componentDidMount in home.js
-
-
   sendPayment(){
-    if (parseFloat(this.state.amount) <= 0 || !this.state.amount.match(/^\d+$/))
-    {
-      this.props.addAlert("Can't send 0 or less Ripple");
-      return;
+    this.props.clearAlerts();
+    if (!Util.validMoneyEntry(this.state.amount)) {
+      this.props.addAlert("cannot send 0 or less ripple");
+    } 
+    else if (this.state.amount > this.props.balance) {
+      this.props.addAlert("balance insufficient");
+    } 
+    else {
+      this.props.addAlert("sending payment...");
+      this.setState({sendButtonDisabled: true});
+      this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
     }
-    this.setState({sendButtonDisabled: true});
-    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
+  }
+
+  preparePersonal() {
+    if (!this.props.personalAddress) {
+      this.props.addAlert("Please get a personal address first");
+    }
+    else {
+      if (this.state.amount === "") {
+        this.props.addAlert("Please enter an amount");
+        return;
+      }
+      let { amount, secret } = this.state;
+      if (!Util.validMoneyEntry(amount)) {
+        this.props.addAlert("Can't send 0 or less Ripple");
+        return;
+      }
+      this.props.preparePersonalToBank(parseFloat(amount), this.props.personalAddress, this.props.receiverScreenName);
+    }
+  }
+
+  sendPersonal() {
+    this.setState({ sendButtonDisabled: true });
+    const { amount } = this.props.transaction;
+    if (amount) {
+        this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
+    } else {
+      this.props.clearTransaction();
+    }
+  }
+
+  setUSD(usd, usdPerXRP) {
+    this.setState({ usd, usdPerXRP });
+  }
+
+  // custom alert styling
+  renderAlerts() {
+    if (this.props.alerts.length > 0) {
+      let alerts = this.props.alerts.map((alert, idx) => {
+        let alertText = {
+          color: "red",
+          textAlign: "center"
+        };
+        if (alert.text === "Payment was Successful") {
+          alertText.color = "lightgreen";
+        } else if (alert.text === "sending payment...") {
+          alertText.color = "gray";
+        }
+        return (
+          <Text style={alertText} key={idx}>{alert.text.toLowerCase()}</Text>
+          );
+        });
+        return alerts[alerts.length-1];
+      }
+  }
+
+  topContainer() {
+    return (
+      <View style={styles.topContainer}>
+        <CustomBackButton handlePress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })} />
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceTextField}>
+            balance:
+            </Text>
+          <Text style={styles.balanceText}>
+            Ʀ{Util.truncate(this.props.balance, 2)}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  passwordLock() {
+    return (
+      <View style={styles.container}>
+        {this.topContainer()}
+        <View style={styles.usdContainer}>
+          <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+        </View>
+        <PasswordLock enableSending={this.enableSending} />
+        <View style={styles.alert}>
+          {this.renderAlerts()}
+        </View>
+      </View>
+    );
+  }
+
+  renderSecretField() {
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      return (
+        <CustomInput
+          placeholder="Secret Key"
+          onChangeText={
+            (secret) => {
+              this.setState({ secret: secret });
+            }
+          }
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          placeholderTextColor="#6D768B"
+          keyboardAppearance={'dark'}
+        />
+      );
+    }
+    return null;
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.topContainer}>
-          <CustomBackButton handlePress={() => this.props.navigator.pop({
-            animationType: 'fade'
-          })}/>
-          <View style={styles.balanceContainer}>
-            <Text style={styles.balanceTextField}>
-              balance:
-            </Text>
-            <Text style={styles.balanceText}>
-              {this.props.balance.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} Ʀ
-            </Text>
+    if (this.state.sendButtonDisabled === true) {
+      return (
+          this.passwordLock()
+      );
+    } else {
+      const { toAddress, toDesTag, fee, amount } = this.props.transaction;
+      const readyToSend = Boolean(toAddress && fee && amount);
+      if (readyToSend) {
+        Alert.alert(
+          'Send Ripple:',
+          'Transaction Details:',
+          [
+            { text: `Sending to ${this.props.receiverScreenName}`},
+            { text: `To Address: ${toAddress}`},
+            { text: `To Destination Tag: ${toDesTag}`},
+            { text: `Amount: ${amount}`},
+            { text: `Fee: ${fee}`},
+            { text: `Send Payment!`, onPress: this.sendPersonal},
+          ],
+          { cancelable: false }
+        );
+      }
+      const usd = (
+        <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+      );
+      if (this.state.amount) {
+        usd = (
+          <View>
+            <Text style={styles.usd}>${Util.truncate(this.state.usdPerXRP * this.state.amount, 2)}</Text>
           </View>
-        </View>
+        );
+      }
+      return (
+        <View style={styles.container}>
+        {this.topContainer()}
+          <View style={styles.usdContainer}>
+            {usd}
+          </View>
         <View style={styles.amount}>
           <CustomInput
             placeholder="Amount"
             onChangeText={
               (amt) => {
-                this.setState({amount: amt});
+                getXRPtoUSD(this.props.balance, this.setUSD);
+                this.setState({ amount: amt });
               }
             }
             autoCorrect={false}
-            placeholderTextColor="#6D768B"
             autoFocus={true}
+            placeholderTextColor="#6D768B"
             autoCapitalize={'none'}
-            keyboardType={'number-pad'}
-            keyboardAppearance={'dark'}/>
+            keyboardType={'decimal-pad'}
+            keyboardAppearance={'dark'} />
         </View>
+        { this.renderSecretField() }
         <View style={styles.paymentButton}>
           <CustomButton
             performAction={`pay ${this.props.receiverScreenName}`}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={this.sendPayment}
+            handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.preparePersonal}
           />
-          <View style={styles.alert}>
-            <AlertContainer />
-          </View>
         </View>
-        <PasswordLock enableSending={this.enableSending} />
+        <View style={styles.alert}>
+          {this.renderAlerts()}
+        </View>
       </View>
-    );
+      );
+    }
   }
 }
 
 // define your styles
+const { width, height } = Dimensions.get('screen');
 const styles = StyleSheet.create({
   topContainer: {
-    flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 70,
-    paddingTop: 10,
+    paddingTop: 20,
     paddingLeft: 30,
     paddingRight: 20
   },
@@ -132,7 +281,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   paymentButton:{
-    marginTop: 0
+    marginTop: -20
   },
   title: {
    textAlign: 'center',
@@ -179,9 +328,17 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   alert: {
-    marginTop: 205
+    marginTop: -10
+  },
+  usdContainer: {
+    paddingRight: 35,
+  },
+  usd: {
+    textAlign: "right",
+    fontFamily: 'Kohinoor Bangla',
+    fontSize: 16,
+    color: "white"
   }
 });
 
-// make this component available to the app
 export default BankSend;

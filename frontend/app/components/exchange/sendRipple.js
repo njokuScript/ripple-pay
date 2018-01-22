@@ -8,13 +8,17 @@ import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
+import Util from '../../utils/util';
+import Config from '../../config_enums';
+
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -31,8 +35,9 @@ class SendRipple extends Component {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
+      secret: "",
       sendButtonDisabled: true
-    }
+    };
   }
 
   onNavigatorEvent(event) {
@@ -41,7 +46,8 @@ class SendRipple extends Component {
     }
     if (event.id === "willDisappear") {
       this.setState({
-        sendButtonDisabled: true
+        sendButtonDisabled: true,
+        secret: ""
       });
     }
   }
@@ -49,14 +55,19 @@ class SendRipple extends Component {
   enableSending() {
     this.setState({
       sendButtonDisabled: false
-    })
+    });
   }
 
   sendPayment() {
     this.setState({ sendButtonDisabled: true });
     const { amount } = this.props.transaction;
     if (amount) {
-      this.props.signAndSend(this.props.fromAddress, parseFloat(amount));
+      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+        this.props.signAndSend(this.props.fromAddress, parseFloat(amount));
+      }
+      else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+        this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
+      }
     } else {
       this.props.clearTransaction();
     }
@@ -65,10 +76,10 @@ class SendRipple extends Component {
   prepareTransaction(){
     if ( !this.props.fromAddress || !this.props.sourceTag)
     {
-      this.props.addAlert("Please get a wallet first")
+      this.props.addAlert("Please get a wallet first");
     }
     //This is the REGEX to validate a Ripple Address
-    else if(!this.state.toAddress.match(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/))
+    else if(!Util.validRippleAddress(this.state.toAddress))
     {
       this.props.addAlert("Invalid Ripple Address");
     }
@@ -85,7 +96,7 @@ class SendRipple extends Component {
         return;
       }
       let {toDesTag, toAddress, amount} = this.state;
-      if ( parseFloat(amount) <= 0 || !amount.match(/^\d+$/) )
+      if (!Util.validMoneyEntry(amount))
       {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;
@@ -94,32 +105,69 @@ class SendRipple extends Component {
     }
   }
 
+  displayBackButton() {
+    return (
+      <View style={styles.topContainer}>
+        <TouchableOpacity onPress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })}>
+          <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  renderSecretField() {
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      return (
+        <CustomInput
+          placeholder="Secret Key"
+          onChangeText={
+            (secret) => {
+              this.setState({ secret: secret });
+            }
+          }
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          placeholderTextColor="#6D768B"
+          keyboardAppearance={'dark'}
+        /> 
+      );
+    }
+    return null;
+  }
+
   render() {
+    if (this.state.sendButtonDisabled) {
+      return (
+        <View style={styles.container}>
+          <AlertContainer />
+          { this.displayBackButton() }
+          <PasswordLock enableSending={this.enableSending} />
+        </View>
+      );
+    }
+
     const { toAddress, toDesTag, fee, amount } = this.props.transaction;
     const readyToSend = Boolean(toAddress && fee && amount);
-    const transaction = () => {
-      if (readyToSend) {
-        return (
-          <View>
-            <Text>To address: {toAddress}</Text>
-            <Text>To Destination Tag: {toDesTag}</Text>
-            <Text>Amount: {amount}</Text>
-            <Text>Fee: {fee}</Text>
-          </View>
-        )
-      }
-      return null;
+    if (readyToSend) {
+      Alert.alert(
+        'Send Ripple',
+        'Transaction Details:',
+        [
+          { text: `To Address: ${toAddress}` },
+          { text: `To Destination Tag: ${toDesTag}` },
+          { text: `Amount: ${amount}` },
+          { text: `Fee: ${fee}` },
+          { text: `Send Payment!`, onPress: this.sendPayment },
+        ],
+        { cancelable: false }
+      );
     }
     return (
       <View style={styles.container}>
         <AlertContainer />
-        <View style={styles.topContainer}>
-          <TouchableOpacity onPress={() => this.props.navigator.pop({
-            animationType: 'fade'
-            })}>
-            <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
-          </TouchableOpacity>
-        </View>
+        { this.displayBackButton() }
         <CustomInput
             placeholder="Destination Address"
             onChangeText={
@@ -159,14 +207,13 @@ class SendRipple extends Component {
             keyboardType={'number-pad'}
             keyboardAppearance={'dark'}
           />
+          {this.renderSecretField()}
           <CustomButton
             performAction={readyToSend ? "Send Payment" : "Prepare Payment"}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={readyToSend ? this.sendPayment : this.prepareTransaction}
+            handlePress={this.prepareTransaction}
           />
-          { transaction() }
-        <PasswordLock enableSending={this.enableSending}/>
         <View style={styles.fee}>
           <Text style={styles.feetext}>
             transaction Fee: 0.02 XRP
