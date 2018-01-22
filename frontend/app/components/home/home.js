@@ -288,9 +288,9 @@ class Home extends React.Component {
               <Text style={styles.usdText}>
                 ${Util.truncate(this.state.usd, 2)}
               </Text>
-              {/* <Text style={styles.usdText}>
+              <Text style={styles.usdText}>
                 ${Util.truncate(this.state.usdPerXRP, 2)} = 1 XRP
-              </Text> */}
+              </Text>
             </View>
         </View>
 
