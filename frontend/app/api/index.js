@@ -9,14 +9,6 @@ import { API_URL } from '../config_enums';
 var SHAPESHIFT_URL = 'https://shapeshift.io';
 var COINCAP_URL = 'https://coincap.io';
 
-<<<<<<< HEAD
-// local
-// var API_URL = 'http://localhost:3000/v1';
-// prod
-var API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
-
-=======
->>>>>>> 31a0849b911e5990bbb5794138e2101ad66f6aae
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
