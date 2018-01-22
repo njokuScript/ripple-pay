@@ -10,7 +10,9 @@ exports.APP_STATE = {
     'TEST_PROD': 3
 };
 
-exports.CURRENT_STATE = 3;
+exports.CURRENT_STATE = 2;
+
+exports.MIN_XRP_PER_WALLET = 20;
 
 if (exports.CURRENT_STATE === exports.APP_STATE.TEST_PROD || exports.CURRENT_STATE === exports.APP_STATE.PRODUCTION) {
     exports.API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';

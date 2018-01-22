@@ -32,6 +32,7 @@ exports.REMOVE_PERSONAL_URL = `${API_URL}/delpersonal`;
 exports.PERSONAL_TRANSACTIONS_URL = `${API_URL}/personaltrans`;
 exports.PREPARE_PAYMENT_PERSONAL_URL = `${API_URL}/personalpayment`;
 exports.SEND_PAYMENT_PERSONAL_URL = `${API_URL}/sendpersonal`;
+exports.PREPARE_PERSONAL_TO_BANK = `${API_URL}/preparePersonalToBank`;
 
 // shape shift
 exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;

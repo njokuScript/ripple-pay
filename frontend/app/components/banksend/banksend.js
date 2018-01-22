@@ -11,6 +11,7 @@ import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
 import { getXRPtoUSD } from '../../actions';
+import Config from '../../config_enums';
 
 import {
   StyleSheet,
@@ -29,10 +30,12 @@ class BankSend extends Component {
     super(props);
     this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
+    this.sendPersonalPayment = this.sendPersonalPayment.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
+      secret: "",
       sendButtonDisabled: true,
       keyboardHeight: 0,
       usd: 0,
@@ -41,8 +44,7 @@ class BankSend extends Component {
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "willDisappear")
-    {
+    if ( event.id === "willDisappear") {
       this.setState({
         sendButtonDisabled: true
       });
@@ -63,12 +65,13 @@ class BankSend extends Component {
 
   sendPayment(){
     this.props.clearAlerts();
-    if (!Util.validMoneyEntry(this.state.amount))
-    {
+    if (!Util.validMoneyEntry(this.state.amount)) {
       this.props.addAlert("cannot send 0 or less ripple");
-    } else if (this.state.amount > this.props.balance) {
+    } 
+    else if (this.state.amount > this.props.balance) {
       this.props.addAlert("balance insufficient");
-    } else {
+    } 
+    else {
       this.props.addAlert("sending payment...");
       this.setState({sendButtonDisabled: true});
       this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
@@ -133,6 +136,26 @@ class BankSend extends Component {
     );
   }
 
+  renderSecretField() {
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      return (
+        <CustomInput
+          placeholder="Secret Key"
+          onChangeText={
+            (secret) => {
+              this.setState({ secret: secret });
+            }
+          }
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          placeholderTextColor="#6D768B"
+          keyboardAppearance={'dark'}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     if (this.state.sendButtonDisabled === true) {
       return (
@@ -158,12 +181,13 @@ class BankSend extends Component {
             keyboardType={'decimal-pad'}
             keyboardAppearance={'dark'} />
         </View>
+        { this.renderSecretField() }
         <View style={styles.paymentButton}>
           <CustomButton
             performAction={`pay ${this.props.receiverScreenName}`}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={this.sendPayment}
+            handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.sendPersonalPayment}
           />
         </View>
         <View style={styles.alert}>

@@ -1,5 +1,4 @@
-import { merge } from 'lodash';
-
+import { merge, _ } from 'lodash';
 import Config from '../config_enums';
 
 let defaultState = {
@@ -19,7 +18,8 @@ let defaultState = {
   activeWallet: Config.WALLETS.BANK_WALLET
 };
 
-//We have to use Object.assign for a shallow merging and merge for a deep merging which would also merge the inner arrays of the object.
+const initialState = _.cloneDeep(defaultState);
+
 module.exports = (state=defaultState, action) => {
   Object.freeze(state);
   switch(action.type) {
@@ -42,23 +42,7 @@ module.exports = (state=defaultState, action) => {
       }
       return Object.assign({}, state, { passwordAttempts });
     case 'UNAUTH_USER':
-      return Object.assign({}, state,
-        {
-          transactions: [],
-          personalTransactions: [],
-          users: [],
-          balance: 0,
-          personalBalance: 0,
-          cashRegister: undefined,
-          wallets: [],
-          screenName: '',
-          shapeshiftTransactions: [],
-          passwordAttempts: {tries: 3, attemptSwitch: true},
-          shouldLoadMoreShapeShiftTransactions: true,
-          shouldLoadMoreTransactions: true,
-          personalAddress: undefined,
-          activeWallet: Config.WALLETS.BANK_WALLET 
-        });
+      return Object.assign({}, state, initialState);
     case 'RECEIVED_TRANSACTIONS':
       return Object.assign({}, state, {transactions: action.data.transactions, balance: action.data.balance});
     case 'RECEIVED_NEXT_TRANSACTIONS':
