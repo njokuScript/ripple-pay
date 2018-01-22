@@ -16,6 +16,7 @@ const CustomButton = (props) => {
     fontFamily: 'Kohinoor Bangla',
     textAlign: 'center'
   };
+  console.log("test",props.buttonColor)
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity onPress={props.handlePress} disabled={props.isDisabled} style={styles.touchableButton}>
