@@ -10,7 +10,7 @@ exports.APP_STATE = {
     'TEST_PROD': 3
 };
 
-exports.CURRENT_STATE = 2;
+exports.CURRENT_STATE = 3;
 
 exports.MIN_XRP_PER_WALLET = 20;
 
