@@ -10,6 +10,8 @@ import CustomBackButton from '../presentationals/customBackButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import { getXRPtoUSD } from '../../actions';
+import Config from '../../config_enums';
 
 import {
   StyleSheet,
@@ -19,30 +21,37 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Dimensions,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
 class BankSend extends Component {
   constructor(props){
     super(props);
+    this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
+    this.preparePersonal = this.preparePersonal.bind(this);
+    this.sendPersonal = this.sendPersonal.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
+      secret: "",
       sendButtonDisabled: true,
-      keyboardHeight: 0
+      keyboardHeight: 0,
+      usd: 0,
+      usdPerXRP: 0
     };
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "willDisappear")
-    {
+    if ( event.id === "willDisappear") {
       this.setState({
         sendButtonDisabled: true
       });
     } else if (event.id === "willAppear") {
+      getXRPtoUSD(this.props.balance, this.setUSD);
       this.props.clearAlerts();
     }
     if (event.id === "bottomTabSelected") {
@@ -59,16 +68,49 @@ class BankSend extends Component {
 
   sendPayment(){
     this.props.clearAlerts();
-    if (!Util.validMoneyEntry(this.state.amount))
-    {
+    if (!Util.validMoneyEntry(this.state.amount)) {
       this.props.addAlert("cannot send 0 or less ripple");
-    } else if (this.state.amount > this.props.balance) {
+    } 
+    else if (this.state.amount > this.props.balance) {
       this.props.addAlert("balance insufficient");
-    } else {
+    } 
+    else {
       this.props.addAlert("sending payment...");
       this.setState({sendButtonDisabled: true});
       this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
     }
+  }
+
+  preparePersonal() {
+    if (!this.props.personalAddress) {
+      this.props.addAlert("Please get a personal address first");
+    }
+    else {
+      if (this.state.amount === "") {
+        this.props.addAlert("Please enter an amount");
+        return;
+      }
+      let { amount, secret } = this.state;
+      if (!Util.validMoneyEntry(amount)) {
+        this.props.addAlert("Can't send 0 or less Ripple");
+        return;
+      }
+      this.props.preparePersonalToBank(parseFloat(amount), this.props.personalAddress, this.props.receiverScreenName);
+    }
+  }
+
+  sendPersonal() {
+    this.setState({ sendButtonDisabled: true });
+    const { amount } = this.props.transaction;
+    if (amount) {
+        this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
+    } else {
+      this.props.clearTransaction();
+    }
+  }
+
+  setUSD(usd, usdPerXRP) {
+    this.setState({ usd, usdPerXRP });
   }
 
   // custom alert styling
@@ -103,8 +145,8 @@ class BankSend extends Component {
             balance:
             </Text>
           <Text style={styles.balanceText}>
-            {Util.truncate(this.props.balance, 2)} Ʀ
-            </Text>
+            Ʀ{Util.truncate(this.props.balance, 2)}
+          </Text>
         </View>
       </View>
     );
@@ -114,6 +156,9 @@ class BankSend extends Component {
     return (
       <View style={styles.container}>
         {this.topContainer()}
+        <View style={styles.usdContainer}>
+          <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+        </View>
         <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
           {this.renderAlerts()}
@@ -122,20 +167,71 @@ class BankSend extends Component {
     );
   }
 
+  renderSecretField() {
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      return (
+        <CustomInput
+          placeholder="Secret Key"
+          onChangeText={
+            (secret) => {
+              this.setState({ secret: secret });
+            }
+          }
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          placeholderTextColor="#6D768B"
+          keyboardAppearance={'dark'}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     if (this.state.sendButtonDisabled === true) {
       return (
           this.passwordLock()
       );
     } else {
+      const { toAddress, toDesTag, fee, amount } = this.props.transaction;
+      const readyToSend = Boolean(toAddress && fee && amount);
+      if (readyToSend) {
+        Alert.alert(
+          'Send Ripple:',
+          'Transaction Details:',
+          [
+            { text: `Sending to ${this.props.receiverScreenName}`},
+            { text: `To Address: ${toAddress}`},
+            { text: `To Destination Tag: ${toDesTag}`},
+            { text: `Amount: ${amount}`},
+            { text: `Fee: ${fee}`},
+            { text: `Send Payment!`, onPress: this.sendPersonal},
+          ],
+          { cancelable: false }
+        );
+      }
+      const usd = (
+        <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+      );
+      if (this.state.amount) {
+        usd = (
+          <View>
+            <Text style={styles.usd}>${Util.truncate(this.state.usdPerXRP * this.state.amount, 2)}</Text>
+          </View>
+        );
+      }
       return (
         <View style={styles.container}>
         {this.topContainer()}
+          <View style={styles.usdContainer}>
+            {usd}
+          </View>
         <View style={styles.amount}>
           <CustomInput
             placeholder="Amount"
             onChangeText={
               (amt) => {
+                getXRPtoUSD(this.props.balance, this.setUSD);
                 this.setState({ amount: amt });
               }
             }
@@ -146,12 +242,13 @@ class BankSend extends Component {
             keyboardType={'decimal-pad'}
             keyboardAppearance={'dark'} />
         </View>
+        { this.renderSecretField() }
         <View style={styles.paymentButton}>
           <CustomButton
             performAction={`pay ${this.props.receiverScreenName}`}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={this.sendPayment}
+            handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.preparePersonal}
           />
         </View>
         <View style={styles.alert}>
@@ -184,7 +281,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   paymentButton:{
-    marginTop: 0
+    marginTop: -20
   },
   title: {
    textAlign: 'center',
@@ -232,6 +329,15 @@ const styles = StyleSheet.create({
   },
   alert: {
     marginTop: -10
+  },
+  usdContainer: {
+    paddingRight: 35,
+  },
+  usd: {
+    textAlign: "right",
+    fontFamily: 'Kohinoor Bangla',
+    fontSize: 16,
+    color: "white"
   }
 });
 

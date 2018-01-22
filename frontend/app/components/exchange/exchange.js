@@ -169,7 +169,7 @@ class Exchange extends Component {
       });
     } else {
       showCoins.push(
-        <LoadingIcon key="loadIcon" size="large" color="#0000ff" />
+        <LoadingIcon key="loadIcon" size="large" color="black" />
       );
     }
     

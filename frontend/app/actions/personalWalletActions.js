@@ -4,6 +4,7 @@ import {
     PERSONAL_TRANSACTIONS_URL,
     PREPARE_PAYMENT_PERSONAL_URL,
     SEND_PAYMENT_PERSONAL_URL,
+    PREPARE_PERSONAL_TO_BANK,
     authRequest
 } from '../api';
 
@@ -84,6 +85,22 @@ exports.sendPaymentWithPersonalAddress = (fromAddress, secret, amount) => {
         },
         () => {
             return clearTransaction();
+        }
+    );
+};
+
+exports.preparePersonalToBank = (amount, fromAddress, toScreenName) => {
+    return authRequest(
+        "POST",
+        PREPARE_PERSONAL_TO_BANK,
+        { amount, fromAddress, toScreenName },
+        (response) => {
+            if (response.data.message) {
+                return addAlert(response.data.message);
+            }
+            const { fee, toAddress, toDesTag } = response.data;
+            const transaction = { toAddress, toDesTag, amount, fee };
+            return receivedTransaction(transaction);
         }
     );
 };

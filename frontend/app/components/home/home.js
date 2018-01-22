@@ -2,7 +2,7 @@ import React from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
-import { getXRPtoUSD, unauthUser } from '../../actions';
+import { getXRPtoUSD, unauthUser, addAlert } from '../../actions';
 import Icon from 'react-native-vector-icons/Entypo.js';
 import Transaction from '../presentationals/transaction';
 import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
@@ -247,13 +247,13 @@ class Home extends React.Component {
         );
       }
     });
-    if (transactions.length >= 10) {
+    if (transactionComponents.length >= 10) {
       let performAction = "load more";
       if (!this.props.shouldLoadMoreTransactions) {
         performAction = "no more transactions";
       }
-      transactions.push(
-        <View key={123} style={styles.loadTransactions}>
+      transactionComponents.push(
+        <View key={"7t8ui"} style={styles.loadTransactions}>
           <LoadMoreDataButton
             performAction="caret-down"
             iconColor="#2A4CED"
@@ -271,6 +271,8 @@ class Home extends React.Component {
   }
 
 // THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
+
+// JON, GET THE ALERTS TO SHOW UP HERE!
   render()
   {
     if (!this.state.showScreen) {
@@ -292,25 +294,25 @@ class Home extends React.Component {
                 ${Util.truncate(this.state.usdPerXRP, 2)} = 1 XRP
               </Text>
             </View>
-        </View>
+          </View>
 
-        <TopTabs
-          handleLeftPress={this.handleLeftPress}
-          handleRightPress={this.handleRightPress}
-          pressed={this.state.shapeshift}
-        />
+          <TopTabs
+            handleLeftPress={this.handleLeftPress}
+            handleRightPress={this.handleRightPress}
+            pressed={this.state.shapeshift}
+          />
 
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}/>
-          }
-          automaticallyAdjustContentInsets={false}
-          contentContainerStyle={styles.scrollViewContainer}>
-          {this.displayTransactions()}
-        </ScrollView>
-        <AlertContainer />
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.onRefresh}/>
+            }
+            automaticallyAdjustContentInsets={false}
+            contentContainerStyle={styles.scrollViewContainer}>
+            {this.displayTransactions()}
+          </ScrollView>
+          <AlertContainer />
         </View>
       );
     }

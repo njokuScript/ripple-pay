@@ -17,7 +17,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -149,19 +150,20 @@ class SendRipple extends Component {
 
     const { toAddress, toDesTag, fee, amount } = this.props.transaction;
     const readyToSend = Boolean(toAddress && fee && amount);
-    const transaction = () => {
-      if (readyToSend) {
-        return (
-          <View>
-            <Text>To address: {toAddress}</Text>
-            <Text>To Destination Tag: {toDesTag}</Text>
-            <Text>Amount: {amount}</Text>
-            <Text>Fee: {fee}</Text>
-          </View>
-        );
-      }
-      return null;
-    };
+    if (readyToSend) {
+      Alert.alert(
+        'Send Ripple',
+        'Transaction Details:',
+        [
+          { text: `To Address: ${toAddress}` },
+          { text: `To Destination Tag: ${toDesTag}` },
+          { text: `Amount: ${amount}` },
+          { text: `Fee: ${fee}` },
+          { text: `Send Payment!`, onPress: this.sendPayment },
+        ],
+        { cancelable: false }
+      );
+    }
     return (
       <View style={styles.container}>
         <AlertContainer />
@@ -210,9 +212,8 @@ class SendRipple extends Component {
             performAction={readyToSend ? "Send Payment" : "Prepare Payment"}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={readyToSend ? this.sendPayment : this.prepareTransaction}
+            handlePress={this.prepareTransaction}
           />
-          { transaction() }
         <View style={styles.fee}>
           <Text style={styles.feetext}>
             transaction Fee: 0.02 XRP
