@@ -10,6 +10,7 @@ import CustomBackButton from '../presentationals/customBackButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import { getXRPtoUSD } from '../../actions';
 
 import {
   StyleSheet,
@@ -26,13 +27,16 @@ import Icon from 'react-native-vector-icons/Entypo';
 class BankSend extends Component {
   constructor(props){
     super(props);
+    this.setUSD = this.setUSD.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       amount: "",
       sendButtonDisabled: true,
-      keyboardHeight: 0
+      keyboardHeight: 0,
+      usd: 0,
+      usdPerXRP: 0
     };
   }
 
@@ -71,6 +75,10 @@ class BankSend extends Component {
     }
   }
 
+  setUSD(usd, usdPerXRP) {
+    this.setState({ usd, usdPerXRP });
+  }
+
   // custom alert styling
   renderAlerts() {
     if (this.props.alerts.length > 0) {
@@ -105,6 +113,9 @@ class BankSend extends Component {
           <Text style={styles.balanceText}>
             {Util.truncate(this.props.balance, 2)} Ʀ
             </Text>
+          <View style={styles.usdContainer}>
+            <Text style={styles.usd}>${this.state.usdPerXRP * this.state.amount}</Text>
+          </View>
         </View>
       </View>
     );
@@ -136,6 +147,7 @@ class BankSend extends Component {
             placeholder="Amount"
             onChangeText={
               (amt) => {
+                getXRPtoUSD(this.props.balance, this.setUSD);
                 this.setState({ amount: amt });
               }
             }
@@ -184,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   paymentButton:{
-    marginTop: 0
+    marginTop: -20
   },
   title: {
    textAlign: 'center',
@@ -232,6 +244,16 @@ const styles = StyleSheet.create({
   },
   alert: {
     marginTop: -10
+  },
+  usdContainer: {
+    justifyContent: "center",
+    paddingLeft: 35,
+    paddingTop: 10
+  },
+  usd: {
+    fontFamily: 'Kohinoor Bangla',
+    fontSize: 16,
+    color: "white"
   }
 });
 
