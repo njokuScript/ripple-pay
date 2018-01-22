@@ -20,7 +20,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Dimensions,
-  Keyboard
+  Keyboard,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -28,7 +29,7 @@ class BankSend extends Component {
   constructor(props){
     super(props);
     this.sendPayment = this.sendPayment.bind(this);
-    this.sendPersonalPayment = this.sendPersonalPayment.bind(this);
+    this.preparePersonal = this.preparePersonal.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
@@ -74,6 +75,34 @@ class BankSend extends Component {
     }
   }
 
+  preparePersonal() {
+    if (!this.props.personalAddress) {
+      this.props.addAlert("Please get a personal address first");
+    }
+    else {
+      if (this.state.amount === "") {
+        this.props.addAlert("Please enter an amount");
+        return;
+      }
+      let { amount, secret } = this.state;
+      if (!Util.validMoneyEntry(amount)) {
+        this.props.addAlert("Can't send 0 or less Ripple");
+        return;
+      }
+      this.props.preparePersonalToBank(parseFloat(amount), this.props.personalAddress, this.props.receiverScreenName);
+    }
+  }
+
+  sendPersonal() {
+    this.setState({ sendButtonDisabled: true });
+    const { amount } = this.props.transaction;
+    if (amount) {
+        this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
+    } else {
+      this.props.clearTransaction();
+    }
+  }
+
   // custom alert styling
   renderAlerts() {
     if (this.props.alerts.length > 0) {
@@ -107,7 +136,7 @@ class BankSend extends Component {
             </Text>
           <Text style={styles.balanceText}>
             {Util.truncate(this.props.balance, 2)} Ʀ
-            </Text>
+          </Text>
         </View>
       </View>
     );
@@ -150,7 +179,24 @@ class BankSend extends Component {
       return (
           this.passwordLock()
       );
-    } else {
+    } 
+    else {
+      const { toAddress, toDesTag, fee, amount } = this.props.transaction;
+      const readyToSend = Boolean(toAddress && fee && amount);
+      if (readyToSend) {
+        Alert.alert(
+          'Alert Title',
+          'My Alert Msg',
+          [
+            { text: `Sending to ${this.props.receiverScreenName}`},
+            { text: `To Address: ${toAddress}`},
+            { text: `To Destination Tag: ${toDesTag}`},
+            { text: `Amount: ${amount}`},
+            { text: `Fee: ${fee}`},
+          ],
+          { cancelable: false }
+        );
+      }
       return (
         <View style={styles.container}>
         {this.topContainer()}
@@ -175,7 +221,7 @@ class BankSend extends Component {
             performAction={`pay ${this.props.receiverScreenName}`}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.sendPersonalPayment}
+            handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.preparePersonal}
           />
         </View>
         <View style={styles.alert}>

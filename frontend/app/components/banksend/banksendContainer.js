@@ -9,10 +9,11 @@ import {
   sendPaymentWithPersonalAddress 
 } from '../../actions';
 
-const mapStateToProps = ({user, alerts}) => ({
+const mapStateToProps = ({user, transaction, alerts}) => ({
   balance: user.balance,
   personalBalance: user.personalBalance,
   activeWallet: user.activeWallet,
+  transaction: transaction,
   alerts: alerts
 });
 
