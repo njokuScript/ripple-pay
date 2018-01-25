@@ -44,8 +44,8 @@ exports.removePersonalAddress = () => {
     });
 };
 
-exports.getPersonalAddressTransactions = () => {
-    return authRequest("GET", PERSONAL_TRANSACTIONS_URL, {}, (response) => {
+exports.getPersonalAddressTransactions = (limit) => {
+    return authRequest("GET", PERSONAL_TRANSACTIONS_URL, { params: [limit] }, (response) => {
         if (response.data.message) {
             return addAlert(response.data.message);
         }
