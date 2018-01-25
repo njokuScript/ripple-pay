@@ -27,6 +27,7 @@ exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
 exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
 exports.AUTH_URL = `${API_URL}/authUrl`;
+exports.CHANGE_PASSWORD_URL = `${API_URL}/changepass`;
 exports.GEN_PERSONAL_URL = `${API_URL}/personal`;
 exports.REMOVE_PERSONAL_URL = `${API_URL}/delpersonal`;
 exports.PERSONAL_TRANSACTIONS_URL = `${API_URL}/personaltrans`;

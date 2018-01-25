@@ -8,6 +8,7 @@ import {
   SIGNUP_URL,
   SEARCH_USERS_URL,
   AUTH_URL,
+  CHANGE_PASSWORD_URL,
   authRequest
 } from '../api';
 
@@ -107,6 +108,17 @@ exports.comparePassword = function(password) {
     "POST",
     AUTH_URL,
     { password },
+    (response) => {
+      return updatePasswordAttempts(response.data);
+    }
+  );
+};
+
+exports.changePassword = function(oldPassword, newPassword) {
+  return authRequest(
+    "POST",
+    CHANGE_PASSWORD_URL,
+    { oldPassword, newPassword },
     (response) => {
       return updatePasswordAttempts(response.data);
     }
