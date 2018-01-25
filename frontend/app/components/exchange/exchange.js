@@ -13,6 +13,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import Font from 'react-native-vector-icons/FontAwesome';
 import Promise from 'bluebird';
 import Util from '../../utils/util';
+import { getAllMarketCoins } from '../../actions';
 
 import {
   StyleSheet,
@@ -32,6 +33,8 @@ class Exchange extends Component {
     super(props);
     this.state = {
       direction: true,
+      orderedCoins: [],
+      rippleCoin: {}
     };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
@@ -58,14 +61,42 @@ class Exchange extends Component {
   }
 
   getRates() {
-    let allCoins = this.props.shape.coins;
-    if (allCoins) {
-      Promise.each(Object.keys(allCoins), (coin) => {
-        if (allCoins[coin].status === "available" && !['NXT', 'XRP'].includes(coin)) {
-          return this.props.requestRate(coin);
+    return this.orderCoinsByMarketRate().then((data) => {
+      if (data.rippleCoin) {
+        this.setState({ rippleCoin: data.rippleCoin });
+      }
+      if (data.orderedCoins) {
+        this.setState({ orderedCoins: data.orderedCoins });      
+        return Promise.each(data.orderedCoins, (coin) => {
+          return this.props.requestRate(coin.symbol);
+        });
+      }
+    });
+  }
+
+  orderCoinsByMarketRate() {
+    return getAllMarketCoins()
+    .then((marketCoins) => {
+      const shapeShiftCoinSet = this.props.shape.coins;
+      const orderedCoins = [];
+      let rippleCoin = null;
+      marketCoins.forEach((marketCoin) => {
+        const coinSymbol = marketCoin.short;
+        const shapeShiftCoin = shapeShiftCoinSet[coinSymbol];
+        if (coinSymbol === "XRP") {
+          rippleCoin = Object.assign({}, shapeShiftCoin, marketCoin);
+          return;
+        }
+        if (shapeShiftCoin && shapeShiftCoin.status === "available" && coinSymbol !== "NXT") {
+          orderedCoins.push(Object.assign({}, shapeShiftCoin, marketCoin));
         }
       });
-    }
+      return Promise.resolve({ orderedCoins: orderedCoins, rippleCoin: rippleCoin });
+    })
+    .catch((err) => {
+      const shapeShiftCoins = this.props.shape.coins;
+      return Promise.resolve({ orderedCoins: shapeShiftCoins });
+    });
   }
 
   navWallet(){
@@ -113,16 +144,17 @@ class Exchange extends Component {
     });
   }
 
-// Maybe give these the indexes that they are suppose to have.
   allCoins() {
-    const myCoins = this.props.shape.coins;
+    const { orderedCoins } = this.state;
     let theCoins;
-    let line;
+    let rateLine;
     let showCoins = [];
     showCoins.push(
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
+        perc={this.state.rippleCoin.perc}
+        marketCap={this.state.rippleCoin.mktcap}
         coinName="Ripple"
         sendFunction={this.navSendRipple.bind(this) }
         receiveFunction={this.navWallet.bind(this)}
@@ -130,40 +162,28 @@ class Exchange extends Component {
       />
     );
 
-    if ( myCoins )
+    if ( orderedCoins.length > 0 )
     {
-      Object.keys(myCoins).filter((cn) => myCoins[cn].status === "available" && !["NXT", "XRP"].includes(cn)).forEach((coin, idx) => {
+      orderedCoins.forEach((coin, idx) => {
         if ( this.state.direction )
         {
-          line = `${Util.truncate(this.props.shape.rates[coin], 5)} XRP/${myCoins[coin].symbol}`;
+          rateLine = `${Util.truncate(this.props.shape.rates[coin.symbol], 5)} XRP/${coin.symbol}`;
         }
         else
         {
-          line = `${Util.truncate( (1/this.props.shape.rates[coin]), 5 )} ${myCoins[coin].symbol}/XRP`;
+          rateLine = `${Util.truncate( (1/this.props.shape.rates[coin.symbol]), 5 )} ${coin.symbol}/XRP`;
         }
-        // this won't be good if ethereum moves in position
-        if ( coin === "ETH" )
-        {
-          showCoins.splice(2,0, (
-            <Coin
-              key={idx}
-              imageSource={{uri: myCoins[coin].image}}
-              coinName={myCoins[coin].name}
-              sendFunction={()=> this.navTransition(coin, 'send')}
-              receiveFunction={()=> this.navTransition(coin, 'receive')}
-              rate={line}
-            />
-          ));
-          return;
-        }
+
         showCoins.push(
           <Coin
             key={idx}
-            imageSource={{uri: myCoins[coin].image}}
-            coinName={myCoins[coin].name}
-            sendFunction={()=> this.navTransition(coin, 'send')}
-            receiveFunction={()=> this.navTransition(coin, 'receive')}
-            rate={line}
+            imageSource={{uri: coin.image}}
+            perc={coin.perc}
+            marketCap={coin.mktcap}
+            coinName={coin.name}
+            sendFunction={()=> this.navTransition(coin.symbol, 'send')}
+            receiveFunction={()=> this.navTransition(coin.symbol, 'receive')}
+            rate={rateLine}
           />
         );
       });
