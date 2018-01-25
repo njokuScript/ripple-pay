@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
+import AlertContainer from '../alerts/AlertContainer';
 import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import transitionContainer from './transitionContainer';
@@ -34,10 +35,12 @@ class Exchange extends Component {
     this.state = {
       direction: true,
       orderedCoins: [],
+      shapeshiftRippleSupport: true,
       rippleCoin: {}
     };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
+    this.timeoutFunction = this.timeoutFunction.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -78,6 +81,9 @@ class Exchange extends Component {
     return getAllMarketCoins()
     .then((marketCoins) => {
       const shapeShiftCoinSet = this.props.shape.coins;
+      if (!shapeShiftCoinSet || shapeShiftCoinSet["XRP"].status !== "available") {
+        return Promise.resolve({ orderedCoins: [], rippleCoin: {} });
+      }
       const orderedCoins = [];
       let rippleCoin = null;
       marketCoins.forEach((marketCoin) => {
@@ -94,9 +100,16 @@ class Exchange extends Component {
       return Promise.resolve({ orderedCoins: orderedCoins, rippleCoin: rippleCoin });
     })
     .catch((err) => {
-      const shapeShiftCoins = this.props.shape.coins;
-      return Promise.resolve({ orderedCoins: shapeShiftCoins });
+      const shapeShiftCoinSet = this.props.shape.coins;
+      if (!shapeShiftCoinSet || shapeShiftCoinSet["XRP"].status !== "available") {
+        return Promise.resolve({ orderedCoins: [], rippleCoin: {} });
+      }
+      return Promise.resolve({ orderedCoins: Object.values(shapeShiftCoinSet), rippleCoin: {} });
     });
+  }
+
+  timeoutFunction() {
+    this.props.addAlert("Ripple isn't currently supported by shapeshift!");
   }
 
   navWallet(){
@@ -189,7 +202,12 @@ class Exchange extends Component {
       });
     } else {
       showCoins.push(
-        <LoadingIcon key="loadIcon" size="large" color="black" />
+        <LoadingIcon 
+          key="loadIcon" 
+          size="large" 
+          color="black" 
+          timeoutFunction={this.timeoutFunction}
+        />
       );
     }
     
@@ -232,6 +250,7 @@ class Exchange extends Component {
         <ScrollView>
           {this.allCoins()}
         </ScrollView>
+        <AlertContainer />
       </View>
     );
   }
