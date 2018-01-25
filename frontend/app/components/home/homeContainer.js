@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
   requestShifts: () => dispatch(requestShifts()),
   refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues),
-  getPersonalAddressTransactions: () => dispatch(getPersonalAddressTransactions()),
+  getPersonalAddressTransactions: (limit) => dispatch(getPersonalAddressTransactions(limit)),
   clearAlerts: () => dispatch(clearAlerts())
 });
 
