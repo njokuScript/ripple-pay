@@ -40,7 +40,6 @@ class Exchange extends Component {
     };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
-    this.timeoutFunction = this.timeoutFunction.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
@@ -106,10 +105,6 @@ class Exchange extends Component {
       }
       return Promise.resolve({ orderedCoins: Object.values(shapeShiftCoinSet), rippleCoin: {} });
     });
-  }
-
-  timeoutFunction() {
-    this.props.addAlert("Ripple isn't currently supported by shapeshift!");
   }
 
   navWallet(){
@@ -206,7 +201,6 @@ class Exchange extends Component {
           key="loadIcon" 
           size="large" 
           color="black" 
-          timeoutFunction={this.timeoutFunction}
         />
       );
     }
