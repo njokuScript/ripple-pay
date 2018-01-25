@@ -35,6 +35,7 @@ class Home extends React.Component {
     this.loadNextShapeShiftTransactions = this.loadNextShapeShiftTransactions.bind(this);
     this.handleLeftPress = this.handleLeftPress.bind(this);
     this.handleRightPress = this.handleRightPress.bind(this);
+    this.timeoutFunction = this.timeoutFunction.bind(this);
     this.setUSD = this.setUSD.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
@@ -111,6 +112,10 @@ class Home extends React.Component {
         });
       }
     }
+  }
+
+  timeoutFunction() {
+    this.props.addAlert("Ripple Network is a little busy");
   }
 
   onLogout() {
@@ -284,7 +289,11 @@ class Home extends React.Component {
   {
     if (!this.state.showScreen) {
       return (
-        <LoadingIcon size="large" color="black"/>
+        <LoadingIcon 
+          size="large" 
+          color="black"
+          timeoutFunction={this.timeoutFunction}
+        />
       );
     } else {
       return (

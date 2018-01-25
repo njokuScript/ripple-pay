@@ -10,7 +10,8 @@ import {
   refreshShouldLoadMoreValues, 
   requestShifts,
   getPersonalAddressTransactions,
-  clearAlerts
+  clearAlerts,
+  addAlert
 } from '../../actions';
 
 const mapStateToProps = ({ user }) => ({
@@ -33,7 +34,8 @@ const mapDispatchToProps = dispatch => ({
   requestShifts: () => dispatch(requestShifts()),
   refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues),
   getPersonalAddressTransactions: (limit) => dispatch(getPersonalAddressTransactions(limit)),
-  clearAlerts: () => dispatch(clearAlerts())
+  clearAlerts: () => dispatch(clearAlerts()),
+  addAlert: (message) => dispatch(addAlert(message))
 });
 
 export default connect(
