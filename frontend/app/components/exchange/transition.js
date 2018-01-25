@@ -142,7 +142,7 @@ class Transition extends Component {
         })} style={{paddingLeft: 10, marginTop: 80}} />
         <View style={{marginTop: -20}}>
           <CustomButton
-            performAction={this.state.quoted ? "Quoted Transaction" : "Approx Transaction"}
+            performAction={this.state.quoted ? "Precise Transaction" : "Quick Transaction"}
             buttonColor="white"
             isDisabled={false}
             handlePress={this.toggleQuoted.bind(this)}
@@ -190,6 +190,7 @@ class Transition extends Component {
             <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
+            { this.state.quoted && this.action === "deposit" ? <Text style={styles.redText}>Warning: there's a time limit for precise transactions and some coins (e.g. btc or eth) take longer to add to the blockchain than others</Text> : null }
           </View>
           <CustomButton
             performAction={this.action === 'withdraw' ? 'Continue withdrawal...' : 'Continue deposit...'}
@@ -216,6 +217,11 @@ const styles = StyleSheet.create({
   },
   whitetext: {
     color: 'white',
+    // marginTop: 10,
+    fontSize: 16
+  },
+  redText: {
+    color: 'red',
     // marginTop: 10,
     fontSize: 16
   },
