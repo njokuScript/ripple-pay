@@ -22,7 +22,6 @@ const WalletTabs = (props) => {
     textAlign: 'center',
     color: "black"
   };
-  console.log(props.disabled);
   return (
     <View style={styles.topTabsContainer}>
       <TouchableOpacity

@@ -18,6 +18,8 @@ const Coin = (props) => {
       <View style={styles.coinType}>
         <Text style={styles.coinFont}>{props.coinName}</Text>
         <Text style={styles.coinAmount}>{props.rate}</Text>
+        { props.perc ? <Text style={styles.coinAmount}>{props.perc < 0 ? `${props.perc}%` : `+${props.perc}%`}</Text> : null }
+        { props.marketCap ? <Text style={styles.coinAmount}>Market Cap: {props.marketCap}</Text> : null }
       </View>
       <View style={styles.sendReceive}>
         <View style={styles.send}>

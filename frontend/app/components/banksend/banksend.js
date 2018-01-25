@@ -103,10 +103,9 @@ class BankSend extends Component {
     this.setState({ sendButtonDisabled: true });
     const { amount } = this.props.transaction;
     if (amount) {
-        this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
-    } else {
-      this.props.clearTransaction();
-    }
+        this.props.sendPaymentWithPersonalAddress(this.props.personalAddress, this.state.secret, parseFloat(amount));
+    } 
+    this.props.clearTransaction();
   }
 
   setUSD(usd, usdPerXRP) {
@@ -206,6 +205,7 @@ class BankSend extends Component {
             { text: `Amount: ${amount}`},
             { text: `Fee: ${fee}`},
             { text: `Send Payment!`, onPress: this.sendPersonal},
+            { text: `Cancel Payment!`, onPress: this.props.clearTransaction},
           ],
           { cancelable: false }
         );

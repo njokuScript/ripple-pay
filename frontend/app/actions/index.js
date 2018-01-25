@@ -54,7 +54,7 @@ exports.preparePersonalToBank = PersonalWalletActions.preparePersonalToBank;
 
 // COINCAP ACTIONS
 exports.getXRPtoUSD = CoinCapActions.getXRPtoUSD;
-
+exports.getAllMarketCoins = CoinCapActions.getAllMarketCoins;
 // ALERTS ACTIONS
 exports.addAlert = AlertsActions.addAlert;
 exports.removeAlert = AlertsActions.removeAlert;

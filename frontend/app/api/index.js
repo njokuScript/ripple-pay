@@ -45,6 +45,7 @@ exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
 // coin cap
 exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
+exports.ALL_COINS_MARKET_URL = `${COINCAP_URL}/front`;
 
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
