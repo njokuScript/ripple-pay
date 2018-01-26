@@ -22,7 +22,20 @@ import Icon from 'react-native-vector-icons/Entypo';
 class Settings extends React.Component {
   constructor(props) {
     super(props);
+    this.navChangePassword = this.navChangePassword.bind(this);
     // this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  navChangePassword() {
+    this.props.navigator.push({
+      backButtonTitle: "",
+      screen: 'ChangePassword',
+      animation: true,
+      animationType: 'fade',
+      navigatorStyle: {
+        navBarHidden: true, statusBarTextColorScheme: 'light'
+      },
+    });
   }
 
   render() {
@@ -35,6 +48,9 @@ class Settings extends React.Component {
             <Text style={styles.text}>
               { this.props.activeWallet === Config.WALLETS.BANK_WALLET ? "Change to Personal Wallet" : "Change to Bank Wallet" }
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.navChangePassword}>
+            <Text style={styles.text}>Change Password</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.props.unauthUser}>
             <Text style={styles.text}>Logout</Text>

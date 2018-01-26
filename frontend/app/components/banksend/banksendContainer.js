@@ -6,7 +6,8 @@ import {
   clearAlerts, 
   requestTransactions,
   preparePersonalToBank,
-  sendPaymentWithPersonalAddress 
+  sendPaymentWithPersonalAddress ,
+  clearTransaction
 } from '../../actions';
 
 const mapStateToProps = ({user, transaction, alerts}) => ({
@@ -24,6 +25,7 @@ const mapDispatchToProps = dispatch => ({
   requestTransactions: (user) => dispatch(requestTransactions(user)),
   preparePersonalToBank: (amount, fromAddress, toScreenName) => dispatch(preparePersonalToBank(amount, fromAddress, toScreenName)),
   sendPaymentWithPersonalAddress: (fromAddress, secret, amount) => dispatch(sendPaymentWithPersonalAddress(fromAddress, secret, amount)),
+  clearTransaction: () => dispatch(clearTransaction()),
   clearAlerts: () => dispatch(clearAlerts())
 });
 

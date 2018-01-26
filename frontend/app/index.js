@@ -13,6 +13,7 @@ import TransitionContainer from './components/exchange/transitionContainer';
 import SendRippleContainer from './components/exchange/sendRippleContainer';
 import SendAmountContainer from './components/exchange/sendAmountContainer';
 import PasswordLock from './components/presentationals/passwordLock';
+import ChangePassword from './components/presentationals/changePassword';
 import ShapeTransactionView from './components/presentationals/shapeTransactionView';
 import AlertContainer from './components/alerts/AlertContainer';
 import Alert from './components/alerts/Alert';
@@ -70,6 +71,7 @@ class StartApp {
       Navigation.registerComponent('Alert', ()=> Alert, store, Provider);
       Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
       Navigation.registerComponent('PasswordLock', ()=> PasswordLock, store, Provider);
+      Navigation.registerComponent('ChangePassword', ()=> ChangePassword, store, Provider);
       Navigation.registerComponent('ShapeTransactionView', ()=> ShapeTransactionView, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
     }

@@ -16,6 +16,7 @@ const RIPPLE_MESSAGES = {
     "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to new ripple address",
     "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
     "tefMAX_LEDGER": "Payment was submitted too late",
+    "tefPAST_SEQ": "Payment was submitted too late",
     // The following error message should never happen
     "tecUNFUNDED_PAYMENT": "Insufficient XRP to send payment",
 };
@@ -48,7 +49,7 @@ exports.preparePayment = (amount, fromAddress, toAddress, sourceTag, toDesTag) =
             if (response.data.message) {
                 return addAlert(response.data.message);
             }
-            const fee = response.data.fee;
+            const fee = parseFloat(response.data.fee);
             const transaction = { toAddress, toDesTag, amount, fee };
             return exports.receivedTransaction(transaction);
         }

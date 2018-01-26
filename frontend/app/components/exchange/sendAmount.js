@@ -43,7 +43,7 @@ class SendAmount extends Component {
       pushed: false,
       time: 600000,
       sendButtonDisabled: true
-    }
+    };
   }
 
   onNavigatorEvent(event){
@@ -66,14 +66,14 @@ class SendAmount extends Component {
       this.props.navigator.resetTo({
         screen: 'Exchange',
         navigatorStyle: {navBarHidden: true}
-      })
+      });
     }
   }
   
   setTimer(time) {
     if (!time) {
-      this.props.addAlert("There was a problem with shapeshift!")
-      that.props.navigator.switchToTab({
+      this.props.addAlert("There was a problem with shapeshift!");
+      this.props.navigator.switchToTab({
         tabIndex: 0
       });
     }
@@ -85,15 +85,15 @@ class SendAmount extends Component {
             tabIndex: 0
           });
         }
-        that.setState({time: that.state.time - 1000})
+        that.setState({time: that.state.time - 1000});
       }, 1000);
-    })
+    });
   }
 
   enableSending() {
     this.setState({
       sendButtonDisabled: false
-    })
+    });
   }
 
   componentWillReceiveProps(newProps){
@@ -107,13 +107,13 @@ class SendAmount extends Component {
       otherParty = otherParty === '' ? 'Not Entered' : otherParty;
       let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
       newProps.makeShapeshiftTransaction(
-        { fromAmount: newProps.shape.sendamount.depositAmount, fromCoin: newProps.fromCoin },
+        { fromAmount: this.props.quoted ? newProps.shape.sendamount.depositAmount : newProps.fromAmount, fromCoin: newProps.fromCoin },
         { toAmount: newProps.amount, toCoin: newProps.toCoin },
         otherParty,
         newProps.shape.sendamount.deposit,
         returnAddress,
         newProps.shape.sendamount.orderId
-      )
+      );
       if (this.props.quoted) {
         getTimeRemaining(newProps.shape.sendamount.deposit, this.setTimer);  
       }
@@ -131,9 +131,8 @@ class SendAmount extends Component {
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.sendPayment}
           />
-          <PasswordLock enableSending={this.enableSending} />
         </View>
-      )
+      );
     }
   }
 
@@ -166,7 +165,7 @@ class SendAmount extends Component {
       this.props.returnAddress,
       toAddress,
       parseInt(this.props.destTag),
-      parseInt(toDesTag),
+      parseInt(toDesTag)
     );
     this.props.clearSendAmount();
   }
@@ -177,17 +176,20 @@ class SendAmount extends Component {
   render() {
       if ( !this.props.shape.sendamount ) {
         return (
-          <View>
+          <View style={styles.infoContainer}>
             <Text>Error Making Transaction....</Text>
           </View>
-        )
+        );
       }
       else if (this.props.shape.sendamount.error) {
         return (
-          <View>
+          <View style={styles.infoContainer}>
             <Text>Error Making Transaction because {this.props.shape.sendamount.error}</Text>
           </View>
-        )
+        );
+      }
+      else if (this.props.action === "withdraw" && this.state.sendButtonDisabled) {
+        return <PasswordLock enableSending={this.enableSending} />;
       }
       else {
         return (

@@ -12,6 +12,7 @@ var COINCAP_URL = 'https://coincap.io';
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
+exports.END_SESSION_URL = `${API_URL}/endsession`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.NEXT_TRANSACTIONS_URL = `${API_URL}/nextTransactions`;
 exports.NEXT_SHAPESHIFT_TRANSACTIONS_URL = `${API_URL}/nextShapeShiftTransactions`;
@@ -27,6 +28,7 @@ exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
 exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
 exports.AUTH_URL = `${API_URL}/authUrl`;
+exports.CHANGE_PASSWORD_URL = `${API_URL}/changepass`;
 exports.GEN_PERSONAL_URL = `${API_URL}/personal`;
 exports.REMOVE_PERSONAL_URL = `${API_URL}/delpersonal`;
 exports.PERSONAL_TRANSACTIONS_URL = `${API_URL}/personaltrans`;
@@ -45,6 +47,7 @@ exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
 // coin cap
 exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
+exports.ALL_COINS_MARKET_URL = `${COINCAP_URL}/front`;
 
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
