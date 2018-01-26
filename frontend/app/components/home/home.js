@@ -43,7 +43,8 @@ class Home extends React.Component {
       showshift: null,
       showScreen: false,
       usd: 0,
-      usdPerXRP: 0
+      usdPerXRP: 0,
+      personalTransactionLimit: 10
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
@@ -59,7 +60,7 @@ class Home extends React.Component {
           .then(() => this.setState({showScreen: true}));
       }
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
-        this.props.getPersonalAddressTransactions()
+        this.props.getPersonalAddressTransactions(this.state.personalTransactionLimit)
           .then(() => this.setState({showScreen: true}));
       }
       this.props.requestShifts();
@@ -68,7 +69,8 @@ class Home extends React.Component {
     }
     if (event.id === "didDisappear") {
       this.setState({
-        showScreen: false
+        showScreen: false,
+        personalTransactionLimit: 10
       });
     }
   }
@@ -101,7 +103,7 @@ class Home extends React.Component {
         });
       }
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
-        this.props.getPersonalAddressTransactions().then(() => {
+        this.props.getPersonalAddressTransactions(this.state.personalTransactionLimit).then(() => {
           this.setState({ refreshing: false });
           if (this.props.personalBalance) {
             getXRPtoUSD(this.props.personalBalance, this.setUSD);
@@ -134,12 +136,17 @@ class Home extends React.Component {
   }
 
   loadNextTransactions() {
-    if (this.props.shouldLoadMoreTransactions) {
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && this.props.shouldLoadMoreTransactions) {
       const { transactions } = this.props;
       const lastTransaction = transactions[transactions.length - 1];
       if (lastTransaction) {
         this.props.loadNextTransactions(lastTransaction.date);
       }
+    }
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      this.setState({ personalTransactionLimit: this.state.personalTransactionLimit + 10 }, () => {
+        this.props.getPersonalAddressTransactions(this.state.personalTransactionLimit);
+      }); 
     }
   }
 

@@ -8,6 +8,8 @@ import {
   SIGNUP_URL,
   SEARCH_USERS_URL,
   AUTH_URL,
+  CHANGE_PASSWORD_URL,
+  END_SESSION_URL,
   authRequest
 } from '../api';
 
@@ -113,6 +115,17 @@ exports.comparePassword = function(password) {
   );
 };
 
+exports.changePassword = function(oldPassword, newPassword) {
+  return authRequest(
+    "POST",
+    CHANGE_PASSWORD_URL,
+    { oldPassword, newPassword },
+    (response) => {
+      return updatePasswordAttempts(response.data);
+    }
+  );
+};
+
 exports.requestUsers = (item) => {
   return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
     return receivedUsers(response.data);
@@ -120,7 +133,9 @@ exports.requestUsers = (item) => {
 };
 
 exports.unauthUser = () => {
+  
   return function(dispatch) {
+    dispatch(authRequest("POST", END_SESSION_URL, {}));
     starter.startSingleApplication();
     dispatch(clearAlerts());
     dispatch(logout());

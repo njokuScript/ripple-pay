@@ -10,6 +10,7 @@ import PersonalWalletActions from './personalWalletActions';
 exports.loginUser = UserActions.loginUser;
 exports.signupUser = UserActions.signupUser;
 exports.comparePassword = UserActions.comparePassword;
+exports.changePassword = UserActions.changePassword;
 exports.requestUsers = UserActions.requestUsers;
 exports.unauthUser = UserActions.unauthUser;
 
@@ -54,7 +55,7 @@ exports.preparePersonalToBank = PersonalWalletActions.preparePersonalToBank;
 
 // COINCAP ACTIONS
 exports.getXRPtoUSD = CoinCapActions.getXRPtoUSD;
-
+exports.getAllMarketCoins = CoinCapActions.getAllMarketCoins;
 // ALERTS ACTIONS
 exports.addAlert = AlertsActions.addAlert;
 exports.removeAlert = AlertsActions.removeAlert;
