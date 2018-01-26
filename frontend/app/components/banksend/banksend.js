@@ -38,7 +38,7 @@ class BankSend extends Component {
     this.state = {
       amount: "",
       secret: "",
-      sendButtonDisabled: true,
+      sendingDisabled: true,
       keyboardHeight: 0,
       usd: 0,
       usdPerXRP: 0
@@ -48,7 +48,7 @@ class BankSend extends Component {
   onNavigatorEvent(event){
     if ( event.id === "willDisappear") {
       this.setState({
-        sendButtonDisabled: true
+        sendingDisabled: true
       });
     } else if (event.id === "willAppear") {
       getXRPtoUSD(this.props.balance, this.setUSD);
@@ -62,7 +62,7 @@ class BankSend extends Component {
   enableSending() {
     this.props.clearAlerts();
     this.setState({
-      sendButtonDisabled: false
+      sendingDisabled: false
     });
   }
 
@@ -76,7 +76,7 @@ class BankSend extends Component {
     } 
     else {
       this.props.addAlert("sending payment...");
-      this.setState({sendButtonDisabled: true});
+      this.setState({sendingDisabled: true});
       this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
     }
   }
@@ -100,7 +100,7 @@ class BankSend extends Component {
   }
 
   sendPersonal() {
-    this.setState({ sendButtonDisabled: true });
+    this.setState({ sendingDisabled: true });
     const { amount } = this.props.transaction;
     if (amount) {
         this.props.sendPaymentWithPersonalAddress(this.props.personalAddress, this.state.secret, parseFloat(amount));
@@ -187,7 +187,7 @@ class BankSend extends Component {
   }
 
   render() {
-    if (this.state.sendButtonDisabled === true) {
+    if (this.state.sendingDisabled === true) {
       return (
           this.passwordLock()
       );
@@ -246,8 +246,8 @@ class BankSend extends Component {
         <View style={styles.paymentButton}>
           <CustomButton
             performAction={`pay ${this.props.receiverScreenName}`}
-            buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
-            isDisabled={this.state.sendButtonDisabled}
+            buttonColor={this.state.sendingDisabled ? "red" : "white"}
+            isDisabled={this.state.sendingDisabled}
             handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.preparePersonal}
           />
         </View>

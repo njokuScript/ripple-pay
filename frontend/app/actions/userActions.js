@@ -9,6 +9,7 @@ import {
   SEARCH_USERS_URL,
   AUTH_URL,
   CHANGE_PASSWORD_URL,
+  END_SESSION_URL,
   authRequest
 } from '../api';
 
@@ -132,7 +133,9 @@ exports.requestUsers = (item) => {
 };
 
 exports.unauthUser = () => {
+  
   return function(dispatch) {
+    dispatch(authRequest("POST", END_SESSION_URL, {}));
     starter.startSingleApplication();
     dispatch(clearAlerts());
     dispatch(logout());
