@@ -67,7 +67,8 @@ function resolveError(errorResponse, dispatch) {
         const errorDataMap = [
             { "regex": /token\ has\ expired/, "desc": "Session Expired!", "fns": [unauthUser, () => addAlert("Session Expired!")] },
         ];
-
+        console.log(errorResponse);
+        
         const errorDataResolution = errorDataMap.find((data) => errorResponse.data.match(data.regex));
         if (errorDataResolution) {
             errorDataResolution.fns.forEach((errorTask) => {
