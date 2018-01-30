@@ -30,7 +30,9 @@ export default class App extends React.Component {
       } 
       else {
         // LEAVE THE FOLLOWING COMMENTED OUT FOR DEBUGGING PURPOSES, BUT PUT BACK IN IN PROD.
-        // this.clearCredentials();
+        // have clearCredentials here as well as in unauthUser because user may not log out, but could swipe up on the app. 
+        // this would ensure that credentials are cleared in both cases.
+        this.clearCredentials();
         return <Login />;
       }
     };

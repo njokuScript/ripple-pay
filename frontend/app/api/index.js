@@ -52,7 +52,7 @@ exports.ALL_COINS_MARKET_URL = `${COINCAP_URL}/front`;
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
         const errorStatusMap = {
-            401: {"desc": "Unauthorized", "fns": [unauthUser, () => addAlert("Unauthorized attempt!") ] },
+            401: {"desc": "Unauthorized/session timeout", "fns": [unauthUser, () => addAlert("Token expired!") ] },
             429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
         };
 
@@ -64,26 +64,19 @@ function resolveError(errorResponse, dispatch) {
             return true;   
         }
 
-        const errorDataMap = [
-            { "regex": /token\ has\ expired/, "desc": "Session Expired!", "fns": [unauthUser, () => addAlert("Session Expired!")] },
-        ];
-
-        const errorDataResolution = errorDataMap.find((data) => errorResponse.data.match(data.regex));
-        if (errorDataResolution) {
-            errorDataResolution.fns.forEach((errorTask) => {
-                dispatch(errorTask());
-            });
-            return true;
-        }
-
         return dispatch(addAlert("Error making request"));
     };
 }
 
 exports.authRequest = (requestType, url, data, ...cbs) => {
     return function (dispatch) {
-        return Keychain.getGenericPassword().then((creds) => {
+        return Keychain.getGenericPassword()
+        .then((creds) => {
 
+            if (!creds.password) {
+                return;
+            }
+            
             const authedAxios = axios.create({
                 headers: { authorization: creds.password, apiKey: apiKey },
             });
@@ -103,6 +96,7 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
             .catch((err) => {
                 return dispatch(resolveError(err.response));
             });
+
         });
     };
 };

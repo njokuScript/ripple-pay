@@ -2,6 +2,7 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { apiKey } from '../../apiKey';
+import Promise from 'bluebird';
 
 import {
   SIGNIN_URL,
@@ -28,12 +29,12 @@ const ERRORS = {
   ]
 }; 
 
-function resolveError(action, errorData) {
+function resolveError(requestType, errorData) {
   if (typeof errorData === 'object') {
     return errorData.message || errorData.error;
   }
-  for (let index = 0; index < ERRORS[action].length; index++) {
-    const type = ERRORS[action][index];
+  for (let index = 0; index < ERRORS[requestType].length; index++) {
+    const type = ERRORS[requestType][index];
     if (errorData.match(type.regex)) {
       return type.msg;
     } 
@@ -133,12 +134,17 @@ exports.requestUsers = (item) => {
 };
 
 exports.unauthUser = () => {
-  
   return function(dispatch) {
-    dispatch(authRequest("POST", END_SESSION_URL, {}));
-    starter.startSingleApplication();
-    dispatch(clearAlerts());
-    dispatch(logout());
+    const logoutPromises = [];
+    logoutPromises.push(starter.startSingleApplication());
+    logoutPromises.push(dispatch(clearAlerts()));
+    logoutPromises.push(dispatch(logout()));
+    logoutPromises.push(dispatch(authRequest("POST", END_SESSION_URL, {})));
+    Promise.all(logoutPromises).then(() => {
+      Keychain.resetGenericPassword().then(() => {
+        console.log("jwt token deleted");
+      });
+    })
   };
 };
 
