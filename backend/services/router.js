@@ -9,9 +9,10 @@ const rateLimit = require('./rateLimit');
 // the following will take passport and will make some requirements on it
 const passportService = require('./passport');
 
-let requireAuth = passport.authenticate('jwt', {session: false});
-let requireLogin = passport.authenticate('local', {session: false});
 let router = require('express').Router();
+
+let requireAuth = passport.authenticate('jwt', { session: false, failureRedirect: '/v1/forceLogout' });
+let requireLogin = passport.authenticate('local', {session: false});
 
 let apiKey;
 
@@ -27,6 +28,13 @@ function requireAPIKey(req, res, next) {
   }
   next();
 }
+
+function forceLogout(req, res, next) {
+  return res.status(401).json({ error: "Session timed out!" });
+}
+
+router.route('/forceLogout')
+  .get(forceLogout)
 // Auth Routes`
 // -----------------------------------------------------------------------------
 // USER CONTROLLER

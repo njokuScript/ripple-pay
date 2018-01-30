@@ -29,12 +29,12 @@ const ERRORS = {
   ]
 }; 
 
-function resolveError(action, errorData) {
+function resolveError(requestType, errorData) {
   if (typeof errorData === 'object') {
     return errorData.message || errorData.error;
   }
-  for (let index = 0; index < ERRORS[action].length; index++) {
-    const type = ERRORS[action][index];
+  for (let index = 0; index < ERRORS[requestType].length; index++) {
+    const type = ERRORS[requestType][index];
     if (errorData.match(type.regex)) {
       return type.msg;
     } 
