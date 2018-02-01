@@ -6,8 +6,8 @@ import { addAlert, unauthUser } from '../actions';
 import { apiKey } from '../../apiKey';
 import { API_URL } from '../config_enums';
 // currently using localhost. but change to production server later.
-var SHAPESHIFT_URL = 'https://shapeshift.io';
-var COINCAP_URL = 'https://coincap.io';
+let SHAPESHIFT_URL = 'https://shapeshift.io';
+let COINCAP_URL = 'https://coincap.io';
 
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
@@ -48,6 +48,16 @@ exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 // coin cap
 exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
 exports.ALL_COINS_MARKET_URL = `${COINCAP_URL}/front`;
+
+// changelly
+exports.CHANGELLY_TRANSACTION_URL = `${API_URL}/makechange`;
+exports.GET_CHANGELLY_TXNS_URL = `${API_URL}/getchanges`;
+exports.CHANGELLY_TXN_STAT_URL = `${API_URL}/getchangestatus`;
+exports.GET_RIPPLE_TXNID_CHANGELLY = `${API_URL}/changellyRippleTxnId`;
+exports.NEXT_CHANGELLY_TRANSACTIONS_URL = `${API_URL}/nextchanges`;
+exports.CHANGELLY_RATE_URL = `${API_URL}/changellyRate`;
+exports.CHANGELLY_MINAMOUNT_URL = `${API_URL}/minAmount`;
+exports.CHANGELLY_COINS_URL = `${API_URL}/changellyCoins`;
 
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
