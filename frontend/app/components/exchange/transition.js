@@ -31,7 +31,7 @@ class Transition extends Component {
       editFromAmount: false,
       editToAmount: false,
       address: "",
-      quoted: true
+      // quoted: true
     };
     this.navSendAmount = this.navSendAmount.bind(this);
     this.toThisAmount = "";
@@ -43,7 +43,7 @@ class Transition extends Component {
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
+      this.props.requestRate(this.props.fromCoin, this.props.toCoin);
       this.props.requestOldAddress();
       this.props.requestAllWallets();
     }
@@ -110,7 +110,7 @@ class Transition extends Component {
                  amount: this.state.toAmount,
                  fromAmount: this.state.fromAmount,
                  action: this.action,
-                 quoted: this.state.quoted,
+                //  quoted: this.state.quoted,
                }
     });
   }
@@ -128,9 +128,9 @@ class Transition extends Component {
     }
   }
 
-  toggleQuoted(){
-    this.setState({quoted: !this.state.quoted});
-  }
+  // toggleQuoted(){
+  //   this.setState({quoted: !this.state.quoted});
+  // }
 
 //Maybe give these the indexes that they are suppose to have.
   render() {
@@ -141,12 +141,12 @@ class Transition extends Component {
           animationType: 'fade'
         })} style={{paddingLeft: 10, marginTop: 80}} />
         <View style={{marginTop: -20}}>
-          <CustomButton
+          {/* <CustomButton
             performAction={this.state.quoted ? "Precise Transaction" : "Quick Transaction"}
             buttonColor="white"
             isDisabled={false}
             handlePress={this.toggleQuoted.bind(this)}
-          />
+          /> */}
           <View style={styles.customInputContainer}>
           <CustomInput
             placeholder={`from ${this.props.fromCoin}`}
@@ -190,7 +190,7 @@ class Transition extends Component {
             <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-            { this.state.quoted && this.action === "deposit" ? <Text style={styles.redText}>Warning: there's a time limit for precise transactions and some coins (e.g. btc or eth) take longer to add to the blockchain than others</Text> : null }
+            {/* { this.state.quoted && this.action === "deposit" ? <Text style={styles.redText}>Warning: there's a time limit for precise transactions and some coins (e.g. btc or eth) take longer to add to the blockchain than others</Text> : null } */}
           </View>
           <CustomButton
             performAction={this.action === 'withdraw' ? 'Continue withdrawal...' : 'Continue deposit...'}

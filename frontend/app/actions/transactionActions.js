@@ -4,7 +4,7 @@ import {
     SEND_URL,
     PREPARE_PAYMENT_URL,
     NEXT_TRANSACTIONS_URL,
-    NEXT_SHAPESHIFT_TRANSACTIONS_URL,
+    // NEXT_SHAPESHIFT_TRANSACTIONS_URL,
     authRequest
 } from '../api';
 
@@ -78,11 +78,11 @@ exports.loadNextTransactions = (maxDate) => {
     });
 };
 
-exports.loadNextShapeShiftTransactions = (maxDate) => {
-    return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, { params: [maxDate] }, (response) => {
-        return receivedNextShapeShiftTransactions(response.data);
-    });
-};
+// exports.loadNextShapeShiftTransactions = (maxDate) => {
+//     return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, { params: [maxDate] }, (response) => {
+//         return receivedNextShapeShiftTransactions(response.data);
+//     });
+// };
 
 exports.receivedTransaction = (data) => {
     return {
@@ -111,12 +111,12 @@ const receivedNextTransactions = (data) => {
     };
 };
 
-const receivedNextShapeShiftTransactions = (data) => {
-    return {
-        type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
-        data
-    };
-};
+// const receivedNextShapeShiftTransactions = (data) => {
+//     return {
+//         type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
+//         data
+//     };
+// };
 
 exports.refreshShouldLoadMoreValues = {
     type: 'REFRESH_LOAD_MORE'

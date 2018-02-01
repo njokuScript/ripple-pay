@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import Exchange from './exchange';
 import { requestAllCoins, requestRate, addAlert } from '../../actions';
 
-const mapStateToProps = ({ shape }) => ({
-  shape: shape
+const mapStateToProps = ({ changelly }) => ({
+  changelly: changelly
 });
 
 const mapDispatchToProps = dispatch => ({

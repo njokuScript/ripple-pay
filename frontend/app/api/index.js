@@ -6,7 +6,7 @@ import { addAlert, unauthUser } from '../actions';
 import { apiKey } from '../../apiKey';
 import { API_URL } from '../config_enums';
 // currently using localhost. but change to production server later.
-let SHAPESHIFT_URL = 'https://shapeshift.io';
+// let SHAPESHIFT_URL = 'https://shapeshift.io';
 let COINCAP_URL = 'https://coincap.io';
 
 exports.ADDR_URL = `${API_URL}/addrs`;
@@ -15,7 +15,7 @@ exports.SIGNUP_URL = `${API_URL}/signup`;
 exports.END_SESSION_URL = `${API_URL}/endsession`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.NEXT_TRANSACTIONS_URL = `${API_URL}/nextTransactions`;
-exports.NEXT_SHAPESHIFT_TRANSACTIONS_URL = `${API_URL}/nextShapeShiftTransactions`;
+// exports.NEXT_SHAPESHIFT_TRANSACTIONS_URL = `${API_URL}/nextShapeShiftTransactions`;
 exports.SEARCH_USERS_URL = `${API_URL}/search`;
 exports.SEND_URL = `${API_URL}/send`;
 exports.PREPARE_PAYMENT_URL = `${API_URL}/payment`;
@@ -37,13 +37,13 @@ exports.SEND_PAYMENT_PERSONAL_URL = `${API_URL}/sendpersonal`;
 exports.PREPARE_PERSONAL_TO_BANK = `${API_URL}/preparePersonalToBank`;
 
 // shape shift
-exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
-exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
-exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
-exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
-exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
-exports.TIME_URL = `${SHAPESHIFT_URL}/timeremaining`;
-exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
+// exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
+// exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
+// exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
+// exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
+// exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
+// exports.TIME_URL = `${SHAPESHIFT_URL}/timeremaining`;
+// exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
 // coin cap
 exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;
