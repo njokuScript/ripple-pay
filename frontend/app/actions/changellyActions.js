@@ -12,12 +12,12 @@ import {
     authRequest
 } from '../api';
 
-// pair will be like ['xrp','eth']
-exports.createChangellyTransaction = (from, to, withdrawalAddress, pair, refundAddress, toDestTag="", refundDestTag=undefined) => {
+// from is an object with { fromCoin, fromAmount }
+exports.createChangellyTransaction = (from, to, withdrawalAddress, refundAddress, toDestTag="", refundDestTag=undefined) => {
     return authRequest(
         CHANGELLY_TRANSACTION_URL, 
         "POST", 
-        { from, to, withdrawalAddress, pair, refundAddress, toDestTag, refundDestTag }, 
+        { from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag }, 
         (response) => {
             return createdChangellyTransaction(response.data);
         }

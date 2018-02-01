@@ -60,7 +60,7 @@ module.exports = (state=defaultState, action) => {
     //   const totalShapeShiftTransactions = currentShapeShiftTransactions.concat(action.data.nextShapeShiftTransactions);
     //   return Object.assign({}, state, { shapeshiftTransactions: totalShapeShiftTransactions, shouldLoadMoreShapeShiftTransactions: action.data.shouldLoadMoreShapeShiftTransactions });
     case 'REFRESH_LOAD_MORE':
-      return Object.assign({}, state, { shouldLoadMoreShapeShiftTransactions: true, shouldLoadMoreTransactions: true });
+      return Object.assign({}, state, { shouldLoadMoreChangellyTransactions: true, shouldLoadMoreTransactions: true });
     case 'RECEIVED_BALANCE':
       return Object.assign({}, state, {balance: action.data.balance});
     case 'RECEIVED_USERS':

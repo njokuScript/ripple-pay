@@ -50,12 +50,12 @@ class SendAmount extends Component {
     if ( event.id === "didAppear" ) {
       this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
       let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
-      if ( this.props.quoted ){
+      // if ( this.props.quoted ){
         this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
-      }
-      if (!this.props.quoted) {
-        this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
-      }
+      // }
+      // if (!this.props.quoted) {
+      //   this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
+      // }
     }
     else if (event.id === "willDisappear"){
       this.setState({
@@ -70,25 +70,25 @@ class SendAmount extends Component {
     }
   }
   
-  setTimer(time) {
-    if (!time) {
-      this.props.addAlert("There was a problem with shapeshift!");
-      this.props.navigator.switchToTab({
-        tabIndex: 0
-      });
-    }
-    this.setState({ time }, () => {
-      let that = this;
-      this.timer = window.setInterval(function(){
-        if ( that.state.time === 1000 ){
-          that.props.navigator.switchToTab({
-            tabIndex: 0
-          });
-        }
-        that.setState({time: that.state.time - 1000});
-      }, 1000);
-    });
-  }
+  // setTimer(time) {
+  //   if (!time) {
+  //     this.props.addAlert("There was a problem with shapeshift!");
+  //     this.props.navigator.switchToTab({
+  //       tabIndex: 0
+  //     });
+  //   }
+  //   this.setState({ time }, () => {
+  //     let that = this;
+  //     this.timer = window.setInterval(function(){
+  //       if ( that.state.time === 1000 ){
+  //         that.props.navigator.switchToTab({
+  //           tabIndex: 0
+  //         });
+  //       }
+  //       that.setState({time: that.state.time - 1000});
+  //     }, 1000);
+  //   });
+  // }
 
   enableSending() {
     this.setState({
@@ -98,25 +98,25 @@ class SendAmount extends Component {
 
   componentWillReceiveProps(newProps){
     if (
-      this.props.shape.sendamount &&
-      Object.keys(this.props.shape.sendamount).length === 0 &&
-      newProps.shape.sendamount &&
-      newProps.shape.sendamount.deposit
+      this.props.changelly.changellyTxn &&
+      Object.keys(this.props.changelly.changellyTxn).length === 0 &&
+      newProps.changelly.changellyTxn &&
+      newProps.changelly.changellyTxn.changellyAddress
     ) {
       let otherParty = newProps.fromCoin === "XRP" ? newProps.withdrawal : newProps.returnAddress;
       otherParty = otherParty === '' ? 'Not Entered' : otherParty;
       let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
-      newProps.makeShapeshiftTransaction(
+      newProps.makeChangellyTransaction(
         { fromAmount: this.props.quoted ? newProps.shape.sendamount.depositAmount : newProps.fromAmount, fromCoin: newProps.fromCoin },
         { toAmount: newProps.amount, toCoin: newProps.toCoin },
         otherParty,
-        newProps.shape.sendamount.deposit,
+        newProps.changelly.changellyTxn.changellyAddress,
         returnAddress,
         newProps.shape.sendamount.orderId
       );
-      if (this.props.quoted) {
-        getTimeRemaining(newProps.shape.sendamount.deposit, this.setTimer);  
-      }
+      // if (this.props.quoted) {
+      //   getTimeRemaining(newProps.shape.sendamount.deposit, this.setTimer);  
+      // }
     }
   }
 

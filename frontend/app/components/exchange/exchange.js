@@ -16,6 +16,9 @@ import Promise from 'bluebird';
 import Util from '../../utils/util';
 import { getAllMarketCoins } from '../../actions';
 
+const SENDING_RIPPLE = 0;
+const RECEIVING_RIPPLE = 1;
+
 import {
   StyleSheet,
   Text,
@@ -35,7 +38,8 @@ class Exchange extends Component {
     this.state = {
       direction: true,
       orderedCoins: [],
-      shapeshiftRippleSupport: true,
+      changellyRippleSendSupport: true,
+      changellyRippleReceiveSupport: true,
       rippleCoin: {}
     };
     this.timer = undefined;
@@ -63,7 +67,7 @@ class Exchange extends Component {
   }
 
   getRates() {
-    return this.orderCoinsByMarketRate().then((data) => {
+    return this.orderCoinsByMarketCap().then((data) => {
       if (data.rippleCoin) {
         this.setState({ rippleCoin: data.rippleCoin });
       }
@@ -76,7 +80,7 @@ class Exchange extends Component {
     });
   }
 
-  orderCoinsByMarketRate() {
+  orderCoinsByMarketCap() {
     return getAllMarketCoins()
     .then((marketCoins) => {
       const shapeShiftCoinSet = this.props.shape.coins;
@@ -131,13 +135,11 @@ class Exchange extends Component {
     window.clearInterval(this.timer);
     let toCoin;
     let fromCoin;
-    if ( dir === 'send' )
-    {
+    if ( dir === SENDING_RIPPLE ) {
       toCoin = coin;
       fromCoin = 'XRP';
     }
-    else
-    {
+    else if (dir === RECEIVING_RIPPLE) {
       fromCoin = coin;
       toCoin = 'XRP';
     }
@@ -189,8 +191,8 @@ class Exchange extends Component {
             perc={coin.perc}
             marketCap={coin.mktcap}
             coinName={coin.name}
-            sendFunction={()=> this.navTransition(coin.symbol, 'send')}
-            receiveFunction={()=> this.navTransition(coin.symbol, 'receive')}
+            sendFunction={()=> this.navTransition(coin.symbol, SENDING_RIPPLE)}
+            receiveFunction={()=> this.navTransition(coin.symbol, RECEIVING_RIPPLE)}
             rate={rateLine}
           />
         );
