@@ -4,7 +4,8 @@ import Config from '../config_enums';
 let defaultState = {
   transactions: [],
   personalTransactions: [],
-  shapeshiftTransactions: [],
+  // shapeshiftTransactions: [],
+  changellyTransactions: [],
   users: [],
   balance: 0,
   personalBalance: 0,
@@ -13,7 +14,8 @@ let defaultState = {
   wallets: [],
   screenName: '',
   passwordAttempts: {tries: 3, attemptSwitch: true},
-  shouldLoadMoreShapeShiftTransactions: true,
+  // shouldLoadMoreShapeShiftTransactions: true,
+  shouldLoadMoreChangellyTransactions: true,
   shouldLoadMoreTransactions: true,
   activeWallet: Config.WALLETS.BANK_WALLET
 };
@@ -49,10 +51,14 @@ module.exports = (state=defaultState, action) => {
       const currentTransactions = state.transactions.slice(0);
       const totalTransactions = currentTransactions.concat(action.data.nextTransactions);
       return Object.assign({}, state, { transactions: totalTransactions, shouldLoadMoreTransactions: action.data.shouldLoadMoreTransactions });
-    case 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS':
-      const currentShapeShiftTransactions = state.shapeshiftTransactions.slice(0);
-      const totalShapeShiftTransactions = currentShapeShiftTransactions.concat(action.data.nextShapeShiftTransactions);
-      return Object.assign({}, state, { shapeshiftTransactions: totalShapeShiftTransactions, shouldLoadMoreShapeShiftTransactions: action.data.shouldLoadMoreShapeShiftTransactions });
+    case 'RECEIVED_NEXT_CHANGELLY_TRANSACTIONS':
+      const currentChangellyTransactions = state.changellyTransactions.slice(0);
+      const totalChangellyTransactions = currentChangellyTransactions.concat(action.data.nextChangellyTransactions);
+      return Object.assign({}, state, { changellyTransactions: totalChangellyTransactions, shouldLoadMoreChangellyTransactions: action.data.shouldLoadMoreChangellyTransactions });
+    // case 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS':
+    //   const currentShapeShiftTransactions = state.shapeshiftTransactions.slice(0);
+    //   const totalShapeShiftTransactions = currentShapeShiftTransactions.concat(action.data.nextShapeShiftTransactions);
+    //   return Object.assign({}, state, { shapeshiftTransactions: totalShapeShiftTransactions, shouldLoadMoreShapeShiftTransactions: action.data.shouldLoadMoreShapeShiftTransactions });
     case 'REFRESH_LOAD_MORE':
       return Object.assign({}, state, { shouldLoadMoreShapeShiftTransactions: true, shouldLoadMoreTransactions: true });
     case 'RECEIVED_BALANCE':
@@ -81,8 +87,10 @@ module.exports = (state=defaultState, action) => {
       return Object.assign({}, state, { personalAddress: undefined });
     case 'RECEIVED_PERSONAL_TRANSACTIONS':
       return Object.assign({}, state, { personalBalance: action.personalBalance, personalTransactions: action.personalTransactions });
-    case 'RECEIVED_SHAPESHIFTS':
-      return Object.assign({}, state, { shapeshiftTransactions: action.data.shapeshiftTransactions });
+    case 'RECEIVED_CHANGELLY_TRANSACTIONS':
+      return Object.assign({}, state, { changellyTransactions: action.data.changellyTransactions });
+    // case 'RECEIVED_SHAPESHIFTS':
+    //   return Object.assign({}, state, { shapeshiftTransactions: action.data.shapeshiftTransactions });
     case 'CHANGE_WALLET':
       return Object.assign({}, state, { activeWallet: state.activeWallet === Config.WALLETS.BANK_WALLET ? Config.WALLETS.PERSONAL_WALLET : Config.WALLETS.BANK_WALLET });
     default:
