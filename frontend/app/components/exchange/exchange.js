@@ -149,12 +149,12 @@ class Exchange extends Component {
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
         perc={rippleCoin ? rippleCoin.perc : null}
-        marketCap={rippleCoin ? rippleCoin.mktcap : null}
+        // marketCap={rippleCoin ? rippleCoin.mktcap : null}
         coinSymbol="XRP"
         coinName="Ripple"
         sendFunction={this.navSendRipple.bind(this) }
         receiveFunction={this.navWallet.bind(this)}
-        rate=""
+        rate={rippleCoin.price}
       />
     );
 
@@ -179,12 +179,12 @@ class Exchange extends Component {
             key={idx}
             imageSource={{ uri: imageUrl }}
             perc={totalCoinsObj[coinSymbol].perc}
-            marketCap={totalCoinsObj[coinSymbol].mktcap}
+            // marketCap={totalCoinsObj[coinSymbol].mktcap}
             coinSymbol={coinSymbol}
             coinName={coin.fullName}
             sendFunction={()=> this.navTransition(coinSymbol, ExchangeConfig.PAYMENT_DIRECTION.SENDING_RIPPLE)}
             receiveFunction={()=> this.navTransition(coinSymbol, ExchangeConfig.PAYMENT_DIRECTION.RECEIVING_RIPPLE)}
-            rate={rateDisplay}
+            rate={coin.price}
           />
         );
       });
@@ -243,9 +243,9 @@ class Exchange extends Component {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-          <TouchableOpacity onPress={this.reverseConversionDirection}>
-            {this.direction()}
-          </TouchableOpacity>
+          <View style={styles.exchange}>
+            <Text style={styles.title}>Exchange</Text>
+          </View>
         </View>
 
         <ScrollView>
@@ -273,6 +273,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
+  },
+  exchange: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  title: {
+    color: 'white',
+    fontSize: width / 20,
+    fontFamily: 'Kohinoor Bangla'
   },
   directions: {
     color: 'white',

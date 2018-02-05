@@ -23,7 +23,8 @@ import {
     Image,
     Dimensions,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator,
+  StatusBar
   } from 'react-native';
 
 class Home extends React.Component {
@@ -289,6 +290,9 @@ class Home extends React.Component {
     } else {
       return (
         <View style={styles.mainContainer}>
+          <StatusBar
+            barStyle="light-content"
+          />
           <View style={styles.topContainer}>
             <View style={styles.balanceContainer}>
               <Text style={styles.balanceText}>
