@@ -75,4 +75,3 @@ const styles = StyleSheet.create({
 });
 
 export default Coin;
-// Need to pass down imageSource, coinName, sendFunction, and receiveFunction, and rate as props

@@ -1,10 +1,6 @@
 import { connect } from 'react-redux';
 import SendAmount from './sendAmount';
 import {
-  // requestMarketInfo,
-  // sendAmount,
-  // shapeshift,
-  // makeShapeshiftTransaction,
   clearChangellyTransaction,
   clearTransaction,
   addAlert,
