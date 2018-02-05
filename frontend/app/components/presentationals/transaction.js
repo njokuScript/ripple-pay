@@ -18,8 +18,8 @@ const Transaction = (props) => {
     const transactionAmountStyle = {
       textAlign: 'center',
       fontWeight: "600",
-      fontSize: 14,
-      color: transactionColor,
+      fontSize: 13,
+      color: transactionColor
     };
     transactionDate = (
       <View style={styles.transactionDate}>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   transactionDateText: {
     fontSize: 12
-  },
+  }
 });
 
 export default Transaction;
