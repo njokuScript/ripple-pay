@@ -154,7 +154,7 @@ class Exchange extends Component {
         coinName="Ripple"
         sendFunction={this.navSendRipple.bind(this) }
         receiveFunction={this.navWallet.bind(this)}
-        rate={rippleCoin.price}
+        // rate={rippleCoin.price}
       />
     );
 
