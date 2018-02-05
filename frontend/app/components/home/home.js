@@ -49,8 +49,6 @@ class Home extends React.Component {
     this.onRefresh = this.onRefresh.bind(this);
   }
 
-  //Once this screen appears, all the of transactions are requested
-  // YOU'RE GOING TO HAVE TO USE THE RIPPLE API TO LOAD TRANSACTIONS A LITTLE AT A TIME!!!
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
@@ -232,7 +230,8 @@ class Home extends React.Component {
           key={idx}
           otherParty={transaction.otherParty}
           date={date}
-          amount={`${Util.truncate(transaction.amount, 2)} Ʀ`}
+          amount={transaction.amount}
+          fromCoin={"Ʀ"}
           transactionColor={transaction.amount < 0 ? "red" : "green"}
           time={time}
           />
@@ -245,8 +244,10 @@ class Home extends React.Component {
             key={idx}
             otherParty={`${transaction.otherParty.slice(0,17)}...`}
             date={date}
-            amount={`${transaction.from.fromAmount} ${transaction.from.fromCoin}`}
-            toAmount={`${transaction.to.toAmount} ${transaction.to.toCoin}`}
+            amount={transaction.from.fromAmount}
+            fromCoin={transaction.from.fromCoin}
+            toAmount={transaction.to.toAmount}
+            toCoin={transaction.to.toCoin}
             transactionColor={transaction.from.fromCoin === "XRP" ? "red" : "green"}
             handlePress={() => this.showChangellyTransaction(transaction, time)}
             time={time}
@@ -277,9 +278,6 @@ class Home extends React.Component {
     );
   }
 
-// THE REGEX IS BEING USED TO TRUNCATE THE LENGTH OF THE BALANCE TO 2 DIGITS WITHOUT ROUNDING
-
-// JON, GET THE ALERTS TO SHOW UP HERE!
   render()
   {
     if (!this.state.showScreen) {

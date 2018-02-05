@@ -22,7 +22,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  Alert
+  Alert,
+  Clipboard
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 
@@ -114,6 +115,14 @@ class SendAmount extends Component {
 
   }
 
+  clipBoardCopy(string) {
+    Alert.alert(string, `copied to clipboard!`);
+    Clipboard.setString(string);
+    Clipboard.getString().then((str) => {
+      return str;
+    });
+  }
+
   sendPayment() {
     this.setState({ sendButtonDisabled: true });
     const { amount } = this.props.transaction;
@@ -160,9 +169,20 @@ class SendAmount extends Component {
     return toAmount - (feePercentage/100)*toAmount;
   }
 
-//Maybe give these the indexes that they are suppose to have.
-// XRP withdraw address that ripplePay auto sends to on withdrawals is shown just
-// for testing purposes
+  getQRCode(changellyAddress) {
+    if (this.props.action === ExchangeConfig.ACTIONS.DEPOSIT) {
+      return (
+        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(changellyAddress)}>
+          <Image
+            style={styles.qrCode}
+            source={{ uri: Util.getQRCodeSource(changellyAddress) }}
+          />
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  }
+
   render() {
     if (this.props.action === ExchangeConfig.ACTIONS.WITHDRAW && this.state.sendButtonDisabled) {
       return (
@@ -195,7 +215,6 @@ class SendAmount extends Component {
         { cancelable: false }
       );
     }
-    
       return (
         <View style={styles.container}>
           <AlertContainer />
@@ -203,19 +222,18 @@ class SendAmount extends Component {
             <Text style={styles.title}>
               {this.props.action === ExchangeConfig.ACTIONS.WITHDRAW ? "Withdraw" : "Deposit"} {to.toCoin}
             </Text>
-            {/* {this.props.quoted ? <Text style={styles.timeleft}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text> : null} */}
           </View>
           <ScrollView style={styles.infoContainer}>
             { this.props.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.whitetext}>{from.fromCoin} Deposit Address:   {changellyAddress ? changellyAddress : 'Please Wait...' }</Text> : null }
+            { this.getQRCode(changellyAddress) }
             <Text style={styles.whitetext}>{to.toCoin} Withdraw Address:   {otherParty}</Text>
             { this.props.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.whitetext}>{to.toCoin} Withdraw Dest Tag:   {toDestTag}</Text> : null }
-            <Text style={styles.whitetext}>Send Minimum:   {this.props.changelly.minimumSend.minAmount} {from.fromCoin}</Text>
-            <Text style={styles.whitetext}>Deposit Amount:   {from.fromAmount} {from.fromCoin}</Text>
-            <Text style={styles.whitetext}>Approx Withdraw Amount:   {to.toAmount} {to.toCoin}</Text>
-            <Text style={styles.whitetext}>Rate:   {this.props.changelly.rate.amount} {to.toCoin}/{from.fromCoin}</Text>
-            {/* {this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text> : null} */}
+            <Text style={styles.whitetext}>Send Minimum:   {Util.truncate(this.props.changelly.minimumSend.minAmount, 4)} {from.fromCoin}</Text>
+            <Text style={styles.whitetext}>Deposit Amount:   {Util.truncate(from.fromAmount, 4)} {from.fromCoin}</Text>
+            <Text style={styles.whitetext}>Approx Withdraw Amount:   {Util.truncate(to.toAmount, 4)} {to.toCoin}</Text>
+            <Text style={styles.whitetext}>Rate:   {Util.truncate(this.props.changelly.rate.amount, 4)} {to.toCoin}/{from.fromCoin}</Text>
             <Text style={styles.whitetext}>Changelly Fee:   {fee}% of {to.toCoin} withdrawal</Text>
-            <Text style={styles.whitetext}>Approx Withdraw Amount After Fee:   {this.calculateToAmountAfterFee(to.toAmount, fee)} {to.toCoin}</Text>
+            <Text style={styles.whitetext}>Approx Withdraw Amount After Fee:   {Util.truncate( this.calculateToAmountAfterFee(to.toAmount, fee), 4 )} {to.toCoin}</Text>
           </ScrollView>
           {this.renderButton()}
         </View>
@@ -266,6 +284,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 10
   },
+  qrCode: {
+    width: 140,
+    height: 140,
+    borderRadius: 10,
+  },
+  image: {
+    flex: 1,
+    alignItems: "center"
+  }
 });
 
 export default SendAmount;

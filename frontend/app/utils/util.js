@@ -1,11 +1,7 @@
+import { _ } from 'lodash';
+
 exports.truncate = function(num, decimalPlaces) {
-    if (!num && num !== 0) {
-      return "";  
-    }
-    const numString = num.toString();
-    const regexString = `^-?\\d+(?:\\.\\d{0,${decimalPlaces}})?`;
-    const reg = new RegExp(regexString, 'i');
-    return numString.match(reg)[0];
+    return _.floor(num, decimalPlaces) || "";
 };
 
 exports.sanitize = function(input, type, maxLength) {
@@ -42,4 +38,8 @@ exports.convertArrayOfObjectsToObject = function(array, extractKey, makeKeyUpper
 
 exports.isEmpty = function(obj) {
     return Object.keys(obj).length === 0;
+};
+
+exports.getQRCodeSource = function(address) {
+    return `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
 };
