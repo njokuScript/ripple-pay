@@ -30,17 +30,6 @@ exports.requestAddress = () => {
     });
 };
 
-exports.requestOldAddress = () => {
-    return authRequest("GET", OLDADDR_URL, {}, (response) => {
-        return receivedOldAddress(response.data);
-    });
-};
-
-exports.requestAllWallets = () => {
-    return authRequest("GET", WALLETS_URL, {}, (response) => {
-        return receivedWallets(response.data);
-    });
-};
 
 const deltheWallet = (data) => {
     return {
