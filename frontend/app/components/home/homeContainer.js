@@ -6,11 +6,12 @@ import {
   requestAddressAndDesTag, 
   unauthUser, 
   loadNextTransactions, 
-  loadNextShapeShiftTransactions, 
+  loadNextChangellyTransactions, 
   refreshShouldLoadMoreValues, 
-  requestShifts,
+  requestChangellyTransactions,
   getPersonalAddressTransactions,
-  clearAlerts
+  clearAlerts,
+  addAlert
 } from '../../actions';
 
 const mapStateToProps = ({ user }) => ({
@@ -18,8 +19,8 @@ const mapStateToProps = ({ user }) => ({
   personalBalance: user.personalBalance,
   transactions: user.transactions,
   personalTransactions: user.personalTransactions,
-  shapeshiftTransactions: user.shapeshiftTransactions,
-  shouldLoadMoreShapeShiftTransactions: user.shouldLoadMoreShapeShiftTransactions,
+  changellyTransactions: user.changellyTransactions,
+  shouldLoadMoreChangellyTransactions: user.shouldLoadMoreChangellyTransactions,
   shouldLoadMoreTransactions: user.shouldLoadMoreTransactions,
   activeWallet: user.activeWallet
 });
@@ -28,12 +29,13 @@ const mapDispatchToProps = dispatch => ({
   unauthUser: () => dispatch(unauthUser()),
   requestTransactions: (user) => dispatch(requestTransactions(user)),
   loadNextTransactions: (minDate) => dispatch(loadNextTransactions(minDate)),
-  loadNextShapeShiftTransactions: (minDate) => dispatch(loadNextShapeShiftTransactions(minDate)),
+  loadNextChangellyTransactions: (minDate) => dispatch(loadNextChangellyTransactions(minDate)),
   requestAddressAndDesTag: (user) => dispatch(requestAddressAndDesTag(user)),
-  requestShifts: () => dispatch(requestShifts()),
+  requestChangellyTransactions: () => dispatch(requestChangellyTransactions()),
   refreshShouldLoadMoreValues:() =>  dispatch(refreshShouldLoadMoreValues),
-  getPersonalAddressTransactions: () => dispatch(getPersonalAddressTransactions()),
-  clearAlerts: () => dispatch(clearAlerts())
+  getPersonalAddressTransactions: (limit) => dispatch(getPersonalAddressTransactions(limit)),
+  clearAlerts: () => dispatch(clearAlerts()),
+  addAlert: (message) => dispatch(addAlert(message))
 });
 
 export default connect(

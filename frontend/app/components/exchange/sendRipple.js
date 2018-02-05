@@ -68,9 +68,8 @@ class SendRipple extends Component {
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
         this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
       }
-    } else {
-      this.props.clearTransaction();
-    }
+    } 
+    this.props.clearTransaction();
   }
 
   prepareTransaction(){
@@ -101,7 +100,12 @@ class SendRipple extends Component {
         this.props.addAlert("Can't send 0 or less Ripple");
         return;
       }
-      this.props.preparePayment(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
+      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+        this.props.preparePayment(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
+      }
+      else {
+        this.props.preparePaymentWithPersonalAddress(parseFloat(amount), this.props.fromAddress, toAddress, null, parseInt(toDesTag));
+      }
     }
   }
 
@@ -156,10 +160,11 @@ class SendRipple extends Component {
         'Transaction Details:',
         [
           { text: `To Address: ${toAddress}` },
-          { text: `To Destination Tag: ${toDesTag}` },
+          { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
           { text: `Amount: ${amount}` },
           { text: `Fee: ${fee}` },
           { text: `Send Payment!`, onPress: this.sendPayment },
+          { text: `Cancel Payment!`, onPress: this.props.clearTransaction },
         ],
         { cancelable: false }
       );
@@ -216,7 +221,7 @@ class SendRipple extends Component {
           />
         <View style={styles.fee}>
           <Text style={styles.feetext}>
-            transaction Fee: 0.02 XRP
+            transaction Fee: {Config.ripplePayFee} XRP
           </Text>
         </View>
       </View>

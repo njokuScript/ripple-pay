@@ -2,6 +2,7 @@ const passport = require('passport');
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local');
+const Redis = require('../services/redis');
 
 const User = require('../models/user');
 let secret;
@@ -35,11 +36,15 @@ let jwtOptions = {
 };
 
 let jwtStrategy = new JwtStrategy(jwtOptions, function(payload, done) {
+  const userId = payload.sub;
+
   if (new Date().getTime() > payload.exp) {
     const problem = "token has expired!!";
-    return done(problem);
+    Redis.removeFromCache("logged-in", userId);
+    return done(null, problem);
   }
-  User.findById(payload.sub, function(err, user) {
+
+  User.findById(userId, function(err, user) {
     if (err) { return done(err, false); }
     if (user) {
       done(null, user);
