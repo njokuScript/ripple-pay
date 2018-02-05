@@ -9,6 +9,7 @@ import {
   Clipboard,
   ScrollView,
   Alert,
+  StatusBar
 } from 'react-native';
 import AlertContainer from '../alerts/AlertContainer';
 import CustomButton from '../presentationals/customButton';
@@ -154,6 +155,9 @@ class Wallet extends React.Component {
   {
     return (
       <View style={styles.mainContainer}>
+        <StatusBar
+          barStyle="light-content"
+        />
           {this.displayWallets()}
           <AlertContainer />
       </View>

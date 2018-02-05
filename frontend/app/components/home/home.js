@@ -233,7 +233,7 @@ class Home extends React.Component {
           key={idx}
           otherParty={transaction.otherParty}
           date={date}
-          amount={`${Util.truncate(transaction.amount, 2)} Ʀ`}
+          amount={`${Util.truncate(transaction.amount, 5)} Ʀ`}
           transactionColor={transaction.amount < 0 ? "red" : "green"}
           time={time}
           />
@@ -301,9 +301,9 @@ class Home extends React.Component {
               <Text style={styles.usdText}>
                 ${Util.truncate(this.state.usd, 2)}
               </Text>
-              <Text style={styles.usdText}>
+              {/* <Text style={styles.usdText}>
                 ${Util.truncate(this.state.usdPerXRP, 2)} = 1 XRP
-              </Text>
+              </Text> */}
             </View>
           </View>
 
