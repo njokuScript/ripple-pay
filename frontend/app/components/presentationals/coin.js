@@ -16,7 +16,7 @@ const Coin = (props) => {
           source={props.imageSource}
       />
       <View style={styles.coinType}>
-        <Text style={styles.coinFont}>{props.coinName}</Text>
+        <Text style={styles.coinFont}>{props.coinName} ({props.coinSymbol})</Text>
         <Text style={styles.coinAmount}>{props.rate}</Text>
         <Text></Text>
         { props.perc ? <Text style={styles.coinAmount}>{props.perc < 0 ? `${props.perc}%` : `+${props.perc}%`}</Text> : null }

@@ -11,14 +11,18 @@ import {
     NEXT_CHANGELLY_TRANSACTIONS_URL,
     authRequest
 } from '../api';
+import { addAlert } from '../actions';
 
 // from is an object with { fromCoin, fromAmount }
 exports.createChangellyTransaction = (from, to, withdrawalAddress, refundAddress, toDestTag="", refundDestTag=undefined) => {
     return authRequest(
-        CHANGELLY_TRANSACTION_URL, 
         "POST", 
+        CHANGELLY_TRANSACTION_URL, 
         { from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag }, 
         (response) => {
+            if (response.message) {
+                return addAlert(response.message);
+            }
             return createdChangellyTransaction(response.data);
         }
     );
@@ -30,28 +34,28 @@ exports.requestChangellyTransactions = () => {
     });
 };
 
-exports.loadNextChangellyTransactions = (maxDate) => {
-    return authRequest("GET", NEXT_CHANGELLY_TRANSACTIONS_URL, { params: [maxDate] }, (response) => {
+exports.loadNextChangellyTransactions = (minDate) => {
+    return authRequest("GET", NEXT_CHANGELLY_TRANSACTIONS_URL, { params: [minDate] }, (response) => {
         return receivedNextChangellyTransactions(response.data);
     });
 };
 
 exports.getChangellyTransactionStatus = (changellyTxnId, setChangellyStatus) => {
     return authRequest("GET", CHANGELLY_TXN_STAT_URL, { params: [changellyTxnId] }, (response) => {
-        const statusObject = response.data;
+        const status = response.data.txStat;
         // statusObject params are { txStat, error }
-        setChangellyStatus(statusObject);
-        return true;
+        setChangellyStatus(status);
+        return { type: "NON_REDUX" };
     });
 };
 
-exports.getChangellyTransactionId = (changellyAddress, date, refundAddress, setTransactionId) => {
+exports.getChangellyRippleTransactionId = (changellyTxnId, refundAddress, refundDestTag, setTransactionId) => {
     return authRequest(
         "GET",
         GET_RIPPLE_TXNID_CHANGELLY,
-        { params: [changellyAddress, date, refundAddress] },
+        { params: [changellyTxnId, refundAddress, refundDestTag] },
         (response) => {
-            setTransactionId(response.data.txnId || 'Not Found');
+            setTransactionId(response.data.rippleTxnId || 'Not Found');
             return { type: "NON_REDUX" };
         }
     );
@@ -62,8 +66,9 @@ exports.requestRate = (coin) => {
         "GET",
         CHANGELLY_RATE_URL,
         { params: [coin] },
-        (response) => {
-            return receivedRate(response.data, coin);
+        (response) => {            
+            const rate = parseFloat(response.data.rate);
+            return receivedRate(rate, coin);
         }
     );
 };
@@ -74,7 +79,8 @@ exports.getMinAmount = (fromCoin, toCoin) => {
         CHANGELLY_MINAMOUNT_URL,
         { params: [fromCoin, toCoin] },
         (response) => {
-            return receivedMinAmount(response.data);
+            const minAmount = parseFloat(response.data.minAmount);
+            return receivedMinAmount(minAmount, fromCoin);
         }
     );
 };
@@ -85,7 +91,13 @@ exports.requestAllCoins = () => {
         CHANGELLY_COINS_URL,
         {},
         (response) => {
-            return receivedCoins(response.data);
+            const changellyCoinSet = {};
+            response.data.coins.forEach((coin) => {
+                if (coin.enabled) {
+                    changellyCoinSet[coin.name.toUpperCase()] = coin;
+                }
+            });
+            return receivedCoins(changellyCoinSet);
         }
     );
 };
@@ -104,25 +116,26 @@ const receivedChangellyTransactions = (data) => {
     };
 };
 
-const receivedRate = (data, coin) => {
+const receivedRate = (rate, coin) => {
     return {
-        type: 'RECEIVED_RATE',
-        data,
+        type: 'RECEIVED_CHANGELLY_RATE',
+        rate,
         coin
     };
 };
 
-const receivedMinAmount = (data) => {
+const receivedMinAmount = (minAmount, coin) => {
     return {
-        type: 'RECEIVED_MIN_AMOUNT',
-        data,
+        type: 'RECEIVED_CHANGELLY_MINAMOUNT',
+        minAmount,
+        coin
     };
 };
 
-const receivedCoins = (data) => {
+const receivedCoins = (changellyCoinSet) => {
     return {
         type: 'RECEIVED_COINS',
-        data
+        changellyCoinSet
     };
 };
 

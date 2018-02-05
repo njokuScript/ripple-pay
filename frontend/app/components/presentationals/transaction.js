@@ -49,7 +49,7 @@ const Transaction = (props) => {
       { transactionDate }
     </View>
   );
-  if (props.shapeshift) {
+  if (props.changelly) {
     return (
       <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
       { transactionData }

@@ -6,31 +6,32 @@ import {
   // shapeshift,
   // makeShapeshiftTransaction,
   clearChangellyTransaction,
-  createChangellyTransaction,
+  clearTransaction,
   addAlert,
-  signAndSend
+  signAndSend,
+  sendPaymentWithPersonalAddress,
+  preparePayment,
+  preparePaymentWithPersonalAddress
  } from '../../actions';
 
-const mapStateToProps = ({ changelly }) => ({
-  changelly: changelly,
+const mapStateToProps = ({ changelly, transaction, user }) => ({
+  changelly,
+  transaction,
+  user
 });
 
 const mapDispatchToProps = dispatch => ({
-  // requestMarketInfo: (coin1, coin2) => dispatch(requestMarketInfo(coin1, coin2)),
   addAlert: (message) => dispatch(addAlert(message)),
-  // sendAmount: (amount, withdrawal, pair, returnAddress, destTag) => dispatch(sendAmount(amount, withdrawal, pair, returnAddress, destTag)),
-  signAndSend: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
-    signAndSend(amount, fromAddress, toAddress, sourceTag, toDesTag)
+  clearChangellyTransaction: () => dispatch(clearChangellyTransaction),
+  clearTransaction: () => dispatch(clearTransaction()),
+  preparePayment: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
+    preparePayment(amount, fromAddress, toAddress, sourceTag, toDesTag)
   ),
-  createChangellyTransaction: (from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag) => dispatch(createChangellyTransaction(from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag)),
-  clearChangellyTransaction: () => dispatch(clearChangellyTransaction)
-  // shapeshift: (withdrawal, pair, returnAddress, destTag) => dispatch(shapeshift(withdrawal, pair, returnAddress, destTag)),
-  // makeShapeshiftTransaction: (
-    // from, to, otherParty, shapeShiftAddress, refundAddress, orderId
-  // ) => dispatch(makeShapeshiftTransaction(
-    // from, to, otherParty, shapeShiftAddress, refundAddress, orderId
-  // )),
-  // clearSendAmount: () => dispatch(clearSendAmount),
+  preparePaymentWithPersonalAddress: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
+    preparePaymentWithPersonalAddress(amount, fromAddress, toAddress, sourceTag, toDesTag)
+  ),
+  signAndSend: (fromAddress, amount) => dispatch(signAndSend(fromAddress, amount)),
+  sendPaymentWithPersonalAddress: (fromAddress, secret, amount) => dispatch(sendPaymentWithPersonalAddress(fromAddress, secret, amount))
 });
 
 export default connect(
