@@ -33,7 +33,7 @@ const Transaction = (props) => {
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
-          { Util.truncate(amount, 3) } {fromCoin}
+          { Util.truncate(amount, 5) } {fromCoin}
         </Text>
         <Text style={transactionAmountStyle}>
           { Util.truncate(toAmount, 3) } {toCoin}
