@@ -1,28 +1,23 @@
 import { connect } from 'react-redux';
 import Transition from './transition';
 import { 
-  // requestMarketInfo, 
+  createChangellyTransaction,
   addAlert,
-  requestAllWallets, 
-  requestOldAddress,
   getMinAmount,
   requestRate
 } from '../../actions';
 
 const mapStateToProps = ({ changelly, user }) => ({
   changelly: changelly,
-  user: user
+  user: user,
+  activeWallet: user.activeWallet
 });
 
 const mapDispatchToProps = dispatch => ({
-  // requestMarketInfo: (coin1, coin2) => dispatch(requestMarketInfo(coin1, coin2)),
   addAlert: (message) => dispatch(addAlert(message)),
-  requestAllWallets: () => dispatch(requestAllWallets()),
-  requestOldAddress: () => dispatch(requestOldAddress()),
-  // minimum amount of fromCoin you can send
   getMinAmount: (fromCoin, toCoin) => dispatch(getMinAmount(fromCoin, toCoin)),
-  // 1 coin is how much XRP
-  requestRate: (coin) => dispatch(requestRate(coin))
+  requestRate: (coin) => dispatch(requestRate(coin)),
+  createChangellyTransaction: (from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag) => dispatch(createChangellyTransaction(from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag))
 });
 
 export default connect(

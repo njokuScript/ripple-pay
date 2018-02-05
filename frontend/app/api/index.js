@@ -7,7 +7,7 @@ import { apiKey } from '../../apiKey';
 import { API_URL } from '../config_enums';
 // currently using localhost. but change to production server later.
 // let SHAPESHIFT_URL = 'https://shapeshift.io';
-let COINCAP_URL = 'https://coincap.io';
+const COINCAP_URL = 'https://coincap.io';
 
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
@@ -23,7 +23,6 @@ exports.WALLETS_URL = `${API_URL}/wallets`;
 exports.DEST_URL = `${API_URL}/dest`;
 exports.DEL_WALLET_URL = `${API_URL}/delwallet`;
 exports.BANK_SEND_URL = `${API_URL}/banksend`;
-exports.OLDADDR_URL = `${API_URL}/old`;
 exports.MAKESHIFT_URL = `${API_URL}/makeshift`;
 exports.GETSHIFTS_URL = `${API_URL}/getshifts`;
 exports.GETSHAPEID_URL = `${API_URL}/getShapeId`;
@@ -104,6 +103,8 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
                 return true;
             })
             .catch((err) => {
+                console.log(err.response);
+                
                 return dispatch(resolveError(err.response));
             });
 

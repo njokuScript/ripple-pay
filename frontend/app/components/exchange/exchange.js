@@ -15,9 +15,7 @@ import Font from 'react-native-vector-icons/FontAwesome';
 import Promise from 'bluebird';
 import Util from '../../utils/util';
 import { getAllMarketCoins } from '../../actions';
-
-const SENDING_RIPPLE = 0;
-const RECEIVING_RIPPLE = 1;
+import ExchangeConfig from './exchange_enums';
 
 import {
   StyleSheet,
@@ -36,79 +34,53 @@ class Exchange extends Component {
   constructor(props){
     super(props);
     this.state = {
-      direction: true,
+      conversionDirection: ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN,
       orderedCoins: [],
-      changellyRippleSendSupport: true,
-      changellyRippleReceiveSupport: true,
-      rippleCoin: {}
+      rippleCoin: {},
+      getCoinsFirstTime: true
     };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
+    this.reverseConversionDirection = this.reverseConversionDirection.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   onNavigatorEvent(event){
     if ( event.id === "willAppear" )
     {
-      this.props.requestAllCoins().then(() => {
-
-        this.getRates();
-        // get rates every minute
-        this.timer = window.setInterval(() => {
-          this.getRates();
-        }, 60000);
-
+      this.setState({
+        getCoinsFirstTime: true
       });
+      this.props.requestAllCoins();
     }
     else if (event.id === "didDisappear")
     {
+      this.setState({
+        getCoinsFirstTime: true
+      });
       window.clearInterval(this.timer);
     }
   }
 
-  getRates() {
-    return this.orderCoinsByMarketCap().then((data) => {
-      if (data.rippleCoin) {
-        this.setState({ rippleCoin: data.rippleCoin });
-      }
-      if (data.orderedCoins) {
-        this.setState({ orderedCoins: data.orderedCoins });      
-        return Promise.each(data.orderedCoins, (coin) => {
-          return this.props.requestRate(coin.symbol);
+  componentWillReceiveProps(newProps) {
+    if (!Util.isEmpty(newProps.changelly.totalCoinsObj) && this.state.getCoinsFirstTime) {
+      const changellyCoinSet = newProps.changelly.totalCoinsObj;
+      this.props.getAllCoinData(changellyCoinSet).then(() => {
+        this.setState({
+          getCoinsFirstTime: false
+        }, () => {
+          this.getRates();
+          // get rates every minute
+          this.timer = window.setInterval(() => {
+            this.getRates();
+          }, 60000);
         });
-      }
-    });
+      });
+    }
   }
 
-  orderCoinsByMarketCap() {
-    return getAllMarketCoins()
-    .then((marketCoins) => {
-      const shapeShiftCoinSet = this.props.shape.coins;
-      if (!shapeShiftCoinSet || shapeShiftCoinSet["XRP"].status !== "available") {
-        return Promise.resolve({ orderedCoins: [], rippleCoin: {} });
-      }
-      const orderedCoins = [];
-      let rippleCoin = null;
-      marketCoins.forEach((marketCoin) => {
-        const coinSymbol = marketCoin.short;
-        const shapeShiftCoin = shapeShiftCoinSet[coinSymbol];
-        if (coinSymbol === "XRP") {
-          rippleCoin = Object.assign({}, shapeShiftCoin, marketCoin);
-          return;
-        }
-        if (shapeShiftCoin && shapeShiftCoin.status === "available" && coinSymbol !== "NXT") {
-          orderedCoins.push(Object.assign({}, shapeShiftCoin, marketCoin));
-        }
-      });
-      return Promise.resolve({ orderedCoins: orderedCoins, rippleCoin: rippleCoin });
-    })
-    .catch((err) => {
-      const shapeShiftCoinSet = this.props.shape.coins;
-      if (!shapeShiftCoinSet || shapeShiftCoinSet["XRP"].status !== "available") {
-        return Promise.resolve({ orderedCoins: [], rippleCoin: {} });
-      }
-      return Promise.resolve({ orderedCoins: Object.values(shapeShiftCoinSet), rippleCoin: {} });
-    });
+  getRates() {
+    return this.props.getRates(this.props.changelly.orderedCoins);
   }
 
   navWallet(){
@@ -135,11 +107,11 @@ class Exchange extends Component {
     window.clearInterval(this.timer);
     let toCoin;
     let fromCoin;
-    if ( dir === SENDING_RIPPLE ) {
+    if ( dir === ExchangeConfig.PAYMENT_DIRECTION.SENDING_RIPPLE ) {
       toCoin = coin;
       fromCoin = 'XRP';
     }
-    else if (dir === RECEIVING_RIPPLE) {
+    else if (dir === ExchangeConfig.PAYMENT_DIRECTION.RECEIVING_RIPPLE) {
       fromCoin = coin;
       toCoin = 'XRP';
     }
@@ -154,17 +126,31 @@ class Exchange extends Component {
     });
   }
 
+  displayRate(coinSymbol, coin) {
+    if (!coin) {
+      return '';
+    }
+    if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN) {
+      return `${Util.truncate(coin["XRP"], 5)} XRP/${coinSymbol}`;
+    }
+    else if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.OTHER_COIN_PER_RIPPLE) {
+      return `${Util.truncate((1 / coin["XRP"]), 5)} ${coinSymbol}/XRP`;
+    }
+  }
+
   allCoins() {
-    const { orderedCoins } = this.state;
-    let theCoins;
-    let rateLine;
-    let showCoins = [];
-    showCoins.push(
+    const { orderedCoins, totalCoinsObj } = this.props.changelly;
+
+    let displayCoins = [];
+    const rippleCoin = totalCoinsObj["XRP"];
+
+    displayCoins.push(
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
-        perc={this.state.rippleCoin.perc}
-        marketCap={this.state.rippleCoin.mktcap}
+        perc={rippleCoin ? rippleCoin.perc : null}
+        marketCap={rippleCoin ? rippleCoin.mktcap : null}
+        coinSymbol="XRP"
         coinName="Ripple"
         sendFunction={this.navSendRipple.bind(this) }
         receiveFunction={this.navWallet.bind(this)}
@@ -174,31 +160,36 @@ class Exchange extends Component {
 
     if ( orderedCoins.length > 0 )
     {
-      orderedCoins.forEach((coin, idx) => {
-        if ( this.state.direction )
-        {
-          rateLine = `${Util.truncate(this.props.shape.rates[coin.symbol], 5)} XRP/${coin.symbol}`;
-        }
-        else
-        {
-          rateLine = `${Util.truncate( (1/this.props.shape.rates[coin.symbol]), 5 )} ${coin.symbol}/XRP`;
+      orderedCoins.forEach((coinSymbol, idx) => {
+
+        const coin = totalCoinsObj[coinSymbol];
+        const rateDisplay = this.displayRate(coinSymbol, coin);
+
+        const baseImageUrl = "https://www.cryptocompare.com";
+        let imageUrl;
+
+        if (coin) {
+          imageUrl = baseImageUrl + coin.ImageUrl;
+        } else {
+          imageUrl = "https://www.jainsusa.com/images/store/landscape/not-available.jpg";
         }
 
-        showCoins.push(
+        displayCoins.push(
           <Coin
             key={idx}
-            imageSource={{uri: coin.image}}
-            perc={coin.perc}
-            marketCap={coin.mktcap}
-            coinName={coin.name}
-            sendFunction={()=> this.navTransition(coin.symbol, SENDING_RIPPLE)}
-            receiveFunction={()=> this.navTransition(coin.symbol, RECEIVING_RIPPLE)}
-            rate={rateLine}
+            imageSource={{ uri: imageUrl }}
+            perc={totalCoinsObj[coinSymbol].perc}
+            marketCap={totalCoinsObj[coinSymbol].mktcap}
+            coinSymbol={coinSymbol}
+            coinName={coin.fullName}
+            sendFunction={()=> this.navTransition(coinSymbol, ExchangeConfig.PAYMENT_DIRECTION.SENDING_RIPPLE)}
+            receiveFunction={()=> this.navTransition(coinSymbol, ExchangeConfig.PAYMENT_DIRECTION.RECEIVING_RIPPLE)}
+            rate={rateDisplay}
           />
         );
       });
     } else {
-      showCoins.push(
+      displayCoins.push(
         <LoadingIcon 
           key="loadIcon" 
           size="large" 
@@ -209,13 +200,25 @@ class Exchange extends Component {
     
     return (
       <ScrollView style={styles.coinsContainer}>
-        {showCoins}
+        {displayCoins}
       </ScrollView>
     );
   }
 
+  reverseConversionDirection() {
+    if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN) {
+      this.setState({
+        conversionDirection: ExchangeConfig.CONVERSION_DIRECTION.OTHER_COIN_PER_RIPPLE
+      });
+    } else {
+      this.setState({
+        conversionDirection: ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN
+      });
+    }
+  }
+
   direction() {
-    if (this.state.direction) {
+    if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN) {
       return (
         <View style={styles.conversionContainer}>
           <Text style={styles.directions}>Ʀ</Text>
@@ -223,7 +226,7 @@ class Exchange extends Component {
           <Font name="bitcoin" size={width/20} color="white" />
         </View>
       );
-    } else {
+    } else if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.OTHER_COIN_PER_RIPPLE) {
       return (
       <View style={styles.conversionContainer}>
         <Font name="bitcoin" size={width/20} color="white" />
@@ -234,11 +237,13 @@ class Exchange extends Component {
     }
   }
 
+
+
   render() {
     return (
       <View style={styles.mainContainer}>
         <View style={styles.topContainer}>
-          <TouchableOpacity onPress={() => this.setState({direction: !this.state.direction})}>
+          <TouchableOpacity onPress={this.reverseConversionDirection}>
             {this.direction()}
           </TouchableOpacity>
         </View>

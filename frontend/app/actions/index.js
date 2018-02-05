@@ -1,6 +1,6 @@
 import UserActions from './userActions';
 import AlertsActions from './alertsActions';
-import CoinCapActions from './coincapActions';
+import CoinActions from './coinActions';
 // import ShapeActions from './shapeActions';
 import ChangellyActions from './changellyActions';
 import TransactionActions from './transactionActions';
@@ -42,8 +42,6 @@ exports.receivedTransaction = TransactionActions.receivedTransaction;
 exports.delWallet = WalletActions.delWallet;
 exports.requestOnlyDesTag = WalletActions.requestOnlyDesTag;
 exports.requestAddress = WalletActions.requestAddress;
-exports.requestOldAddress = WalletActions.requestOldAddress;
-exports.requestAllWallets = WalletActions.requestAllWallets;
 exports.changeWallet = WalletActions.changeWallet;
 
 // PERSONAL WALLET ACTIONS
@@ -54,9 +52,11 @@ exports.preparePaymentWithPersonalAddress = PersonalWalletActions.preparePayment
 exports.sendPaymentWithPersonalAddress = PersonalWalletActions.sendPaymentWithPersonalAddress;
 exports.preparePersonalToBank = PersonalWalletActions.preparePersonalToBank;
 
-// COINCAP ACTIONS
-exports.getXRPtoUSD = CoinCapActions.getXRPtoUSD;
-exports.getAllMarketCoins = CoinCapActions.getAllMarketCoins;
+// COIN ACTIONS
+exports.getXRPtoUSD = CoinActions.getXRPtoUSD;
+exports.getAllMarketCoins = CoinActions.getAllMarketCoins;
+exports.getRates = CoinActions.getRates;
+exports.getAllCoinData = CoinActions.getAllCoinData;
 // ALERTS ACTIONS
 exports.addAlert = AlertsActions.addAlert;
 exports.removeAlert = AlertsActions.removeAlert;
@@ -64,10 +64,11 @@ exports.clearAlerts = AlertsActions.clearAlerts;
 
 // CHANGELLY ACTIONS
 exports.createChangellyTransaction = ChangellyActions.createChangellyTransaction;
+exports.clearChangellyTransaction = ChangellyActions.clearChangellyTransaction;
 exports.requestChangellyTransactions = ChangellyActions.requestChangellyTransactions;
 exports.loadNextChangellyTransactions = ChangellyActions.loadNextChangellyTransactions;
 exports.getChangellyTransactionStatus = ChangellyActions.getChangellyTransactionStatus;
-exports.getChangellyTransactionId = ChangellyActions.getChangellyTransactionId;
+exports.getChangellyRippleTransactionId = ChangellyActions.getChangellyRippleTransactionId;
 exports.requestRate = ChangellyActions.requestRate;
 exports.getMinAmount = ChangellyActions.getMinAmount;
 exports.requestAllCoins = ChangellyActions.requestAllCoins;
