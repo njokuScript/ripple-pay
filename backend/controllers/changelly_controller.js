@@ -114,18 +114,27 @@ exports.getChangellyRippleTransactionId = asynchronous(function (req, res, next)
     let fromDestTag = query[2];
 
     const changellyTransaction = await(ChangellyTransaction.findOne({ changellyTxnId }));
-
+    console.log(changellyTransaction);
+    
     if (changellyTransaction.rippleTxnId) {
         return res.json({ rippleTxnId: changellyTransaction.rippleTxnId });
     }
     // if i don't have rippleTxnId for this changelly transaction, I will go to ripple ledger to find it.
     // to help customers get refund from changelly if they have to.
     let toAddress = changellyTransaction.changellyAddress;
-
+    let toDestTag = changellyTransaction.changellyDestTag;
+    console.log(toAddress, toDestTag);
+    
     let txnInfo = await(rippledServer.getTransactions(fromAddress));
 
     const processTransaction = function (currTxn) {
-        if (toAddress === currTxn.specification.destination.address && fromDestTag === currTxn.specification.destination.tag) {
+        console.log(currTxn.specification);
+        
+        if (
+            toAddress === currTxn.specification.destination.address && 
+            fromDestTag === currTxn.specification.source.tag && 
+            toDestTag === currTxn.specification.destination.tag
+        ) {
             return currTxn.id;
         }
         else if (new Date(currTxn.outcome.timestamp).getTime() < new Date(changellyTransaction.date).getTime()) {

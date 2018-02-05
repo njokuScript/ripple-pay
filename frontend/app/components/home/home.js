@@ -197,7 +197,7 @@ class Home extends React.Component {
   }
 
   displayTransactions() {
-    if (this.state.showChange) { return this.state.showChange; }
+    // if (this.state.showChange) { return this.state.showChange; }
 
     const transactions = this.determineTransactions();
 
@@ -272,8 +272,18 @@ class Home extends React.Component {
       );
     }
     return (
-      <ScrollView style={styles.transactionsContainer}>
-        { transactionComponents }
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh} />
+        }
+        automaticallyAdjustContentInsets={false}
+        contentContainerStyle={styles.scrollViewContainer}
+      >
+        <ScrollView>
+          { transactionComponents }
+        </ScrollView>
       </ScrollView>
     );
   }
@@ -307,16 +317,8 @@ class Home extends React.Component {
             pressed={this.state.changelly}
           />
 
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this.onRefresh}/>
-            }
-            automaticallyAdjustContentInsets={false}
-            contentContainerStyle={styles.scrollViewContainer}>
-            {this.displayTransactions()}
-          </ScrollView>
+          { this.state.showChange ? this.state.showChange : this.displayTransactions() }
+
           <AlertContainer />
         </View>
       );

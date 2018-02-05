@@ -55,6 +55,8 @@ exports.getChangellyRippleTransactionId = (changellyTxnId, refundAddress, refund
         GET_RIPPLE_TXNID_CHANGELLY,
         { params: [changellyTxnId, refundAddress, refundDestTag] },
         (response) => {
+            console.log(response.data);
+            
             setTransactionId(response.data.rippleTxnId || 'Not Found');
             return { type: "NON_REDUX" };
         }
