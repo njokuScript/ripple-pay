@@ -1,15 +1,16 @@
 import { connect } from 'react-redux';
 import Exchange from './exchange';
-import { requestAllCoins, requestRate, addAlert } from '../../actions';
+import { requestAllCoins, addAlert, getRates, getAllCoinData } from '../../actions';
 
-const mapStateToProps = ({ shape }) => ({
-  shape: shape
+const mapStateToProps = ({ changelly }) => ({
+  changelly: changelly
 });
 
 const mapDispatchToProps = dispatch => ({
   requestAllCoins: () => dispatch(requestAllCoins()),
-  requestRate: (coin) => dispatch(requestRate(coin)),
+  getAllCoinData: (changellyCoinSet) => dispatch(getAllCoinData(changellyCoinSet)),
   addAlert: (message) => dispatch(addAlert(message)),
+  getRates: (orderedCoins) => dispatch(getRates(orderedCoins))
 });
 
 export default connect(

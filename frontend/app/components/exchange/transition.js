@@ -9,6 +9,9 @@ import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
 import AlertContainer from '../alerts/AlertContainer';
+import ExchangeConfig from './exchange_enums';
+import Config from '../../config_enums';
+
 import {
   StyleSheet,
   Text,
@@ -31,106 +34,138 @@ class Transition extends Component {
       editFromAmount: false,
       editToAmount: false,
       address: "",
-      quoted: true
+      // quoted: true
     };
     this.navSendAmount = this.navSendAmount.bind(this);
     this.toThisAmount = "";
     this.fromThisAmount = "";
-    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "willAppear" )
-    {
-      this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
-      this.props.requestOldAddress();
-      this.props.requestAllWallets();
+    if ( event.id === "willAppear" ) {
+
+      if (this.props.toCoin === "XRP") {
+        this.action = ExchangeConfig.ACTIONS.DEPOSIT;
+        this.altCoin = this.props.fromCoin;
+      }
+      else if (this.props.fromCoin === "XRP") {
+        this.action = ExchangeConfig.ACTIONS.WITHDRAW;
+        this.altCoin = this.props.toCoin;
+      }
+
+      this.props.requestRate(this.altCoin);
+      this.props.getMinAmount(this.props.fromCoin, this.props.toCoin);
     }
   }
 
-  // componentWillUnmount(){
-  //   window.clearTimeout(this.timer);
-  // }
-  //MAKE SURE TO LEAVE THIS HERE AND THEN ADD YOUR TABS
-  //WE HAVE TO REQUEST TRANSACTIONS EVERY TIME WE GO TO THE WALLET OR THE HOME.
-  //Make sure to request Transactions BEFORE you request address and dest tag before you go to the wallet.
-  //Whenever we navigate away from this page we are getting rid of the pinger to shapeshifter api.
+  processDeposit() {
+    this.refundAddress = this.state.address;
+    this.refundDestTag = undefined;
+
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && this.props.user.wallets.length > 0) {
+      this.withdrawalAddress = this.props.user.cashRegister;
+      this.toDestTag = this.props.user.wallets[this.props.user.wallets.length - 1];
+      return;
+    }
+    else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      this.withdrawalAddress = this.props.user.personalAddress;
+      this.toDestTag = undefined;
+      return;
+    }
+
+    this.props.addAlert("Please Get a Wallet First");
+  }
+
+  processWithdrawal() {
+    this.withdrawalAddress = this.state.address;
+    this.toDestTag = undefined;
+
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && this.props.user.wallets.length > 0) {
+      this.refundAddress = this.props.user.cashRegister;
+      this.refundDestTag = this.props.user.wallets[this.props.user.wallets.length - 1];
+      return;
+    }
+    else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      this.refundAddress = this.props.user.personalAddress;
+      this.refundDestTag = undefined;
+      return;
+    }
+
+    this.props.addAlert("Please Get a Wallet First");
+  }
 
   navSendAmount() {
-    if (this.state.fromAmount < this.props.shape.market.minimum){
+    if (this.state.fromAmount < this.props.changelly.minimumSend.minAmount){
       this.props.addAlert(`Please ${this.action} more than the minimum allowed`);
       return;
     }
-    if (this.state.fromAmount > this.props.shape.market.maxLimit){
-      this.props.addAlert(`Please ${this.action} less than the maximum allowed`);
-      return;
+    if ( this.action === ExchangeConfig.ACTIONS.DEPOSIT ) {
+      this.processDeposit();
     }
-    if ( this.action === "deposit" )
-    {
-      this.returnAddress = this.state.address;
-      if ( this.props.user.wallets.length > 0 && this.props.user.cashRegister )
-      {
-        this.withdrawalAddress = this.props.user.cashRegister;
-        this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
-      }
-      else
-      {
-        this.props.addAlert("Please Get a Wallet First");
-        return;
-      }
+    else if (this.action === ExchangeConfig.ACTIONS.WITHDRAW) {
+      this.processWithdrawal();
     }
-    else
-    {
-      this.withdrawalAddress = this.state.address;
-      if ( this.props.user.wallets.length > 0 && this.props.user.cashRegister)
-      {
-        this.returnAddress = this.props.user.cashRegister;
-        this.theDestTag = this.props.user.wallets[this.props.user.wallets.length-1];
-      }
-      else
-      {
-        this.props.addAlert("Please Get a Wallet First");
-        return;
-      }
-    }
-    if (this.action === "withdraw" && this.withdrawalAddress === '') {
+
+    if (this.action === ExchangeConfig.ACTIONS.WITHDRAW && this.withdrawalAddress === '') {
       this.props.addAlert("Please Enter a Withdrawal Address");
       return;
     }
+    const from = { fromCoin: this.props.fromCoin, fromAmount: this.state.fromAmount };
+    const to = { toCoin: this.props.toCoin, toAmount: this.state.toAmount };
+    console.log(from, to);
+    
+    this.props.createChangellyTransaction(from, to, this.withdrawalAddress, this.refundAddress, this.toDestTag, this.refundDestTag);
     this.props.navigator.push({
       screen: 'SendAmount',
       navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},
       passProps: {
-                 withdrawal: this.withdrawalAddress,
-                 returnAddress: this.returnAddress,
-                 destTag: this.theDestTag,
-                 fromCoin: this.props.fromCoin,
-                 toCoin: this.props.toCoin,
-                 amount: this.state.toAmount,
-                 fromAmount: this.state.fromAmount,
+      //            withdrawal: this.withdrawalAddress,
+      //            refundAddress: this.refundAddress,
+      //            toDestTag: this.toDestTag,
+      //            refundDestTag: this.refundDestTag,
+                //  fromCoin: this.props.fromCoin,
+                //  toCoin: this.props.toCoin,
+      //            amount: this.state.toAmount,
+      //            fromAmount: this.state.fromAmount,
                  action: this.action,
-                 quoted: this.state.quoted,
+                 altCoin: this.altCoin
+                //  quoted: this.state.quoted,
                }
     });
   }
 
   componentDidUpdate(oldProps, oldState){
+    let toAmount, fromAmount;
     if ( this.state.editToAmount  )
     {
-      let x = this.state.fromAmount === "" ? "" : parseFloat(this.state.fromAmount) * this.props.shape.market.rate;
-      this.setState({toAmount: x.toString(), editFromAmount: false, editToAmount: false});
+
+      if (this.action === ExchangeConfig.ACTIONS.DEPOSIT) {
+        toAmount = this.state.fromAmount === "" ? "" : parseFloat(this.state.fromAmount) * this.props.changelly.rate.amount;
+      }
+      else if (this.action === ExchangeConfig.ACTIONS.WITHDRAW) {
+        toAmount = this.state.fromAmount === "" ? "" : parseFloat(this.state.fromAmount) / this.props.changelly.rate.amount;
+      }
+
+      this.setState({toAmount: toAmount.toString(), editFromAmount: false, editToAmount: false});
     }
     else if ( this.state.editFromAmount )
     {
-      let y = this.state.toAmount === "" ? "" : (parseFloat(this.state.toAmount) / this.props.shape.market.rate);
-      this.setState({fromAmount: y.toString(), editFromAmount: false, editToAmount: false});
+
+      if (this.action === ExchangeConfig.ACTIONS.DEPOSIT) {
+        fromAmount = this.state.toAmount === "" ? "" : parseFloat(this.state.toAmount) / this.props.changelly.rate.amount;
+      }
+      else if (this.action === ExchangeConfig.ACTIONS.WITHDRAW) {
+        fromAmount = this.state.toAmount === "" ? "" : parseFloat(this.state.toAmount) * this.props.changelly.rate.amount;
+      }
+
+      this.setState({fromAmount: fromAmount.toString(), editFromAmount: false, editToAmount: false});
     }
   }
 
-  toggleQuoted(){
-    this.setState({quoted: !this.state.quoted});
-  }
+  // toggleQuoted(){
+  //   this.setState({quoted: !this.state.quoted});
+  // }
 
 //Maybe give these the indexes that they are suppose to have.
   render() {
@@ -141,19 +176,19 @@ class Transition extends Component {
           animationType: 'fade'
         })} style={{paddingLeft: 10, marginTop: 80}} />
         <View style={{marginTop: -20}}>
-          <CustomButton
+          {/* <CustomButton
             performAction={this.state.quoted ? "Precise Transaction" : "Quick Transaction"}
             buttonColor="white"
             isDisabled={false}
             handlePress={this.toggleQuoted.bind(this)}
-          />
+          /> */}
           <View style={styles.customInputContainer}>
           <CustomInput
             placeholder={`from ${this.props.fromCoin}`}
             placeholderTextColor="#6D768B"
             onChangeText={
               (amt) => {
-                this.setState({fromAmount: amt, editFromAmount: false, editToAmount: true});
+                this.setState({fromAmount: amt, editToAmount: true, editFromAmount: false});
               }
             }
             autoCorrect={false}
@@ -173,7 +208,7 @@ class Transition extends Component {
             autoCapitalize={'none'}
           />
           <CustomInput
-            placeholder={this.action === "deposit" ? "Return Address -- Recommended" : "Send To Address"}
+            placeholder={this.action === ExchangeConfig.ACTIONS.DEPOSIT ? "Return Address -- Recommended" : "Send To Address"}
             placeholderTextColor="#6D768B"
             onChangeText={
               (addr) => {
@@ -186,14 +221,13 @@ class Transition extends Component {
           />
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.whitetext}>Shapeshift Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-            <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>Rate:   {this.props.shape.market.rate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-            { this.state.quoted && this.action === "deposit" ? <Text style={styles.redText}>Warning: there's a time limit for precise transactions and some coins (e.g. btc or eth) take longer to add to the blockchain than others</Text> : null }
+            {/* <Text style={styles.whitetext}>Changelly Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text> */}
+            <Text style={styles.whitetext}>Send Minimum:   {this.props.changelly.minimumSend.minAmount} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Rate:   {this.props.changelly.rate.amount} XRP/{this.altCoin}</Text>
+            {/* { this.state.quoted && this.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.redText}>Warning: there's a time limit for precise transactions and some coins (e.g. btc or eth) take longer to add to the blockchain than others</Text> : null } */}
           </View>
           <CustomButton
-            performAction={this.action === 'withdraw' ? 'Continue withdrawal...' : 'Continue deposit...'}
+            performAction={this.action === ExchangeConfig.ACTIONS.WITHDRAW ? 'Continue withdrawal...' : 'Continue deposit...'}
             buttonColor="white"
             isDisabled={false}
             handlePress={this.navSendAmount}
