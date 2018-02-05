@@ -1,5 +1,5 @@
 
-exports.CURRENT_STATE = 3;
+exports.CURRENT_STATE = 2;
 
 exports.WALLETS = {
     'BANK_WALLET': 0,
