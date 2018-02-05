@@ -44,8 +44,6 @@ function formatChangellyTransaction(changellyTxn, userId, from, to, toDestTag=""
 }
 
 exports.createChangellyTransaction = function(req, res, next) {
-    console.log(req.body);
-    
     let { from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag } = req.body;
     let { fromAmount, fromCoin } = from;
     fromAmount = parseFloat(fromAmount);
@@ -180,7 +178,7 @@ exports.getCoins = function(req, res, next) {
             console.log('Error!', err);
             next(err);
         } else {
-            console.log('getCurrencies', data);
+            // console.log('getCurrencies', data);
             return res.json({ coins: data.result });
         }
     });

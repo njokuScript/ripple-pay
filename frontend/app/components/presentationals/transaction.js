@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Font from 'react-native-vector-icons/FontAwesome';
+import Util from '../../utils/util';
+
 import {
   StyleSheet,
   Text,
@@ -11,7 +13,7 @@ import {
 // Pass down props.otherParty,
 // the color of transaction is either green or red based on neg or pos
 const Transaction = (props) => {
-  const { otherParty, date, amount, transactionColor, toAmount, time } = props;
+  const { otherParty, date, amount, fromCoin, toCoin, transactionColor, toAmount, time } = props;
   let transactionDate;
   let transactionAmount;
   if (amount) {
@@ -31,10 +33,10 @@ const Transaction = (props) => {
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
-          { amount }
+          { Util.truncate(amount, 3) } {fromCoin}
         </Text>
         <Text style={transactionAmountStyle}>
-          { toAmount }
+          { Util.truncate(toAmount, 3) } {toCoin}
         </Text>
       </View>
     );
