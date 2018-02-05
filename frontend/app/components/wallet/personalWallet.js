@@ -1,5 +1,6 @@
 import React from 'react';
 import AlertContainer from '../alerts/AlertContainer';
+import Util from '../../utils/util';
 
 import {
     View,
@@ -59,14 +60,10 @@ class PersonalWallet extends React.Component {
         });
     }
 
-    getQRCodeSource(address) {
-        return `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
-    }
-
     displayPersonalWallet() {
         const disabled = this.state.disabled;
         if (this.props.personalAddress) {
-            const imageSource = this.getQRCodeSource(this.props.personalAddress);
+            const imageSource = Util.getQRCodeSource(this.props.personalAddress);
             return (
                 <View style={styles.walletDisplay}>
 

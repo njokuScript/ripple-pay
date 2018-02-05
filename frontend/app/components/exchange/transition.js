@@ -11,6 +11,7 @@ import CustomBackButton from '../presentationals/customBackButton';
 import AlertContainer from '../alerts/AlertContainer';
 import ExchangeConfig from './exchange_enums';
 import Config from '../../config_enums';
+import Util from '../../utils/util';
 
 import {
   StyleSheet,
@@ -47,10 +48,12 @@ class Transition extends Component {
 
       if (this.props.toCoin === "XRP") {
         this.action = ExchangeConfig.ACTIONS.DEPOSIT;
+        this.actionString = "deposit";
         this.altCoin = this.props.fromCoin;
       }
       else if (this.props.fromCoin === "XRP") {
         this.action = ExchangeConfig.ACTIONS.WITHDRAW;
+        this.actionString = "withdraw";
         this.altCoin = this.props.toCoin;
       }
 
@@ -96,10 +99,14 @@ class Transition extends Component {
   }
 
   navSendAmount() {
-    if (this.state.fromAmount < this.props.changelly.minimumSend.minAmount){
-      this.props.addAlert(`Please ${this.action} more than the minimum allowed`);
-      return;
+
+    if (!this.props.changelly.minimumSend.minAmount) {
+      return this.props.addAlert(`Please wait for minimum amount calculation...`);
     }
+    else if (this.state.fromAmount < this.props.changelly.minimumSend.minAmount){
+      return this.props.addAlert(`Please ${this.actionString} more than the minimum allowed`);
+    }
+
     if ( this.action === ExchangeConfig.ACTIONS.DEPOSIT ) {
       this.processDeposit();
     }
@@ -120,18 +127,9 @@ class Transition extends Component {
       screen: 'SendAmount',
       navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},
       passProps: {
-      //            withdrawal: this.withdrawalAddress,
-      //            refundAddress: this.refundAddress,
-      //            toDestTag: this.toDestTag,
-      //            refundDestTag: this.refundDestTag,
-                //  fromCoin: this.props.fromCoin,
-                //  toCoin: this.props.toCoin,
-      //            amount: this.state.toAmount,
-      //            fromAmount: this.state.fromAmount,
-                 action: this.action,
-                 altCoin: this.altCoin
-                //  quoted: this.state.quoted,
-               }
+        action: this.action,
+        altCoin: this.altCoin
+      }
     });
   }
 
@@ -163,11 +161,6 @@ class Transition extends Component {
     }
   }
 
-  // toggleQuoted(){
-  //   this.setState({quoted: !this.state.quoted});
-  // }
-
-//Maybe give these the indexes that they are suppose to have.
   render() {
     return (
       <View style={styles.container}>
@@ -176,12 +169,6 @@ class Transition extends Component {
           animationType: 'fade'
         })} style={{paddingLeft: 10, marginTop: 80}} />
         <View style={{marginTop: -20}}>
-          {/* <CustomButton
-            performAction={this.state.quoted ? "Precise Transaction" : "Quick Transaction"}
-            buttonColor="white"
-            isDisabled={false}
-            handlePress={this.toggleQuoted.bind(this)}
-          /> */}
           <View style={styles.customInputContainer}>
           <CustomInput
             placeholder={`from ${this.props.fromCoin}`}
@@ -221,13 +208,11 @@ class Transition extends Component {
           />
           </View>
           <View style={styles.infoContainer}>
-            {/* <Text style={styles.whitetext}>Changelly Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text> */}
-            <Text style={styles.whitetext}>Send Minimum:   {this.props.changelly.minimumSend.minAmount} {this.props.fromCoin}</Text>
-            <Text style={styles.whitetext}>Rate:   {this.props.changelly.rate.amount} XRP/{this.altCoin}</Text>
-            {/* { this.state.quoted && this.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.redText}>Warning: there's a time limit for precise transactions and some coins (e.g. btc or eth) take longer to add to the blockchain than others</Text> : null } */}
+            <Text style={styles.whitetext}>Send Minimum:   {Util.truncate(this.props.changelly.minimumSend.minAmount, 4)} {this.props.fromCoin}</Text>
+            <Text style={styles.whitetext}>Rate:   {Util.truncate(this.props.changelly.rate.amount, 4)} XRP/{this.altCoin}</Text>
           </View>
           <CustomButton
-            performAction={this.action === ExchangeConfig.ACTIONS.WITHDRAW ? 'Continue withdrawal...' : 'Continue deposit...'}
+            performAction={`Continue ${this.actionString}...`}
             buttonColor="white"
             isDisabled={false}
             handlePress={this.navSendAmount}
