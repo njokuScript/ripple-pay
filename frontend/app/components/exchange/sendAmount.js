@@ -7,10 +7,12 @@ import HomeContainer from '../home/homeContainer';
 import sendRippleContainer from './sendRippleContainer';
 import sendAmountContainer from './sendAmountContainer';
 import CustomButton from '../presentationals/customButton';
+import CustomInput from '../presentationals/customInput';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
-import { makeShapeshiftTransaction, clearSendAmount, getTimeRemaining, addAlert } from '../../actions';
 import Util from '../../utils/util';
+import ExchangeConfig from './exchange_enums';
+import Config from '../../config_enums';
 
 import {
   StyleSheet,
@@ -19,7 +21,8 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 
@@ -29,99 +32,39 @@ class SendAmount extends Component {
     super(props);
     this.toThisAmount = "";
     this.fromThisAmount = "";
-    this.action = this.props.toCoin === "XRP" ? "deposit" : "withdraw";
-    this.setTimer = this.setTimer.bind(this);
     this.renderButton = this.renderButton.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
+    this.preparePayment = this.preparePayment.bind(this);
     this.enableSending = this.enableSending.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
-      direction: true,
-      fromAmount: "",
-      toAmount: "",
-      address: "",
       pushed: false,
-      time: 600000,
-      sendButtonDisabled: true
-    }
+      sendButtonDisabled: true,
+      secret: ''
+    };
   }
 
   onNavigatorEvent(event){
-    if ( event.id === "didAppear" ) {
-      this.props.requestMarketInfo(this.props.fromCoin, this.props.toCoin);
-      let pair = `${this.props.fromCoin.toLowerCase()}_${this.props.toCoin.toLowerCase()}`;
-      if ( this.props.quoted ){
-        this.props.sendAmount(this.props.amount, this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
-      }
-      if (!this.props.quoted) {
-        this.props.shapeshift(this.props.withdrawal, pair, this.props.returnAddress, this.props.destTag);
-      }
-    }
-    else if (event.id === "willDisappear"){
+    if (event.id === "willDisappear"){
       this.setState({
-        sendButtonDisabled: true
+        sendButtonDisabled: true,
+        secret: ''
       });
-      this.props.clearSendAmount();
+      this.props.clearChangellyTransaction();
       clearInterval(this.timer);
-      this.props.navigator.resetTo({
-        screen: 'Exchange',
-        navigatorStyle: {navBarHidden: true}
-      })
+      this.props.navigator.popToRoot();
     }
   }
-  
-  setTimer(time) {
-    if (!time) {
-      this.props.addAlert("There was a problem with shapeshift!")
-      that.props.navigator.switchToTab({
-        tabIndex: 0
-      });
-    }
-    this.setState({ time }, () => {
-      let that = this;
-      this.timer = window.setInterval(function(){
-        if ( that.state.time === 1000 ){
-          that.props.navigator.switchToTab({
-            tabIndex: 0
-          });
-        }
-        that.setState({time: that.state.time - 1000})
-      }, 1000);
-    })
-  }
+
 
   enableSending() {
     this.setState({
       sendButtonDisabled: false
-    })
-  }
-
-  componentWillReceiveProps(newProps){
-    if (
-      this.props.shape.sendamount &&
-      Object.keys(this.props.shape.sendamount).length === 0 &&
-      newProps.shape.sendamount &&
-      newProps.shape.sendamount.deposit
-    ) {
-      let otherParty = newProps.fromCoin === "XRP" ? newProps.withdrawal : newProps.returnAddress;
-      otherParty = otherParty === '' ? 'Not Entered' : otherParty;
-      let returnAddress = newProps.returnAddress === '' ? 'Not Entered' : newProps.returnAddress;
-      newProps.makeShapeshiftTransaction(
-        { fromAmount: newProps.shape.sendamount.depositAmount, fromCoin: newProps.fromCoin },
-        { toAmount: newProps.amount, toCoin: newProps.toCoin },
-        otherParty,
-        newProps.shape.sendamount.deposit,
-        returnAddress,
-        newProps.shape.sendamount.orderId
-      )
-      if (this.props.quoted) {
-        getTimeRemaining(newProps.shape.sendamount.deposit, this.setTimer);  
-      }
-    }
+    });
   }
 
   renderButton(){
-    if ( this.props.action === 'withdraw' && this.state.pushed === false )
+    if ( this.props.action === ExchangeConfig.ACTIONS.WITHDRAW && this.state.pushed === false )
     {
       return(
         <View>
@@ -129,91 +72,154 @@ class SendAmount extends Component {
             performAction="Withdraw"
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
-            handlePress={this.sendPayment}
+            handlePress={this.preparePayment}
           />
-          <PasswordLock enableSending={this.enableSending} />
         </View>
-      )
+      );
     }
   }
 
-  sendPayment(){
+  preparePayment(){
     this.setState({pushed: true});
-    let depositString = this.props.shape.sendamount.deposit;
-    if ( !depositString )
-    {
+    const { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
+    let sourceTag = null;
+    let fromAddress = this.props.changelly.changellyTxn.refundAddress;
+    if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET) {
+      sourceTag = this.props.user.wallets[this.props.user.wallets.length - 1];
+    }
+
+    if ( !changellyAddress || !from.fromAmount ) {
       this.props.addAlert("There was an error in the transaction");
       return;
     }
-    let toDesTag = depositString.match(/\?dt=(\d+)/)[1];
-    let toAddress = depositString.match(/\w+/)[0];
-    let total;
-    if ( this.props.quoted )
-    {
-      total = this.props.shape.sendamount.depositAmount;
+
+    if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET) {
+      this.props.preparePayment(
+        parseFloat(from.fromAmount),
+        fromAddress,
+        changellyAddress,
+        parseInt(sourceTag),
+        parseInt(changellyDestTag)
+      );
     }
-    else
-    {
-      total = this.props.fromAmount;
+    else if (this.props.user.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      this.props.preparePaymentWithPersonalAddress(
+        parseFloat(from.fromAmount),
+        fromAddress,
+        changellyAddress,
+        parseInt(sourceTag),
+        parseInt(changellyDestTag)
+      );
     }
-    if ( !total )
-    {
-      this.props.addAlert("There was an error in the transaction");
-      return;
+
+  }
+
+  sendPayment() {
+    this.setState({ sendButtonDisabled: true });
+    const { amount } = this.props.transaction;
+    let fromAddress = this.props.changelly.changellyTxn.refundAddress;
+    if (amount) {
+      if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET) {
+        this.props.signAndSend(fromAddress, parseFloat(amount));
+      }
+      else if (this.props.user.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+        this.props.sendPaymentWithPersonalAddress(fromAddress, this.state.secret, parseFloat(amount));
+      }
     }
-    this.props.signAndSend (
-      parseFloat(total),
-      this.props.returnAddress,
-      toAddress,
-      parseInt(this.props.destTag),
-      parseInt(toDesTag),
-    );
-    this.props.clearSendAmount();
+
+    this.props.clearTransaction();
+    this.props.clearChangellyTransaction();
+    this.props.navigator.resetTo({
+      screen: 'Exchange',
+      navigatorStyle: { navBarHidden: true }
+    });
+
+  }
+
+  renderSecretField() {
+    if (this.props.user.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      return (
+        <CustomInput
+          placeholder="Secret Key"
+          onChangeText={
+            (secret) => {
+              this.setState({ secret: secret });
+            }
+          }
+          autoCorrect={false}
+          autoCapitalize={'none'}
+          placeholderTextColor="#6D768B"
+          keyboardAppearance={'dark'}
+        />
+      );
+    }
+    return null;
+  }
+
+  calculateToAmountAfterFee(toAmount, feePercentage) {
+    return toAmount - (feePercentage/100)*toAmount;
   }
 
 //Maybe give these the indexes that they are suppose to have.
 // XRP withdraw address that ripplePay auto sends to on withdrawals is shown just
 // for testing purposes
   render() {
-      if ( !this.props.shape.sendamount ) {
-        return (
-          <View>
-            <Text>Error Making Transaction....</Text>
+    if (this.props.action === ExchangeConfig.ACTIONS.WITHDRAW && this.state.sendButtonDisabled) {
+      return (
+        <View style={styles.container}>
+          {this.renderSecretField()}
+          <PasswordLock enableSending={this.enableSending} />
+        </View>
+      );
+    }
+
+    let { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
+    to = to || {};
+    from = from || {};
+    let { amount, coin } = this.props.changelly.rate;
+    let { toAddress, toDesTag } = this.props.transaction;
+    let readyToSend = Boolean(toAddress && this.props.transaction.fee && this.props.transaction.amount);
+
+    if (readyToSend) {
+      Alert.alert(
+        `Convert Ripple to ${this.props.altCoin}`,
+        'Transaction Details:',
+        [
+          { text: `To Address: ${toAddress}` },
+          { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
+          { text: `Amount: ${this.props.transaction.amount}` },
+          { text: `Fee: ${this.props.transaction.fee}` },
+          { text: `Send Payment!`, onPress: this.sendPayment },
+          { text: `Cancel Payment!`, onPress: this.props.clearTransaction },
+        ],
+        { cancelable: false }
+      );
+    }
+    
+      return (
+        <View style={styles.container}>
+          <AlertContainer />
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>
+              {this.props.action === ExchangeConfig.ACTIONS.WITHDRAW ? "Withdraw" : "Deposit"} {to.toCoin}
+            </Text>
+            {/* {this.props.quoted ? <Text style={styles.timeleft}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text> : null} */}
           </View>
-        )
-      }
-      else if (this.props.shape.sendamount.error) {
-        return (
-          <View>
-            <Text>Error Making Transaction because {this.props.shape.sendamount.error}</Text>
-          </View>
-        )
-      }
-      else {
-        return (
-          <View style={styles.container}>
-            <AlertContainer />
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>
-                {this.props.action.charAt(0).toUpperCase() + this.props.action.slice(1)} {this.props.toCoin} - {this.props.quoted ? "Precise" : "Approximate"}
-              </Text>
-              {this.props.quoted ? <Text style={styles.timeleft}>Time Left: {new Date(this.state.time).toISOString().substr(14,5)}</Text> : null}
-            </View>
-            <ScrollView style={styles.infoContainer}>
-              { this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>{this.props.fromCoin} Deposit Address:   {this.props.shape.sendamount.deposit ? this.props.shape.sendamount.deposit : 'Please Wait...' }</Text> : null}
-              <Text style={styles.whitetext}>{this.props.toCoin} Withdraw Address:   {this.props.withdrawal}</Text>
-              { !this.props.quoted ? <Text style={styles.whitetext}>Send Minimum:   {this.props.shape.market.minimum} {this.props.fromCoin}</Text> : null }
-              { !this.props.quoted ? <Text style={styles.whitetext}>Send Maximum:   {this.props.shape.market.maxLimit} {this.props.fromCoin}</Text> : null }
-              <Text style={styles.whitetext}>Deposit Amount:   {this.props.quoted ? this.props.shape.sendamount.depositAmount : this.props.fromAmount} {this.props.fromCoin}</Text>
-              <Text style={styles.whitetext}>Withdraw Amount:   {this.props.amount} {this.props.toCoin}</Text>
-              <Text style={styles.whitetext}>Quoted Rate:   {this.props.shape.sendamount.quotedRate} {this.props.toCoin}/{this.props.fromCoin}</Text>
-              {this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text> : null}
-              <Text style={styles.whitetext}>Fee:   {this.props.shape.market.minerFee} {this.props.toCoin}</Text>
-            </ScrollView>
-            {this.renderButton()}
-          </View>
-        );
-      }
+          <ScrollView style={styles.infoContainer}>
+            { this.props.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.whitetext}>{from.fromCoin} Deposit Address:   {changellyAddress ? changellyAddress : 'Please Wait...' }</Text> : null }
+            <Text style={styles.whitetext}>{to.toCoin} Withdraw Address:   {otherParty}</Text>
+            { this.props.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.whitetext}>{to.toCoin} Withdraw Dest Tag:   {toDestTag}</Text> : null }
+            <Text style={styles.whitetext}>Send Minimum:   {this.props.changelly.minimumSend.minAmount} {from.fromCoin}</Text>
+            <Text style={styles.whitetext}>Deposit Amount:   {from.fromAmount} {from.fromCoin}</Text>
+            <Text style={styles.whitetext}>Approx Withdraw Amount:   {to.toAmount} {to.toCoin}</Text>
+            <Text style={styles.whitetext}>Rate:   {this.props.changelly.rate.amount} {to.toCoin}/{from.fromCoin}</Text>
+            {/* {this.props.fromCoin != "XRP" ? <Text style={styles.whitetext}>XRP Dest Tag:   {this.props.shape.sendamount.xrpDestTag}</Text> : null} */}
+            <Text style={styles.whitetext}>Changelly Fee:   {fee}% of {to.toCoin} withdrawal</Text>
+            <Text style={styles.whitetext}>Approx Withdraw Amount After Fee:   {this.calculateToAmountAfterFee(to.toAmount, fee)} {to.toCoin}</Text>
+          </ScrollView>
+          {this.renderButton()}
+        </View>
+      ); 
     }
   }
 

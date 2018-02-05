@@ -4,7 +4,7 @@ import {
     SEND_URL,
     PREPARE_PAYMENT_URL,
     NEXT_TRANSACTIONS_URL,
-    NEXT_SHAPESHIFT_TRANSACTIONS_URL,
+    // NEXT_SHAPESHIFT_TRANSACTIONS_URL,
     authRequest
 } from '../api';
 
@@ -16,6 +16,7 @@ const RIPPLE_MESSAGES = {
     "tecNO_DST_INSUF_XRP": "Must send at least 20 ripple to new ripple address",
     "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
     "tefMAX_LEDGER": "Payment was submitted too late",
+    "tefPAST_SEQ": "Payment was submitted too late",
     // The following error message should never happen
     "tecUNFUNDED_PAYMENT": "Insufficient XRP to send payment",
 };
@@ -48,7 +49,7 @@ exports.preparePayment = (amount, fromAddress, toAddress, sourceTag, toDesTag) =
             if (response.data.message) {
                 return addAlert(response.data.message);
             }
-            const fee = response.data.fee;
+            const fee = parseFloat(response.data.fee);
             const transaction = { toAddress, toDesTag, amount, fee };
             return exports.receivedTransaction(transaction);
         }
@@ -77,11 +78,11 @@ exports.loadNextTransactions = (maxDate) => {
     });
 };
 
-exports.loadNextShapeShiftTransactions = (maxDate) => {
-    return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, { params: [maxDate] }, (response) => {
-        return receivedNextShapeShiftTransactions(response.data);
-    });
-};
+// exports.loadNextShapeShiftTransactions = (maxDate) => {
+//     return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, { params: [maxDate] }, (response) => {
+//         return receivedNextShapeShiftTransactions(response.data);
+//     });
+// };
 
 exports.receivedTransaction = (data) => {
     return {
@@ -110,12 +111,12 @@ const receivedNextTransactions = (data) => {
     };
 };
 
-const receivedNextShapeShiftTransactions = (data) => {
-    return {
-        type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
-        data
-    };
-};
+// const receivedNextShapeShiftTransactions = (data) => {
+//     return {
+//         type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
+//         data
+//     };
+// };
 
 exports.refreshShouldLoadMoreValues = {
     type: 'REFRESH_LOAD_MORE'

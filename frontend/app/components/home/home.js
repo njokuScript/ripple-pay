@@ -8,7 +8,7 @@ import Transaction from '../presentationals/transaction';
 import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
 import LoadingIcon from '../presentationals/loadingIcon';
 import TopTabs from '../presentationals/topTabs';
-import ShapeTransactionView from '../presentationals/shapeTransactionView';
+import ChangellyTransactionView from '../presentationals/changellyTransactionView';
 import AlertContainer from '../alerts/AlertContainer';
 import Promise from 'bluebird';
 import Util from '../../utils/util';
@@ -32,18 +32,19 @@ class Home extends React.Component {
     this.onLogout = this.onLogout.bind(this);
     this.displayTransactions = this.displayTransactions.bind(this);
     this.loadNextTransactions = this.loadNextTransactions.bind(this);
-    this.loadNextShapeShiftTransactions = this.loadNextShapeShiftTransactions.bind(this);
+    this.loadNextChangellyTransactions = this.loadNextChangellyTransactions.bind(this);
     this.handleLeftPress = this.handleLeftPress.bind(this);
     this.handleRightPress = this.handleRightPress.bind(this);
     this.setUSD = this.setUSD.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       refreshing: false,
-      shapeshift: false,
-      showshift: null,
+      changelly: false,
+      showChange: null,
       showScreen: false,
       usd: 0,
-      usdPerXRP: 0
+      usdPerXRP: 0,
+      personalTransactionLimit: 10
     };
     this.onRefresh = this.onRefresh.bind(this);
   }
@@ -59,16 +60,17 @@ class Home extends React.Component {
           .then(() => this.setState({showScreen: true}));
       }
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
-        this.props.getPersonalAddressTransactions()
+        this.props.getPersonalAddressTransactions(this.state.personalTransactionLimit)
           .then(() => this.setState({showScreen: true}));
       }
-      this.props.requestShifts();
+      this.props.requestChangellyTransactions();
       this.props.refreshShouldLoadMoreValues();
       this.props.clearAlerts();
     }
     if (event.id === "didDisappear") {
       this.setState({
-        showScreen: false
+        showScreen: false,
+        personalTransactionLimit: 10
       });
     }
   }
@@ -86,8 +88,8 @@ class Home extends React.Component {
     this.props.refreshShouldLoadMoreValues();
     
     this.setState({refreshing: true});
-    if (this.showShapeShiftTransactions()) {
-      this.props.requestShifts().then(() => {
+    if (this.showChangellyTransactions()) {
+      this.props.requestChangellyTransactions().then(() => {
         this.setState({refreshing: false});
       });
     }
@@ -101,7 +103,7 @@ class Home extends React.Component {
         });
       }
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
-        this.props.getPersonalAddressTransactions().then(() => {
+        this.props.getPersonalAddressTransactions(this.state.personalTransactionLimit).then(() => {
           this.setState({ refreshing: false });
           if (this.props.personalBalance) {
             getXRPtoUSD(this.props.personalBalance, this.setUSD);
@@ -117,15 +119,15 @@ class Home extends React.Component {
 
   handleLeftPress() {
     this.setState({
-      shapeshift: false,
-      showshift: false,
+      changelly: false,
+      showChange: false,
     });
   }
 
   handleRightPress() {
     this.setState({
-      shapeshift: true,
-      showshift: false,
+      changelly: true,
+      showChange: false,
     });
   }
 
@@ -134,44 +136,49 @@ class Home extends React.Component {
   }
 
   loadNextTransactions() {
-    if (this.props.shouldLoadMoreTransactions) {
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && this.props.shouldLoadMoreTransactions) {
       const { transactions } = this.props;
       const lastTransaction = transactions[transactions.length - 1];
       if (lastTransaction) {
         this.props.loadNextTransactions(lastTransaction.date);
       }
     }
+    if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      this.setState({ personalTransactionLimit: this.state.personalTransactionLimit + 10 }, () => {
+        this.props.getPersonalAddressTransactions(this.state.personalTransactionLimit);
+      }); 
+    }
   }
 
-  loadNextShapeShiftTransactions() {
-    if (this.props.shouldLoadMoreShapeShiftTransactions) {
-      const { shapeshiftTransactions } = this.props;
-      const lastShapeShiftTransaction = shapeshiftTransactions[shapeshiftTransactions.length - 1];
-      if (lastShapeShiftTransaction) {
-        this.props.loadNextShapeShiftTransactions(lastShapeShiftTransaction.date);
+  loadNextChangellyTransactions() {
+    if (this.props.shouldLoadMoreChangellyTransactions) {
+      const { changellyTransactions } = this.props;
+      const lastChangellyTransaction = changellyTransactions[changellyTransactions.length - 1];
+      if (lastChangellyTransaction) {
+        this.props.loadNextChangellyTransactions(lastChangellyTransaction.date);
       }   
     }
   }
 
-  showShapeShiftTransactions() {
-    return this.state.shapeshift;
+  showChangellyTransactions() {
+    return this.state.changelly;
   }
 
   showNormalTransactions() {
-    return !this.state.shapeshift;
+    return !this.state.changelly;
   }
 
-  showShapeshiftTransaction(transaction, time) {
+  showChangellyTransaction(transaction, time) {
     this.setState({
-      showshift: <ShapeTransactionView time={time} {...transaction}/>
+      showChange: <ChangellyTransactionView time={time} {...transaction}/>
     });
   }
 
   determineTransactions() {
     let transactions = [];
 
-    if (this.showShapeShiftTransactions() && this.props.shapeshiftTransactions.length > 0) {
-      transactions = this.props.shapeshiftTransactions;
+    if (this.showChangellyTransactions() && this.props.changellyTransactions.length > 0) {
+      transactions = this.props.changellyTransactions;
     }
     if (this.showNormalTransactions()) {
 
@@ -192,7 +199,7 @@ class Home extends React.Component {
   }
 
   displayTransactions() {
-    if (this.state.showshift) { return this.state.showshift; }
+    if (this.state.showChange) { return this.state.showChange; }
 
     const transactions = this.determineTransactions();
 
@@ -221,7 +228,7 @@ class Home extends React.Component {
       if (this.showNormalTransactions()) {
         return (
           <Transaction
-          shapeshift={false}
+          changelly={false}
           key={idx}
           otherParty={transaction.otherParty}
           date={date}
@@ -231,17 +238,17 @@ class Home extends React.Component {
           />
         );
       }
-      if (this.showShapeShiftTransactions()) {
+      if (this.showChangellyTransactions()) {
         return (
           <Transaction
-            shapeshift={true}
+            changelly={true}
             key={idx}
             otherParty={`${transaction.otherParty.slice(0,17)}...`}
             date={date}
             amount={`${transaction.from.fromAmount} ${transaction.from.fromCoin}`}
             toAmount={`${transaction.to.toAmount} ${transaction.to.toCoin}`}
             transactionColor={transaction.from.fromCoin === "XRP" ? "red" : "green"}
-            handlePress={() => this.showShapeshiftTransaction(transaction, time)}
+            handlePress={() => this.showChangellyTransaction(transaction, time)}
             time={time}
           />
         );
@@ -258,7 +265,7 @@ class Home extends React.Component {
             performAction="caret-down"
             iconColor="#2A4CED"
             isDisabled={false}
-            handlePress={this.state.shapeshift ? this.loadNextShapeShiftTransactions : this.loadNextTransactions}
+            handlePress={this.state.changelly ? this.loadNextChangellyTransactions : this.loadNextTransactions}
           />
         </View>
       );
@@ -299,7 +306,7 @@ class Home extends React.Component {
           <TopTabs
             handleLeftPress={this.handleLeftPress}
             handleRightPress={this.handleRightPress}
-            pressed={this.state.shapeshift}
+            pressed={this.state.changelly}
           />
 
           <ScrollView

@@ -22,6 +22,7 @@ exports.generatePersonalAddress = asynchronous(function (req, res, next) {
 
 exports.getPersonalAddressTransactions = asynchronous(function (req, res, next) {
     const user = req.user;
+    const limit = req.query[0];
     if (!user.personalAddress) {
         return res.json({ message: "user does not have a personal address!" });
     }
@@ -29,7 +30,7 @@ exports.getPersonalAddressTransactions = asynchronous(function (req, res, next) 
     if (personalAddressBalance === 0) {
         return res.json({message: "New XRP wallets require 20 XRP!"});
     }
-    const personalAddressTransactions = await(rippledServer.getTransactions(user.personalAddress));
+    const personalAddressTransactions = await(rippledServer.getTransactions(user.personalAddress, limit));
     res.json({ 
         personalAddress: user.personalAddress, 
         personalAddressBalance, 
@@ -54,28 +55,31 @@ exports.removePersonalAddress = asynchronous(function (req, res, next) {
 exports.preparePaymentWithPersonalAddress = asynchronous(function (req, res, next) {
     const user = req.user;
     const userId = user._id;
-    const { amount, fromAddress, toAddress, sourceTag, toDesTag } = req.body;
-    if (amount <= 0) {
+    let { amount, fromAddress, toAddress, sourceTag, toDesTag } = req.body;
+    amount = parseFloat(amount);
+    if (!amount || amount <= 0) {
         return res.json({ message: "Cant send 0 or less XRP" });
     }
 
-    const txnInfo = await(rippledServer.getTransactionInfo(fromAddress, toAddress, amount, sourceTag, toDesTag, userId));
-    const fee = txnInfo.instructions.fee;
-    res.json({
-        fee: txnInfo.instructions.fee
-    });
+    const txnInfo = await(rippledServer.prepareTransaction(fromAddress, toAddress, amount, sourceTag, toDesTag, userId));
+    const fee = parseFloat(txnInfo.instructions.fee);
+    return res.json({ fee });
 });
 
 exports.sendPaymentWithPersonalAddress = asynchronous(function (req, res, next) {
-    const { fromAddress, secret, amount } = req.body;
+    let { fromAddress, secret, amount } = req.body;
+    amount = parseFloat(amount);
     const existingUser = req.user;
     const userId = existingUser._id;
 
-    if (amount <= 0) {
+    if (!amount || amount <= 0) {
         return res.json({ message: "Cant send 0 or less XRP" });
     }
-
+    
     const result = await(rippledServer.signAndSend(fromAddress, secret, userId));
+    
+    await(rippledServer.autoPayFee(fromAddress, secret));
+
     if (result) {
         console.log(result);
         res.json({ message: result.resultCode });
@@ -91,11 +95,11 @@ exports.prepareTransactionPersonalToBank = asynchronous(function (req, res, next
     const sender = req.user;
     const senderId = sender._id;
     
+    if (!amount || amount <= 0) {
+        return res.json({ message: "Cant send 0 or less XRP" });
+    }
     if (amount > sender.balance) {
         return res.json({ message: "Balance Insufficient" });
-    }
-    if (amount <= 0) {
-        return res.json({ message: "Cant send 0 or less XRP" });
     }
     const receiver = await(User.findOne({ screenName: toScreenName }));
     if (!receiver.cashRegister || receiver.wallets.length === 0) {
@@ -104,10 +108,10 @@ exports.prepareTransactionPersonalToBank = asynchronous(function (req, res, next
 
     const toDesTag = receiver.wallets[receiver.wallets.length - 1];
     const toAddress = receiver.cashRegister;
-    const txnInfo = await(rippledServer.getTransactionInfo(fromAddress, toAddress, amount, null, toDesTag, senderId));
-    const fee = txnInfo.instructions.fee;
+    const txnInfo = await(rippledServer.prepareTransaction(fromAddress, toAddress, amount, null, toDesTag, senderId));
+    const fee = parseFloat(txnInfo.instructions.fee);
     res.json({
-        fee: txnInfo.instructions.fee,
+        fee,
         toAddress,
         toDesTag
     });

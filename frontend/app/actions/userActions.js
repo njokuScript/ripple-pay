@@ -2,12 +2,15 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { apiKey } from '../../apiKey';
+import Promise from 'bluebird';
 
 import {
   SIGNIN_URL,
   SIGNUP_URL,
   SEARCH_USERS_URL,
   AUTH_URL,
+  CHANGE_PASSWORD_URL,
+  END_SESSION_URL,
   authRequest
 } from '../api';
 
@@ -26,12 +29,12 @@ const ERRORS = {
   ]
 }; 
 
-function resolveError(action, errorData) {
+function resolveError(requestType, errorData) {
   if (typeof errorData === 'object') {
     return errorData.message || errorData.error;
   }
-  for (let index = 0; index < ERRORS[action].length; index++) {
-    const type = ERRORS[action][index];
+  for (let index = 0; index < ERRORS[requestType].length; index++) {
+    const type = ERRORS[requestType][index];
     if (errorData.match(type.regex)) {
       return type.msg;
     } 
@@ -113,6 +116,17 @@ exports.comparePassword = function(password) {
   );
 };
 
+exports.changePassword = function(oldPassword, newPassword) {
+  return authRequest(
+    "POST",
+    CHANGE_PASSWORD_URL,
+    { oldPassword, newPassword },
+    (response) => {
+      return updatePasswordAttempts(response.data);
+    }
+  );
+};
+
 exports.requestUsers = (item) => {
   return authRequest("GET", SEARCH_USERS_URL, {params: item}, (response) => {
     return receivedUsers(response.data);
@@ -121,9 +135,16 @@ exports.requestUsers = (item) => {
 
 exports.unauthUser = () => {
   return function(dispatch) {
-    starter.startSingleApplication();
-    dispatch(clearAlerts());
-    dispatch(logout());
+    const logoutPromises = [];
+    logoutPromises.push(starter.startSingleApplication());
+    logoutPromises.push(dispatch(clearAlerts()));
+    logoutPromises.push(dispatch(logout()));
+    logoutPromises.push(dispatch(authRequest("POST", END_SESSION_URL, {})));
+    Promise.all(logoutPromises).then(() => {
+      Keychain.resetGenericPassword().then(() => {
+        console.log("jwt token deleted");
+      });
+    })
   };
 };
 

@@ -2,17 +2,31 @@ const User = require('../models/user');
 const { tokenForUser } = require('../services/token');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
+const Redis = require('../services/redis');
 const passwordValidator = require('../services/passwordValidator');
 
-exports.signin = function(req, res) {
+exports.signin = async(function(req, res) {
   let user = req.user;
+  const userId = user._id;
+  const loggedIn = await(Redis.getFromTheCache("logged-in", userId));
+
+  if (loggedIn) {
+    return res.status(422).json({ error: "User is already logged in elsewhere! Please wait 3 minutes." });
+  }
   res.send({
     cashRegister: user.cashRegister,
     wallets: user.wallets,
     screenName: user.screenName,
     personalAddress: user.personalAddress
   });
-};
+});
+
+exports.endsession = async(function(req, res, next) {
+  const userId = req.user._id;
+
+  Redis.removeFromCache("logged-in", userId);
+  res.json({});
+});
 
 exports.comparePassword = function(req, res, next) {
   const user = req.user;
@@ -30,7 +44,7 @@ exports.comparePassword = function(req, res, next) {
 exports.signup = async(function(req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
-
+  
   let passwordValidationFailures = await(passwordValidator.validatePassword(password));
 
   if (passwordValidationFailures) {
@@ -55,6 +69,29 @@ exports.signup = async(function(req, res, next) {
       res.json({token: tokenForUser(user)});
     });
   });
+});
+
+exports.changePassword = async(function(req, res, next) {
+  const { oldPassword, newPassword } = req.body;
+  const user = req.user;
+  user.comparePassword(oldPassword, async(function (error, isMatch) {
+    if (error) { return next(error); }
+    if (!isMatch) {
+      res.json({ success: false });
+      return;
+    }
+    let passwordValidationFailures = await(passwordValidator.validatePassword(newPassword));
+
+    if (passwordValidationFailures) {
+      return res.status(422).json({ error: passwordValidationFailures });
+    }
+    user.password = newPassword;
+    user.save(function(err) {
+      if (err) { return next(err); }
+      return res.json({ success: true })
+    });
+
+  }));
 });
 
 exports.search = function (req, res, next) {

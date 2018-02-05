@@ -12,12 +12,15 @@ const Coin = (props) => {
   return (
     <View style={styles.coin}>
       <Image
-          style={{width: 40, height: 40}}
+          style={{width: 60, height: 60}}
           source={props.imageSource}
       />
       <View style={styles.coinType}>
-        <Text style={styles.coinFont}>{props.coinName}</Text>
+        <Text style={styles.coinFont}>{props.coinName} ({props.coinSymbol})</Text>
         <Text style={styles.coinAmount}>{props.rate}</Text>
+        <Text></Text>
+        { props.perc ? <Text style={styles.coinAmount}>{props.perc < 0 ? `${props.perc}%` : `+${props.perc}%`}</Text> : null }
+        { props.marketCap ? <Text style={styles.coinAmount}>{props.marketCap}</Text> : null }
       </View>
       <View style={styles.sendReceive}>
         <View style={styles.send}>
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
   },
   coinType: {
     flex: 1,
-    paddingLeft: 10
+    paddingLeft: 15
   },
   sendReceive: {
     flexDirection: 'row',

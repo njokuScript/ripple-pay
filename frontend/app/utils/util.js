@@ -26,3 +26,20 @@ exports.validMoneyEntry = function(amount) {
     const amountString = amount.toString();
     return parseFloat(amount) && parseFloat(amount) > 0 && amountString.match(/\d+/);
 };
+
+// note: this will mess up the original ordering of the keys
+exports.convertArrayOfObjectsToObject = function(array, extractKey, makeKeyUpperCase=false) {
+    const result = {};
+    array.forEach((obj) => {
+        let key = obj[extractKey];
+        if (makeKeyUpperCase) {
+            key = key.toUppserCase();
+        }
+        result[key] = obj;
+    });
+    return result;
+};
+
+exports.isEmpty = function(obj) {
+    return Object.keys(obj).length === 0;
+};

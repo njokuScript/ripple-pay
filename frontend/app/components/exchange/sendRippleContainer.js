@@ -8,7 +8,8 @@ import {
   requestTransactions, 
   clearTransaction,
   addAlert,
-  sendPaymentWithPersonalAddress 
+  sendPaymentWithPersonalAddress,
+  preparePaymentWithPersonalAddress 
 } from '../../actions';
 
 const mapStateToProps = ({ user, transaction }) => ({
@@ -22,6 +23,9 @@ const mapDispatchToProps = dispatch => ({
   requestTransactions: (user) => dispatch(requestTransactions(user)),
   preparePayment: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
     preparePayment(amount, fromAddress, toAddress, sourceTag, toDesTag)
+  ),
+  preparePaymentWithPersonalAddress: (amount, fromAddress, toAddress, sourceTag, toDesTag) => dispatch(
+    preparePaymentWithPersonalAddress(amount, fromAddress, toAddress, sourceTag, toDesTag)
   ),
   signAndSend: (fromAddress, amount) => dispatch(signAndSend(fromAddress, amount)),
   sendPaymentWithPersonalAddress: (fromAddress, secret, amount) => dispatch(sendPaymentWithPersonalAddress(fromAddress, secret, amount)),
