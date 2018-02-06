@@ -41,6 +41,7 @@ const Transaction = (props) => {
       </View>
     );
   }
+
   const transactionData = (
     <View style={styles.transactionInfo}>
       <View style={styles.transactionOtherParty}>
@@ -60,8 +61,11 @@ const Transaction = (props) => {
     );
   }
   else {
+    if (otherParty === "no transactions") {
+      let paddingBottom = 30;
+    }
     return (
-      <View style={styles.transaction}>
+      <View style={styles.transaction} paddingBottom={30}>
       { transactionData }
       { transactionAmount }
       </View>
