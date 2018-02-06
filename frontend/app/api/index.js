@@ -63,6 +63,7 @@ function resolveError(errorResponse, dispatch) {
         const errorStatusMap = {
             401: {"desc": "Unauthorized/session timeout", "fns": [unauthUser, () => addAlert("Token expired!") ] },
             429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
+            422: {"desc": "Custom Error Code", "fns": [() => addAlert(errorResponse.data.error)]}
         };
 
         const errorStatusResolution = errorStatusMap[errorResponse.status]; 
