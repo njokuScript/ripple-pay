@@ -1,5 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
+import QRCodeScanner from 'react-native-qrcode-scanner';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
