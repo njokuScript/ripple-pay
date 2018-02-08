@@ -112,26 +112,25 @@ class Wallet extends React.Component {
         );
       });
       const imageSource = this.getQRCode();
+      console.log(imageSource, 'test');
       return (
           <View style={styles.walletDisplay}>
             <View style={styles.imageContainer}>
               <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.cashRegister)}>
-                    <Image
-                      style={styles.qrCode}
-                      source={imageSource}
-                    />
+                <Image
+                  style={styles.qrCode}
+                  source={imageSource}
+                />
                 <View>
                   <Text style={styles.addressFont}>{this.props.cashRegister}</Text>
                 </View>
                 </TouchableOpacity>
               </View>
-
               <WalletTabs
                 disabled={this.state.disabled}
                 handleLeftPress={this.generate}
                 handleRightPress={this.remove}
               />
-
               <ScrollView
                 automaticallyAdjustContentInsets={false}
                 contentContainerStyle={styles.scrollViewContainer}>
