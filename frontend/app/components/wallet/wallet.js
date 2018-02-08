@@ -155,11 +155,11 @@ class Wallet extends React.Component {
   {
     return (
       <View style={styles.mainContainer}>
+        <AlertContainer />
         <StatusBar
           barStyle="light-content"
         />
           {this.displayWallets()}
-          <AlertContainer />
       </View>
     );
   }
@@ -223,6 +223,28 @@ const styles = StyleSheet.create({
     borderColor: '#d3d3d3',
     backgroundColor: 'white',
     width: width,
+  },
+  redButton: {
+    fontFamily: 'Kohinoor Bangla',
+    color: 'red',
+    backgroundColor: '#0F1C52',
+    borderRadius: 25,
+    padding: 16,
+    width: 150,
+    overflow: 'hidden',
+    textAlign: 'center',
+    fontSize: 15,
+  },
+  greenButton: {
+    fontFamily: 'Kohinoor Bangla',
+    backgroundColor: '#0F1C52',
+    borderRadius: 25,
+    padding: 16,
+    width: 150,
+    overflow: 'hidden',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 15,
   },
 });
 

@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    Clipboard
+    Clipboard,
+    StatusBar
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -67,32 +68,25 @@ class PersonalWallet extends React.Component {
             return (
                 <View style={styles.walletDisplay}>
 
-                    <View style={styles.address}>
-                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.personalAddress)} style={styles.clipBoardContainer}>
-                            <Icon name="clipboard" size={25} color="gray" />
+                    <View style={styles.imageContainer}>
+                        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.personalAddress)}>
+                            <Image
+                                style={styles.qrCode}
+                                source={{ uri: imageSource }}
+                            />
+                            <View>
+                                <Text style={styles.walletFont}>{this.props.personalAddress}</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.imageContainer}>
-                        <Image
-                            style={styles.qrCode}
-                            source={{uri: imageSource }}
-                        />
-                        <View style={styles.buttonsContainer}>
-                            <TouchableOpacity disabled={disabled} onPress={this.removePersonalAddress}>
-                                <Text style={disabled ? styles.redButton : styles.greenButton}>Remove Personal Wallet</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+
                     <View>
                         <View style={styles.destTag}>
-                            <Text style={styles.walletFont}>Personal Address: {this.props.personalAddress}</Text>
-                            <Text></Text>
-                            {this.state.personalSecret ? <Text style={styles.walletFont}>Personal Secret: {this.state.personalSecret}</Text> : null}
-                            <Text></Text>
+                            {this.state.personalSecret ? <Text style={styles.walletFont}>secret key: {this.state.personalSecret}</Text> : null}
                             <Text style={styles.walletFont}>Note: RipplePay does not store your Secret Key so please store it. You will need it to make payments.</Text>
-                            <TouchableOpacity onPress={() => this.clipBoardCopy(this.state.personalAddress)} style={styles.clipBoardContainer}>
-                                <Icon name="clipboard" size={25} color="gray" />
-                            </TouchableOpacity>
+                    <TouchableOpacity disabled={disabled} onPress={this.removePersonalAddress}>
+                        <Text style={disabled ? styles.redButton : styles.greenButton}>Remove Personal Wallet</Text>
+                    </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -112,8 +106,11 @@ class PersonalWallet extends React.Component {
     render() {
         return (
             <View style={styles.mainContainer}>
-                <AlertContainer />
+                <StatusBar
+                    barStyle="light-content"
+                />
                 {this.displayPersonalWallet()}
+                <AlertContainer />
             </View>
         );
     }
@@ -124,11 +121,6 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         backgroundColor: '#111F61',
-    },
-    walletDisplay: {
-        flex: 1,
-        justifyContent: 'space-between',
-        marginTop: 30,
     },
     buttonsContainer: {
         flex: 1,
@@ -148,7 +140,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         textAlign: 'center',
         fontSize: 15,
-        //  marginLeft: 15
     },
     greenButton: {
         fontFamily: 'Kohinoor Bangla',
@@ -160,7 +151,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white',
         fontSize: 15,
-        //  marginLeft: 10
     },
     destintro: {
         color: 'white',
@@ -237,17 +227,22 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         flex: 1,
-        justifyContent: 'space-between',
-        position: 'absolute',
-        flexDirection: 'row',
-        // top: 40,
-        left: 25,
+        paddingTop: height / 25,
+        alignItems: 'center',
+        backgroundColor: '#111F61',
+    },
+    image: {
+        flex: 1,
+        alignItems: "center"
     },
     qrCode: {
-        width: 140,
-        height: 140,
-        borderRadius: 10,
-    }
+        width: height / 3,
+        height: height / 3,
+    },
+    walletDisplay: {
+        flex: 1,
+        flexDirection: "column",
+    },
 });
 
 export default PersonalWallet;
