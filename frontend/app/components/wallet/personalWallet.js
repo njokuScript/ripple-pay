@@ -10,9 +10,11 @@ import {
     Image,
     Dimensions,
     Clipboard,
-    StatusBar
+    StatusBar,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import SingleTab from '../presentationals/singleTab';
 
 class PersonalWallet extends React.Component {
     constructor(props) {
@@ -63,31 +65,34 @@ class PersonalWallet extends React.Component {
         const disabled = this.state.disabled;
         if (this.props.personalAddress) {
             const imageSource = Util.getQRCodeSource(this.props.personalAddress);
-            console.log({uri: imageSource});
             return (
                 <View style={styles.walletDisplay}>
                     <View style={styles.imageContainer}>
                         <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.personalAddress)}>
                             <View style={styles.qrBackground}>
-                            <Image
-                                style={styles.qrCode}
-                                source={{ uri: imageSource }}
-                            />
-                            </View>
-                            <View>
-                                <Text style={styles.addressFont}>{this.props.personalAddress}</Text>
-                            </View>
+                                <Image
+                                    style={styles.qrCode}
+                                    source={{ uri: imageSource }}
+                                />
+                                </View>
+                                <View>
+                                    <Text style={styles.addressFont}>{this.props.personalAddress}</Text>
+                                </View>
                         </TouchableOpacity>
-                    </View>
-                    <View>
-                        <View style={styles.destTag}>
-                            {this.state.personalSecret ? <Text style={styles.walletFont}>secret key: {this.state.personalSecret}</Text> : null}
-                            <Text style={styles.walletFont}>Note: RipplePay does not store your Secret Key so please store it. You will need it to make payments.</Text>
-                            <TouchableOpacity disabled={disabled} onPress={this.removePersonalAddress}>
-                                <Text style={disabled ? styles.redButton : styles.greenButton}>Remove Personal Wallet</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.personalSecret)}>
+                            {this.state.personalSecret ? <Text style={styles.addressFont}>secret key: {this.state.personalSecret}</Text> : null}
+                        </TouchableOpacity>
+                        {this.state.personalSecret ? <Text style={styles.noteFont}>Note: RipplePay does not store your Secret Key so please store it now.
+                                                      You will need it to make payments and it will disappear on page refresh.
+                        </Text> : null}
+                        
+                    <View style={styles.tab}>
+                        <SingleTab
+                            text="remove personal wallet"
+                            handleLeftPress={this.removePersonalAddress}
+                        />
+                     </View>
+                     </View>
                 </View>
             );
         }
@@ -121,6 +126,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#111F61',
     },
+    tab: {
+        flex: 1,
+        width: width
+    },
     imageContainer: {
         flex: 1,
         paddingTop: height / 25,
@@ -137,8 +146,8 @@ const styles = StyleSheet.create({
     },
     qrBackground: {
         borderColor: 'white',
-        borderWidth: 25
-
+        borderWidth: 25,
+        backgroundColor: 'white'
     },
     walletDisplay: {
         flex: 1,
@@ -151,6 +160,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     addressFont: {
+        color: 'white',
+        fontSize: height / 50,
+        textAlign: 'center',
+        marginTop: height / 50
+    },
+    noteFont: {
         color: 'white',
         fontSize: height / 50,
         textAlign: 'center',
@@ -178,6 +193,20 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 15,
     },
+    topTabContainer: {
+        borderColor: '#d3d3d3',
+        height: 40,
+        flex: 1,
+        justifyContent: 'center',
+        // backgroundColor: '#F9F9F9',
+
+    },
+    topTab: {
+        fontSize: 13,
+        fontWeight: "600",
+        textAlign: 'center',
+        color: "red"
+    }
 });
 
 export default PersonalWallet;
