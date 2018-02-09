@@ -5,9 +5,15 @@ import axios from 'axios';
 import { addAlert, unauthUser } from '../actions';
 import { apiKey } from '../../apiKey';
 import { API_URL } from '../config_enums';
+import Promise from 'bluebird';
 // currently using localhost. but change to production server later.
 // let SHAPESHIFT_URL = 'https://shapeshift.io';
 const COINCAP_URL = 'https://coincap.io';
+
+exports.RESPONSE_MESSAGES = {
+    FAILURE: 0,
+    SUCCESS: 1
+}
 
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
@@ -63,6 +69,7 @@ function resolveError(errorResponse, dispatch) {
         const errorStatusMap = {
             401: {"desc": "Unauthorized/session timeout", "fns": [unauthUser, () => addAlert("Token expired!") ] },
             429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
+            422: {"desc": "Custom Error Code", "fns": [() => addAlert(errorResponse.data.error)]}
         };
 
         const errorStatusResolution = errorStatusMap[errorResponse.status]; 
@@ -100,12 +107,13 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
                         dispatch(cb(response));
                     }
                 });
-                return true;
+                return Promise.resolve(exports.RESPONSE_MESSAGES.SUCCESS);
             })
             .catch((err) => {
                 console.log(err.response);
                 
-                return dispatch(resolveError(err.response));
+                dispatch(resolveError(err.response));
+                return Promise.resolve(exports.RESPONSE_MESSAGES.FAILURE);
             });
 
         });
