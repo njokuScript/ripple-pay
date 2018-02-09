@@ -135,7 +135,7 @@ class BankSend extends Component {
   }
 
   topContainer() {
-    let balance = this.props.balance === 0 ? 0 : Util.truncate(this.props.balance, 2);ß
+    let balance = Util.truncate(this.props.balance, 2);
     return (
       <View style={styles.topContainer}>
         <CustomBackButton handlePress={() => this.props.navigator.pop({
@@ -154,7 +154,7 @@ class BankSend extends Component {
   }
 
   passwordLock() {
-    let usd = this.state.usd === 0 ? 0 : Util.truncate(this.state.usd, 2);
+    let usd = Util.truncate(this.state.usd, 2);
     return (
       <View style={styles.container}>
         {this.topContainer()}
