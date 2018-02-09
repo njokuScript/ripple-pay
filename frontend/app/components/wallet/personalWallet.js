@@ -89,7 +89,7 @@ class PersonalWallet extends React.Component {
                     <View style={styles.tab}>
                         <SingleTab
                             text="remove personal wallet"
-                            handleLeftPress={this.removePersonalAddress}
+                            handlePress={this.removePersonalAddress}
                         />
                      </View>
                      </View>

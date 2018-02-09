@@ -135,11 +135,7 @@ class BankSend extends Component {
   }
 
   topContainer() {
-    let balance = Util.truncate(this.props.balance, 2);
-    console.log(this.props.balance);
-    if (this.props.balance === 0) {
-      balance = 0;
-    }
+    let balance = this.props.balance === 0 ? 0 : Util.truncate(this.props.balance, 2);ß
     return (
       <View style={styles.topContainer}>
         <CustomBackButton handlePress={() => this.props.navigator.pop({
@@ -158,11 +154,7 @@ class BankSend extends Component {
   }
 
   passwordLock() {
-    let usd = Util.truncate(this.state.usd, 2);
-    console.log(this.state.usd);
-    if (this.state.usd === 0) {
-      usd = 0;
-    }
+    let usd = this.state.usd === 0 ? 0 : Util.truncate(this.state.usd, 2);
     return (
       <View style={styles.container}>
         {this.topContainer()}
@@ -221,7 +213,7 @@ class BankSend extends Component {
           { cancelable: false }
         );
       }
-      const usd = (
+      let usd = (
         <Text style={styles.usd}>${this.state.usd}</Text>
       );
       if (this.state.amount) {

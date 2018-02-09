@@ -13,8 +13,6 @@ const SingleTab = (props) => {
     height: 40,
     flex: 1,
     justifyContent: 'center',
-    // backgroundColor: '#F9F9F9',
-
   };
   const topTab = {
     fontSize: 13,
@@ -23,9 +21,9 @@ const SingleTab = (props) => {
     color: "red"
   };
   return (
-    <View style={styles.topTabsContainer}>
+    <View style={styles.SingleTabsContainer}>
       <TouchableOpacity style={topTabContainer}>
-        <Text onPress={props.handleLeftPress} style={topTab}>
+        <Text onPress={props.handlePress} style={topTab}>
           {props.text}
         </Text>
       </TouchableOpacity>
@@ -33,7 +31,7 @@ const SingleTab = (props) => {
   );
 };
 const styles = StyleSheet.create({
-  topTabsContainer: {
+  SingleTabsContainer: {
     flex: -1,
     flexDirection: 'row'
   },
