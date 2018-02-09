@@ -23,7 +23,8 @@ import {
     Image,
     Dimensions,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator,
+  StatusBar
   } from 'react-native';
 
 class Home extends React.Component {
@@ -279,13 +280,39 @@ class Home extends React.Component {
             onRefresh={this.onRefresh} />
         }
         automaticallyAdjustContentInsets={false}
-        contentContainerStyle={styles.scrollViewContainer}
-      >
+        contentContainerStyle={styles.scrollViewContainer}>
         <ScrollView>
           { transactionComponents }
         </ScrollView>
       </ScrollView>
     );
+  }
+
+  balance() {
+    let balance = this.props.activeWallet === Config.WALLETS.BANK_WALLET ? Util.truncate(this.props.balance, 2) : Util.truncate(this.props.personalBalance, 2);
+    if (balance != 0) {
+      return (
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceText}>
+            Ʀ{balance}
+          </Text>
+          <Text style={styles.usdText}>
+            ${Util.truncate(this.state.usd, 2)}
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceText}>
+            Ʀ0
+          </Text>
+          <Text style={styles.usdText}>
+            $0.00
+          </Text>
+        </View>
+      );      
+    }
   }
 
   render()
@@ -297,18 +324,11 @@ class Home extends React.Component {
     } else {
       return (
         <View style={styles.mainContainer}>
+          <StatusBar
+            barStyle="light-content"
+          />
           <View style={styles.topContainer}>
-            <View style={styles.balanceContainer}>
-              <Text style={styles.balanceText}>
-                Ʀ{this.props.activeWallet === Config.WALLETS.BANK_WALLET ? Util.truncate(this.props.balance, 2) : Util.truncate(this.props.personalBalance, 2)}
-              </Text>
-              <Text style={styles.usdText}>
-                ${Util.truncate(this.state.usd, 2)}
-              </Text>
-              <Text style={styles.usdText}>
-                ${Util.truncate(this.state.usdPerXRP, 2)} = 1 XRP
-              </Text>
-            </View>
+            {this.balance()}
           </View>
 
           <TopTabs
