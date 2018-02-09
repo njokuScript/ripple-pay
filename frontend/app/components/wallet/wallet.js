@@ -14,6 +14,7 @@ import AlertContainer from '../alerts/AlertContainer';
 import CustomButton from '../presentationals/customButton';
 import Icon from 'react-native-vector-icons/Entypo';
 import WalletTabs from '../presentationals/walletTabs';
+import Api from '../../api';
 
 class Wallet extends React.Component {
   constructor(props) {
@@ -37,7 +38,14 @@ class Wallet extends React.Component {
       {
         this.setState({disabled: true});
         this.props.requestTransactions(this.props.user)
-        .then(() => this.props.delWallet(this.props.wallets[0], this.props.cashRegister))
+        .then((response) => { 
+
+          if (response === Api.RESPONSE_MESSAGES.SUCCESS) {
+            return this.props.delWallet(this.props.wallets[0], this.props.cashRegister);
+          } else if (response === Api.RESPONSE_MESSAGES.FAILURE) {
+            return null;
+          }
+        })
         .then(()=> this.setState({disabled: false}));
       }
     }
