@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Font from 'react-native-vector-icons/FontAwesome';
+import Util from '../../utils/util';
+
 import {
   StyleSheet,
   Text,
@@ -11,15 +13,15 @@ import {
 // Pass down props.otherParty,
 // the color of transaction is either green or red based on neg or pos
 const Transaction = (props) => {
-  const { otherParty, date, amount, transactionColor, toAmount, time } = props;
+  const { otherParty, date, amount, fromCoin, toCoin, transactionColor, toAmount, time } = props;
   let transactionDate;
   let transactionAmount;
   if (amount) {
     const transactionAmountStyle = {
       textAlign: 'center',
       fontWeight: "600",
-      fontSize: 14,
-      color: transactionColor,
+      fontSize: 13,
+      color: transactionColor
     };
     transactionDate = (
       <View style={styles.transactionDate}>
@@ -31,14 +33,15 @@ const Transaction = (props) => {
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
-          { amount }
+          { Util.truncate(amount, 5) } {fromCoin}
         </Text>
         <Text style={transactionAmountStyle}>
-          { toAmount }
+          { Util.truncate(toAmount, 3) } {toCoin}
         </Text>
       </View>
     );
   }
+
   const transactionData = (
     <View style={styles.transactionInfo}>
       <View style={styles.transactionOtherParty}>
@@ -49,7 +52,7 @@ const Transaction = (props) => {
       { transactionDate }
     </View>
   );
-  if (props.shapeshift) {
+  if (props.changelly) {
     return (
       <TouchableOpacity onPress={props.handlePress} style={styles.transaction}>
       { transactionData }
@@ -58,8 +61,12 @@ const Transaction = (props) => {
     );
   }
   else {
+    let paddingBottom = 15.65;
+    if (otherParty === "no transactions") {
+      paddingBottom = 30;
+    }
     return (
-      <View style={styles.transaction}>
+      <View style={styles.transaction} paddingBottom={paddingBottom}>
       { transactionData }
       { transactionAmount }
       </View>
@@ -95,7 +102,7 @@ const styles = StyleSheet.create({
   },
   transactionDateText: {
     fontSize: 12
-  },
+  }
 });
 
 export default Transaction;
