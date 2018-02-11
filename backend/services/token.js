@@ -9,6 +9,8 @@ if (process.env.NODE_ENV=='production') {
     exports.EXPIRE_TIME = 30*60*1000;
     
     redisTokenExpiry = exports.EXPIRE_TIME/1000;
+    // this needs to be fixed later!!!
+    redisTokenExpiry = 1;
 
 } else {
     secret = require('../configs/config').SECRET;
