@@ -19,11 +19,13 @@ exports.rippePayFee = 0.02;
 
 if (exports.CURRENT_STATE === exports.APP_STATE.TEST_PROD || exports.CURRENT_STATE === exports.APP_STATE.PRODUCTION) {
     exports.API_URL = 'https://frozen-dusk-99773.herokuapp.com/v1';
-    exports.email = "";
-    exports.password = "";
+    exports.email = "jon@jon.com";
+    exports.password = "Password1";
 }
+
 else if (exports.CURRENT_STATE === exports.APP_STATE.TEST_DEV || exports.CURRENT_STATE === exports.APP_STATE.DEVELOPMENT) {
     exports.API_URL = 'http://localhost:3000/v1';
-    exports.email = "";
-    exports.password = "";
+    exports.email = "devanshpatel@gmail.com";
+    exports.password = "Deewid11";
 }
+// 

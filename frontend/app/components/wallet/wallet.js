@@ -9,11 +9,13 @@ import {
   Clipboard,
   ScrollView,
   Alert,
+  StatusBar
 } from 'react-native';
 import AlertContainer from '../alerts/AlertContainer';
 import CustomButton from '../presentationals/customButton';
 import Icon from 'react-native-vector-icons/Entypo';
 import WalletTabs from '../presentationals/walletTabs';
+import Api from '../../api';
 
 class Wallet extends React.Component {
   constructor(props) {
@@ -37,7 +39,14 @@ class Wallet extends React.Component {
       {
         this.setState({disabled: true});
         this.props.requestTransactions(this.props.user)
-        .then(() => this.props.delWallet(this.props.wallets[0], this.props.cashRegister))
+        .then((response) => { 
+
+          if (response === Api.RESPONSE_MESSAGES.SUCCESS) {
+            return this.props.delWallet(this.props.wallets[0], this.props.cashRegister);
+          } else if (response === Api.RESPONSE_MESSAGES.FAILURE) {
+            return null;
+          }
+        })
         .then(()=> this.setState({disabled: false}));
       }
     }
@@ -114,29 +123,27 @@ class Wallet extends React.Component {
       return (
           <View style={styles.walletDisplay}>
             <View style={styles.imageContainer}>
-              <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.cashRegister)}>
-                    <Image
-                      style={styles.qrCode}
-                      source={imageSource}
-                    />
-                <View>
-                  <Text style={styles.addressFont}>{this.props.cashRegister}</Text>
-                </View>
+                <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.cashRegister)}>
+                  <Image
+                    style={styles.qrCode}
+                    source={imageSource}
+                  />
+                  <View>
+                    <Text style={styles.addressFont}>{this.props.cashRegister}</Text>
+                  </View>
                 </TouchableOpacity>
-              </View>
-
-              <WalletTabs
-                disabled={this.state.disabled}
-                handleLeftPress={this.generate}
-                handleRightPress={this.remove}
-              />
-
-              <ScrollView
-                automaticallyAdjustContentInsets={false}
-                contentContainerStyle={styles.scrollViewContainer}>
-                {allWallets}
-              </ScrollView>
             </View>
+            <WalletTabs
+              disabled={this.state.disabled}
+              handleLeftPress={this.generate}
+              handleRightPress={this.remove}
+            />
+            <ScrollView
+              automaticallyAdjustContentInsets={false}
+              contentContainerStyle={styles.scrollViewContainer}>
+              {allWallets}
+            </ScrollView>
+          </View>
       );
     } 
     else {
@@ -154,8 +161,11 @@ class Wallet extends React.Component {
   {
     return (
       <View style={styles.mainContainer}>
+        <StatusBar
+          barStyle="light-content"
+        />
           {this.displayWallets()}
-          <AlertContainer />
+        <AlertContainer />
       </View>
     );
   }
@@ -197,9 +207,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: height/50
   },
-  addressContainer: {
-    backgroundColor: '#111F61'
-  },
   destTag: {
     fontSize: 13,
     fontWeight: "600",
@@ -219,6 +226,28 @@ const styles = StyleSheet.create({
     borderColor: '#d3d3d3',
     backgroundColor: 'white',
     width: width,
+  },
+  redButton: {
+    fontFamily: 'Kohinoor Bangla',
+    color: 'red',
+    backgroundColor: '#0F1C52',
+    borderRadius: 25,
+    padding: 16,
+    width: 150,
+    overflow: 'hidden',
+    textAlign: 'center',
+    fontSize: 15,
+  },
+  greenButton: {
+    fontFamily: 'Kohinoor Bangla',
+    backgroundColor: '#0F1C52',
+    borderRadius: 25,
+    padding: 16,
+    width: 150,
+    overflow: 'hidden',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 15,
   },
 });
 
