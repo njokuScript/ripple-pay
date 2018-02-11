@@ -1,6 +1,7 @@
 // import liraries
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { _ } from 'lodash';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
@@ -43,14 +44,12 @@ class SendAmount extends Component {
       sendButtonDisabled: true,
       secret: ''
     };
+    this.initialState = _.cloneDeep(this.state);
   }
 
   onNavigatorEvent(event){
     if (event.id === "willDisappear"){
-      this.setState({
-        sendButtonDisabled: true,
-        secret: ''
-      });
+      this.setState(this.initialState);
       this.props.clearChangellyTransaction();
       clearInterval(this.timer);
       this.props.navigator.popToRoot();
