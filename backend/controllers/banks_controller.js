@@ -280,6 +280,9 @@ exports.getTransactions = asynchronous(function (req, res, next) {
     });
   }
 })
+<<<<<<< HEAD
+// 
+=======
 
 exports.loadNextTransactions = asynchronous(function(req, res, next) {
   const user = req.user;
@@ -291,3 +294,4 @@ exports.loadNextTransactions = asynchronous(function(req, res, next) {
   const shouldLoadMoreTransactions = nextTransactions.length >= TXN_LIMIT ? true : false;
   res.json({ nextTransactions, shouldLoadMoreTransactions });
 });
+>>>>>>> c26c283a5548cd3c405237e43afd6160913720d5
