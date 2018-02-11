@@ -1,5 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
+import { _ } from 'lodash';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
@@ -8,6 +9,7 @@ import sendAmountContainer from './sendAmountContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import CustomBackButton from '../presentationals/customBackButton';
+import ScanQR from '../presentationals/scanQR';
 import AlertContainer from '../alerts/AlertContainer';
 import ExchangeConfig from './exchange_enums';
 import Config from '../../config_enums';
@@ -29,15 +31,17 @@ class Transition extends Component {
   constructor(props){
     super(props);
     this.state = {
-      direction: true,
       fromAmount: "",
       toAmount: "",
       editFromAmount: false,
       editToAmount: false,
       address: "",
+      displayQRCodeScanner: false
       // quoted: true
     };
+    this.initialState = _.cloneDeep(this.state);
     this.navSendAmount = this.navSendAmount.bind(this);
+    this.onQRScan = this.onQRScan.bind(this);
     this.toThisAmount = "";
     this.fromThisAmount = "";
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -59,6 +63,9 @@ class Transition extends Component {
 
       this.props.requestRate(this.altCoin);
       this.props.getMinAmount(this.props.fromCoin, this.props.toCoin);
+    }
+    else if ( event.id === "willDisappear" ) {
+      this.setState(this.initialState);
     }
   }
 
@@ -161,7 +168,15 @@ class Transition extends Component {
     }
   }
 
+  onQRScan(e) {
+    this.setState({ address: e.data, displayQRCodeScanner: false });
+  }
+
   render() {
+    if (this.state.displayQRCodeScanner) {
+      return <ScanQR handleScan={this.onQRScan} />;
+    }
+
     return (
       <View style={styles.container}>
         <AlertContainer />
@@ -206,7 +221,8 @@ class Transition extends Component {
             autoCorrect={false}
             autoCapitalize={'none'}
           />
-          </View>
+          <Text onPress={() => { this.setState({ displayQRCodeScanner: true }); }}>SCAN QR CODE!!!</Text>
+        </View>
           <View style={styles.infoContainer}>
             <Text style={styles.whitetext}>Send Minimum:   {Util.truncate(this.props.changelly.minimumSend.minAmount, 4)} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {Util.truncate(this.props.changelly.rate.amount, 4)} XRP/{this.altCoin}</Text>

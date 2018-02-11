@@ -16,6 +16,7 @@ import PasswordLock from './components/presentationals/passwordLock';
 import ChangePassword from './components/presentationals/changePassword';
 import ChangellyTransactionView from './components/presentationals/changellyTransactionView';
 import AlertContainer from './components/alerts/AlertContainer';
+import ScanQR from './components/presentationals/scanQR';
 import Alert from './components/alerts/Alert';
 import App from './components/App';
 import Icon from 'react-native-vector-icons/Entypo';
@@ -72,6 +73,7 @@ class StartApp {
       Navigation.registerComponent('AlertContainer', ()=> AlertContainer, store, Provider);
       Navigation.registerComponent('PasswordLock', ()=> PasswordLock, store, Provider);
       Navigation.registerComponent('ChangePassword', ()=> ChangePassword, store, Provider);
+      Navigation.registerComponent('ScanQR', ()=> ScanQR, store, Provider);
       Navigation.registerComponent('ChangellyTransactionView', ()=> ChangellyTransactionView, store, Provider);
       Navigation.registerComponent('App', ()=> App, store, Provider);
     }
