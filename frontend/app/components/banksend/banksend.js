@@ -1,6 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
-import QRCodeScanner from 'react-native-qrcode-scanner';
+import { _ } from 'lodash';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
@@ -44,13 +44,12 @@ class BankSend extends Component {
       usd: 0,
       usdPerXRP: 0
     };
+    this.initialState = _.cloneDeep(this.state);
   }
 
   onNavigatorEvent(event){
     if ( event.id === "willDisappear") {
-      this.setState({
-        sendingDisabled: true
-      });
+      this.setState(this.initialState);
     } else if (event.id === "willAppear") {
       getXRPtoUSD(this.props.balance, this.setUSD);
       this.props.clearAlerts();

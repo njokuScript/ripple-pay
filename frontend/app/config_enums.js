@@ -1,4 +1,3 @@
-
 exports.CURRENT_STATE = 3;
 
 exports.WALLETS = {
