@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 exports.CURRENT_STATE = 3;
 
 exports.WALLETS = {
