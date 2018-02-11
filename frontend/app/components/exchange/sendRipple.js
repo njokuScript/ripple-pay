@@ -1,5 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
+import { _ } from 'lodash';
 // import StartApp from '../../index.js';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
@@ -7,6 +8,7 @@ import HomeContainer from '../home/homeContainer';
 import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import PasswordLock from '../presentationals/passwordLock';
+import ScanQR from '../presentationals/scanQR';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
 import Config from '../../config_enums';
@@ -30,14 +32,17 @@ class SendRipple extends Component {
     this.prepareTransaction = this.prepareTransaction.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.enableSending = this.enableSending.bind(this);
+    this.onQRScan = this.onQRScan.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.state = {
       toAddress: "",
       toDesTag: undefined,
       amount: "",
       secret: "",
-      sendButtonDisabled: true
+      sendButtonDisabled: true,
+      displayQRCodeScanner: false
     };
+    this.initialState = _.cloneDeep(this.state);
   }
 
   onNavigatorEvent(event) {
@@ -45,10 +50,7 @@ class SendRipple extends Component {
       this.props.clearTransaction();
     }
     if (event.id === "willDisappear") {
-      this.setState({
-        sendButtonDisabled: true,
-        secret: ""
-      });
+      this.setState(this.initialState);
     }
   }
 
@@ -141,6 +143,10 @@ class SendRipple extends Component {
     return null;
   }
 
+  onQRScan(e) {
+    this.setState({toAddress: e.data, displayQRCodeScanner: false});
+  }
+
   render() {
     if (this.state.sendButtonDisabled) {
       return (
@@ -169,6 +175,11 @@ class SendRipple extends Component {
         { cancelable: false }
       );
     }
+
+    if (this.state.displayQRCodeScanner) {
+      return <ScanQR handleScan={this.onQRScan} />;
+    }
+
     return (
       <View style={styles.container}>
         <AlertContainer />
@@ -180,12 +191,16 @@ class SendRipple extends Component {
                 this.setState({toAddress: toAddr});
               }
             }
+            value={this.state.toAddress}
             autoFocus={true}
             autoCorrect={false}
             placeholderTextColor="#6D768B"
             keyboardAppearance={'dark'}
             autoCapitalize={'none'}
         />
+
+        <Text onPress={() => { this.setState({displayQRCodeScanner: true}); }}>SCAN QR CODE!!!</Text>
+
         <CustomInput
             placeholder="Destination Tag - optional"
             onChangeText={
