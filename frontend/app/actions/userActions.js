@@ -123,6 +123,12 @@ exports.changePassword = function(oldPassword, newPassword) {
     { oldPassword, newPassword },
     (response) => {
       return updatePasswordAttempts(response.data);
+    },
+    (response) => {
+      if (response.data.success) {
+        return addAlert("Successfully Changed Password!");
+      }
+      return false;
     }
   );
 };
@@ -144,7 +150,7 @@ exports.unauthUser = () => {
       Keychain.resetGenericPassword().then(() => {
         console.log("jwt token deleted");
       });
-    })
+    });
   };
 };
 
