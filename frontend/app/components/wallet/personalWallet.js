@@ -24,6 +24,7 @@ class PersonalWallet extends React.Component {
         };
         this.generatePersonalAddress = this.generatePersonalAddress.bind(this);
         this.removePersonalAddress = this.removePersonalAddress.bind(this);
+        this.removePersonalAddressAlert = this.removePersonalAddressAlert.bind(this);
         this.setSecret = this.setSecret.bind(this);
     }
 
@@ -45,6 +46,19 @@ class PersonalWallet extends React.Component {
         }
     }
 
+    removePersonalAddressAlert() {
+        Alert.alert(
+            'Removing Personal Address',
+            'Are You Sure??',
+            [
+                { text: `YES`, onPress: this.removePersonalAddress },
+                { text: `NO` },
+            ],
+            { cancelable: true } 
+        );
+        
+    }
+
     removePersonalAddress() {
         if (this.props.personalAddress) {
             this.setState({
@@ -55,6 +69,7 @@ class PersonalWallet extends React.Component {
     }
 
     clipBoardCopy(string) {
+        Alert.alert(string, `copied to clipboard!`);
         Clipboard.setString(string);
         Clipboard.getString().then((str) => {
             return str;
@@ -79,7 +94,7 @@ class PersonalWallet extends React.Component {
                                     <Text style={styles.addressFont}>{this.props.personalAddress}</Text>
                                 </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.personalSecret)}>
+                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.state.personalSecret)}>
                             {this.state.personalSecret ? <Text style={styles.addressFont}>secret key: {this.state.personalSecret}</Text> : null}
                         </TouchableOpacity>
                         {this.state.personalSecret ? <Text style={styles.noteFont}>Note: RipplePay does not store your Secret Key so please store it now.
@@ -89,7 +104,7 @@ class PersonalWallet extends React.Component {
                     <View style={styles.tab}>
                         <SingleTab
                             text="remove personal wallet"
-                            handlePress={this.removePersonalAddress}
+                            handlePress={this.removePersonalAddressAlert}
                         />
                      </View>
                      </View>
