@@ -9,6 +9,7 @@ import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
 import LoadingIcon from '../presentationals/loadingIcon';
 import TopTabs from '../presentationals/topTabs';
 import ChangellyTransactionView from '../presentationals/changellyTransactionView';
+import TransactionView from '../presentationals/transactionView';
 import AlertContainer from '../alerts/AlertContainer';
 import Promise from 'bluebird';
 import Util from '../../utils/util';
@@ -23,7 +24,8 @@ import {
     Image,
     Dimensions,
     RefreshControl,
-    ActivityIndicator
+    ActivityIndicator,
+  StatusBar
   } from 'react-native';
 
 class Home extends React.Component {
@@ -41,6 +43,7 @@ class Home extends React.Component {
       refreshing: false,
       changelly: false,
       showChange: null,
+      showNormal: null,
       showScreen: false,
       usd: 0,
       usdPerXRP: 0,
@@ -86,12 +89,12 @@ class Home extends React.Component {
     this.props.refreshShouldLoadMoreValues();
     
     this.setState({refreshing: true});
-    if (this.showChangellyTransactions()) {
+    if (this.shouldShowChangellyTransactions()) {
       this.props.requestChangellyTransactions().then(() => {
         this.setState({refreshing: false});
       });
     }
-    else if (this.showNormalTransactions()) {
+    else if (this.shouldShowNormalTransactions()) {
       if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
         this.props.requestTransactions().then(() => {
           this.setState({refreshing: false});
@@ -119,6 +122,7 @@ class Home extends React.Component {
     this.setState({
       changelly: false,
       showChange: false,
+      showNormal: false
     });
   }
 
@@ -126,6 +130,7 @@ class Home extends React.Component {
     this.setState({
       changelly: true,
       showChange: false,
+      showNormal: false
     });
   }
 
@@ -158,11 +163,11 @@ class Home extends React.Component {
     }
   }
 
-  showChangellyTransactions() {
+  shouldShowChangellyTransactions() {
     return this.state.changelly;
   }
 
-  showNormalTransactions() {
+  shouldShowNormalTransactions() {
     return !this.state.changelly;
   }
 
@@ -172,13 +177,19 @@ class Home extends React.Component {
     });
   }
 
+  showNormalTransaction(transaction, time) {
+    this.setState({
+      showNormal: <TransactionView time={time} {...transaction}/>
+    });
+  }
+
   determineTransactions() {
     let transactions = [];
 
-    if (this.showChangellyTransactions() && this.props.changellyTransactions.length > 0) {
+    if (this.shouldShowChangellyTransactions() && this.props.changellyTransactions.length > 0) {
       transactions = this.props.changellyTransactions;
     }
-    if (this.showNormalTransactions()) {
+    if (this.shouldShowNormalTransactions()) {
 
       if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
         if (this.props.transactions.length > 0) {
@@ -194,6 +205,18 @@ class Home extends React.Component {
 
     }
     return transactions;
+  }
+
+  determineView() {
+    if (this.state.showChange) {
+      return this.state.showChange;
+    } 
+    else if (this.state.showNormal) {
+      return this.state.showNormal;
+    }
+    else {
+      return this.displayTransactions();
+    }
   }
 
   displayTransactions() {
@@ -223,7 +246,7 @@ class Home extends React.Component {
       } else {
         time = `${date.getHours()}:${minutes} AM`;
       }
-      if (this.showNormalTransactions()) {
+      if (this.shouldShowNormalTransactions()) {
         return (
           <Transaction
           changelly={false}
@@ -233,11 +256,12 @@ class Home extends React.Component {
           amount={transaction.amount}
           fromCoin={"Ʀ"}
           transactionColor={transaction.amount < 0 ? "red" : "green"}
+          handlePress={ () => this.showNormalTransaction(transaction, time) }
           time={time}
           />
         );
       }
-      if (this.showChangellyTransactions()) {
+      if (this.shouldShowChangellyTransactions()) {
         return (
           <Transaction
             changelly={true}
@@ -279,13 +303,39 @@ class Home extends React.Component {
             onRefresh={this.onRefresh} />
         }
         automaticallyAdjustContentInsets={false}
-        contentContainerStyle={styles.scrollViewContainer}
-      >
+        contentContainerStyle={styles.scrollViewContainer}>
         <ScrollView>
           { transactionComponents }
         </ScrollView>
       </ScrollView>
     );
+  }
+
+  balance() {
+    let balance = this.props.activeWallet === Config.WALLETS.BANK_WALLET ? Util.truncate(this.props.balance, 2) : Util.truncate(this.props.personalBalance, 2);
+    if (balance != 0) {
+      return (
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceText}>
+            Ʀ{balance}
+          </Text>
+          <Text style={styles.usdText}>
+            ${Util.truncate(this.state.usd, 2)}
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.balanceContainer}>
+          <Text style={styles.balanceText}>
+            Ʀ0
+          </Text>
+          <Text style={styles.usdText}>
+            $0.00
+          </Text>
+        </View>
+      );      
+    }
   }
 
   render()
@@ -297,18 +347,11 @@ class Home extends React.Component {
     } else {
       return (
         <View style={styles.mainContainer}>
+          <StatusBar
+            barStyle="light-content"
+          />
           <View style={styles.topContainer}>
-            <View style={styles.balanceContainer}>
-              <Text style={styles.balanceText}>
-                Ʀ{this.props.activeWallet === Config.WALLETS.BANK_WALLET ? Util.truncate(this.props.balance, 2) : Util.truncate(this.props.personalBalance, 2)}
-              </Text>
-              <Text style={styles.usdText}>
-                ${Util.truncate(this.state.usd, 2)}
-              </Text>
-              <Text style={styles.usdText}>
-                ${Util.truncate(this.state.usdPerXRP, 2)} = 1 XRP
-              </Text>
-            </View>
+            {this.balance()}
           </View>
 
           <TopTabs
@@ -317,7 +360,7 @@ class Home extends React.Component {
             pressed={this.state.changelly}
           />
 
-          { this.state.showChange ? this.state.showChange : this.displayTransactions() }
+          { this.determineView() }
 
           <AlertContainer />
         </View>

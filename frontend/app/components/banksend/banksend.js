@@ -1,5 +1,6 @@
 // import liraries
 import React, { Component } from 'react';
+import { _ } from 'lodash';
 import SearchContainer from '../search/searchContainer';
 import WalletContainer from '../wallet/walletContainer';
 import HomeContainer from '../home/homeContainer';
@@ -43,13 +44,12 @@ class BankSend extends Component {
       usd: 0,
       usdPerXRP: 0
     };
+    this.initialState = _.cloneDeep(this.state);
   }
 
   onNavigatorEvent(event){
     if ( event.id === "willDisappear") {
-      this.setState({
-        sendingDisabled: true
-      });
+      this.setState(this.initialState);
     } else if (event.id === "willAppear") {
       getXRPtoUSD(this.props.balance, this.setUSD);
       this.props.clearAlerts();
@@ -134,6 +134,7 @@ class BankSend extends Component {
   }
 
   topContainer() {
+    let balance = Util.truncate(this.props.balance, 2);
     return (
       <View style={styles.topContainer}>
         <CustomBackButton handlePress={() => this.props.navigator.pop({
@@ -144,7 +145,7 @@ class BankSend extends Component {
             balance:
             </Text>
           <Text style={styles.balanceText}>
-            Ʀ{Util.truncate(this.props.balance, 2)}
+            Ʀ{balance}
           </Text>
         </View>
       </View>
@@ -152,11 +153,12 @@ class BankSend extends Component {
   }
 
   passwordLock() {
+    let usd = Util.truncate(this.state.usd, 2);
     return (
       <View style={styles.container}>
         {this.topContainer()}
         <View style={styles.usdContainer}>
-          <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+          <Text style={styles.usd}>${usd}</Text>
         </View>
         <PasswordLock enableSending={this.enableSending} />
         <View style={styles.alert}>
@@ -210,8 +212,8 @@ class BankSend extends Component {
           { cancelable: false }
         );
       }
-      const usd = (
-        <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
+      let usd = (
+        <Text style={styles.usd}>${this.state.usd}</Text>
       );
       if (this.state.amount) {
         usd = (

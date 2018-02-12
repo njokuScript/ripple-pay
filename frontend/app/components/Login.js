@@ -3,6 +3,8 @@ import { reduxForm } from 'redux-form';
 import CustomInput from './presentationals/customInput';
 import CustomButton from './presentationals/customButton';
 import AlertContainer from './alerts/AlertContainer';
+import Validation from '../utils/validation';
+
 import {
   StyleSheet,
   Text,
@@ -14,7 +16,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Config from '../config_enums';
 
-import { loginUser, signupUser } from '../actions';
+import { loginUser, signupUser, addAlert } from '../actions';
 
 class Login extends React.Component {
   constructor(props) {
@@ -36,15 +38,39 @@ class Login extends React.Component {
 
   onSignIn() {
     let { dispatch, fields: { email, password } } = this.props;
+    // the following is only to allow for easier testing and must be removed later.
     if (Config.email && Config.password) {
       email.value = Config.email;
       password.value = Config.password;
+    }
+    const validationErrors = [];
+
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.EMAIL, email.value));
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, password.value));
+
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        dispatch(addAlert(error));
+      })
+      return;
     }
     dispatch(loginUser(email.value, password.value));
   }
 
   onSignUp() {
     let { dispatch, fields: { email, password, screenName } } = this.props;
+    const validationErrors = [];
+
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.EMAIL, email.value));
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, password.value));
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SCREEN_NAME, screenName.value));
+
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        dispatch(addAlert(error));
+      })
+      return;
+    }
     dispatch(signupUser(email.value, password.value, screenName.value));
   }
 

@@ -67,15 +67,26 @@ exports.CHANGELLY_COINS_URL = `${API_URL}/changellyCoins`;
 function resolveError(errorResponse, dispatch) {
     return function(dispatch) {
         const errorStatusMap = {
-            401: {"desc": "Unauthorized/session timeout", "fns": [unauthUser, () => addAlert("Token expired!") ] },
-            429: {"desc": "Too many requests", "fns": [() => addAlert(errorResponse.data.message)]},
-            422: {"desc": "Custom Error Code", "fns": [() => addAlert(errorResponse.data.error)]}
+            401: {"desc": "Unauthorized/session timeout", "fns": [unauthUser, () => dispatch(addAlert("Token expired!")) ] },
+            429: {"desc": "Too many requests", "fns": [() => dispatch(addAlert(errorResponse.data.message))]},
+            422: {"desc": "Custom Error Code", "fns": [() => {
+                
+                if (errorResponse.data.error.constructor === String) {
+                    dispatch(addAlert(errorResponse.data.error));
+                } 
+                else if (errorResponse.data.error.constructor === Array) {
+                    errorResponse.data.error.forEach((err) => {
+                        dispatch(addAlert(err));
+                    });
+                }
+
+            }]}
         };
 
         const errorStatusResolution = errorStatusMap[errorResponse.status]; 
         if (errorStatusResolution) {
             errorStatusResolution.fns.forEach((errorTask) => {
-                dispatch(errorTask());
+               errorTask();
             }); 
             return true;   
         }

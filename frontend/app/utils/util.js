@@ -1,6 +1,9 @@
 import { _ } from 'lodash';
 
 exports.truncate = function(num, decimalPlaces) {
+    if (num === 0) {
+        return 0;
+    }
     return _.floor(num, decimalPlaces) || "";
 };
 

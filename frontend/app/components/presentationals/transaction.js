@@ -20,8 +20,8 @@ const Transaction = (props) => {
     const transactionAmountStyle = {
       textAlign: 'center',
       fontWeight: "600",
-      fontSize: 14,
-      color: transactionColor,
+      fontSize: 13,
+      color: transactionColor
     };
     transactionDate = (
       <View style={styles.transactionDate}>
@@ -33,7 +33,7 @@ const Transaction = (props) => {
     transactionAmount = (
       <View style={styles.transactionAmount}>
         <Text style={transactionAmountStyle}>
-          { Util.truncate(amount, 3) } {fromCoin}
+          { Util.truncate(amount, 5) } {fromCoin}
         </Text>
         <Text style={transactionAmountStyle}>
           { Util.truncate(toAmount, 3) } {toCoin}
@@ -41,6 +41,7 @@ const Transaction = (props) => {
       </View>
     );
   }
+
   const transactionData = (
     <View style={styles.transactionInfo}>
       <View style={styles.transactionOtherParty}>
@@ -60,11 +61,15 @@ const Transaction = (props) => {
     );
   }
   else {
+    let paddingBottom = 15.65;
+    if (otherParty === "no transactions") {
+      paddingBottom = 30;
+    }
     return (
-      <View style={styles.transaction}>
+      <TouchableOpacity style={styles.transaction} onPress={props.handlePress} paddingBottom={paddingBottom}>
       { transactionData }
       { transactionAmount }
-      </View>
+      </TouchableOpacity>
     );
   }
 };
@@ -97,7 +102,7 @@ const styles = StyleSheet.create({
   },
   transactionDateText: {
     fontSize: 12
-  },
+  }
 });
 
 export default Transaction;

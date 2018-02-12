@@ -9,9 +9,12 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    Clipboard
+    Clipboard,
+    StatusBar,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
+import SingleTab from '../presentationals/singleTab';
 
 class PersonalWallet extends React.Component {
     constructor(props) {
@@ -21,6 +24,7 @@ class PersonalWallet extends React.Component {
         };
         this.generatePersonalAddress = this.generatePersonalAddress.bind(this);
         this.removePersonalAddress = this.removePersonalAddress.bind(this);
+        this.removePersonalAddressAlert = this.removePersonalAddressAlert.bind(this);
         this.setSecret = this.setSecret.bind(this);
     }
 
@@ -29,8 +33,6 @@ class PersonalWallet extends React.Component {
             personalSecret: ''
         });
     }
-
-    //We have to disable the button so they can't generate more than 5 desTags
 
     setSecret(secret) {
         this.setState({
@@ -44,6 +46,19 @@ class PersonalWallet extends React.Component {
         }
     }
 
+    removePersonalAddressAlert() {
+        Alert.alert(
+            'Removing Personal Address',
+            'Are You Sure??',
+            [
+                { text: `YES`, onPress: this.removePersonalAddress },
+                { text: `NO` },
+            ],
+            { cancelable: true } 
+        );
+        
+    }
+
     removePersonalAddress() {
         if (this.props.personalAddress) {
             this.setState({
@@ -54,6 +69,7 @@ class PersonalWallet extends React.Component {
     }
 
     clipBoardCopy(string) {
+        Alert.alert(string, `copied to clipboard!`);
         Clipboard.setString(string);
         Clipboard.getString().then((str) => {
             return str;
@@ -66,35 +82,32 @@ class PersonalWallet extends React.Component {
             const imageSource = Util.getQRCodeSource(this.props.personalAddress);
             return (
                 <View style={styles.walletDisplay}>
-
-                    <View style={styles.address}>
-                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.props.personalAddress)} style={styles.clipBoardContainer}>
-                            <Icon name="clipboard" size={25} color="gray" />
-                        </TouchableOpacity>
-                    </View>
                     <View style={styles.imageContainer}>
-                        <Image
-                            style={styles.qrCode}
-                            source={{uri: imageSource }}
+                        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.personalAddress)}>
+                            <View style={styles.qrBackground}>
+                                <Image
+                                    style={styles.qrCode}
+                                    source={{ uri: imageSource }}
+                                />
+                                </View>
+                                <View>
+                                    <Text style={styles.addressFont}>{this.props.personalAddress}</Text>
+                                </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.state.personalSecret)}>
+                            {this.state.personalSecret ? <Text style={styles.addressFont}>secret key: {this.state.personalSecret}</Text> : null}
+                        </TouchableOpacity>
+                        {this.state.personalSecret ? <Text style={styles.noteFont}>Note: RipplePay does not store your Secret Key so please store it now.
+                                                      You will need it to make payments and it will disappear on page refresh.
+                        </Text> : null}
+                        
+                    <View style={styles.tab}>
+                        <SingleTab
+                            text="remove personal wallet"
+                            handlePress={this.removePersonalAddressAlert}
                         />
-                        <View style={styles.buttonsContainer}>
-                            <TouchableOpacity disabled={disabled} onPress={this.removePersonalAddress}>
-                                <Text style={disabled ? styles.redButton : styles.greenButton}>Remove Personal Wallet</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View>
-                        <View style={styles.destTag}>
-                            <Text style={styles.walletFont}>Personal Address: {this.props.personalAddress}</Text>
-                            <Text></Text>
-                            {this.state.personalSecret ? <Text style={styles.walletFont}>Personal Secret: {this.state.personalSecret}</Text> : null}
-                            <Text></Text>
-                            <Text style={styles.walletFont}>Note: RipplePay does not store your Secret Key so please store it. You will need it to make payments.</Text>
-                            <TouchableOpacity onPress={() => this.clipBoardCopy(this.state.personalAddress)} style={styles.clipBoardContainer}>
-                                <Icon name="clipboard" size={25} color="gray" />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                     </View>
+                     </View>
                 </View>
             );
         }
@@ -112,8 +125,11 @@ class PersonalWallet extends React.Component {
     render() {
         return (
             <View style={styles.mainContainer}>
-                <AlertContainer />
+                <StatusBar
+                    barStyle="light-content"
+                />
                 {this.displayPersonalWallet()}
+                <AlertContainer />
             </View>
         );
     }
@@ -125,18 +141,50 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#111F61',
     },
+    tab: {
+        flex: 1,
+        width: width
+    },
+    imageContainer: {
+        flex: 1,
+        paddingTop: height / 25,
+        alignItems: 'center',
+        backgroundColor: '#111F61'
+    },
+    image: {
+        flex: 1,
+        alignItems: "center",
+    },
+    qrCode: {
+        width: height / 4,
+        height: height / 4,
+    },
+    qrBackground: {
+        borderColor: 'white',
+        borderWidth: 25,
+        backgroundColor: 'white'
+    },
     walletDisplay: {
         flex: 1,
-        justifyContent: 'space-between',
-        marginTop: 30,
+        flexDirection: "column",
     },
-    buttonsContainer: {
+    noWalletsButtonsContainer: {
         flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center',
         flexDirection: 'column',
-        marginLeft: 35,
-        marginRight: 35,
+    },
+    addressFont: {
+        color: 'white',
+        fontSize: height / 50,
+        textAlign: 'center',
+        marginTop: height / 50
+    },
+    noteFont: {
+        color: 'white',
+        fontSize: height / 50,
+        textAlign: 'center',
+        marginTop: height / 50
     },
     redButton: {
         fontFamily: 'Kohinoor Bangla',
@@ -148,7 +196,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         textAlign: 'center',
         fontSize: 15,
-        //  marginLeft: 15
     },
     greenButton: {
         fontFamily: 'Kohinoor Bangla',
@@ -160,93 +207,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'white',
         fontSize: 15,
-        //  marginLeft: 10
     },
-    destintro: {
-        color: 'white',
-        fontSize: 20
-    },
-    walletsContainer: {
-        flex: -1,
-        flexDirection: 'column',
-        marginTop: 190,
-        width: 330,
-        marginLeft: 20,
-    },
-    walletAddress: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 15,
-    },
-    walletintro: {
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 20
-    },
-    noWalletsButtonsContainer: {
+    topTabContainer: {
+        borderColor: '#d3d3d3',
+        height: 40,
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
+        // backgroundColor: '#F9F9F9',
+
     },
-    destTag: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        top: -300,
-        padding: 15
-    },
-    wallets: {
-        flex: 1,
-        fontFamily: 'Kohinoor Bangla',
-    },
-    walletFont: {
-        color: 'white',
+    topTab: {
+        fontSize: 13,
+        fontWeight: "600",
         textAlign: 'center',
-        fontSize: 15,
-    },
-    cashRegister: {
-        marginTop: 10,
-        color: 'white',
-        fontSize: 16,
-    },
-    address: {
-        flex: -1,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        width: 370,
-    },
-    clipBoardContainer: {
-        borderColor: 'white',
-        borderWidth: 1,
-        padding: 1,
-        borderRadius: 3,
-        backgroundColor: 'white'
-    },
-    wallet: {
-        flex: -1,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        borderColor: 'white',
-        borderBottomWidth: 1,
-        paddingBottom: 10,
-        width: 330,
-        marginTop: 10,
-    },
-    imageContainer: {
-        flex: 1,
-        justifyContent: 'space-between',
-        position: 'absolute',
-        flexDirection: 'row',
-        // top: 40,
-        left: 25,
-    },
-    qrCode: {
-        width: 140,
-        height: 140,
-        borderRadius: 10,
+        color: "red"
     }
 });
 
