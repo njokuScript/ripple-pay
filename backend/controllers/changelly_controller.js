@@ -43,7 +43,11 @@ function formatChangellyTransaction(changellyTxn, userId, from, to, toDestTag = 
     };
 }
 
+<<<<<<< HEAD
+exports.createChangellyTransaction = function(req, res, next) {
+=======
 exports.createChangellyTransaction = function (req, res, next) {
+>>>>>>> c26c283a5548cd3c405237e43afd6160913720d5
     let { from, to, withdrawalAddress, refundAddress, toDestTag, refundDestTag } = req.body;
     let { fromAmount, fromCoin } = from;
     fromAmount = parseFloat(fromAmount);
@@ -88,7 +92,7 @@ exports.createChangellyTransaction = function (req, res, next) {
 exports.getChangellyTransactions = asynchronous(function (req, res, next) {
     let existingUser = req.user;
     let userId = existingUser._id;
-    const changellyTransactions = await(ChangellyTransaction.find({ userId }).sort({ date: -1 }).limit(TXN_LIMIT));
+    const changellyTransactions = await(ChangellyTransaction.find({ userId }, { userId: 0 }).sort({ date: -1 }).limit(TXN_LIMIT));
     res.json({ changellyTransactions });
 })
 
@@ -96,7 +100,7 @@ exports.loadNextChangellyTransactions = asynchronous(function (req, res, next) {
     const user = req.user;
     const userId = user._id;
     const minDate = req.query[0];
-    let nextChangellyTransactions = await(ChangellyTransaction.find({ userId: userId, date: { '$lte': minDate } }).sort({ date: -1 }).limit(TXN_LIMIT + 1));
+    let nextChangellyTransactions = await(ChangellyTransaction.find({ userId: userId, date: { '$lte': minDate } }, { userId: 0 }).sort({ date: -1 }).limit(TXN_LIMIT + 1));
     // remove the first transaction because that will already have been counted
     nextChangellyTransactions = nextChangellyTransactions.slice(1);
     const shouldLoadMoreChangellyTransactions = nextChangellyTransactions.length >= TXN_LIMIT ? true : false;
@@ -114,6 +118,11 @@ exports.getChangellyRippleTransactionId = asynchronous(function (req, res, next)
     let fromDestTag = query[2];
 
     const changellyTransaction = await(ChangellyTransaction.findOne({ changellyTxnId }));
+<<<<<<< HEAD
+    console.log(changellyTransaction);
+    
+=======
+>>>>>>> c26c283a5548cd3c405237e43afd6160913720d5
     if (changellyTransaction.rippleTxnId) {
         return res.json({ rippleTxnId: changellyTransaction.rippleTxnId });
     }
@@ -121,6 +130,19 @@ exports.getChangellyRippleTransactionId = asynchronous(function (req, res, next)
     // to help customers get refund from changelly if they have to.
     let toAddress = changellyTransaction.changellyAddress;
     let toDestTag = changellyTransaction.changellyDestTag;
+<<<<<<< HEAD
+    console.log(toAddress, toDestTag);
+    
+    let txnInfo = await(rippledServer.getTransactions(fromAddress));
+
+    const processTransaction = function (currTxn) {
+        console.log(currTxn.specification);
+        
+        if (
+            toAddress === currTxn.specification.destination.address && 
+            fromDestTag === currTxn.specification.source.tag && 
+            toDestTag === currTxn.specification.destination.tag
+=======
     let txnInfo = await(rippledServer.getTransactions(fromAddress));
 
     const processTransaction = function (currTxn) {
@@ -128,6 +150,7 @@ exports.getChangellyRippleTransactionId = asynchronous(function (req, res, next)
             toAddress === currTxn.specification.destination.address &&
             parseInt(fromDestTag) === currTxn.specification.source.tag &&
             parseInt(toDestTag) === currTxn.specification.destination.tag
+>>>>>>> c26c283a5548cd3c405237e43afd6160913720d5
         ) {
             return currTxn.id;
         }
