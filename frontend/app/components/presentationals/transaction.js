@@ -66,10 +66,10 @@ const Transaction = (props) => {
       paddingBottom = 30;
     }
     return (
-      <View style={styles.transaction} paddingBottom={paddingBottom}>
+      <TouchableOpacity style={styles.transaction} onPress={props.handlePress} paddingBottom={paddingBottom}>
       { transactionData }
       { transactionAmount }
-      </View>
+      </TouchableOpacity>
     );
   }
 };

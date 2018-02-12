@@ -9,6 +9,7 @@ import LoadMoreDataButton from '../presentationals/loadMoreDataButton';
 import LoadingIcon from '../presentationals/loadingIcon';
 import TopTabs from '../presentationals/topTabs';
 import ChangellyTransactionView from '../presentationals/changellyTransactionView';
+import TransactionView from '../presentationals/transactionView';
 import AlertContainer from '../alerts/AlertContainer';
 import Promise from 'bluebird';
 import Util from '../../utils/util';
@@ -42,6 +43,7 @@ class Home extends React.Component {
       refreshing: false,
       changelly: false,
       showChange: null,
+      showNormal: null,
       showScreen: false,
       usd: 0,
       usdPerXRP: 0,
@@ -120,6 +122,7 @@ class Home extends React.Component {
     this.setState({
       changelly: false,
       showChange: false,
+      showNormal: false
     });
   }
 
@@ -127,6 +130,7 @@ class Home extends React.Component {
     this.setState({
       changelly: true,
       showChange: false,
+      showNormal: false
     });
   }
 
@@ -173,6 +177,12 @@ class Home extends React.Component {
     });
   }
 
+  showNormalTransaction(transaction, time) {
+    this.setState({
+      showNormal: <TransactionView time={time} {...transaction}/>
+    });
+  }
+
   determineTransactions() {
     let transactions = [];
 
@@ -195,6 +205,18 @@ class Home extends React.Component {
 
     }
     return transactions;
+  }
+
+  determineView() {
+    if (this.state.showChange) {
+      return this.state.showChange;
+    } 
+    else if (this.state.showNormal) {
+      return this.state.showNormal;
+    }
+    else {
+      return this.displayTransactions();
+    }
   }
 
   displayTransactions() {
@@ -234,6 +256,7 @@ class Home extends React.Component {
           amount={transaction.amount}
           fromCoin={"Ʀ"}
           transactionColor={transaction.amount < 0 ? "red" : "green"}
+          handlePress={ () => this.showNormalTransaction(transaction, time) }
           time={time}
           />
         );
@@ -337,7 +360,7 @@ class Home extends React.Component {
             pressed={this.state.changelly}
           />
 
-          { this.state.showChange ? this.state.showChange : this.displayTransactions() }
+          { this.determineView() }
 
           <AlertContainer />
         </View>
