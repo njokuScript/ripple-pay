@@ -24,6 +24,11 @@ if (exports.CURRENT_STATE === exports.APP_STATE.TEST_PROD || exports.CURRENT_STA
 
 else if (exports.CURRENT_STATE === exports.APP_STATE.TEST_DEV || exports.CURRENT_STATE === exports.APP_STATE.DEVELOPMENT) {
     exports.API_URL = 'http://localhost:3000/v1';
-    exports.email = "devanshpatel@gmail.com";
-    exports.password = "Deewid11";
+    exports.email = "";
+    exports.password = "";
 }
+
+exports.MAX_EMAIL_LENGTH = 254;
+exports.MAX_PASSWORD_LENGTH = 25;
+exports.MIN_PASSWORD_LENGTH = 8;
+exports.MAX_SCREEN_NAME_LENGTH = 30;
