@@ -87,12 +87,12 @@ class Home extends React.Component {
     this.props.refreshShouldLoadMoreValues();
     
     this.setState({refreshing: true});
-    if (this.showChangellyTransactions()) {
+    if (this.shouldShowChangellyTransactions()) {
       this.props.requestChangellyTransactions().then(() => {
         this.setState({refreshing: false});
       });
     }
-    else if (this.showNormalTransactions()) {
+    else if (this.shouldShowNormalTransactions()) {
       if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
         this.props.requestTransactions().then(() => {
           this.setState({refreshing: false});
@@ -159,11 +159,11 @@ class Home extends React.Component {
     }
   }
 
-  showChangellyTransactions() {
+  shouldShowChangellyTransactions() {
     return this.state.changelly;
   }
 
-  showNormalTransactions() {
+  shouldShowNormalTransactions() {
     return !this.state.changelly;
   }
 
@@ -176,10 +176,10 @@ class Home extends React.Component {
   determineTransactions() {
     let transactions = [];
 
-    if (this.showChangellyTransactions() && this.props.changellyTransactions.length > 0) {
+    if (this.shouldShowChangellyTransactions() && this.props.changellyTransactions.length > 0) {
       transactions = this.props.changellyTransactions;
     }
-    if (this.showNormalTransactions()) {
+    if (this.shouldShowNormalTransactions()) {
 
       if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
         if (this.props.transactions.length > 0) {
@@ -224,7 +224,7 @@ class Home extends React.Component {
       } else {
         time = `${date.getHours()}:${minutes} AM`;
       }
-      if (this.showNormalTransactions()) {
+      if (this.shouldShowNormalTransactions()) {
         return (
           <Transaction
           changelly={false}
@@ -238,7 +238,7 @@ class Home extends React.Component {
           />
         );
       }
-      if (this.showChangellyTransactions()) {
+      if (this.shouldShowChangellyTransactions()) {
         return (
           <Transaction
             changelly={true}
