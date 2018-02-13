@@ -87,7 +87,7 @@ class SendRipple extends Component {
     else if (this.props.fromAddress === this.state.toAddress) {
       this.props.addAlert("Can't Send to yourself");
     }
-    else{
+    else {
       if (this.state.toAddress === "") {
         this.props.addAlert("Please Enter a destination address");
         return;
