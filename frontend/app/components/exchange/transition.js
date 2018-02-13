@@ -69,67 +69,93 @@ class Transition extends Component {
     }
   }
 
+  amountValidations() {
+    if (!this.props.changelly.minimumSend.minAmount) {
+      this.props.addAlert(`Please wait for minimum amount calculation...`);
+      return false;
+    }
+    else if (parseFloat(this.state.fromAmount) < parseFloat(this.props.changelly.minimumSend.minAmount)) {
+      this.props.addAlert(`Please ${this.actionString} more than the minimum allowed`);
+      return false;
+    }
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.fromAmount));
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.toAmount));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+    return true;
+  }
+
   processDeposit() {
-    this.refundAddress = this.state.address;
-    this.refundDestTag = undefined;
+    this.fromAddress = this.state.address;
+    this.fromDestTag = undefined;
+    let processable = false;
 
     if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && this.props.user.wallets.length > 0) {
       this.withdrawalAddress = this.props.user.cashRegister;
-      this.toDestTag = this.props.user.wallets[this.props.user.wallets.length - 1];
-      return;
+      this.withdrawalDestTag = this.props.user.wallets[this.props.user.wallets.length - 1];
+      processable = Boolean(this.withdrawalAddress && this.withdrawalAddress.length > 0 && this.withdrawalDestTag);
+      if (processable && this.amountValidations()) {
+        return true;
+      }
     }
     else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
       this.withdrawalAddress = this.props.user.personalAddress;
-      this.toDestTag = undefined;
-      return;
+      this.withdrawalDestTag = undefined;
+      processable = Boolean(this.withdrawalAddress && this.withdrawalAddress.length > 0);
+      if (processable && this.amountValidations()) {
+        return true;
+      }
     }
 
-    this.props.addAlert("Please Get a Wallet First");
+    this.props.addAlert("Deposit not processable as is");
+    return false;
   }
 
   processWithdrawal() {
     this.withdrawalAddress = this.state.address;
-    this.toDestTag = undefined;
+    this.withdrawalDestTag = undefined;
+    let processable = false;
 
     if (this.props.activeWallet === Config.WALLETS.BANK_WALLET && this.props.user.wallets.length > 0) {
-      this.refundAddress = this.props.user.cashRegister;
-      this.refundDestTag = this.props.user.wallets[this.props.user.wallets.length - 1];
-      return;
+      this.fromAddress = this.props.user.cashRegister;
+      this.fromDestTag = this.props.user.wallets[this.props.user.wallets.length - 1];
+
+      processable = Boolean(this.withdrawalAddress && this.withdrawalAddress.length > 0 && this.fromAddress && this.fromDestTag);
+      if (processable && this.amountValidations()) {
+        return true;
+      }
     }
     else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
-      this.refundAddress = this.props.user.personalAddress;
-      this.refundDestTag = undefined;
-      return;
+      this.fromAddress = this.props.user.personalAddress;
+      this.fromDestTag = undefined;
+
+      processable = Boolean(this.withdrawalAddress && this.withdrawalAddress.length > 0 && this.fromAddress);
+      if (processable && this.amountValidations()) {
+        return true;
+      }
     }
 
-    this.props.addAlert("Please Get a Wallet First");
+    this.props.addAlert("Withdrawal not processable as is");
+    return false;
   }
 
   navSendAmount() {
-
-    if (!this.props.changelly.minimumSend.minAmount) {
-      return this.props.addAlert(`Please wait for minimum amount calculation...`);
-    }
-    else if (this.state.fromAmount < this.props.changelly.minimumSend.minAmount){
-      return this.props.addAlert(`Please ${this.actionString} more than the minimum allowed`);
+    if ( this.action === ExchangeConfig.ACTIONS.DEPOSIT && !this.processDeposit()) {
+      return;
     }
 
-    if ( this.action === ExchangeConfig.ACTIONS.DEPOSIT ) {
-      this.processDeposit();
-    }
-    else if (this.action === ExchangeConfig.ACTIONS.WITHDRAW) {
-      this.processWithdrawal();
-    }
-
-    if (this.action === ExchangeConfig.ACTIONS.WITHDRAW && this.withdrawalAddress === '') {
-      this.props.addAlert("Please Enter a Withdrawal Address");
+    if (this.action === ExchangeConfig.ACTIONS.WITHDRAW && !this.processWithdrawal()) {
       return;
     }
     const from = { fromCoin: this.props.fromCoin, fromAmount: this.state.fromAmount };
     const to = { toCoin: this.props.toCoin, toAmount: this.state.toAmount };
-    console.log(from, to);
     
-    this.props.createChangellyTransaction(from, to, this.withdrawalAddress, this.refundAddress, this.toDestTag, this.refundDestTag);
+    this.props.createChangellyTransaction(from, to, this.withdrawalAddress, this.fromAddress, this.withdrawalDestTag, this.fromDestTag);
     this.props.navigator.push({
       screen: 'SendAmount',
       navigatorStyle: { navBarHidden: true, statusBarTextColorScheme: 'light'},

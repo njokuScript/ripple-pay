@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Search from './search';
-import { requestUsers } from '../../actions';
+import { requestUsers, addAlert } from '../../actions';
 
 const mapStateToProps = ({user}) => ({
   users: user.users,
@@ -8,7 +8,8 @@ const mapStateToProps = ({user}) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestUsers: (query) => dispatch(requestUsers(query))
+  requestUsers: (query) => dispatch(requestUsers(query)),
+  addAlert: (message) => dispatch(addAlert(message))
 });
 
 export default connect(

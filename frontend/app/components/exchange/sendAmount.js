@@ -79,17 +79,41 @@ class SendAmount extends Component {
     }
   }
 
+  secretKeyValidations() {
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SECRET_KEY, this.state.secret));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+    return true;
+  }
+
+  prepareTransactionValidations() {
+    const { changellyAddress, changellyDestTag, from, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
+    let sourceTag = refundDestTag;
+    let fromAddress = refundAddress;
+
+    if (!changellyAddress || !changellyDestTag || !fromAddress || !from.fromAmount) {
+      this.props.addAlert("There was an error in the transaction.");
+      return false;
+    }
+    if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET && !sourceTag) {
+      this.props.addAlert("Error occurred. Please get a bank wallet.");
+      return false;
+    }
+    return true;
+  }
+
   preparePayment(){
     this.setState({pushed: true});
-    const { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
-    let sourceTag = null;
-    let fromAddress = this.props.changelly.changellyTxn.refundAddress;
-    if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET) {
-      sourceTag = this.props.user.wallets[this.props.user.wallets.length - 1];
-    }
-
-    if ( !changellyAddress || !from.fromAmount ) {
-      this.props.addAlert("There was an error in the transaction");
+    const { changellyAddress, changellyDestTag, from, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
+    let sourceTag = refundDestTag;
+    let fromAddress = refundAddress;
+    
+    if (!this.prepareTransactionValidations()) {
       return;
     }
 
@@ -123,6 +147,11 @@ class SendAmount extends Component {
         this.props.signAndSend(fromAddress, parseFloat(amount));
       }
       else if (this.props.user.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+
+        if (!this.secretKeyValidations()) {
+          return;
+        }
+        
         this.props.sendPaymentWithPersonalAddress(fromAddress, this.state.secret, parseFloat(amount));
       }
     }

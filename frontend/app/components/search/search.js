@@ -3,7 +3,9 @@ import HomeContainer from '../home/homeContainer';
 import WalletContainer from '../wallet/walletContainer';
 import ExchangeContainer from '../exchange/exchangeContainer';
 import BankSendContainer from '../banksend/banksendContainer';
+import AlertContainer from '../alerts/AlertContainer';
 import CustomInput from '../presentationals/customInput';
+import Validation from '../../utils/validation';
 
 import { View,
   Text,
@@ -37,9 +39,40 @@ class Search extends React.Component {
     }
   }
 
+  userSearchValidations() {
+    let { query } = this.state;
+    
+    if (query.length === 0) {
+      return true;
+    }
+    if (query.length === 1) {
+      if (query.match(/[a-zA-Z]/)) {
+        return true;
+      }
+      this.props.addAlert("First letter must be a alphabetical");
+      return false;
+    }
+
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SCREEN_NAME, query));
+
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+
+    return true;
+  }
+
   componentDidUpdate(prevProps, prevState){
     if ( prevState.query !== this.state.query )
     {
+      if (!this.userSearchValidations()) {
+        return;
+      }
+
       this.requestUsers(this.state.query);
     }
   }
@@ -103,10 +136,9 @@ class Search extends React.Component {
         </View>
        </View>
         <ScrollView>
-          {/* i made a conditional in this results to try to print the results only when they are in the state,
-              not working, but close i think  */}
           {this.makeUsers()}
         </ScrollView>
+        <AlertContainer />
      </View>
    );
  }}
