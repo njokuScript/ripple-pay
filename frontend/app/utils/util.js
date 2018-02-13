@@ -1,4 +1,8 @@
 import { _ } from 'lodash';
+import {
+    Clipboard,
+    Alert
+} from 'react-native';
 
 exports.truncate = function(num, decimalPlaces) {
     if (num === 0) {
@@ -46,3 +50,11 @@ exports.isEmpty = function(obj) {
 exports.getQRCodeSource = function(address) {
     return `https://api.qrserver.com/v1/create-qr-code/?data=${address}`;
 };
+
+exports.clipBoardCopy = (string) => {
+    Alert.alert(string, `copied to clipboard!`);
+    Clipboard.setString(string);
+    Clipboard.getString().then((str) => {
+        return str;
+    });
+}

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
-  Clipboard,
   ScrollView,
   Alert,
   StatusBar
@@ -16,6 +15,7 @@ import CustomButton from '../presentationals/customButton';
 import Icon from 'react-native-vector-icons/Entypo';
 import WalletTabs from '../presentationals/walletTabs';
 import Api from '../../api';
+import Util from '../../utils/util';
 
 class Wallet extends React.Component {
   constructor(props) {
@@ -78,14 +78,6 @@ class Wallet extends React.Component {
   }
   }
 
-  clipBoardCopy(string){
-    Alert.alert(string,`copied to clipboard!`);
-    Clipboard.setString(string);
-    Clipboard.getString().then((str)=>{
-      return str;
-    });
-  }
-
   // Dynamically requiring files is not possible, so unfortunately, any time you change the addresses
   // You will also have to change this function to match the addresses and images
   getQRCode(){
@@ -112,7 +104,7 @@ class Wallet extends React.Component {
     if (this.props.cashRegister) {
       const allWallets = this.props.wallets.map((wallet, idx) => {
         return (
-          <TouchableOpacity key={idx} onPress={() => this.clipBoardCopy(wallet.toString())}>
+          <TouchableOpacity key={idx} onPress={() => Util.clipBoardCopy(wallet.toString())}>
             <View style={styles.destTagContainer}>
               <Text style={styles.destTag}>{wallet}</Text>
             </View>
@@ -123,7 +115,7 @@ class Wallet extends React.Component {
       return (
           <View style={styles.walletDisplay}>
             <View style={styles.imageContainer}>
-                <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.cashRegister)}>
+                <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => Util.clipBoardCopy(this.props.cashRegister)}>
                   <Image
                     style={styles.qrCode}
                     source={imageSource}
