@@ -205,7 +205,7 @@ class BankSend extends Component {
             { text: `To Address: ${toAddress}`},
             { text: `To Destination Tag: ${toDesTag}`},
             { text: `Amount: ${amount}`},
-            { text: `Fee: ${fee}`},
+            { text: `Fee: ${fee + Config.ripplePayFee}`},
             { text: `Send Payment!`, onPress: this.sendPersonal},
             { text: `Cancel Payment!`, onPress: this.props.clearTransaction},
           ],

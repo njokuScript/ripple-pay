@@ -168,7 +168,7 @@ class SendRipple extends Component {
           { text: `To Address: ${toAddress}` },
           { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
           { text: `Amount: ${amount}` },
-          { text: `Fee: ${fee}` },
+          { text: `Fee: ${fee + Config.ripplePayFee}` },
           { text: `Send Payment!`, onPress: this.sendPayment },
           { text: `Cancel Payment!`, onPress: this.props.clearTransaction },
         ],
