@@ -114,14 +114,6 @@ class SendAmount extends Component {
 
   }
 
-  clipBoardCopy(string) {
-    Alert.alert(string, `copied to clipboard!`);
-    Clipboard.setString(string);
-    Clipboard.getString().then((str) => {
-      return str;
-    });
-  }
-
   sendPayment() {
     this.setState({ sendButtonDisabled: true });
     const { amount } = this.props.transaction;
@@ -171,7 +163,7 @@ class SendAmount extends Component {
   getQRCode(changellyAddress) {
     if (this.props.action === ExchangeConfig.ACTIONS.DEPOSIT) {
       return (
-        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(changellyAddress)}>
+        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => Util.clipBoardCopy(changellyAddress)}>
           <Image
             style={styles.qrCode}
             source={{ uri: Util.getQRCodeSource(changellyAddress) }}
