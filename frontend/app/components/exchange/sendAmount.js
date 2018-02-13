@@ -207,7 +207,7 @@ class SendAmount extends Component {
           { text: `To Address: ${toAddress}` },
           { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
           { text: `Amount: ${this.props.transaction.amount}` },
-          { text: `Fee: ${this.props.transaction.fee}` },
+          { text: `Fee: ${this.props.transaction.fee + Config.ripplePayFee}` },
           { text: `Send Payment!`, onPress: this.sendPayment },
           { text: `Cancel Payment!`, onPress: this.props.clearTransaction },
         ],
