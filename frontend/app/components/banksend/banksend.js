@@ -11,6 +11,7 @@ import CustomBackButton from '../presentationals/customBackButton';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import Validation from '../../utils/validation';
 import { getXRPtoUSD } from '../../actions';
 import Config from '../../config_enums';
 
@@ -81,28 +82,50 @@ class BankSend extends Component {
     }
   }
 
-  preparePersonal() {
+  secretKeyValidations() {
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SECRET_KEY, this.state.secret));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+    return true;
+  }
+
+  prepareTransactionValidations() {
     if (!this.props.personalAddress) {
       this.props.addAlert("Please get a personal address first");
+      return false;
     }
-    else {
-      if (this.state.amount === "") {
-        this.props.addAlert("Please enter an amount");
-        return;
-      }
-      let { amount, secret } = this.state;
-      if (!Util.validMoneyEntry(amount)) {
-        this.props.addAlert("Can't send 0 or less Ripple");
-        return;
-      }
-      this.props.preparePersonalToBank(parseFloat(amount), this.props.personalAddress, this.props.receiverScreenName);
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.amount));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
     }
+    
+    return true;
+  }
+
+  preparePersonal() {
+    if (!this.prepareTransactionValidations()) {
+      return;
+    }
+    let { amount } = this.state;
+    this.props.preparePersonalToBank(parseFloat(amount), this.props.personalAddress, this.props.receiverScreenName);
   }
 
   sendPersonal() {
     this.setState({ sendingDisabled: true });
     const { amount } = this.props.transaction;
     if (amount) {
+        if (!this.secretKeyValidations()) {
+          return;
+        }
         this.props.sendPaymentWithPersonalAddress(this.props.personalAddress, this.state.secret, parseFloat(amount));
     } 
     this.props.clearTransaction();

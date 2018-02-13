@@ -5,7 +5,8 @@ exports.TYPE = {
     SCREEN_NAME: 1,
     PASSWORD: 2,
     MONEY: 3,
-    RIPPLE_ADDRESS: 4
+    RIPPLE_ADDRESS: 4,
+    SECRET_KEY: 5
 }
 
 const validationMap = {};
@@ -40,6 +41,9 @@ validationMap[exports.TYPE.PASSWORD] = (password) => {
     if (password.length < Config.MIN_PASSWORD_LENGTH) {
         errorMessages.push(`Password Length must be more than ${Config.MIN_PASSWORD_LENGTH}`);
     }
+    if ((/\s/).test(password)) {
+        errorMessages.push('Password cannot contain spaces');
+    }
     if ((/\=/).test(password)) {
         errorMessages.push('Password cannot contain (=) symbol');
     }
@@ -54,12 +58,20 @@ validationMap[exports.TYPE.RIPPLE_ADDRESS] = (rippleAddress) => {
     return errorMessages;
 }
 
+validationMap[exports.TYPE.SECRET_KEY] = (secretKey) => {
+    const errorMessages = []
+    if (secretKey.length === 0 || !(/^[a-zA-Z0-9]+$/).test(secretKey)) {
+        errorMessages.push('Not a valid ripple secret key');
+    }
+    return errorMessages;
+}
+
 validationMap[exports.TYPE.MONEY] = (amount) => {
     const errorMessages = []
     if (isNaN(parseFloat(amount))) {
         errorMessages.push("Amount input is improper");
     }
-    if (!(/^\d*\.{0,1}\d+$/).test(amount) || parseFloat(amount) === 0) {
+    if (!(/^\d*\.{0,1}\d+$/).test(amount) || parseFloat(amount) <= 0) {
         errorMessages.push("Amount must be a number more than 0");
     }
     return errorMessages;

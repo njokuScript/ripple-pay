@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { unauthUser, comparePassword, clearAlerts } from '../../actions';
 import CustomInput from './customInput';
 import CustomButton from './customButton';
+import Validation from '../../utils/validation';
+
 import {
     StyleSheet,
     View,
@@ -31,8 +33,26 @@ class PasswordLock extends Component {
         }
     }
 
+    passwordValidations() {
+        const validationErrors = [];
+
+        validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, this.state.password));
+
+        if (validationErrors.length > 0) {
+            validationErrors.forEach((error) => {
+                this.props.addAlert(error);
+            })
+            return false;
+        }
+
+        return true;
+    }
+
     enterPassword() {
         const { password } = this.state;
+        if (!this.passwordValidations()) {
+            return;
+        }
         this.props.comparePassword(password).then(() => this.setState({ password: "" }));
         this.setState({ isDisabled: true });
     }
