@@ -46,6 +46,14 @@ validationMap[exports.TYPE.PASSWORD] = (password) => {
     return errorMessages;
 }
 
+validationMap[exports.TYPE.RIPPLE_ADDRESS] = (rippleAddress) => {
+    const errorMessages = []
+    if (!(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/).test(rippleAddress)) {
+        errorMessages.push('Not a valid ripple address');
+    }
+    return errorMessages;
+}
+
 validationMap[exports.TYPE.MONEY] = (amount) => {
     const errorMessages = []
     if (isNaN(parseFloat(amount))) {
