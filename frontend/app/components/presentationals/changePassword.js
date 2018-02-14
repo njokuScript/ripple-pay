@@ -5,6 +5,7 @@ import AlertContainer from '../alerts/AlertContainer';
 import CustomInput from './customInput';
 import CustomButton from './customButton';
 import CustomBackButton from './customBackButton';
+import Validation from '../../utils/validation';
 import { addAlert } from '../../actions';
 
 import {
@@ -31,15 +32,38 @@ class ChangePassword extends Component {
         }
     }
 
+    passwordValidations() {
+        const { oldPassword, newPassword, newPasswordConfirm } = this.state;
+
+        if (newPassword !== newPasswordConfirm) {
+            this.props.addAlert("New password and confirmation do not match!");
+            return false;
+        }
+        const validationErrors = [];
+
+        validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, oldPassword));
+        validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, newPassword));
+        validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, newPasswordConfirm));
+
+        if (validationErrors.length > 0) {
+            validationErrors.forEach((error) => {
+                this.props.addAlert(error);
+            })
+            return false;
+        }
+
+        return true;
+    }
+
     changePassword() {
         const { oldPassword, newPassword, newPasswordConfirm } = this.state;
-        if (newPassword === newPasswordConfirm) {
-            this.props.changePassword(oldPassword, newPassword).then(() => this.setState({ password: "" }));
-            this.setState({ isDisabled: true });
+        
+        if (!this.passwordValidations()) {
+            return;
         }
-        else {
-            this.props.addAlert("New password and confirmation do not match!");
-        }
+
+        this.props.changePassword(oldPassword, newPassword).then(() => this.setState({ password: "" }));
+        this.setState({ isDisabled: true });
     }
 
     button() { 

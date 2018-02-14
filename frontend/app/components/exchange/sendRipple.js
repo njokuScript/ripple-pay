@@ -11,6 +11,7 @@ import PasswordLock from '../presentationals/passwordLock';
 import ScanQR from '../presentationals/scanQR';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import Validation from '../../utils/validation';
 import Config from '../../config_enums';
 
 import {
@@ -68,46 +69,67 @@ class SendRipple extends Component {
         this.props.signAndSend(this.props.fromAddress, parseFloat(amount));
       }
       else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+
+        if (!this.secretKeyValidations()) {
+          return;
+        }
+        
         this.props.sendPaymentWithPersonalAddress(this.props.fromAddress, this.state.secret, parseFloat(amount));
       }
     } 
     this.props.clearTransaction();
+    this.setState(this.initialState);
+  }
+
+  secretKeyValidations() {
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SECRET_KEY, this.state.secret));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+    return true;
+  }
+
+  prepareTransactionValidations() {
+    if (!this.props.fromAddress || !this.props.sourceTag) {
+      this.props.addAlert("Please get a wallet first");
+      return false;
+    }
+    if (this.props.fromAddress === this.state.toAddress) {
+      this.props.addAlert("Can't Send to yourself");
+      return false;
+    }
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.RIPPLE_ADDRESS, this.state.toAddress));
+
+    if (this.state.toDesTag && this.state.toDesTag.length > 0) {
+      validationErrors.push(...Validation.validateInput(Validation.TYPE.DESTINATION_TAG, this.state.toDesTag));
+    }
+
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.amount));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+    return true;
   }
 
   prepareTransaction(){
-    if ( !this.props.fromAddress || !this.props.sourceTag)
-    {
-      this.props.addAlert("Please get a wallet first");
+    if (!this.prepareTransactionValidations()) {
+      return;
     }
-    //This is the REGEX to validate a Ripple Address
-    else if(!Util.validRippleAddress(this.state.toAddress))
-    {
-      this.props.addAlert("Invalid Ripple Address");
+    let { toDesTag, toAddress, amount } = this.state;
+
+    if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
+      this.props.preparePayment(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
     }
-    else if (this.props.fromAddress === this.state.toAddress) {
-      this.props.addAlert("Can't Send to yourself");
-    }
-    else {
-      if (this.state.toAddress === "") {
-        this.props.addAlert("Please Enter a destination address");
-        return;
-      }
-      if (this.state.amount === "") {
-        this.props.addAlert("Please enter an amount");
-        return;
-      }
-      let {toDesTag, toAddress, amount} = this.state;
-      if (!Util.validMoneyEntry(amount))
-      {
-        this.props.addAlert("Can't send 0 or less Ripple");
-        return;
-      }
-      if (this.props.activeWallet === Config.WALLETS.BANK_WALLET) {
-        this.props.preparePayment(parseFloat(amount), this.props.fromAddress, toAddress, parseInt(this.props.sourceTag), parseInt(toDesTag));
-      }
-      else {
-        this.props.preparePaymentWithPersonalAddress(parseFloat(amount), this.props.fromAddress, toAddress, null, parseInt(toDesTag));
-      }
+    else if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+      this.props.preparePaymentWithPersonalAddress(parseFloat(amount), this.props.fromAddress, toAddress, null, parseInt(toDesTag));
     }
   }
 
@@ -229,7 +251,7 @@ class SendRipple extends Component {
           />
           {this.renderSecretField()}
           <CustomButton
-            performAction={readyToSend ? "Send Payment" : "Prepare Payment"}
+            performAction={"Prepare Payment"}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.prepareTransaction}

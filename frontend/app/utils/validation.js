@@ -5,7 +5,9 @@ exports.TYPE = {
     SCREEN_NAME: 1,
     PASSWORD: 2,
     MONEY: 3,
-    RIPPLE_ADDRESS: 4
+    RIPPLE_ADDRESS: 4,
+    DESTINATION_TAG: 5,
+    SECRET_KEY: 6
 }
 
 const validationMap = {};
@@ -26,7 +28,10 @@ validationMap[exports.TYPE.SCREEN_NAME] = (screenName) => {
     if (screenName.length > Config.MAX_SCREEN_NAME_LENGTH) {
         errorMessages.push(`Screen Name Length must be less than ${Config.MAX_SCREEN_NAME_LENGTH}`);
     }
-    if (!(/^[a-zA-Z][0-9a-zA-Z]+$/).test(screenName)) {
+    if ((/^[0-9]/).test(screenName)) {
+        errorMessages.push('Screen Name cannot start with a number');
+    }
+    else if (!(/^[a-zA-Z][0-9a-zA-Z]+$/).test(screenName)) {
         errorMessages.push('Screen Name cannot have any symbols');
     }
     return errorMessages;
@@ -39,6 +44,9 @@ validationMap[exports.TYPE.PASSWORD] = (password) => {
     }
     if (password.length < Config.MIN_PASSWORD_LENGTH) {
         errorMessages.push(`Password Length must be more than ${Config.MIN_PASSWORD_LENGTH}`);
+    }
+    if ((/\s/).test(password)) {
+        errorMessages.push('Password cannot contain spaces');
     }
     if ((/\=/).test(password)) {
         errorMessages.push('Password cannot contain (=) symbol');
@@ -54,12 +62,31 @@ validationMap[exports.TYPE.RIPPLE_ADDRESS] = (rippleAddress) => {
     return errorMessages;
 }
 
+validationMap[exports.TYPE.DESTINATION_TAG] = (destTag) => {
+    const errorMessages = []
+    if (!(/^\d+$/).test(destTag)) {
+        errorMessages.push('Destination tag must be numerical');
+    }
+    else if ( parseInt(destTag) < 1 || parseInt(destTag) > 4294967294) {
+        errorMessages.push('Destination tag must be between 1 and 4294967294');
+    }
+    return errorMessages;
+}
+
+validationMap[exports.TYPE.SECRET_KEY] = (secretKey) => {
+    const errorMessages = []
+    if (secretKey.length === 0 || !(/^[a-zA-Z0-9]+$/).test(secretKey)) {
+        errorMessages.push('Not a valid ripple secret key');
+    }
+    return errorMessages;
+}
+
 validationMap[exports.TYPE.MONEY] = (amount) => {
     const errorMessages = []
     if (isNaN(parseFloat(amount))) {
         errorMessages.push("Amount input is improper");
     }
-    if (!(/^\d*\.{0,1}\d+$/).test(amount) || parseFloat(amount) === 0) {
+    if (!(/^\d*\.{0,1}\d+$/).test(amount) || parseFloat(amount) <= 0) {
         errorMessages.push("Amount must be a number more than 0");
     }
     return errorMessages;
