@@ -10,7 +10,6 @@ import {
   SEARCH_USERS_URL,
   AUTH_URL,
   CHANGE_PASSWORD_URL,
-  END_SESSION_URL,
   authRequest
 } from '../api';
 
@@ -145,7 +144,6 @@ exports.unauthUser = () => {
     logoutPromises.push(starter.startSingleApplication());
     logoutPromises.push(dispatch(clearAlerts()));
     logoutPromises.push(dispatch(logout()));
-    logoutPromises.push(dispatch(authRequest("POST", END_SESSION_URL, {})));
     Promise.all(logoutPromises).then(() => {
       Keychain.resetGenericPassword().then(() => {
         console.log("jwt token deleted");
