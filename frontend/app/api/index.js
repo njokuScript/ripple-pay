@@ -18,7 +18,6 @@ exports.RESPONSE_MESSAGES = {
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
-exports.END_SESSION_URL = `${API_URL}/endsession`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.NEXT_TRANSACTIONS_URL = `${API_URL}/nextTransactions`;
 // exports.NEXT_SHAPESHIFT_TRANSACTIONS_URL = `${API_URL}/nextShapeShiftTransactions`;
