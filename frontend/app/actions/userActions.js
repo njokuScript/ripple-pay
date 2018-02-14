@@ -49,12 +49,12 @@ exports.loginUser = (email, password) => {
     });
     return authedAxios.post(SIGNIN_URL, {email, password})
     .then((response) => {
-      let { token, screenName, wallets, cashRegister, personalAddress } = response.data;
+      let { token, screenName, wallets, cashRegister, personalAddress, personalBalance } = response.data;
       const usernameCred = null;
       const passwordCred = token;
       Keychain.setGenericPassword(null, passwordCred)
         .then(function() {
-          dispatch(authUser(screenName, wallets, cashRegister, personalAddress));
+          dispatch(authUser(screenName, wallets, cashRegister, personalAddress, personalBalance));
         })
       .catch((error) => {
           dispatch(addAlert("Could not log in. keychain issue."));
@@ -160,13 +160,14 @@ const logout = () => {
   };
 };
 
-const authUser = (screenName, wallets, cashRegister, personalAddress) => {
+const authUser = (screenName, wallets, cashRegister, personalAddress, personalBalance) => {
   return {
     type: 'AUTH_USER',
     screenName,
     wallets,
     cashRegister,
-    personalAddress
+    personalAddress,
+    personalBalance
   };
 };
 

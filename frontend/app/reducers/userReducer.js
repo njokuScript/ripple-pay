@@ -30,7 +30,8 @@ module.exports = (state=defaultState, action) => {
         screenName: action.screenName,
         wallets: action.wallets,
         cashRegister: action.cashRegister,
-        personalAddress: action.personalAddress
+        personalAddress: action.personalAddress,
+        personalBalance: action.personalBalance
       });
       //Make the user_id undefined after logout.
     case 'UPDATE_PASSWORD_ATTEMPTS':
