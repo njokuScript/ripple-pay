@@ -37,7 +37,7 @@ class Exchange extends Component {
       conversionDirection: ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN,
       orderedCoins: [],
       rippleCoin: {},
-      getCoinsFirstTime: true
+      assetsLoaded: false
     };
     this.timer = undefined;
     this.navTransition = this.navTransition.bind(this);
@@ -49,25 +49,25 @@ class Exchange extends Component {
     if ( event.id === "willAppear" )
     {
       this.setState({
-        getCoinsFirstTime: true
+        assetsLoaded: false
       });
       this.props.requestAllCoins();
     }
     else if (event.id === "didDisappear")
     {
       this.setState({
-        getCoinsFirstTime: true
+        assetsLoaded: false
       });
       window.clearInterval(this.timer);
     }
   }
 
   componentWillReceiveProps(newProps) {
-    if (!Util.isEmpty(newProps.changelly.totalCoinsObj) && this.state.getCoinsFirstTime) {
+    if (!Util.isEmpty(newProps.changelly.totalCoinsObj) && !this.state.assetsLoaded) {
       const changellyCoinSet = newProps.changelly.totalCoinsObj;
       this.props.getAllCoinData(changellyCoinSet).then(() => {
         this.setState({
-          getCoinsFirstTime: false
+          assetsLoaded: true
         }, () => {
           this.getRates();
           // get rates every minute
@@ -148,7 +148,7 @@ class Exchange extends Component {
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
-        perc={rippleCoin ? rippleCoin.perc : null}
+        perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.perc : null}
         // marketCap={rippleCoin ? rippleCoin.mktcap : null}
         coinSymbol="XRP"
         coinName="Ripple"
@@ -158,7 +158,7 @@ class Exchange extends Component {
       />
     );
 
-    if ( orderedCoins.length > 0 )
+    if ( orderedCoins.length > 0 && this.state.assetsLoaded )
     {
       orderedCoins.forEach((coinSymbol, idx) => {
 
