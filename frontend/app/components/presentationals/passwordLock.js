@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { unauthUser, comparePassword, clearAlerts } from '../../actions';
+import { unauthUser, comparePassword, clearAlerts, addAlert } from '../../actions';
 import CustomInput from './customInput';
 import CustomButton from './customButton';
 import Validation from '../../utils/validation';
@@ -114,7 +114,8 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = dispatch => ({
     unauthUser: () => dispatch(unauthUser()),
-    comparePassword: (password) => dispatch(comparePassword(password))
+    comparePassword: (password) => dispatch(comparePassword(password)),
+    addAlert: (message) => dispatch(addAlert(message))
 });
 
 export default connect(

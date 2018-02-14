@@ -14,6 +14,7 @@ import AlertContainer from '../alerts/AlertContainer';
 import ExchangeConfig from './exchange_enums';
 import Config from '../../config_enums';
 import Util from '../../utils/util';
+import Validation from '../../utils/validation';
 
 import {
   StyleSheet,

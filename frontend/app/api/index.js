@@ -111,7 +111,8 @@ exports.authRequest = (requestType, url, data, ...cbs) => {
             return authedAxios[requestType.toLowerCase()](url, data)
             .then((response) => {
                 const token = response.data.token;
-
+                delete response.data.token;
+                
                 Keychain.setGenericPassword(null, token).then(() => {
                     for (let i = 0; i < cbs.length; i++) {
                         let cb = cbs[i];

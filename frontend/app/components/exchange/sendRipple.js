@@ -78,6 +78,7 @@ class SendRipple extends Component {
       }
     } 
     this.props.clearTransaction();
+    this.setState(this.initialState);
   }
 
   secretKeyValidations() {
@@ -103,6 +104,11 @@ class SendRipple extends Component {
     }
     const validationErrors = [];
     validationErrors.push(...Validation.validateInput(Validation.TYPE.RIPPLE_ADDRESS, this.state.toAddress));
+
+    if (this.state.toDesTag && this.state.toDesTag.length > 0) {
+      validationErrors.push(...Validation.validateInput(Validation.TYPE.DESTINATION_TAG, this.state.toDesTag));
+    }
+
     validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.amount));
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
@@ -245,7 +251,7 @@ class SendRipple extends Component {
           />
           {this.renderSecretField()}
           <CustomButton
-            performAction={readyToSend ? "Send Payment" : "Prepare Payment"}
+            performAction={"Prepare Payment"}
             buttonColor={this.state.sendButtonDisabled ? "red" : "white"}
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.prepareTransaction}
