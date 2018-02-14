@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    Clipboard,
     StatusBar,
     Alert
 } from 'react-native';
@@ -68,14 +67,6 @@ class PersonalWallet extends React.Component {
         }
     }
 
-    clipBoardCopy(string) {
-        Alert.alert(string, `copied to clipboard!`);
-        Clipboard.setString(string);
-        Clipboard.getString().then((str) => {
-            return str;
-        });
-    }
-
     displayPersonalWallet() {
         const disabled = this.state.disabled;
         if (this.props.personalAddress) {
@@ -83,7 +74,7 @@ class PersonalWallet extends React.Component {
             return (
                 <View style={styles.walletDisplay}>
                     <View style={styles.imageContainer}>
-                        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => this.clipBoardCopy(this.props.personalAddress)}>
+                        <TouchableOpacity style={styles.image} underlayColor='#111F61' onPress={() => Util.clipBoardCopy(this.props.personalAddress)}>
                             <View style={styles.qrBackground}>
                                 <Image
                                     style={styles.qrCode}
@@ -94,7 +85,7 @@ class PersonalWallet extends React.Component {
                                     <Text style={styles.addressFont}>{this.props.personalAddress}</Text>
                                 </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.clipBoardCopy(this.state.personalSecret)}>
+                        <TouchableOpacity onPress={() => Util.clipBoardCopy(this.state.personalSecret)}>
                             {this.state.personalSecret ? <Text style={styles.addressFont}>secret key: {this.state.personalSecret}</Text> : null}
                         </TouchableOpacity>
                         {this.state.personalSecret ? <Text style={styles.noteFont}>Note: RipplePay does not store your Secret Key so please store it now.

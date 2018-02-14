@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Util from '../../utils/util';
+
 import {
     StyleSheet,
     Text,
@@ -15,7 +17,7 @@ const TransactionView = (props) => {
             <Text style={styles.infoText}>send to address: {props.otherParty}</Text>
             <Text style={styles.infoText}>send to destination tag: {props.otherPartyTag}</Text>
             <Text style={styles.infoText}>{`${date.toLocaleString("en-us", { month: "short" })} ${date.getDate()}, ${date.getFullYear()} ${props.time}`}</Text>
-            <Text style={styles.infoText}>Ripple Ledger Transaction Id:  {props.txnId}</Text>
+            <Text style={styles.infoText} onPress={() => Util.clipBoardCopy(props.txnId)}>Ripple Ledger Transaction Id:  {props.txnId}</Text>
         </View>
     );
 

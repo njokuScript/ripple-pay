@@ -43,7 +43,27 @@ class Login extends React.Component {
       email.value = Config.email;
       password.value = Config.password;
     }
+    
+    if (!this.signinValidations()) {
+      return;
+    }
+
+    dispatch(loginUser(email.value, password.value));
+  }
+
+  onSignUp() {
+    let { dispatch, fields: { email, password, screenName } } = this.props;
+
+    if (!this.signupValidations()) {
+      return;
+    }
+    
+    dispatch(signupUser(email.value, password.value, screenName.value));
+  }
+
+  signinValidations() {
     const validationErrors = [];
+    let { dispatch, fields: { email, password } } = this.props;
 
     validationErrors.push(...Validation.validateInput(Validation.TYPE.EMAIL, email.value));
     validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, password.value));
@@ -52,14 +72,15 @@ class Login extends React.Component {
       validationErrors.forEach((error) => {
         dispatch(addAlert(error));
       })
-      return;
+      return false;
     }
-    dispatch(loginUser(email.value, password.value));
+    
+    return true;
   }
 
-  onSignUp() {
-    let { dispatch, fields: { email, password, screenName } } = this.props;
+  signupValidations() {
     const validationErrors = [];
+    let { dispatch, fields: { email, password, screenName } } = this.props;
 
     validationErrors.push(...Validation.validateInput(Validation.TYPE.EMAIL, email.value));
     validationErrors.push(...Validation.validateInput(Validation.TYPE.PASSWORD, password.value));
@@ -69,9 +90,9 @@ class Login extends React.Component {
       validationErrors.forEach((error) => {
         dispatch(addAlert(error));
       })
-      return;
+      return false;
     }
-    dispatch(signupUser(email.value, password.value, screenName.value));
+    return true;
   }
 
   renderButton(screenName, renderError) {
