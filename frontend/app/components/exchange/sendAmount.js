@@ -79,17 +79,41 @@ class SendAmount extends Component {
     }
   }
 
+  secretKeyValidations() {
+    const validationErrors = [];
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SECRET_KEY, this.state.secret));
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((error) => {
+        this.props.addAlert(error);
+      })
+      return false;
+    }
+    return true;
+  }
+
+  prepareTransactionValidations() {
+    const { changellyAddress, changellyDestTag, from, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
+    let sourceTag = refundDestTag;
+    let fromAddress = refundAddress;
+
+    if (!changellyAddress || !changellyDestTag || !fromAddress || !from.fromAmount) {
+      this.props.addAlert("There was an error in the transaction.");
+      return false;
+    }
+    if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET && !sourceTag) {
+      this.props.addAlert("Error occurred. Please get a bank wallet.");
+      return false;
+    }
+    return true;
+  }
+
   preparePayment(){
     this.setState({pushed: true});
-    const { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
-    let sourceTag = null;
-    let fromAddress = this.props.changelly.changellyTxn.refundAddress;
-    if (this.props.user.activeWallet === Config.WALLETS.BANK_WALLET) {
-      sourceTag = this.props.user.wallets[this.props.user.wallets.length - 1];
-    }
-
-    if ( !changellyAddress || !from.fromAmount ) {
-      this.props.addAlert("There was an error in the transaction");
+    const { changellyAddress, changellyDestTag, from, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
+    let sourceTag = refundDestTag;
+    let fromAddress = refundAddress;
+    
+    if (!this.prepareTransactionValidations()) {
       return;
     }
 
@@ -123,16 +147,18 @@ class SendAmount extends Component {
         this.props.signAndSend(fromAddress, parseFloat(amount));
       }
       else if (this.props.user.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
+
+        if (!this.secretKeyValidations()) {
+          return;
+        }
+        
         this.props.sendPaymentWithPersonalAddress(fromAddress, this.state.secret, parseFloat(amount));
       }
     }
 
     this.props.clearTransaction();
     this.props.clearChangellyTransaction();
-    this.props.navigator.resetTo({
-      screen: 'Exchange',
-      navigatorStyle: { navBarHidden: true }
-    });
+    this.props.navigator.popToRoot();
 
   }
 
@@ -175,16 +201,23 @@ class SendAmount extends Component {
   }
 
   render() {
+    let { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee, message } = this.props.changelly.changellyTxn;
+    // message means that the changelly order was unsuccessful
+    if (message) {
+      this.props.addAlert(message.message);
+      this.props.navigator.popToRoot();
+      return null;
+    }
+
     if (this.props.action === ExchangeConfig.ACTIONS.WITHDRAW && this.state.sendButtonDisabled) {
       return (
-        <View style={styles.container}>
+        <View style={styles.bluecontainer}>
           {this.renderSecretField()}
           <PasswordLock enableSending={this.enableSending} />
         </View>
       );
     }
 
-    let { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
     to = to || {};
     from = from || {};
     let { amount, coin } = this.props.changelly.rate;
@@ -196,7 +229,7 @@ class SendAmount extends Component {
         `Convert Ripple to ${this.props.altCoin}`,
         'Transaction Details:',
         [
-          { text: `To Address: ${toAddress}` },
+          { text: `To Changelly Address: ${toAddress}` },
           { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
           { text: `Amount: ${this.props.transaction.amount}` },
           { text: `Fee: ${this.props.transaction.fee + Config.ripplePayFee}` },
@@ -254,6 +287,14 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingTop: 0,
     backgroundColor: 'white'
+  },
+  bluecontainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    backgroundColor: '#111F61',
+    paddingTop: 20
   },
   titleContainer: {
     flex: -1,

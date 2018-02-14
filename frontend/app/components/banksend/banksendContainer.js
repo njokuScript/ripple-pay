@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import BankSend from './banksend';
+import Config from '../../config_enums';
 import { 
   sendInBank, 
   addAlert, 
@@ -11,8 +12,7 @@ import {
 } from '../../actions';
 
 const mapStateToProps = ({user, transaction, alerts}) => ({
-  balance: user.balance,
-  personalBalance: user.personalBalance,
+  balance: user.activeWallet === Config.WALLETS.BANK_WALLET ? user.balance : user.personalBalance,
   activeWallet: user.activeWallet,
   personalAddress: user.personalAddress,
   transaction: transaction,

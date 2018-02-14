@@ -4,7 +4,6 @@ import {
     SEND_URL,
     PREPARE_PAYMENT_URL,
     NEXT_TRANSACTIONS_URL,
-    // NEXT_SHAPESHIFT_TRANSACTIONS_URL,
     authRequest
 } from '../api';
 
@@ -19,6 +18,9 @@ const RIPPLE_MESSAGES = {
     "tefPAST_SEQ": "Payment was submitted too late",
     // The following error message should never happen
     "tecUNFUNDED_PAYMENT": "Insufficient XRP to send payment",
+    "tefBAD_AUTH_MASTER": "Incorrect secret key for wallet",
+    // temporary email address
+    "bankInsufficientRippleError": "RipplePay cashRegister error. Please contact us at ripplePay@gmail.com"
 };
 
 exports.signAndSend = (fromAddress, amount) => {
