@@ -49,7 +49,7 @@ class Search extends React.Component {
       if (query.match(/[a-zA-Z]/)) {
         return true;
       }
-      this.props.addAlert("First letter must be a alphabetical");
+      this.props.addAlert("First letter must be alphabetical");
       return false;
     }
 

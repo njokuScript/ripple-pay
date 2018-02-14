@@ -158,10 +158,7 @@ class SendAmount extends Component {
 
     this.props.clearTransaction();
     this.props.clearChangellyTransaction();
-    this.props.navigator.resetTo({
-      screen: 'Exchange',
-      navigatorStyle: { navBarHidden: true }
-    });
+    this.props.navigator.popToRoot();
 
   }
 
@@ -204,16 +201,23 @@ class SendAmount extends Component {
   }
 
   render() {
+    let { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee, message } = this.props.changelly.changellyTxn;
+    // message means that the changelly order was unsuccessful
+    if (message) {
+      this.props.addAlert(message.message);
+      this.props.navigator.popToRoot();
+      return null;
+    }
+
     if (this.props.action === ExchangeConfig.ACTIONS.WITHDRAW && this.state.sendButtonDisabled) {
       return (
-        <View style={styles.container}>
+        <View style={styles.bluecontainer}>
           {this.renderSecretField()}
           <PasswordLock enableSending={this.enableSending} />
         </View>
       );
     }
 
-    let { changellyTxnId, changellyAddress, changellyDestTag, date, otherParty, toDestTag, from, to, refundAddress, refundDestTag, fee } = this.props.changelly.changellyTxn;
     to = to || {};
     from = from || {};
     let { amount, coin } = this.props.changelly.rate;
@@ -225,7 +229,7 @@ class SendAmount extends Component {
         `Convert Ripple to ${this.props.altCoin}`,
         'Transaction Details:',
         [
-          { text: `To Address: ${toAddress}` },
+          { text: `To Changelly Address: ${toAddress}` },
           { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
           { text: `Amount: ${this.props.transaction.amount}` },
           { text: `Fee: ${this.props.transaction.fee + Config.ripplePayFee}` },
@@ -283,6 +287,14 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingTop: 0,
     backgroundColor: 'white'
+  },
+  bluecontainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    backgroundColor: '#111F61',
+    paddingTop: 20
   },
   titleContainer: {
     flex: -1,

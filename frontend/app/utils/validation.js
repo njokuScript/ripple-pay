@@ -6,7 +6,8 @@ exports.TYPE = {
     PASSWORD: 2,
     MONEY: 3,
     RIPPLE_ADDRESS: 4,
-    SECRET_KEY: 5
+    DESTINATION_TAG: 5,
+    SECRET_KEY: 6
 }
 
 const validationMap = {};
@@ -27,7 +28,10 @@ validationMap[exports.TYPE.SCREEN_NAME] = (screenName) => {
     if (screenName.length > Config.MAX_SCREEN_NAME_LENGTH) {
         errorMessages.push(`Screen Name Length must be less than ${Config.MAX_SCREEN_NAME_LENGTH}`);
     }
-    if (!(/^[a-zA-Z][0-9a-zA-Z]+$/).test(screenName)) {
+    if ((/^[0-9]/).test(screenName)) {
+        errorMessages.push('Screen Name cannot start with a number');
+    }
+    else if (!(/^[a-zA-Z][0-9a-zA-Z]+$/).test(screenName)) {
         errorMessages.push('Screen Name cannot have any symbols');
     }
     return errorMessages;
@@ -54,6 +58,17 @@ validationMap[exports.TYPE.RIPPLE_ADDRESS] = (rippleAddress) => {
     const errorMessages = []
     if (!(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/).test(rippleAddress)) {
         errorMessages.push('Not a valid ripple address');
+    }
+    return errorMessages;
+}
+
+validationMap[exports.TYPE.DESTINATION_TAG] = (destTag) => {
+    const errorMessages = []
+    if (!(/^\d+$/).test(destTag)) {
+        errorMessages.push('Destination tag must be numerical');
+    }
+    else if ( parseInt(destTag) < 1 || parseInt(destTag) > 4294967294) {
+        errorMessages.push('Destination tag must be between 1 and 4294967294');
     }
     return errorMessages;
 }

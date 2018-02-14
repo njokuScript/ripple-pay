@@ -17,6 +17,7 @@ const RIPPLE_MESSAGES = {
     "tecDST_TAG_NEEDED": "Sending address requires a destination tag",
     "tefMAX_LEDGER": "Payment was submitted too late",
     "tefPAST_SEQ": "Payment was submitted too late",
+    "tefBAD_AUTH_MASTER": "Incorrect secret key for wallet",
     // The following error message should never happen
     "tecUNFUNDED_PAYMENT": "Insufficient XRP to send payment",
 };

@@ -67,44 +67,50 @@ class BankSend extends Component {
     });
   }
 
-  sendPayment(){
+  sendPayment() {
     this.props.clearAlerts();
-    if (!Util.validMoneyEntry(this.state.amount)) {
-      this.props.addAlert("cannot send 0 or less ripple");
-    } 
-    else if (this.state.amount > this.props.balance) {
-      this.props.addAlert("balance insufficient");
-    } 
-    else {
-      this.props.addAlert("sending payment...");
-      this.setState({sendingDisabled: true});
-      this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
+    if (!this.bankSendValidations()) {
+      return;
     }
+    this.props.addAlert("sending payment...");
+    this.setState({ sendingDisabled: true });
+    this.props.sendInBank(this.props.receiverScreenName, parseFloat(this.state.amount));
   }
 
-  secretKeyValidations() {
+  bankSendValidations() {
     const validationErrors = [];
-    validationErrors.push(...Validation.validateInput(Validation.TYPE.SECRET_KEY, this.state.secret));
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.amount));
+
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
         this.props.addAlert(error);
       })
       return false;
     }
+
+    if (parseFloat(this.props.balance) - parseFloat(this.state.amount) < 0) {
+      this.props.addAlert("balance insufficient");
+      return false;
+    } 
     return true;
   }
 
-  prepareTransactionValidations() {
+  transactionValidations() {
     if (!this.props.personalAddress) {
       this.props.addAlert("Please get a personal address first");
       return false;
     }
+    if (parseFloat(this.props.balance) - parseFloat(this.state.amount) < Config.MIN_XRP_PER_WALLET) {
+      this.props.addAlert("balance insufficient");
+      return false;
+    } 
     const validationErrors = [];
     validationErrors.push(...Validation.validateInput(Validation.TYPE.MONEY, this.state.amount));
+    validationErrors.push(...Validation.validateInput(Validation.TYPE.SECRET_KEY, this.state.secret));
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
         this.props.addAlert(error);
-      })
+      });
       return false;
     }
     
@@ -112,7 +118,7 @@ class BankSend extends Component {
   }
 
   preparePersonal() {
-    if (!this.prepareTransactionValidations()) {
+    if (!this.transactionValidations()) {
       return;
     }
     let { amount } = this.state;
@@ -121,11 +127,13 @@ class BankSend extends Component {
 
   sendPersonal() {
     this.setState({ sendingDisabled: true });
+    if (!this.transactionValidations()) {
+      this.props.clearTransaction();
+      return;
+    }
+
     const { amount } = this.props.transaction;
     if (amount) {
-        if (!this.secretKeyValidations()) {
-          return;
-        }
         this.props.sendPaymentWithPersonalAddress(this.props.personalAddress, this.state.secret, parseFloat(amount));
     } 
     this.props.clearTransaction();
