@@ -14,6 +14,7 @@ const Coin = (props) => {
       <Image
           style={{width: 60, height: 60}}
           source={props.imageSource}
+          defaultSource={require('../exchange/images/no_image.png')}
       />
       <View style={styles.coinType}>
         <Text style={styles.coinFont}>{props.coinName} ({props.coinSymbol})</Text>

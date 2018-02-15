@@ -67,8 +67,6 @@ class Exchange extends Component {
         }, () => {
           this.getRates();
           // get rates every minute
-          console.log(this);
-          
           this.timer = window.setInterval(() => {
             this.getRates();
           }, 60000);
@@ -171,7 +169,7 @@ class Exchange extends Component {
         } else {
           imageUrl = "https://www.jainsusa.com/images/store/landscape/not-available.jpg";
         }        
-
+        
         displayCoins.push(
           <Coin
             key={idx}
