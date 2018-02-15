@@ -53,11 +53,7 @@ class Exchange extends Component {
       });
       this.props.requestAllCoins();
     }
-    else if (event.id === "didDisappear")
-    {
-      this.setState({
-        assetsLoaded: false
-      });
+    else if (event.id === "didDisappear") {
       window.clearInterval(this.timer);
     }
   }
@@ -71,6 +67,8 @@ class Exchange extends Component {
         }, () => {
           this.getRates();
           // get rates every minute
+          console.log(this);
+          
           this.timer = window.setInterval(() => {
             this.getRates();
           }, 60000);
@@ -172,7 +170,7 @@ class Exchange extends Component {
           imageUrl = baseImageUrl + coin.ImageUrl;
         } else {
           imageUrl = "https://www.jainsusa.com/images/store/landscape/not-available.jpg";
-        }
+        }        
 
         displayCoins.push(
           <Coin
@@ -188,7 +186,8 @@ class Exchange extends Component {
           />
         );
       });
-    } else {
+    } 
+    else {
       displayCoins.push(
         <LoadingIcon 
           key="loadIcon" 
