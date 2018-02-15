@@ -40,7 +40,7 @@ exports.receivedTransaction = TransactionActions.receivedTransaction;
 
 // WALLET ACTIONS
 exports.delWallet = WalletActions.delWallet;
-exports.requestOnlyDesTag = WalletActions.requestOnlyDesTag;
+exports.generateDestTag = WalletActions.generateDestTag;
 exports.requestAddress = WalletActions.requestAddress;
 exports.changeWallet = WalletActions.changeWallet;
 

@@ -42,7 +42,7 @@ class Wallet extends React.Component {
         .then((response) => { 
 
           if (response === Api.RESPONSE_MESSAGES.SUCCESS) {
-            return this.props.delWallet(this.props.wallets[0], this.props.cashRegister);
+            return this.props.delWallet(this.props.wallets[0]);
           } else if (response === Api.RESPONSE_MESSAGES.FAILURE) {
             return null;
           }
@@ -62,12 +62,12 @@ class Wallet extends React.Component {
         this.setState({disabled: true});
         if (this.props.cashRegister)
         {
-          this.props.requestOnlyDesTag(this.props.cashRegister).then(()=> this.setState({disabled: false}));
+          this.props.generateDestTag().then(()=> this.setState({disabled: false}));
         }
         else
         {
           this.props.requestAddress()
-          .then(()=> this.props.requestOnlyDesTag(this.props.cashRegister))
+          .then(()=> this.props.generateDestTag())
           .then(()=> this.setState({disabled: false}));
         }
       }

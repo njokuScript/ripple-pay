@@ -2,7 +2,7 @@ import{ connect } from 'react-redux';
 import Wallet from './wallet';
 import {
   requestTransactions,
-  requestOnlyDesTag,
+  generateDestTag,
   requestAddress,
   delWallet,
   genPersonalAddress,
@@ -19,9 +19,9 @@ const mapStateToProps = ({user}) => ({
 
 const mapDispatchToProps = dispatch => ({
   requestTransactions: () => dispatch(requestTransactions()),
-  requestOnlyDesTag: (cashRegister) => dispatch(requestOnlyDesTag(cashRegister)),
+  generateDestTag: () => dispatch(generateDestTag()),
   requestAddress: () => dispatch(requestAddress()),
-  delWallet: (desTag, cashRegister) => dispatch(delWallet(desTag, cashRegister)),
+  delWallet: (desTag) => dispatch(delWallet(desTag)),
   genPersonalAddress: (setSecret) => dispatch(genPersonalAddress(setSecret)),
   removePersonalAddress: () => dispatch(removePersonalAddress())
 });

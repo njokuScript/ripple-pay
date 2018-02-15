@@ -9,14 +9,14 @@ import {
 
 import { addAlert } from '../actions';
 
-exports.delWallet = (desTag, cashRegister) => {
-    return authRequest("POST", DEL_WALLET_URL, { desTag, cashRegister }, (response) => {
+exports.delWallet = (desTag) => {
+    return authRequest("POST", DEL_WALLET_URL, { desTag }, (response) => {
         return deltheWallet(response.data);
     });
 };
 
-exports.requestOnlyDesTag = (cashRegister) => {
-    return authRequest("POST", DEST_URL, { cashRegister }, (response) => {
+exports.generateDestTag = () => {
+    return authRequest("POST", DEST_URL, {}, (response) => {
         if (response.data.message) {
             return addAlert(response.data.message);
         }
