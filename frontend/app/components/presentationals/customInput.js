@@ -8,7 +8,7 @@ import {
 const CustomInput = (props) => {
   return (
     <View style={styles.field}>
-      <TextInput style={styles.textInput} autoCapitalize="none" {...props} />
+      <TextInput style={styles.textInput} autoComplete={false} autoCapitalize="none" {...props} />
       <View>
         {props.errorText}
       </View>
