@@ -53,10 +53,36 @@ class BankSend extends Component {
       this.setState(this.initialState);
     } else if (event.id === "willAppear") {
       getXRPtoUSD(this.props.balance, this.setUSD);
+      this.props.clearTransaction();
       this.props.clearAlerts();
     }
     if (event.id === "bottomTabSelected") {
+      this.props.clearTransaction();
       this.props.navigator.popToRoot();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let { toAddress, toDesTag, fee, amount } = this.props.transaction;
+    const prevNotReadyToSend = Boolean(!toAddress || !fee || !amount);
+
+    let { toAddress: nextPropsToAddress, toDestTag: nextPropsToDesTag, fee: nextPropsFee, amount: nextPropsAmount } = nextProps.transaction;
+    const nowReadyToSend = Boolean(nextPropsToAddress && nextPropsFee && nextPropsAmount);
+
+    if (prevNotReadyToSend && nowReadyToSend) {
+      Alert.alert(
+        `Sending Ripple to ${nextProps.receiverScreenName}`,
+        'Transaction Details:',
+        [
+          { text: `To Address: ${nextPropsToAddress}`, onPress: this.props.clearTransaction },
+          { text: `To Destination Tag: ${isNaN(nextPropsToDesTag) ? "Not specified" : nextPropsToDesTag}`, onPress: this.props.clearTransaction },
+          { text: `Amount: ${nextPropsAmount}`, onPress: this.props.clearTransaction },
+          { text: `Fee: ${nextPropsFee + Config.ripplePayFee}`, onPress: this.props.clearTransaction },
+          { text: `Send Payment!`, onPress: this.sendPersonal },
+          { text: `Cancel Payment!`, onPress: this.props.clearTransaction }
+        ],
+        { cancelable: false }
+      );
     }
   }
 
@@ -84,7 +110,7 @@ class BankSend extends Component {
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
         this.props.addAlert(error);
-      })
+      });
       return false;
     }
 
@@ -224,72 +250,54 @@ class BankSend extends Component {
       return (
           this.passwordLock()
       );
-    } else {
-      const { toAddress, toDesTag, fee, amount } = this.props.transaction;
-      const readyToSend = Boolean(toAddress && fee && amount);
-      if (readyToSend) {
-        Alert.alert(
-          'Send Ripple:',
-          'Transaction Details:',
-          [
-            { text: `Sending to ${this.props.receiverScreenName}`},
-            { text: `To Address: ${toAddress}`},
-            { text: `To Destination Tag: ${toDesTag}`},
-            { text: `Amount: ${amount}`},
-            { text: `Fee: ${fee + Config.ripplePayFee}`},
-            { text: `Send Payment!`, onPress: this.sendPersonal},
-            { text: `Cancel Payment!`, onPress: this.props.clearTransaction},
-          ],
-          { cancelable: false }
-        );
-      }
-      let usd = (
-        <Text style={styles.usd}>${this.state.usd}</Text>
-      );
-      if (this.state.amount) {
-        usd = (
-          <View>
-            <Text style={styles.usd}>${Util.truncate(this.state.usdPerXRP * this.state.amount, 2)}</Text>
-          </View>
-        );
-      }
-      return (
-        <View style={styles.container}>
-        {this.topContainer()}
-          <View style={styles.usdContainer}>
-            {usd}
-          </View>
-        <View style={styles.amount}>
-          <CustomInput
-            placeholder="Amount"
-            onChangeText={
-              (amt) => {
-                getXRPtoUSD(this.props.balance, this.setUSD);
-                this.setState({ amount: amt });
-              }
-            }
-            autoCorrect={false}
-            autoFocus={true}
-            placeholderTextColor="#6D768B"
-            autoCapitalize={'none'}
-            keyboardType={'decimal-pad'}
-            keyboardAppearance={'dark'} />
+    } 
+
+    let usd = (
+      <Text style={styles.usd}>${this.state.usd}</Text>
+    );
+    if (this.state.amount) {
+      usd = (
+        <View>
+          <Text style={styles.usd}>${Util.truncate(this.state.usdPerXRP * this.state.amount, 2)}</Text>
         </View>
-        { this.renderSecretField() }
-        <View style={styles.paymentButton}>
-          <CustomButton
-            performAction={`pay ${this.props.receiverScreenName}`}
-            buttonColor={this.state.sendingDisabled ? "red" : "white"}
-            isDisabled={this.state.sendingDisabled}
-            handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.preparePersonal}
-          />
-        </View>
-        <View style={styles.alert}>
-          {this.renderAlerts()}
-        </View>
-      </View>
       );
     }
+    return (
+      <View style={styles.container}>
+      {this.topContainer()}
+        <View style={styles.usdContainer}>
+          {usd}
+        </View>
+      <View style={styles.amount}>
+        <CustomInput
+          placeholder="Amount"
+          onChangeText={
+            (amt) => {
+              getXRPtoUSD(this.props.balance, this.setUSD);
+              this.setState({ amount: amt });
+            }
+          }
+          autoCorrect={false}
+          autoFocus={true}
+          placeholderTextColor="#6D768B"
+          autoCapitalize={'none'}
+          keyboardType={'decimal-pad'}
+          keyboardAppearance={'dark'} />
+      </View>
+      { this.renderSecretField() }
+      <View style={styles.paymentButton}>
+        <CustomButton
+          performAction={`pay ${this.props.receiverScreenName}`}
+          buttonColor={this.state.sendingDisabled ? "red" : "white"}
+          isDisabled={this.state.sendingDisabled}
+          handlePress={this.props.activeWallet === Config.WALLETS.BANK_WALLET ? this.sendPayment : this.preparePersonal}
+        />
+      </View>
+      <View style={styles.alert}>
+        {this.renderAlerts()}
+      </View>
+    </View>
+    );
   }
 }
 

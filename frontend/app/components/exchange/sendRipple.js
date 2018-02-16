@@ -46,12 +46,37 @@ class SendRipple extends Component {
     this.initialState = _.cloneDeep(this.state);
   }
 
+  componentWillReceiveProps(nextProps) {
+    let { toAddress, toDesTag, fee, amount } = this.props.transaction;
+    const prevNotReadyToSend = Boolean(!toAddress || !fee || !amount);
+
+    let { toAddress: nextPropsToAddress, toDestTag: nextPropsToDesTag, fee: nextPropsFee, amount: nextPropsAmount } = nextProps.transaction;
+    const nowReadyToSend = Boolean(nextPropsToAddress && nextPropsFee && nextPropsAmount);
+
+    if (prevNotReadyToSend && nowReadyToSend) {
+      Alert.alert(
+        'Send Ripple',
+        'Transaction Details:',
+        [
+          { text: `To Address: ${nextPropsToAddress}`, onPress: this.props.clearTransaction },
+          { text: `To Destination Tag: ${isNaN(nextPropsToDesTag) ? "Not specified" : nextPropsToDesTag}`, onPress: this.props.clearTransaction },
+          { text: `Amount: ${nextPropsAmount}`, onPress: this.props.clearTransaction },
+          { text: `Fee: ${nextPropsFee + Config.ripplePayFee}`, onPress: this.props.clearTransaction },
+          { text: `Send Payment!`, onPress: this.sendPayment },
+          { text: `Cancel Payment!`, onPress: this.props.clearTransaction }
+        ],
+        { cancelable: false }
+      );
+    }
+  }
+
   onNavigatorEvent(event) {
     if (event.id === "willAppear") {
       this.props.clearTransaction();
     }
     if (event.id === "willDisappear") {
       this.setState(this.initialState);
+      this.props.clearTransaction();
     }
   }
 
@@ -177,24 +202,6 @@ class SendRipple extends Component {
           { this.displayBackButton() }
           <PasswordLock enableSending={this.enableSending} />
         </View>
-      );
-    }
-
-    const { toAddress, toDesTag, fee, amount } = this.props.transaction;
-    const readyToSend = Boolean(toAddress && fee && amount);
-    if (readyToSend) {
-      Alert.alert(
-        'Send Ripple',
-        'Transaction Details:',
-        [
-          { text: `To Address: ${toAddress}` },
-          { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
-          { text: `Amount: ${amount}` },
-          { text: `Fee: ${fee + Config.ripplePayFee}` },
-          { text: `Send Payment!`, onPress: this.sendPayment },
-          { text: `Cancel Payment!`, onPress: this.props.clearTransaction },
-        ],
-        { cancelable: false }
       );
     }
 

@@ -7,20 +7,18 @@ import { apiKey } from '../../apiKey';
 import { API_URL } from '../config_enums';
 import Promise from 'bluebird';
 // currently using localhost. but change to production server later.
-// let SHAPESHIFT_URL = 'https://shapeshift.io';
 const COINCAP_URL = 'https://coincap.io';
 
 exports.RESPONSE_MESSAGES = {
     FAILURE: 0,
     SUCCESS: 1
-}
+};
 
 exports.ADDR_URL = `${API_URL}/addrs`;
 exports.SIGNIN_URL = `${API_URL}/signin`;
 exports.SIGNUP_URL = `${API_URL}/signup`;
 exports.TRANSACTIONS_URL = `${API_URL}/transactions`;
 exports.NEXT_TRANSACTIONS_URL = `${API_URL}/nextTransactions`;
-// exports.NEXT_SHAPESHIFT_TRANSACTIONS_URL = `${API_URL}/nextShapeShiftTransactions`;
 exports.SEARCH_USERS_URL = `${API_URL}/search`;
 exports.SEND_URL = `${API_URL}/send`;
 exports.PREPARE_PAYMENT_URL = `${API_URL}/payment`;
@@ -39,15 +37,6 @@ exports.PERSONAL_TRANSACTIONS_URL = `${API_URL}/personaltrans`;
 exports.PREPARE_PAYMENT_PERSONAL_URL = `${API_URL}/personalpayment`;
 exports.SEND_PAYMENT_PERSONAL_URL = `${API_URL}/sendpersonal`;
 exports.PREPARE_PERSONAL_TO_BANK = `${API_URL}/preparePersonalToBank`;
-
-// shape shift
-// exports.COINS_URL = `${SHAPESHIFT_URL}/getcoins`;
-// exports.RATE_URL = `${SHAPESHIFT_URL}/rate`;
-// exports.MARKET_URL = `${SHAPESHIFT_URL}/marketinfo`;
-// exports.SEND_AMOUNT_URL = `${SHAPESHIFT_URL}/sendamount`;
-// exports.SHAPER_URL = `${SHAPESHIFT_URL}/shift`;
-// exports.TIME_URL = `${SHAPESHIFT_URL}/timeremaining`;
-// exports.SHAPE_TXN_STAT_URL = `${SHAPESHIFT_URL}/txStat`;
 
 // coin cap
 exports.XRP_TO_USD_URL = `${COINCAP_URL}/page/XRP`;

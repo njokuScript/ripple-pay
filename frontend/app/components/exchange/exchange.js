@@ -54,6 +54,9 @@ class Exchange extends Component {
       this.props.requestAllCoins();
     }
     else if (event.id === "didDisappear") {
+      this.setState({
+        assetsLoaded: true
+      });
       window.clearInterval(this.timer);
     }
   }

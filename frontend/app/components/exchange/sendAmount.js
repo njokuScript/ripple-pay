@@ -12,6 +12,7 @@ import CustomInput from '../presentationals/customInput';
 import PasswordLock from '../presentationals/passwordLock';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
+import Validation from '../../utils/validation';
 import ExchangeConfig from './exchange_enums';
 import Config from '../../config_enums';
 
@@ -47,10 +48,35 @@ class SendAmount extends Component {
     this.initialState = _.cloneDeep(this.state);
   }
 
+  componentWillReceiveProps(nextProps) {
+    let { toAddress, toDesTag, fee, amount } = this.props.transaction;
+    const prevNotReadyToSend = Boolean(!toAddress || !fee || !amount);
+
+    let { toAddress: nextPropsToAddress, toDestTag: nextPropsToDesTag, fee: nextPropsFee, amount: nextPropsAmount } = nextProps.transaction;
+    const nowReadyToSend = Boolean(nextPropsToAddress && nextPropsFee && nextPropsAmount);
+
+    if (prevNotReadyToSend && nowReadyToSend) {
+      Alert.alert(
+        `Convert Ripple to ${nextProps.altCoin}`,
+        'Transaction Details:',
+        [
+          { text: `To Address: ${nextPropsToAddress}`, onPress: this.props.clearTransaction },
+          { text: `To Destination Tag: ${isNaN(nextPropsToDesTag) ? "Not specified" : nextPropsToDesTag}`, onPress: this.props.clearTransaction },
+          { text: `Amount: ${nextPropsAmount}`, onPress: this.props.clearTransaction },
+          { text: `Fee: ${nextPropsFee + Config.ripplePayFee}`, onPress: this.props.clearTransaction },
+          { text: `Send Payment!`, onPress: this.sendPayment },
+          { text: `Cancel Payment!`, onPress: this.props.clearTransaction }
+        ],
+        { cancelable: false }
+      );
+    }
+  }
+
   onNavigatorEvent(event){
     if (event.id === "willDisappear"){
       this.setState(this.initialState);
       this.props.clearChangellyTransaction();
+      this.props.clearTransaction();
       clearInterval(this.timer);
       this.props.navigator.popToRoot();
     }
@@ -85,7 +111,7 @@ class SendAmount extends Component {
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
         this.props.addAlert(error);
-      })
+      });
       return false;
     }
     return true;
@@ -221,24 +247,6 @@ class SendAmount extends Component {
     to = to || {};
     from = from || {};
     let { amount, coin } = this.props.changelly.rate;
-    let { toAddress, toDesTag } = this.props.transaction;
-    let readyToSend = Boolean(toAddress && this.props.transaction.fee && this.props.transaction.amount);
-
-    if (readyToSend) {
-      Alert.alert(
-        `Convert Ripple to ${this.props.altCoin}`,
-        'Transaction Details:',
-        [
-          { text: `To Changelly Address: ${toAddress}` },
-          { text: `To Destination Tag: ${isNaN(toDesTag) ? "Not specified" : toDesTag}` },
-          { text: `Amount: ${this.props.transaction.amount}` },
-          { text: `Fee: ${this.props.transaction.fee + Config.ripplePayFee}` },
-          { text: `Send Payment!`, onPress: this.sendPayment },
-          { text: `Cancel Payment!`, onPress: this.props.clearTransaction },
-        ],
-        { cancelable: false }
-      );
-    }
       return (
         <View style={styles.container}>
           <AlertContainer />
