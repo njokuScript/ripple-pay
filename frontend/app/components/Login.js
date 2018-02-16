@@ -71,7 +71,7 @@ class Login extends React.Component {
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
         dispatch(addAlert(error));
-      })
+      });
       return false;
     }
     
