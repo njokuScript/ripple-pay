@@ -6,14 +6,14 @@ import {createStore, compose, applyMiddleware} from 'redux';
 import reducer from '../reducers';
 import logger from 'redux-logger';
 
-var defaultState = {};
+let defaultState = {};
 // Upgraded from AsyncStorage to file system storage because info was getting too large. 
 // This must be removed later anyway though.
 // Must remove autoRehydrate and persistStore in production. Unsafe.
 exports.configureStore = (initialState=defaultState) => {
   // AsyncStorage.clear().then(() => {})
   // do clear when the first screen appears
-  var store = createStore(reducer, initialState, compose(
+  let store = createStore(reducer, initialState, compose(
     applyMiddleware(thunk, logger)
     // autoRehydrate()
   ));

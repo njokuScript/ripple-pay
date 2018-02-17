@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
 });
 
-var mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
   return {
     alerts: state.alerts
   };
