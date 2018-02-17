@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 
-var defaultState = {
+const defaultState = {
     toAddress: null,
     toDesTag: null,
     fee: null,
@@ -14,7 +14,7 @@ module.exports = (state = defaultState, action) => {
         case 'RECEIVED_TRANSACTION':
             return Object.assign({}, state, action.data);
         case 'CLEAR_TRANSACTION':
-            return Object.assign({}, state, { toAddress: null, toDesTag: null, fee: null, amount: null })
+            return Object.assign({}, state, { toAddress: null, toDesTag: null, fee: null, amount: null });
         default:
             return state;
     }
