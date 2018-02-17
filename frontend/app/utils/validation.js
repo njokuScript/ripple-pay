@@ -8,7 +8,7 @@ exports.TYPE = {
     RIPPLE_ADDRESS: 4,
     DESTINATION_TAG: 5,
     SECRET_KEY: 6
-}
+};
 
 const validationMap = {};
 
@@ -21,7 +21,7 @@ validationMap[exports.TYPE.EMAIL] = (email) => {
         errorMessages.push("Email is not in correct email form");
     }
     return errorMessages;
-}
+};
 
 validationMap[exports.TYPE.SCREEN_NAME] = (screenName) => {
     const errorMessages = [];
@@ -35,10 +35,10 @@ validationMap[exports.TYPE.SCREEN_NAME] = (screenName) => {
         errorMessages.push('Screen Name cannot have any symbols');
     }
     return errorMessages;
-}
+};
 
 validationMap[exports.TYPE.PASSWORD] = (password) => {
-    const errorMessages = []
+    const errorMessages = [];
     if (password.length > Config.MAX_PASSWORD_LENGTH) {
         errorMessages.push(`Password Length must be less than ${Config.MAX_PASSWORD_LENGTH}`);
     }
@@ -52,18 +52,18 @@ validationMap[exports.TYPE.PASSWORD] = (password) => {
         errorMessages.push('Password cannot contain (=) symbol');
     }
     return errorMessages;
-}
+};
 
 validationMap[exports.TYPE.RIPPLE_ADDRESS] = (rippleAddress) => {
-    const errorMessages = []
+    const errorMessages = [];
     if (!(/^r[1-9A-HJ-NP-Za-km-z]{25,34}$/).test(rippleAddress)) {
         errorMessages.push('Not a valid ripple address');
     }
     return errorMessages;
-}
+};
 
 validationMap[exports.TYPE.DESTINATION_TAG] = (destTag) => {
-    const errorMessages = []
+    const errorMessages = [];
     if (!(/^\d+$/).test(destTag)) {
         errorMessages.push('Destination tag must be numerical');
     }
@@ -71,7 +71,7 @@ validationMap[exports.TYPE.DESTINATION_TAG] = (destTag) => {
         errorMessages.push('Destination tag must be between 1 and 4294967294');
     }
     return errorMessages;
-}
+};
 
 validationMap[exports.TYPE.SECRET_KEY] = (secretKey) => {
     const errorMessages = []
@@ -79,10 +79,10 @@ validationMap[exports.TYPE.SECRET_KEY] = (secretKey) => {
         errorMessages.push('Not a valid ripple secret key');
     }
     return errorMessages;
-}
+};
 
 validationMap[exports.TYPE.MONEY] = (amount) => {
-    const errorMessages = []
+    const errorMessages = [];
     if (isNaN(parseFloat(amount))) {
         errorMessages.push("Amount input is improper");
     }
@@ -90,8 +90,8 @@ validationMap[exports.TYPE.MONEY] = (amount) => {
         errorMessages.push("Amount must be a number more than 0");
     }
     return errorMessages;
-}
+};
 
 exports.validateInput = (type, input) => {
     return validationMap[type](input);
-}
+};

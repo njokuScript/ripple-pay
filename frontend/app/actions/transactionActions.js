@@ -63,8 +63,7 @@ exports.sendInBank = (receiverScreenName, amount) => {
         "POST",
         BANK_SEND_URL,
         { receiverScreenName, amount },
-        (response) => addAlert(response.data.message),
-        (response) => receivedBalance(response.data)
+        (response) => addAlert(response.data.message)
     );
 };
 
@@ -79,12 +78,6 @@ exports.loadNextTransactions = (maxDate) => {
         return receivedNextTransactions(response.data);
     });
 };
-
-// exports.loadNextShapeShiftTransactions = (maxDate) => {
-//     return authRequest("GET", NEXT_SHAPESHIFT_TRANSACTIONS_URL, { params: [maxDate] }, (response) => {
-//         return receivedNextShapeShiftTransactions(response.data);
-//     });
-// };
 
 exports.receivedTransaction = (data) => {
     return {
@@ -113,20 +106,14 @@ const receivedNextTransactions = (data) => {
     };
 };
 
-// const receivedNextShapeShiftTransactions = (data) => {
-//     return {
-//         type: 'RECEIVED_NEXT_SHAPESHIFT_TRANSACTIONS',
-//         data
-//     };
-// };
-
-exports.refreshShouldLoadMoreValues = {
-    type: 'REFRESH_LOAD_MORE'
-};
 
 const receivedBalance = (data) => {
     return {
         type: 'RECEIVED_BALANCE',
         data
     };
+};
+
+exports.refreshShouldLoadMoreValues = {
+    type: 'REFRESH_LOAD_MORE'
 };
