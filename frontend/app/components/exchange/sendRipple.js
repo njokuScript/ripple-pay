@@ -112,7 +112,7 @@ class SendRipple extends Component {
     if (validationErrors.length > 0) {
       validationErrors.forEach((error) => {
         this.props.addAlert(error);
-      })
+      });
       return false;
     }
     return true;

@@ -63,6 +63,7 @@ exports.sendInBank = (receiverScreenName, amount) => {
         "POST",
         BANK_SEND_URL,
         { receiverScreenName, amount },
+        (response) => receivedBalance(response.data),
         (response) => addAlert(response.data.message)
     );
 };

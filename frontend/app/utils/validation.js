@@ -32,7 +32,7 @@ validationMap[exports.TYPE.SCREEN_NAME] = (screenName) => {
         errorMessages.push('Screen Name cannot start with a number');
     }
     else if (!(/^[a-zA-Z][0-9a-zA-Z]+$/).test(screenName)) {
-        errorMessages.push('Screen Name cannot have any symbols');
+        errorMessages.push('Screen Name cannot have any symbols or spaces');
     }
     return errorMessages;
 };
