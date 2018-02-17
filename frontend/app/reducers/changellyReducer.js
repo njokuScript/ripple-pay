@@ -1,6 +1,6 @@
 import { merge } from 'lodash';
 
-var defaultState = {
+const defaultState = {
     orderedCoins: [],
     totalCoinsObj: {},
     minimumSend: {},
