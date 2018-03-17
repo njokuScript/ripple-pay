@@ -39,10 +39,10 @@ class Login extends React.Component {
   onSignIn() {
     let { dispatch, fields: { email, password } } = this.props;
     // the following is only to allow for easier testing and must be removed later.
-    if (Config.email && Config.password) {
-      email.value = Config.email;
-      password.value = Config.password;
-    }
+    // if (Config.email && Config.password) {
+    //   email.value = Config.email;
+    //   password.value = Config.password;
+    // }
     
     if (!this.signinValidations()) {
       return;

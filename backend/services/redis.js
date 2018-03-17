@@ -6,8 +6,7 @@ bluebird.promisifyAll(redis.RedisClient.prototype);
 let RedisCache;
 
 if (!RedisCache) {
-  console.log("Redis Initialized");
-  if (process.env.NODE_ENV == 'production') {
+  if (process.env.NODE_ENV === 'production') {    
     RedisCache = redis.createClient(process.env.REDISCLOUD_URL);
   } else {
     RedisCache = redis.createClient();
