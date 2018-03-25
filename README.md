@@ -3,7 +3,7 @@
 See Live Demo Here: [https://pateldd1.github.io/ripplePay-Demo/](https://pateldd1.github.io/ripplePay-Demo/)
 
 ## Background
-
+<!--  -->
 ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that allows currency conversion with over 60 other cryptocurrencies.
 
 ## iPhone Demo
