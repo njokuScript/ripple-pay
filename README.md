@@ -8,7 +8,7 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 
 ## iPhone Demo
 
-<img src="./images/ripplePayNewest.gif" width="300" height="500" />
+<img src="./images/ripplePayNewest.gif" width="400" height="700" />
 
 ## App Screens (iOS and Android)
 <br><br>
