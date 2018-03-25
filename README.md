@@ -8,7 +8,7 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 
 ## Sending Ripple Cross-platform to Gatehub Wallet
 <br><br>
-![gatehub-bitcoin](/images/transaction_demo_new.gif)
+![gatehub-bitcoin](/images/ripplePayNewest.gif)
 
 ## Withdraw and Deposit in 60 different cryptocurrencies
 <br><br>
