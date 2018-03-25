@@ -12,6 +12,7 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 
 ## App Screens (iOS and Android)
 <br><br>
+![gatehub-bitcoin](/images/coinsNew.png)
 <img src="images/coinsNew.png" width="300" height="550" />
 <img src="images/transactionsNew.png" width="300" height="550" />
 <img src="images/conversionsNew.png" width="300" height="550" />
