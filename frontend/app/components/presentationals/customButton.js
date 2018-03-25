@@ -13,7 +13,7 @@ const CustomButton = (props) => {
     fontWeight: '400',
     fontSize: 18,
     color: props.buttonColor,
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     textAlign: 'center'
   };
   return (

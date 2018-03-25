@@ -15,7 +15,7 @@ const LoadMoreDataButton = (props) => {
     fontWeight: '400',
     fontSize: 13,
     color: props.buttonColor,
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     textAlign: 'center'
   };
   return (

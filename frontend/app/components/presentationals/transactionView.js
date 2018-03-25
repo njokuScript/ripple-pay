@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         borderWidth: .5,
         borderColor: '#d3d3d3',
-        padding: 20,
+        padding: 18,
         fontWeight: "500"
     }
 });

@@ -251,7 +251,7 @@ class Home extends React.Component {
           <Transaction
           changelly={false}
           key={idx}
-          otherParty={transaction.otherParty}
+          otherParty={`${transaction.otherParty.slice(0,17)}...`}
           date={date}
           amount={transaction.amount}
           fromCoin={"Ʀ"}

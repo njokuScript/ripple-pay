@@ -3,26 +3,22 @@
 See Live Demo Here: [https://pateldd1.github.io/ripplePay-Demo/](https://pateldd1.github.io/ripplePay-Demo/)
 
 ## Background
-
+<!--  -->
 ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that allows currency conversion with over 60 other cryptocurrencies.
 
-## Sending Ripple Cross-platform to Gatehub Wallet
-<br><br>
-![gatehub-bitcoin](/images/transaction_demo_new.gif)
+## iPhone Demo
 
-## Withdraw and Deposit in 60 different cryptocurrencies
-<br><br>
-![user-sending](/images/converter.gif)
+<img src="images/ripplePayNewest.gif" width="400" height="700" />
 
 ## App Screens (iOS and Android)
 <br><br>
-![altcoins](/images/newest_altcoins.png)
-![all-transactions](/images/newest_transactions.png)
-![conversions](/images/conversions.png)
-![wallets](/images/wallets.png)
-![shapeTransactionView](/images/shapeTransactionView.png)
-![transition](/images/transition.png)
-![sendamount](/images/sendamount.png)
+<img src="images/paymentNewest.png" width="300" height="550" />
+<img src="images/walletsNewest.png" width="300" height="550" />
+<img src="images/personalWalletNewest.png" width="300" height="550" />
+<img src="images/coinsNewest.png" width="300" height="550" />
+<img src="images/changellyConversionNewest.png" width="300" height="550" />
+<img src="images/transitionNewest.png" width="300" height="550" />
+<img src="images/transactionsNewest.png" width="300" height="550" />
 
 ## Features
 * Users can signup and login to their accounts

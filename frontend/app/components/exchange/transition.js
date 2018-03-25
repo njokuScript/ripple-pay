@@ -23,9 +23,10 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Octicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // create a component
 class Transition extends Component {
@@ -40,6 +41,7 @@ class Transition extends Component {
       displayQRCodeScanner: false
       // quoted: true
     };
+    this.changellyLogo = require('./images/changelly-logo.jpg');
     this.initialState = _.cloneDeep(this.state);
     this.navSendAmount = this.navSendAmount.bind(this);
     this.onQRScan = this.onQRScan.bind(this);
@@ -209,47 +211,47 @@ class Transition extends Component {
         <AlertContainer />
         <CustomBackButton handlePress={() => this.props.navigator.pop({
           animationType: 'fade'
-        })} style={{paddingLeft: 10, marginTop: 80}} />
-        <View style={{marginTop: -20}}>
+        })} style={{ marginTop: 25 }}/>
+          <View style={{marginTop: -20}}>
           <View style={styles.customInputContainer}>
-          <CustomInput
-            placeholder={`from ${this.props.fromCoin}`}
-            placeholderTextColor="#6D768B"
-            onChangeText={
-              (amt) => {
-                this.setState({fromAmount: amt, editToAmount: true, editFromAmount: false});
+            <CustomInput
+              placeholder={`from ${this.props.fromCoin}`}
+              placeholderTextColor="#6D768B"
+              onChangeText={
+                (amt) => {
+                  this.setState({fromAmount: amt, editToAmount: true, editFromAmount: false});
+                }
               }
-            }
-            autoCorrect={false}
-            value={this.state.fromAmount}
-            autoCapitalize={'none'}
-          />
-          <CustomInput
-            placeholder={`to ${this.props.toCoin}`}
-            placeholderTextColor="#6D768B"
-            onChangeText={
-              (amt) => {
-                this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
+              autoCorrect={false}
+              value={this.state.fromAmount}
+              autoCapitalize={'none'}
+            />
+            <CustomInput
+              placeholder={`to ${this.props.toCoin}`}
+              placeholderTextColor="#6D768B"
+              onChangeText={
+                (amt) => {
+                  this.setState({toAmount: amt, editToAmount: false, editFromAmount: true});
+                }
               }
-            }
-            value={this.state.toAmount}
-            autoCorrect={false}
-            autoCapitalize={'none'}
-          />
-          <CustomInput
-            placeholder={this.action === ExchangeConfig.ACTIONS.DEPOSIT ? "Return Address -- Recommended" : "Send To Address"}
-            placeholderTextColor="#6D768B"
-            onChangeText={
-              (addr) => {
-                this.setState({address: addr});
+              value={this.state.toAmount}
+              autoCorrect={false}
+              autoCapitalize={'none'}
+            />
+            <CustomInput
+              placeholder={this.action === ExchangeConfig.ACTIONS.DEPOSIT ? "Return Address -- Recommended" : "Send To Address"}
+              placeholderTextColor="#6D768B"
+              onChangeText={
+                (addr) => {
+                  this.setState({address: addr});
+                }
               }
-            }
-            value={this.state.address}
-            autoCorrect={false}
-            autoCapitalize={'none'}
-          />
-          <Text onPress={() => { this.setState({ displayQRCodeScanner: true }); }}>SCAN QR CODE!!!</Text>
-        </View>
+              value={this.state.address}
+              autoCorrect={false}
+              autoCapitalize={'none'}
+            />
+          </View>
+          
           <View style={styles.infoContainer}>
             <Text style={styles.whitetext}>Send Minimum:   {Util.truncate(this.props.changelly.minimumSend.minAmount, 4)} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {Util.truncate(this.props.changelly.rate.amount, 4)} XRP/{this.altCoin}</Text>
@@ -260,6 +262,7 @@ class Transition extends Component {
             isDisabled={false}
             handlePress={this.navSendAmount}
           />
+          <Icon style={styles.qrCodeScan} name="qrcode-scan" size={40} color="white" onPress={() => { this.setState({ displayQRCodeScanner: true }); }} />
         </View>
      </View>
     );
@@ -267,40 +270,33 @@ class Transition extends Component {
 }
 
 // define your styles
+const { width, height } = Dimensions.get('window');
+let aspectRatio = width / height;
+
 const styles = StyleSheet.create({
-  topContainer: {
-    flex: -1,
-    backgroundColor: '#111F61',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    height: 90,
-    paddingTop: 10
-  },
-  whitetext: {
-    color: 'white',
-    // marginTop: 10,
-    fontSize: 16
-  },
-  redText: {
-    color: 'red',
-    // marginTop: 10,
-    fontSize: 16
-  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     paddingTop: 0,
-    marginTop: -60,
+    // marginTop: -50,
     backgroundColor: '#111F61'
+  },
+  qrCodeScan: {
+    textAlign: 'center'
+  },
+  whitetext: {
+    color: 'white',
+    // marginTop: 10,
+    fontSize: 16,
+    fontFamily: 'AppleSDGothicNeo-Light'
   },
   infoContainer: {
     marginTop: 20,
     left: 37
   },
   customInputContainer: {
-    marginTop: -30
+    marginTop: 0
   }
 });
 

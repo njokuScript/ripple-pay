@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TextInput,
   View,
+  Dimensions
 } from 'react-native';
 
 const CustomInput = (props) => {
@@ -16,6 +17,9 @@ const CustomInput = (props) => {
   );
 };
 
+const { width, height } = Dimensions.get('window');
+let aspectRatio = width / height;
+
 const styles = StyleSheet.create({
   field: {
     backgroundColor: '#0F1C52',
@@ -26,8 +30,8 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   textInput: {
-    height: 46,
-    fontFamily: 'Kohinoor Bangla',
+    height: height/13,
+    fontFamily: 'AppleSDGothicNeo-Light',
     color: 'white'
   },
 });

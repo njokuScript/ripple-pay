@@ -73,6 +73,7 @@ class ChangellyTransactionView extends React.Component {
             onRefresh={this.onRefresh} 
           />
         }
+        automaticallyAdjustContentInsets={false}
       >
           <Text style={styles.infoText}>{fromCoin === "XRP" ? "send" : "deposit"} {fromAmount} {fromCoin} as {toAmount} {toCoin}</Text>
           <Text style={styles.infoText}>status:  {this.state.status}</Text>
@@ -94,7 +95,8 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   infoContainer: {
     width: width,
-    marginBottom: height/12
+    marginBottom: height/12,
+    height: height/1.6
   },
   infoText: {
     fontSize: 13,

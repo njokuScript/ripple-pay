@@ -25,7 +25,8 @@ import {
   Image,
   ScrollView,
   Alert,
-  Clipboard
+  Clipboard,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Octicons';
 
@@ -35,6 +36,7 @@ class SendAmount extends Component {
     super(props);
     this.toThisAmount = "";
     this.fromThisAmount = "";
+    this.changellyLogo = require('./images/changelly-logo.jpg');
     this.renderButton = this.renderButton.bind(this);
     this.sendPayment = this.sendPayment.bind(this);
     this.preparePayment = this.preparePayment.bind(this);
@@ -256,6 +258,14 @@ class SendAmount extends Component {
             </Text>
           </View>
           <ScrollView style={styles.infoContainer}>
+            <View style={styles.imageContainer}>
+              <View style={styles.image}>
+                <Image
+                  style={styles.changellyLogo}
+                  source={this.changellyLogo}
+                />
+              </View>
+            </View>
             { this.props.action === ExchangeConfig.ACTIONS.DEPOSIT ? <Text style={styles.whitetext}>{from.fromCoin} Deposit Address:   {changellyAddress ? changellyAddress : 'Please Wait...' }</Text> : null }
             { this.getQRCode(changellyAddress) }
             <Text style={styles.whitetext}>{to.toCoin} Withdraw Address:   {otherParty}</Text>
@@ -274,6 +284,9 @@ class SendAmount extends Component {
   }
 
 // define your styles
+const { width, height } = Dimensions.get('window');
+let aspectRatio = width / height;
+
 const styles = StyleSheet.create({
   whitetext: {
     // color: '#F2CFB1',
@@ -281,7 +294,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 16,
     borderBottomWidth: 1,
-    padding: 20,
+    padding: 10,
 
     borderBottomColor: '#d3d3d3'
   },
@@ -305,7 +318,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   titleContainer: {
-    flex: -1,
+    // flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'column',
     justifyContent: 'space-around',
@@ -317,7 +330,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
     // marginTop: 40,
-    // fontFamily: 'Kohinoor Bangla',
     // textAlign: 'center'
   },
   infoContainer: {
@@ -332,7 +344,17 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     alignItems: "center"
-  }
+  },
+  imageContainer: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  changellyLogo: {
+    width: width / 1.8,
+    height: height / 8,
+    borderRadius: 6,
+    marginLeft: width / 9
+  },
 });
 
 export default SendAmount;
