@@ -160,7 +160,7 @@ class Search extends React.Component {
       color: 'white',
       fontSize: 20,
       justifyContent: 'center',
-      fontFamily: 'Kohinoor Bangla',
+      fontFamily: 'AppleSDGothicNeo-Light',
     },
     resultsContainer: {
       flex: 1,

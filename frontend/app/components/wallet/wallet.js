@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     width: width,
   },
   redButton: {
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     color: 'red',
     backgroundColor: '#0F1C52',
     borderRadius: 25,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   greenButton: {
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     backgroundColor: '#0F1C52',
     borderRadius: 25,
     padding: 16,

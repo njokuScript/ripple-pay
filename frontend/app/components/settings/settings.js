@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: "center",
     color: 'black',
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
   },
   listItem: {
     paddingTop: 15.65,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: width / 20,
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'AppleSDGothicNeo-Light'
   },
   topContainer: {
     backgroundColor: '#111F61',

@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
    textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
   },
   field: {
     backgroundColor: 'white',
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 40,
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     color: 'black',
   },
   formError: {
@@ -358,13 +358,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     color: 'white',
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'AppleSDGothicNeo-Light'
   },
   balanceTextField: {
     textAlign: 'center',
     fontSize: 11,
     color: 'white',
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     marginTop: 9,
     marginRight: 10
   },
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   },
   usd: {
     textAlign: "right",
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     fontSize: 16,
     color: "white"
   }
