@@ -12,13 +12,13 @@ ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that all
 
 ## App Screens (iOS and Android)
 <br><br>
-![altcoins](/images/newest_altcoins.png)
-![all-transactions](/images/newest_transactions.png)
-![conversions](/images/conversions.png)
-![wallets](/images/wallets.png)
-![shapeTransactionView](/images/shapeTransactionView.png)
-![transition](/images/transition.png)
-![sendamount](/images/sendamount.png)
+<img src="./images/coinsNew.png" width="300" height="550" />
+<img src="./images/transactionsNew.png" width="300" height="550" />
+<img src="./images/conversionsNew.png" width="300" height="550" />
+<img src="./images/walletsNew.png" width="300" height="550" />
+<img src="./images/changellyConvert.png" width="300" height="550" />
+<img src="./images/settings.png" width="300" height="550" />
+<img src="./images/personalWallet.png" width="300" height="550" />
 
 ## Features
 * Users can signup and login to their accounts
