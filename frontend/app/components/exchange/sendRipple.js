@@ -232,7 +232,7 @@ class SendRipple extends Component {
             autoCorrect={false}
             autoCapitalize={'none'}
             placeholderTextColor="#6D768B"
-            keyboardType={'number-pad'}
+            keyboardType={'decimal-pad'}
             keyboardAppearance={'dark'}
           />
         <CustomInput
@@ -245,7 +245,7 @@ class SendRipple extends Component {
             autoCorrect={false}
             placeholderTextColor="#6D768B"
             autoCapitalize={'none'}
-            keyboardType={'number-pad'}
+            keyboardType={'decimal-pad'}
             keyboardAppearance={'dark'}
           />
           {this.renderSecretField()}

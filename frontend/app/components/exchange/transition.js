@@ -41,6 +41,7 @@ class Transition extends Component {
       displayQRCodeScanner: false
       // quoted: true
     };
+    this.changellyLogo = require('./images/changelly-logo.jpg');
     this.initialState = _.cloneDeep(this.state);
     this.navSendAmount = this.navSendAmount.bind(this);
     this.onQRScan = this.onQRScan.bind(this);
