@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 16,
     borderBottomWidth: 1,
-    padding: 20,
+    padding: 10,
 
     borderBottomColor: '#d3d3d3'
   },
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   titleContainer: {
-    flex: -1,
+    // flex: -1,
     backgroundColor: '#111F61',
     flexDirection: 'column',
     justifyContent: 'space-around',
@@ -317,7 +317,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
     // marginTop: 40,
-    // fontFamily: 'Kohinoor Bangla',
     // textAlign: 'center'
   },
   infoContainer: {

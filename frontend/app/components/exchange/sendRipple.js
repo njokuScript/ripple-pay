@@ -9,6 +9,7 @@ import CustomInput from '../presentationals/customInput';
 import CustomButton from '../presentationals/customButton';
 import PasswordLock from '../presentationals/passwordLock';
 import ScanQR from '../presentationals/scanQR';
+import CustomBackButton from '../presentationals/customBackButton';
 import AlertContainer from '../alerts/AlertContainer';
 import Util from '../../utils/util';
 import Validation from '../../utils/validation';
@@ -23,7 +24,7 @@ import {
   Image,
   Alert
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // create a component
 //I DID NOT MAKE SURE THAT THE INPUT FIELDS ARE NUMBERS AND NOT LETTERS BECAUSE THIS WILL BE SOLVED WITH A NUMBERPAD LATER
@@ -158,18 +159,6 @@ class SendRipple extends Component {
     }
   }
 
-  displayBackButton() {
-    return (
-      <View style={styles.topContainer}>
-        <TouchableOpacity onPress={() => this.props.navigator.pop({
-          animationType: 'fade'
-        })}>
-          <Text><Icon name="chevron-left" size={30} color={"white"} /></Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   renderSecretField() {
     if (this.props.activeWallet === Config.WALLETS.PERSONAL_WALLET) {
       return (
@@ -199,7 +188,9 @@ class SendRipple extends Component {
       return (
         <View style={styles.container}>
           <AlertContainer />
-          { this.displayBackButton() }
+          <CustomBackButton handlePress={() => this.props.navigator.pop({
+            animationType: 'fade'
+          })} style={{ paddingLeft: 10, marginTop: 10 }} />
           <PasswordLock enableSending={this.enableSending} />
         </View>
       );
@@ -212,7 +203,9 @@ class SendRipple extends Component {
     return (
       <View style={styles.container}>
         <AlertContainer />
-        { this.displayBackButton() }
+        <CustomBackButton handlePress={() => this.props.navigator.pop({
+          animationType: 'fade'
+        })} style={{ paddingLeft: 10, marginTop: 10 }} />
         <CustomInput
             placeholder="Destination Address"
             onChangeText={
@@ -228,7 +221,6 @@ class SendRipple extends Component {
             autoCapitalize={'none'}
         />
 
-        <Text onPress={() => { this.setState({displayQRCodeScanner: true}); }}>SCAN QR CODE!!!</Text>
 
         <CustomInput
             placeholder="Destination Tag - optional"
@@ -263,6 +255,7 @@ class SendRipple extends Component {
             isDisabled={this.state.sendButtonDisabled}
             handlePress={this.prepareTransaction}
           />
+        <Icon style={styles.qrCodeScan} name="qrcode-scan" size={40} color="white" onPress={() => { this.setState({ displayQRCodeScanner: true }); }} />
         <View style={styles.fee}>
           <Text style={styles.feetext}>
             transaction Fee: {Config.ripplePayFee} XRP
@@ -275,6 +268,9 @@ class SendRipple extends Component {
 
 // define your styles
 const styles = StyleSheet.create({
+  qrCodeScan: {
+    textAlign: 'center'
+  },
   container: {
     flex: 1,
     flexDirection: "column",
@@ -283,16 +279,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#111F61',
     paddingTop: 20
   },
-  topContainer: {
-    marginBottom: -10,
-    marginLeft: 10
-  },
   feetext: {
     color: 'white',
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     fontSize: 13,
     textAlign: 'center',
-    marginTop: 20
+    marginTop: 5
   },
   formError: {
     color: 'red'

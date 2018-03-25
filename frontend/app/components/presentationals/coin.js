@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   coinFont: {
     fontWeight: "600",
-    fontFamily: 'Kohinoor Bangla',
+    fontFamily: 'AppleSDGothicNeo-Light',
     fontSize: 15,
   },
   coinType: {

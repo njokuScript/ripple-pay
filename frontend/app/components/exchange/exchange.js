@@ -64,17 +64,18 @@ class Exchange extends Component {
   componentWillReceiveProps(newProps) {
     if (!Util.isEmpty(newProps.changelly.totalCoinsObj) && !this.state.assetsLoaded) {
       const changellyCoinSet = newProps.changelly.totalCoinsObj;
-      this.props.getAllCoinData(changellyCoinSet).then(() => {
-        this.setState({
-          assetsLoaded: true
-        }, () => {
-          this.getRates();
+
+      this.props.getAllCoinData(changellyCoinSet)
+        .then(() => {
+          return this.getRates();
+        })
+        .then(() => {
+          this.setState({ assetsLoaded: true });
           // get rates every minute
           this.timer = window.setInterval(() => {
             this.getRates();
           }, 60000);
         });
-      });
     }
   }
 
@@ -283,12 +284,12 @@ const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: width / 20,
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'AppleSDGothicNeo-Light'
   },
   directions: {
     color: 'white',
     fontSize: width/20,
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'AppleSDGothicNeo-Light'
   }
 });
 

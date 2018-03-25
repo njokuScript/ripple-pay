@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     // flex: 1,
     top: 30,
-    fontFamily: 'Kohinoor Bangla'
+    fontFamily: 'AppleSDGothicNeo-Light'
   },
   formError: {
     color: 'red',
