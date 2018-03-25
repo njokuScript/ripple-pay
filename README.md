@@ -6,13 +6,9 @@ See Live Demo Here: [https://pateldd1.github.io/ripplePay-Demo/](https://pateldd
 
 ripplePay is an XRP cryptocurrency payment mobile (iOS and Android) app that allows currency conversion with over 60 other cryptocurrencies.
 
-## Sending Ripple Cross-platform to Gatehub Wallet
-<br><br>
-![gatehub-bitcoin](/images/ripplePayNewest.gif)
+## iPhone Demo
 
-## Withdraw and Deposit in 60 different cryptocurrencies
-<br><br>
-![user-sending](/images/converter.gif)
+<img src="./images/ripplePayNewest.gif" width="300" height="500" />
 
 ## App Screens (iOS and Android)
 <br><br>
