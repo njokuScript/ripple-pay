@@ -251,9 +251,8 @@ class BankSend extends Component {
           this.passwordLock()
       );
     } 
-
     let usd = (
-      <Text style={styles.usd}>${this.state.usd}</Text>
+      <Text style={styles.usd}>${Util.truncate(this.state.usd, 2)}</Text>
     );
     if (this.state.amount) {
       usd = (
