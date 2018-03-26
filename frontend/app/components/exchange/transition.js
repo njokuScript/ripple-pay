@@ -209,10 +209,14 @@ class Transition extends Component {
     return (
       <View style={styles.container}>
         <AlertContainer />
-        <CustomBackButton handlePress={() => this.props.navigator.pop({
-          animationType: 'fade'
-        })} style={{ marginTop: 25 }}/>
-          <View style={{marginTop: -20}}>
+        <View style={styles.topContainer}>
+          <CustomBackButton handlePress={() => this.props.navigator.pop({
+            animationType: 'fade'
+          })}
+          />
+          <Icon style={styles.qrCodeScan} name="qrcode-scan" size={30} color="white" onPress={() => { this.setState({ displayQRCodeScanner: true }); }} />
+        </View>
+          <View>
           <View style={styles.customInputContainer}>
             <CustomInput
               placeholder={`from ${this.props.fromCoin}`}
@@ -256,13 +260,12 @@ class Transition extends Component {
             <Text style={styles.whitetext}>Send Minimum:   {Util.truncate(this.props.changelly.minimumSend.minAmount, 4)} {this.props.fromCoin}</Text>
             <Text style={styles.whitetext}>Rate:   {Util.truncate(this.props.changelly.rate.amount, 4)} XRP/{this.altCoin}</Text>
           </View>
-          <CustomButton
-            performAction={`Continue ${this.actionString}...`}
-            buttonColor="white"
-            isDisabled={false}
-            handlePress={this.navSendAmount}
-          />
-          <Icon style={styles.qrCodeScan} name="qrcode-scan" size={40} color="white" onPress={() => { this.setState({ displayQRCodeScanner: true }); }} />
+            <CustomButton
+              performAction={`Continue ${this.actionString}...`}
+              buttonColor="white"
+              isDisabled={false}
+              handlePress={this.navSendAmount}
+            />
         </View>
      </View>
     );
@@ -276,27 +279,31 @@ let aspectRatio = width / height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    paddingTop: 0,
-    // marginTop: -50,
     backgroundColor: '#111F61'
+  },
+  topContainer: {
+    backgroundColor: '#111F61',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 70,
+    paddingTop: 20,
+    paddingLeft: 30,
+    paddingRight: 20
   },
   qrCodeScan: {
     textAlign: 'center'
   },
   whitetext: {
     color: 'white',
-    // marginTop: 10,
     fontSize: 16,
-    fontFamily: 'AppleSDGothicNeo-Light'
+    fontFamily: 'AppleSDGothicNeo-Light',
+    textAlign: 'center'
   },
   infoContainer: {
-    marginTop: 20,
-    left: 37
+    paddingTop: 25
   },
   customInputContainer: {
-    marginTop: 0
   }
 });
 
