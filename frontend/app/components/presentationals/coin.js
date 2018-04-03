@@ -9,6 +9,11 @@ import {
 } from 'react-native';
 
 const Coin = (props) => {
+  if (props.perc < 0) {
+    percent24Hour = <Text style={Object.assign({}, {fontSize: 12, color: 'red'})}>%24hr: {`${props.perc}%`} </Text>
+  } else {
+    percent24Hour = <Text style={Object.assign({}, {fontSize: 12, color: 'green'})}>%24hr: {`${props.perc}%`} </Text>
+  }
   return (
     <View style={styles.coin}>
       <Image
@@ -19,8 +24,7 @@ const Coin = (props) => {
       <View style={styles.coinType}>
         <Text style={styles.coinFont}>{props.coinName} ({props.coinSymbol})</Text>
         <Text style={styles.coinAmount}>${props.rate}</Text>
-        <Text></Text>
-        { props.perc ? <Text style={styles.coinAmount}>{props.perc < 0 ? `${props.perc}%` : `+${props.perc}%`}</Text> : null }
+        { props.perc ? <Text style={styles.coinAmount}>%24hr: {props.perc < 0 ? <Text style={{color: 'red'}}>{props.perc}%</Text> : <Text style={{color: 'green'}}>{props.perc}%</Text>} </Text> : null }
         { props.marketCap ? <Text style={styles.coinAmount}>{props.marketCap}</Text> : null }
       </View>
       <View style={styles.sendReceive}>
@@ -54,12 +58,13 @@ const styles = StyleSheet.create({
       width: width
   },
   coinAmount: {
-     fontSize: 12
+     fontSize: 12,
   },
   coinFont: {
     fontWeight: "600",
     fontFamily: 'AppleSDGothicNeo-Light',
     fontSize: 15,
+    paddingBottom: 5
   },
   coinType: {
     flex: 1,
