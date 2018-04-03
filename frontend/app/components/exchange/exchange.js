@@ -142,24 +142,24 @@ class Exchange extends Component {
     const { orderedCoins, totalCoinsObj } = this.props.changelly;
 
     let displayCoins = [];
-    const rippleCoin = totalCoinsObj["XRP"];
-    displayCoins.push(
-      <Coin
-        key="RippleOne"
-        imageSource={require('./images/ripplePic.png')}
-        perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.cap24hrChange
-          : null}
-        coinSymbol="XRP"
-        coinName="Ripple"
-        sendFunction={this.navSendRipple.bind(this) }
-        receiveFunction={this.navWallet.bind(this)}
-        rate={rippleCoin && this.state.assetsLoaded ? rippleCoin.price
-          : null}
-      />
-    );
-
+    const rippleCoin = totalCoinsObj["XRP"];    
     if ( orderedCoins.length > 0 && this.state.assetsLoaded )
     {
+        displayCoins.push(
+          <Coin
+            key="RippleOne"
+            imageSource={require('./images/ripplePic.png')}
+            perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.cap24hrChange
+              : null}
+            coinSymbol="XRP"
+            coinName="Ripple"
+            sendFunction={this.navSendRipple.bind(this) }
+            receiveFunction={this.navWallet.bind(this)}
+            rate={rippleCoin && this.state.assetsLoaded ? rippleCoin.price
+              : null}
+          />
+        );
+
       orderedCoins.forEach((coinSymbol, idx) => {
 
         const coin = totalCoinsObj[coinSymbol];
@@ -188,22 +188,23 @@ class Exchange extends Component {
           />
         );
       });
+      return (
+        <ScrollView style={styles.coinsContainer}>
+          {displayCoins}
+        </ScrollView>
+      );
     } 
     else {
-      displayCoins.push(
-        <LoadingIcon 
-          key="loadIcon" 
-          size="large" 
-          color="black" 
-        />
+      return (
+        <View style={styles.loadingIcon}>
+          <LoadingIcon 
+            key="loadIcon" 
+            size="large" 
+            color="black" 
+          />
+        </View>
       );
     }
-    
-    return (
-      <ScrollView style={styles.coinsContainer}>
-        {displayCoins}
-      </ScrollView>
-    );
   }
 
   reverseConversionDirection() {
@@ -237,8 +238,6 @@ class Exchange extends Component {
       );
     }
   }
-
-
 
   render() {
     return (
@@ -290,6 +289,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width/20,
     fontFamily: 'AppleSDGothicNeo-Light'
+  },
+  loadingIcon: {
+    paddingTop: height/3
   }
 });
 
