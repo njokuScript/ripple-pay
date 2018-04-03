@@ -143,18 +143,18 @@ class Exchange extends Component {
 
     let displayCoins = [];
     const rippleCoin = totalCoinsObj["XRP"];
-
     displayCoins.push(
       <Coin
         key="RippleOne"
         imageSource={require('./images/ripplePic.png')}
-        perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.perc : null}
-        // marketCap={rippleCoin ? rippleCoin.mktcap : null}
+        perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.cap24hrChange
+          : null}
         coinSymbol="XRP"
         coinName="Ripple"
         sendFunction={this.navSendRipple.bind(this) }
         receiveFunction={this.navWallet.bind(this)}
-        // rate={rippleCoin.price}
+        rate={rippleCoin && this.state.assetsLoaded ? rippleCoin.price
+          : null}
       />
     );
 
@@ -178,7 +178,7 @@ class Exchange extends Component {
           <Coin
             key={idx}
             imageSource={{ uri: imageUrl }}
-            perc={totalCoinsObj[coinSymbol].perc}
+            perc={totalCoinsObj[coinSymbol].cap24hrChange}
             // marketCap={totalCoinsObj[coinSymbol].mktcap}
             coinSymbol={coinSymbol}
             coinName={coin.fullName}
