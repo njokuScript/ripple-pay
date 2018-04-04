@@ -9,11 +9,6 @@ import {
 } from 'react-native';
 
 const Coin = (props) => {
-  if (props.perc < 0) {
-    percent24Hour = <Text style={Object.assign({}, {fontSize: 12, color: 'red'})}>%24hr: {`${props.perc}%`} </Text>
-  } else {
-    percent24Hour = <Text style={Object.assign({}, {fontSize: 12, color: 'green'})}>%24hr: {`${props.perc}%`} </Text>
-  }
   return (
     <View style={styles.coin}>
       <Image
@@ -23,8 +18,8 @@ const Coin = (props) => {
       />
       <View style={styles.coinType}>
         <Text style={styles.coinFont}>{props.coinName} ({props.coinSymbol})</Text>
-        <Text style={styles.coinAmount}>${props.rate}</Text>
-        { props.perc ? <Text style={styles.coinAmount}>%24hr: {props.perc < 0 ? <Text style={{color: 'red'}}>{props.perc}%</Text> : <Text style={{color: 'green'}}>{props.perc}%</Text>} </Text> : null }
+        { props.perc ? <Text style={styles.coinAmount}>${props.rate}</Text> : null }
+        { props.perc ? <Text style={styles.coin24Hr}>%24hr: {props.perc < 0 ? <Text style={{color: 'red'}}>{props.perc}%</Text> : <Text style={{color: 'green'}}>{props.perc}%</Text>} </Text> : null }
         { props.marketCap ? <Text style={styles.coinAmount}>{props.marketCap}</Text> : null }
       </View>
       <View style={styles.sendReceive}>
@@ -59,6 +54,10 @@ const styles = StyleSheet.create({
   },
   coinAmount: {
      fontSize: 12,
+  },
+  coin24Hr: {
+     fontSize: 12,
+     paddingTop: 5,
   },
   coinFont: {
     fontWeight: "600",
