@@ -143,22 +143,22 @@ class Exchange extends Component {
 
     let displayCoins = [];
     const rippleCoin = totalCoinsObj["XRP"];    
+      displayCoins.push(
+        <Coin
+          key="RippleOne"
+          imageSource={require('./images/ripplePic.png')}
+          perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.cap24hrChange
+            : null}
+          coinSymbol="XRP"
+          coinName="Ripple"
+          sendFunction={this.navSendRipple.bind(this) }
+          receiveFunction={this.navWallet.bind(this)}
+          rate={rippleCoin && this.state.assetsLoaded ? rippleCoin.price
+            : null}
+        />
+      );
     if ( orderedCoins.length > 0 && this.state.assetsLoaded )
     {
-        displayCoins.push(
-          <Coin
-            key="RippleOne"
-            imageSource={require('./images/ripplePic.png')}
-            perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.cap24hrChange
-              : null}
-            coinSymbol="XRP"
-            coinName="Ripple"
-            sendFunction={this.navSendRipple.bind(this) }
-            receiveFunction={this.navWallet.bind(this)}
-            rate={rippleCoin && this.state.assetsLoaded ? rippleCoin.price
-              : null}
-          />
-        );
 
       orderedCoins.forEach((coinSymbol, idx) => {
 
@@ -196,13 +196,17 @@ class Exchange extends Component {
     } 
     else {
       return (
-        <View style={styles.loadingIcon}>
-          <LoadingIcon 
-            key="loadIcon" 
-            size="large" 
-            color="black" 
-          />
-        </View>
+        <ScrollView style={styles.coinsContainer}>
+          {displayCoins}
+          <View style={styles.loadingIcon}>
+            <LoadingIcon 
+              key="loadIcon" 
+              size="large" 
+              color="black" 
+            />
+            <Text style={styles.fetchText}>fetching exchange data</Text>
+          </View>
+        </ScrollView>
       );
     }
   }
@@ -291,7 +295,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeo-Light'
   },
   loadingIcon: {
-    paddingTop: height/3
+    paddingTop: height/4.5
+  },
+  fetchText: {
+    textAlign: 'center',
+    fontFamily: 'AppleSDGothicNeo-Light',
+    fontSize: width / 30
   }
 });
 
