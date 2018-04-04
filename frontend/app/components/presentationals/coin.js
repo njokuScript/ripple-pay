@@ -18,9 +18,8 @@ const Coin = (props) => {
       />
       <View style={styles.coinType}>
         <Text style={styles.coinFont}>{props.coinName} ({props.coinSymbol})</Text>
-        <Text style={styles.coinAmount}>{props.rate}</Text>
-        <Text></Text>
-        { props.perc ? <Text style={styles.coinAmount}>{props.perc < 0 ? `${props.perc}%` : `+${props.perc}%`}</Text> : null }
+        { props.perc ? <Text style={styles.coinAmount}>${props.rate}</Text> : null }
+        { props.perc ? <Text style={styles.coin24Hr}>%24hr: {props.perc < 0 ? <Text style={{color: 'red'}}>{props.perc}%</Text> : <Text style={{color: 'green'}}>{props.perc}%</Text>} </Text> : null }
         { props.marketCap ? <Text style={styles.coinAmount}>{props.marketCap}</Text> : null }
       </View>
       <View style={styles.sendReceive}>
@@ -54,12 +53,17 @@ const styles = StyleSheet.create({
       width: width
   },
   coinAmount: {
-     fontSize: 12
+     fontSize: 12,
+  },
+  coin24Hr: {
+     fontSize: 12,
+     paddingTop: 5,
   },
   coinFont: {
     fontWeight: "600",
     fontFamily: 'AppleSDGothicNeo-Light',
     fontSize: 15,
+    paddingBottom: 5
   },
   coinType: {
     flex: 1,
