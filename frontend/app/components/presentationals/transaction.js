@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     width: width,
   },
   transactionInfo: {
-    // marginRight: -15
+    marginRight: -15
   },
   transactionOtherPartyText: {
     fontWeight: "600",
