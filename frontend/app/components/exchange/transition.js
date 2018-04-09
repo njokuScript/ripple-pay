@@ -300,15 +300,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AppleSDGothicNeo-Light',
     textAlign: 'center'
   },
-  qrCodeScan: {
-    textAlign: 'center'
-  },
-  whitetext: {
-    color: 'white',
-    // marginTop: 10,
-    fontSize: 16,
-    fontFamily: 'AppleSDGothicNeo-Light'
-  },
   infoContainer: {
     paddingTop: 25
   },
