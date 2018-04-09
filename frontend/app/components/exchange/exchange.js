@@ -142,24 +142,24 @@ class Exchange extends Component {
     const { orderedCoins, totalCoinsObj } = this.props.changelly;
 
     let displayCoins = [];
-    const rippleCoin = totalCoinsObj["XRP"];
-
-    displayCoins.push(
-      <Coin
-        key="RippleOne"
-        imageSource={require('./images/ripplePic.png')}
-        perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.perc : null}
-        // marketCap={rippleCoin ? rippleCoin.mktcap : null}
-        coinSymbol="XRP"
-        coinName="Ripple"
-        sendFunction={this.navSendRipple.bind(this) }
-        receiveFunction={this.navWallet.bind(this)}
-        // rate={rippleCoin.price}
-      />
-    );
-
+    const rippleCoin = totalCoinsObj["XRP"];    
+      displayCoins.push(
+        <Coin
+          key="RippleOne"
+          imageSource={require('./images/ripplePic.png')}
+          perc={rippleCoin && this.state.assetsLoaded ? rippleCoin.cap24hrChange
+            : null}
+          coinSymbol="XRP"
+          coinName="Ripple"
+          sendFunction={this.navSendRipple.bind(this) }
+          receiveFunction={this.navWallet.bind(this)}
+          rate={rippleCoin && this.state.assetsLoaded ? rippleCoin.price
+            : null}
+        />
+      );
     if ( orderedCoins.length > 0 && this.state.assetsLoaded )
     {
+
       orderedCoins.forEach((coinSymbol, idx) => {
 
         const coin = totalCoinsObj[coinSymbol];
@@ -178,7 +178,7 @@ class Exchange extends Component {
           <Coin
             key={idx}
             imageSource={{ uri: imageUrl }}
-            perc={totalCoinsObj[coinSymbol].perc}
+            perc={totalCoinsObj[coinSymbol].cap24hrChange}
             // marketCap={totalCoinsObj[coinSymbol].mktcap}
             coinSymbol={coinSymbol}
             coinName={coin.fullName}
@@ -188,22 +188,27 @@ class Exchange extends Component {
           />
         );
       });
+      return (
+        <ScrollView style={styles.coinsContainer}>
+          {displayCoins}
+        </ScrollView>
+      );
     } 
     else {
-      displayCoins.push(
-        <LoadingIcon 
-          key="loadIcon" 
-          size="large" 
-          color="black" 
-        />
+      return (
+        <ScrollView style={styles.coinsContainer}>
+          {displayCoins}
+          <View style={styles.loadingIcon}>
+            <LoadingIcon 
+              key="loadIcon" 
+              size="large" 
+              color="black" 
+            />
+            <Text style={styles.fetchText}>fetching exchange data</Text>
+          </View>
+        </ScrollView>
       );
     }
-    
-    return (
-      <ScrollView style={styles.coinsContainer}>
-        {displayCoins}
-      </ScrollView>
-    );
   }
 
   reverseConversionDirection() {
@@ -290,6 +295,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: width/20,
     fontFamily: 'AppleSDGothicNeo-Light'
+  },
+  loadingIcon: {
+    paddingTop: height/4.5
+  },
+  fetchText: {
+    textAlign: 'center',
+    fontFamily: 'AppleSDGothicNeo-Light',
+    fontSize: width / 30
   }
 });
 
