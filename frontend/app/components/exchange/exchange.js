@@ -243,6 +243,26 @@ class Exchange extends Component {
     }
   }
 
+  direction() {
+    if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.RIPPLE_PER_OTHER_COIN) {
+      return (
+        <View style={styles.conversionContainer}>
+          <Text style={styles.directions}>Ʀ</Text>
+          <Font name="long-arrow-right" size={width/20} color="white" />
+          <Font name="bitcoin" size={width/20} color="white" />
+        </View>
+      );
+    } else if (this.state.conversionDirection === ExchangeConfig.CONVERSION_DIRECTION.OTHER_COIN_PER_RIPPLE) {
+      return (
+      <View style={styles.conversionContainer}>
+        <Font name="bitcoin" size={width/20} color="white" />
+        <Font name="long-arrow-right" size={width/20} color="white" />
+        <Text style={styles.directions}>Ʀ</Text>
+      </View>
+      );
+    }
+  }
+
 
 
   render() {
